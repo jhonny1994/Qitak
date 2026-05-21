@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.carbodex.qitak",
+    "sha256_cert_fingerprints": [
+      "FF:B6:9B:92:06:07:93:F2:5C:E4:86:FA:99:77:FF:A9:79:CE:32:57:FB:5C:9F:CA:47:20:27:C9:33:D9:98:16"
+    ]
+  }
+}]

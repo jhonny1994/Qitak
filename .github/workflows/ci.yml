@@ -143,6 +143,18 @@ jobs:
           --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
           --build-number=${{ github.run_number }}
 
+      - name: Build signed Android APK
+        run: >
+          flutter build apk --release
+          --obfuscate
+          --split-debug-info=build/symbols
+          --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
+          --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
+          --build-number=${{ github.run_number }}
+
       - name: Upload debug symbols to Sentry
         if: ${{ env.SENTRY_AUTH_TOKEN != '' && env.SENTRY_ORG != '' && env.SENTRY_PROJECT != '' }}
         run: dart run sentry_dart_plugin
@@ -159,6 +171,13 @@ jobs:
           path: build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
 
+      - name: Upload Android APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
   github-release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs:
@@ -173,14 +192,29 @@ jobs:
           name: app-release-aab
           path: release-artifacts/
 
+      - name: Download Android APK
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-apk
+          path: release-artifacts/
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: "Build ${{ github.run_number }}"
-          generate_release_notes: true
+          name: "Qitak ${{ github.ref_name }}"
+          body: |
+            ## قطعك ${{ github.ref_name }}
+
+            سوق قطع السيارات المستعملة في الجزائر.
+
+            ### التثبيت
+            - **APK** — للتثبيت المباشر على Android
+            - **AAB** — حزمة Android App Bundle
+
+            > المتطلبات: Android 8.0+
           files: |
             release-artifacts/*.aab
+            release-artifacts/*.apk
 
   pages:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

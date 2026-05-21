@@ -192,6 +192,7 @@ jobs:
       - name: Create well-known files
         run: |
           mkdir -p _site/.well-known
+
           cat > _site/.well-known/assetlinks.json << 'EOF'
           [{
             "relation": ["delegate_permission/common.handle_all_urls"],
@@ -204,6 +205,105 @@ jobs:
             }
           }]
           EOF
+
+          touch _site/.nojekyll
+
+          cat > _site/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="ar" dir="rtl">
+          <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>قطعك — سوق قطع السيارات المستعملة في الجزائر</title>
+            <meta name="description" content="تطبيق قطعك: اعثر على قطع غيار سيارتك بسرعة وأمان في الجزائر."/>
+            <style>
+              *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+              body {
+                font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+                background: #0d0d0d;
+                color: #f0f0f0;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem 1.5rem;
+                text-align: center;
+              }
+              .logo { width: 96px; height: 96px; margin-bottom: 1.5rem; border-radius: 22px; }
+              h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; }
+              .tagline {
+                margin-top: .6rem;
+                font-size: 1.1rem;
+                color: #9ca3af;
+                max-width: 420px;
+              }
+              .divider { width: 40px; height: 3px; background: #22c55e; border-radius: 2px; margin: 2rem auto; }
+              .steps { display: flex; flex-direction: column; gap: 1.25rem; max-width: 420px; width: 100%; margin: 0 auto; }
+              .step {
+                background: #1a1a1a;
+                border: 1px solid #2a2a2a;
+                border-radius: 14px;
+                padding: 1rem 1.25rem;
+                display: flex;
+                gap: 1rem;
+                align-items: flex-start;
+                text-align: right;
+              }
+              .step-num {
+                background: #22c55e;
+                color: #000;
+                font-weight: 800;
+                font-size: .8rem;
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              }
+              .step-text { font-size: .95rem; line-height: 1.6; color: #d1d5db; }
+              .badge {
+                margin-top: 2.5rem;
+                display: inline-block;
+                background: #22c55e;
+                color: #000;
+                font-weight: 700;
+                font-size: .85rem;
+                padding: .45rem 1.1rem;
+                border-radius: 999px;
+                text-decoration: none;
+              }
+              .avail { margin-top: 1rem; font-size: .85rem; color: #6b7280; }
+              footer { margin-top: 3rem; font-size: .75rem; color: #4b5563; }
+            </style>
+          </head>
+          <body>
+            <img src="https://raw.githubusercontent.com/jhonny1994/Qitak/main/assets/brand/qitak-logo.png" alt="قطعك" class="logo"/>
+            <h1>قطعك</h1>
+            <p class="tagline">سوق قطع السيارات المستعملة في الجزائر</p>
+            <div class="divider"></div>
+            <div class="steps">
+              <div class="step">
+                <span class="step-num">١</span>
+                <span class="step-text">ابحث بالماركة والموديل والسنة — نتائج مخصّصة لسيارتك</span>
+              </div>
+              <div class="step">
+                <span class="step-num">٢</span>
+                <span class="step-text">تواصل مع البائع مباشرةً — تقييمات حقيقية تضمن الثقة</span>
+              </div>
+              <div class="step">
+                <span class="step-num">٣</span>
+                <span class="step-text">أتمّ الصفقة داخل التطبيق بأمان وسرعة</span>
+              </div>
+            </div>
+            <span class="badge">قريباً على Android &amp; iOS</span>
+            <p class="avail">متاح في الجزائر</p>
+            <footer>© 2026 Qitak — جميع الحقوق محفوظة</footer>
+          </body>
+          </html>
+          HTMLEOF
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

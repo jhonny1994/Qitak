@@ -1,0 +1,14 @@
+[
+  { "id": "lighting", "slug": "lighting" },
+  { "id": "body-exterior", "slug": "body-exterior" },
+  { "id": "interior-controls", "slug": "interior-controls" },
+  { "id": "filters-maintenance", "slug": "filters-maintenance" },
+  { "id": "wheels-tires", "slug": "wheels-tires" },
+  { "id": "engine-ignition", "slug": "engine-ignition" },
+  { "id": "cooling-system", "slug": "cooling-system" },
+  { "id": "electrical-electronics", "slug": "electrical-electronics" },
+  { "id": "suspension-steering", "slug": "suspension-steering" },
+  { "id": "transmission-drivetrain", "slug": "transmission-drivetrain" },
+  { "id": "braking", "slug": "braking" },
+  { "id": "exhaust-emissions", "slug": "exhaust-emissions" }
+]

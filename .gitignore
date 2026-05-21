@@ -1,0 +1,56 @@
+# ── OS / Editor ─────────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+.history
+.svn/
+
+# IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code — launch.json holds dart-define secrets; never commit
+.vscode/launch.json
+
+# Flutter DevTools local settings — IDE-only, not project config
+devtools_options.yaml
+
+# ── Flutter / Dart ───────────────────────────────────────────────────────────
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Obfuscation / symbolication maps (large, CI-only)
+app.*.symbols
+app.*.map.json
+
+# ── Environment / Secrets ────────────────────────────────────────────────────
+.env
+.env.*
+sentry.properties
+
+# ── Platform credentials (injected by CI, never stored in repo) ──────────────
+/android/app/google-services.json
+/ios/Runner/GoogleService-Info.plist
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# ── Supabase local stack runtime ─────────────────────────────────────────────
+supabase/.temp/
+supabase/.branches/
+
+# ── Internal tooling (AI agents, specs, dev scripts) ─────────────────────────
+docs/coder/
+
+# ── Dev / release artifacts ───────────────────────────────────────────────────
+artifacts/
+reports/
+test/visual_review/
+

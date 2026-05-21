@@ -1,0 +1,213 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - '0**-*'
+  pull_request:
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      - name: Flutter Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Flutter Tests
+        run: flutter test
+
+  supabase-db-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start Supabase
+        run: supabase start
+
+      - name: Reset DB
+        run: supabase db reset
+
+      - name: Run DB Tests
+        run: supabase test db
+
+  android-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - flutter
+      - supabase-db-tests
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+      APP_DEEP_LINK_BASE_URL: ${{ secrets.APP_DEEP_LINK_BASE_URL }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter Pub Get
+        run: flutter pub get
+
+      - name: Inject Android Firebase config
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          data = os.environ.get('GOOGLE_SERVICES_JSON_BASE64', '').strip()
+          if not data:
+              raise SystemExit('Missing GOOGLE_SERVICES_JSON_BASE64 secret.')
+          Path('android/app/google-services.json').write_bytes(base64.b64decode(data))
+          PY
+
+      - name: Decode Android keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          data = os.environ.get('ANDROID_KEYSTORE_BASE64', '').strip()
+          if not data:
+              raise SystemExit('Missing ANDROID_KEYSTORE_BASE64 secret.')
+          Path(os.environ['RUNNER_TEMP']).joinpath('qitak-release.jks').write_bytes(
+              base64.b64decode(data)
+          )
+          PY
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/qitak-release.jks" >> "$GITHUB_ENV"
+
+      - name: Extract pubspec version
+        id: pubspec
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build signed Android AAB
+        run: >
+          flutter build appbundle --release
+          --obfuscate
+          --split-debug-info=build/symbols
+          --extra-gen-snapshot-options=--save-obfuscation-map=build/obfuscation.map.json
+          --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+          --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
+          --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
+          --build-number=${{ github.run_number }}
+
+      - name: Upload debug symbols to Sentry
+        if: ${{ env.SENTRY_AUTH_TOKEN != '' && env.SENTRY_ORG != '' && env.SENTRY_PROJECT != '' }}
+        run: dart run sentry_dart_plugin
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_RELEASE: com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
+
+      - name: Upload Android AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+  github-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - android-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Android AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-aab
+          path: release-artifacts/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: "Build ${{ github.run_number }}"
+          generate_release_notes: true
+          files: |
+            release-artifacts/*.aab
+
+  pages:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - flutter
+      - supabase-db-tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create well-known files
+        run: |
+          mkdir -p _site/.well-known
+          cat > _site/.well-known/assetlinks.json << 'EOF'
+          [{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+              "namespace": "android_app",
+              "package_name": "com.carbodex.qitak",
+              "sha256_cert_fingerprints": [
+                "FF:B6:9B:92:06:07:93:F2:5C:E4:86:FA:99:77:FF:A9:79:CE:32:57:FB:5C:9F:CA:47:20:27:C9:33:D9:98:16"
+              ]
+            }
+          }]
+          EOF
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
+          keep_files: false

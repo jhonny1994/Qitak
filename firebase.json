@@ -1,0 +1,22 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "qitak-app",
+                    "appId": "1:314678383740:android:720d38e1f66da3ed7b65f9",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "qitak-app",
+                    "configurations": {
+                        "android": "1:314678383740:android:720d38e1f66da3ed7b65f9",
+                        "ios": "1:314678383740:ios:9925c191fbc4448d7b65f9"
+                    }
+                }
+            }
+        }
+    }
+}

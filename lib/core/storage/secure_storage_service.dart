@@ -61,7 +61,7 @@ class FlutterSecureKeyValueStore implements SecureKeyValueStore {
 
   static const AndroidOptions _androidOptions = AndroidOptions.defaultOptions;
   static const IOSOptions _iosOptions = IOSOptions(
-    accessibility: KeychainAccessibility.first_unlock_this_device,
+    accessibility: KeychainAccessibility.passcode,
   );
 
   final FlutterSecureStorage _storage;

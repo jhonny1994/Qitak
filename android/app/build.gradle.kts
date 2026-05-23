@@ -67,8 +67,8 @@ android {
         applicationId = "com.carbodex.qitak"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
-        versionCode = 100
-        versionName = "1.0.0"
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     signingConfigs {
@@ -87,7 +87,11 @@ android {
             signingConfig = if (hasReleaseSigningCredentials) {
                 signingConfigs.getByName("release")
             } else {
-                signingConfigs.getByName("debug")
+                throw GradleException(
+                    "Release signing credentials are missing. " +
+                    "Set ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD, " +
+                    "ANDROID_KEYSTORE_PATH, and ANDROID_STORE_PASSWORD."
+                )
             }
             isMinifyEnabled = true
             isShrinkResources = true

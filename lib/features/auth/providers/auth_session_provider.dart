@@ -78,6 +78,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     required String phone,
     required String password,
     required SignUpVariant variant,
+    String language = 'ar',
   }) async {
     final profile = await _repository.signUp(
       fullName: fullName,
@@ -85,6 +86,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
       phone: phone,
       password: password,
       variant: variant,
+      language: language,
     );
     state = AuthSessionState.authenticated(profile);
     return profile;

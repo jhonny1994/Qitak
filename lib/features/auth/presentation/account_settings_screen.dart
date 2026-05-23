@@ -88,7 +88,9 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
                       validator: (value) =>
-                          (value == null || value.trim().length < 8)
+                          (value == null ||
+                              !RegExp(r'^(0[567]\d{8}|\+213[567]\d{8})$')
+                                  .hasMatch(value.trim()))
                           ? context.l10n.phoneValidationError
                           : null,
                     ),

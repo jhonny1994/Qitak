@@ -1,7 +1,7 @@
 name: qitak_app
 description: "Qitak mobile marketplace app."
 publish_to: "none"
-version: 0.0.1+1
+version: 0.0.2+2
 
 environment:
   sdk: ^3.11.1
@@ -90,8 +90,6 @@ flutter_intl:
   output_dir: lib/generated
 
 sentry:
-  project: qitak
-  org: mohamed-abderraouf-douadi
   dart_symbol_map_path: build/obfuscation.map.json
   upload_debug_symbols: true
   upload_sources: false

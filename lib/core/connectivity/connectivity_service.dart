@@ -21,13 +21,16 @@ final isOnlineProvider = StreamProvider<bool>((ref) async* {
   }
 });
 
-Future<bool> _resolveOnlineState(List<ConnectivityResult> results) async {
+Future<bool> _resolveOnlineState(
+  List<ConnectivityResult> results, {
+  Future<List<InternetAddress>> Function(String)? lookup,
+}) async {
   if (results.length == 1 && results.first == ConnectivityResult.none) {
     return false;
   }
 
   try {
-    final response = await InternetAddress.lookup(
+    final response = await (lookup ?? InternetAddress.lookup)(
       'supabase.co',
     ).timeout(const Duration(seconds: 3));
     return response.isNotEmpty;
@@ -35,6 +38,12 @@ Future<bool> _resolveOnlineState(List<ConnectivityResult> results) async {
     return false;
   }
 }
+
+@visibleForTesting
+Future<bool> resolveOnlineStateForTesting(
+  List<ConnectivityResult> results, {
+  Future<List<InternetAddress>> Function(String)? lookup,
+}) => _resolveOnlineState(results, lookup: lookup);
 
 bool get _usesTestWidgetsBinding =>
     WidgetsBinding.instance.runtimeType.toString().contains(

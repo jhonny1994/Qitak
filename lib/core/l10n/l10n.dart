@@ -67,16 +67,7 @@ extension AppRoleL10nX on S {
     return '#${suffix.padLeft(3, '0')}';
   }
 
-  String localMarketplaceTitle(String raw) {
-    switch (raw) {
-      case 'Headlight assembly':
-        return localListingTitleHeadlightAssembly;
-      case 'Brake pad set':
-        return localListingTitleBrakePadSet;
-      default:
-        return raw;
-    }
-  }
+  String localMarketplaceTitle(String raw) => raw;
 
   String localMarketplaceCategory(String raw) {
     switch (raw.toLowerCase()) {

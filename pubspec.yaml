@@ -1,7 +1,7 @@
 name: qitak_app
 description: "Qitak mobile marketplace app."
 publish_to: "none"
-version: 0.0.2+2
+version: 0.0.3+3
 
 environment:
   sdk: ^3.11.1
@@ -45,9 +45,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/brand/qitak-logo.png
-    - docs/part_categories.json
-    - docs/wilayas.json
-    - docs/cars.json
   fonts:
     - family: Cairo
       fonts:

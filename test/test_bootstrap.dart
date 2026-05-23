@@ -19,6 +19,9 @@ import 'package:qitak_app/features/transactions/data/transaction_repository.dart
 import 'package:qitak_app/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/local_admin_team_repository.dart';
+import 'support/local_memory_auth_repository.dart';
+
 Future<ProviderScope> buildTestScope(
   Widget child, {
   Map<String, Object> seed = const <String, Object>{},

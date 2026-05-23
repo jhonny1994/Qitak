@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
-import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
 import 'package:qitak_app/features/listings/data/listing_repository.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../fixtures/listing_media_fixture.dart';
+import '../../support/local_discovery_repository.dart';
 
 void main() {
   test(

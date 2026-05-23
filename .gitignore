@@ -38,6 +38,7 @@ sentry.properties
 # ── Platform credentials (injected by CI, never stored in repo) ──────────────
 /android/app/google-services.json
 /ios/Runner/GoogleService-Info.plist
+/lib/firebase_options.dart
 /android/app/debug
 /android/app/profile
 /android/app/release

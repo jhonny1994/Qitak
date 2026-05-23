@@ -19,6 +19,10 @@ abstract final class AppLinksPromptService {
   }
 
   static Future<void> openSettings() async {
-    await _channel.invokeMethod<void>('openDefaultAppsSettings');
+    try {
+      await _channel.invokeMethod<void>('openDefaultAppsSettings');
+    } on MissingPluginException {
+      // Channel unavailable on this device/build.
+    }
   }
 }

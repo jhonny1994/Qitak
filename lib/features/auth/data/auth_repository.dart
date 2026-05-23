@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/constants/app_constants.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
@@ -36,6 +37,7 @@ abstract class AuthRepository {
     required String phone,
     required String password,
     required SignUpVariant variant,
+    String language = 'ar',
   });
   Future<void> requestPasswordReset(String email);
   Future<void> updatePassword(String newPassword);
@@ -178,6 +180,7 @@ class LocalMemoryAuthRepository implements AuthRepository {
     required String phone,
     required String password,
     required SignUpVariant variant,
+    String language = 'ar',
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 250));
     if (_profilesByEmail.containsKey(email.toLowerCase())) {
@@ -192,7 +195,7 @@ class LocalMemoryAuthRepository implements AuthRepository {
       role: variant == SignUpVariant.seller
           ? AccountRole.seller
           : AccountRole.buyer,
-      language: 'ar',
+      language: language,
       isActive: true,
     );
     _profilesByEmail[email.toLowerCase()] = profile;
@@ -305,10 +308,15 @@ class SupabaseAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    final response = await _client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+    late final AuthResponse response;
+    try {
+      response = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+    } on AuthException catch (error) {
+      throw AppException(_friendlySignInError(error.message));
+    }
     final user = response.user;
     if (user == null) {
       throw const AppException('Invalid credentials.');
@@ -336,6 +344,7 @@ class SupabaseAuthRepository implements AuthRepository {
     required String phone,
     required String password,
     required SignUpVariant variant,
+    String language = 'ar',
   }) async {
     late final AuthResponse response;
     try {
@@ -346,6 +355,7 @@ class SupabaseAuthRepository implements AuthRepository {
           'full_name': fullName,
           'phone': phone,
           'role': variant == SignUpVariant.seller ? 'seller' : 'buyer',
+          'language': language,
         },
       );
     } on AuthException catch (error) {
@@ -368,27 +378,45 @@ class SupabaseAuthRepository implements AuthRepository {
       'email': user.email ?? email,
       'phone': phone,
       'role': role,
-      'language': 'ar',
+      'language': language,
       'is_active': true,
     };
-    try {
-      await _client.from('profiles').upsert(profilePayload, onConflict: 'id');
-    } on PostgrestException catch (error, stackTrace) {
-      _logAuthDebug(
-        'sign_up_profile_upsert_failed',
-        error: error,
-        stackTrace: stackTrace,
-        context: <String, Object?>{
-          'userId': user.id,
-          'email': user.email ?? email,
-          'role': role,
-          'code': error.code,
-          'details': error.details,
-          'hint': error.hint,
-          'message': error.message,
-        },
+
+    // When email confirmation is enabled Supabase returns no session, so the
+    // client has no user JWT and the profiles INSERT RLS policy would reject
+    // this call. The handle_new_user trigger creates the row instead.
+    if (response.session != null) {
+      try {
+        await _client.from('profiles').upsert(profilePayload, onConflict: 'id');
+      } on PostgrestException catch (error, stackTrace) {
+        _logAuthDebug(
+          'sign_up_profile_upsert_failed',
+          error: error,
+          stackTrace: stackTrace,
+          context: <String, Object?>{
+            'userId': user.id,
+            'email': user.email ?? email,
+            'role': role,
+            'code': error.code,
+            'details': error.details,
+            'hint': error.hint,
+            'message': error.message,
+          },
+        );
+        throw AppException(_friendlyProfileSetupError(error));
+      }
+    }
+
+    // No session means email confirmation is pending — the trigger created
+    // the profile row; tell the caller so the UI can display a check-email
+    // message rather than routing to the dashboard.
+    if (response.session == null) {
+      throw EmailConfirmationRequiredException(
+        email: user.email ?? email,
+        message:
+            'Account created. Please check your email and click the '
+            'confirmation link before signing in.',
       );
-      throw AppException(_friendlyProfileSetupError(error));
     }
 
     return _fetchProfile(
@@ -396,6 +424,7 @@ class SupabaseAuthRepository implements AuthRepository {
       user.email ?? email,
       fallbackName: fullName,
       fallbackPhone: phone,
+      fallbackLanguage: language,
       fallbackRole: variant == SignUpVariant.seller
           ? AccountRole.seller
           : AccountRole.buyer,
@@ -604,6 +633,20 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 }
 
+String _friendlySignInError(String message) {
+  final normalized = message.toLowerCase();
+  if (normalized.contains('email not confirmed') ||
+      normalized.contains('email_not_confirmed')) {
+    return 'Please confirm your email address before signing in. '
+        'Check your inbox for the confirmation link.';
+  }
+  if (normalized.contains('invalid login credentials') ||
+      normalized.contains('invalid credentials')) {
+    return 'Invalid email or password.';
+  }
+  return 'Unable to sign in. Please try again.';
+}
+
 String _friendlySignUpError(String message) {
   final normalized = message.toLowerCase();
   if (normalized.contains('already registered') ||
@@ -688,6 +731,7 @@ void _logAuthDebug(
   StackTrace? stackTrace,
   Map<String, Object?> context = const <String, Object?>{},
 }) {
+  if (!kDebugMode) return;
   developer.log(
     'auth_debug::$event ${context.isEmpty ? '' : context}',
     name: 'qitak.auth',

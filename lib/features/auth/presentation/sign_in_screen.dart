@@ -103,7 +103,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
-                            (value == null || !value.contains('@'))
+                            (value == null ||
+                                !RegExp(r'^[\w.%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
+                                    .hasMatch(value.trim()))
                             ? context.l10n.emailValidationError
                             : null,
                       ),
@@ -266,6 +268,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             email: _emailController.text.trim(),
             password: _passwordController.text,
           );
+      _passwordController.clear();
       if (!_isAllowedRole(profile.role)) {
         await ref.read(authSessionProvider.notifier).signOut();
         if (!mounted) return;

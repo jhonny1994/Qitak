@@ -23,6 +23,7 @@ Future<ProviderScope> buildTestScope(
   Widget child, {
   Map<String, Object> seed = const <String, Object>{},
   List<Object> overrides = const <Object>[],
+  AuthRepository? authRepositoryOverride,
   MessagingRepository? messagingRepositoryOverride,
   TransactionRepository? transactionRepositoryOverride,
   SellerApplicationRepository? sellerApplicationRepositoryOverride,
@@ -43,7 +44,7 @@ Future<ProviderScope> buildTestScope(
       ),
       supabaseClientProvider.overrideWithValue(null),
       authRepositoryProvider.overrideWithValue(
-        LocalMemoryAuthRepository(prefs),
+        authRepositoryOverride ?? LocalMemoryAuthRepository(prefs),
       ),
       notificationServiceProvider.overrideWithValue(
         const NoopNotificationService(),

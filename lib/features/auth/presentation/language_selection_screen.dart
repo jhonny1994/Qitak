@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/generated/l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class LanguageSelectionScreen extends ConsumerWidget {
@@ -97,21 +98,28 @@ class _LanguageOption {
 }
 
 List<_LanguageOption> _languageOptions(BuildContext context) {
-  return <_LanguageOption>[
-    _LanguageOption(
+  // Build label map once; new ARB locales are included automatically as long
+  // as their native/secondary labels are added here.
+  final labelsByCode = <String, _LanguageOption>{
+    'ar': _LanguageOption(
       code: 'ar',
       nativeLabel: context.l10n.languageNativeArabic,
       secondaryLabel: context.l10n.languageNameArabic,
     ),
-    _LanguageOption(
+    'en': _LanguageOption(
       code: 'en',
       nativeLabel: context.l10n.languageNativeEnglish,
       secondaryLabel: context.l10n.languageNameEnglish,
     ),
-    _LanguageOption(
+    'fr': _LanguageOption(
       code: 'fr',
       nativeLabel: context.l10n.languageNativeFrench,
       secondaryLabel: context.l10n.languageNameFrench,
     ),
-  ];
+  };
+
+  return S.delegate.supportedLocales
+      .map((locale) => labelsByCode[locale.languageCode])
+      .whereType<_LanguageOption>()
+      .toList();
 }

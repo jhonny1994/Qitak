@@ -106,6 +106,21 @@ jobs:
           Path('android/app/google-services.json').write_bytes(base64.b64decode(data))
           PY
 
+      - name: Inject Firebase options (lib/firebase_options.dart)
+        env:
+          FIREBASE_OPTIONS_DART_BASE64: ${{ secrets.FIREBASE_OPTIONS_DART_BASE64 }}
+        run: |
+          python3 - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+
+          data = os.environ.get('FIREBASE_OPTIONS_DART_BASE64', '').strip()
+          if not data:
+              raise SystemExit('Missing FIREBASE_OPTIONS_DART_BASE64 secret.')
+          Path('lib/firebase_options.dart').write_bytes(base64.b64decode(data))
+          PY
+
       - name: Decode Android keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -141,6 +156,7 @@ jobs:
           --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
           --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
           --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
+          --build-name=${{ steps.pubspec.outputs.version }}
           --build-number=${{ github.run_number }}
 
       - name: Build signed Android APK
@@ -148,15 +164,16 @@ jobs:
           flutter build apk --release
           --obfuscate
           --split-debug-info=build/symbols
+          --extra-gen-snapshot-options=--save-obfuscation-map=build/obfuscation.map.json
           --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
           --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
           --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
           --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
+          --build-name=${{ steps.pubspec.outputs.version }}
           --build-number=${{ github.run_number }}
 
       - name: Upload debug symbols to Sentry
-        if: ${{ env.SENTRY_AUTH_TOKEN != '' && env.SENTRY_ORG != '' && env.SENTRY_PROJECT != '' }}
         run: dart run sentry_dart_plugin
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

@@ -80,27 +80,47 @@ class AuthEntryService {
     String path, {
     bool isSellerApproved = false,
   }) {
-    if (path.startsWith('/auth')) {
+    // Auth screens: all users
+    if (path.startsWith('/auth')) return true;
+
+    // Shared discovery and communication routes: all authenticated roles
+    if (path == '/home' ||
+        path.startsWith('/search') ||
+        path.startsWith('/notifications') ||
+        path.startsWith('/messages') ||
+        path.startsWith('/listing/') ||
+        path.startsWith('/guest')) {
       return true;
     }
-    if (path.startsWith('/seller/onboarding')) {
-      return role == AccountRole.seller;
+
+    // Transaction and rating routes: buyers and sellers
+    if (path.startsWith('/deals') ||
+        path.startsWith('/transactions') ||
+        path.startsWith('/ratings')) {
+      return role == AccountRole.buyer || role == AccountRole.seller;
     }
-    if (path.startsWith('/admin')) {
-      return role == AccountRole.admin || role == AccountRole.superAdmin;
+
+    // Saved listings and buyer profile: buyer only
+    if (path.startsWith('/saved') || path.startsWith('/profile')) {
+      return role == AccountRole.buyer;
     }
-    if (path.startsWith('/seller/profile')) {
-      return role == AccountRole.seller;
-    }
+
+    // Seller onboarding: seller only, no approval required
+    if (path.startsWith('/seller/onboarding')) return role == AccountRole.seller;
+
+    // Seller profile: seller only, no approval required
+    if (path.startsWith('/seller/profile')) return role == AccountRole.seller;
+
+    // Remaining seller routes: approved seller only
     if (path.startsWith('/seller')) {
       return role == AccountRole.seller && isSellerApproved;
     }
-    if (path.startsWith('/admin/profile')) {
+
+    // Admin and release management routes: admin/super_admin only
+    if (path.startsWith('/admin') || path.startsWith('/release')) {
       return role == AccountRole.admin || role == AccountRole.superAdmin;
     }
-    if (path.startsWith('/profile')) {
-      return role == AccountRole.buyer;
-    }
-    return true;
+
+    return false;
   }
 }

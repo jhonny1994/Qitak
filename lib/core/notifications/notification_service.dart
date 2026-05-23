@@ -106,10 +106,28 @@ class FirebaseNotificationService implements NotificationService {
   }
 
   String _resolveTarget(String? deepLink) {
-    if (deepLink == null || deepLink.isEmpty || !deepLink.startsWith('/')) {
-      return '/notifications';
-    }
-    return deepLink;
+    if (deepLink == null || deepLink.isEmpty) return '/notifications';
+    return _isAllowedDeepLink(deepLink) ? deepLink : '/notifications';
+  }
+
+  static bool _isAllowedDeepLink(String path) {
+    return path == '/home' ||
+        path == '/seller/home' ||
+        path == '/admin/home' ||
+        path == '/search' ||
+        path == '/notifications' ||
+        path == '/messages' ||
+        path.startsWith('/search/') ||
+        path.startsWith('/notifications/') ||
+        path.startsWith('/messages/') ||
+        path.startsWith('/listing/') ||
+        path.startsWith('/deals/') ||
+        path.startsWith('/transactions/') ||
+        path.startsWith('/seller/listings/') ||
+        path.startsWith('/admin/verifications/') ||
+        path.startsWith('/admin/reports/') ||
+        path.startsWith('/admin/conversations/') ||
+        path.startsWith('/admin/disputes/');
   }
 }
 

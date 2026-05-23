@@ -110,7 +110,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
-                            (value == null || !value.contains('@'))
+                            (value == null ||
+                                !RegExp(
+                                  r'^[\w.%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$',
+                                ).hasMatch(value.trim()))
                             ? context.l10n.emailValidationError
                             : null,
                       ),
@@ -122,7 +125,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         validator: (value) =>
-                            (value == null || value.trim().length < 8)
+                            (value == null ||
+                                !RegExp(
+                                  r'^(0[567]\d{8}|\+213[567]\d{8})$',
+                                ).hasMatch(value.trim()))
                             ? context.l10n.phoneValidationError
                             : null,
                       ),
@@ -247,7 +253,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             phone: _phoneController.text.trim(),
             password: _passwordController.text,
             variant: widget.variant,
+            language: preferences.guestLanguage,
           );
+      _passwordController.clear();
+      _confirmPasswordController.clear();
       if (wasGuestBrowsingEnabled) {
         await ref
             .read(appPreferencesProvider.notifier)
@@ -257,6 +266,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       if (mounted) {
         context.go(route);
       }
+    } on EmailConfirmationRequiredException catch (confirmation) {
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+      if (!mounted) return;
+      setState(() => _submitting = false);
+      await _showEmailConfirmationDialog(confirmation);
     } on AppException catch (error) {
       if (!mounted) return;
       _showSnack(error.message);
@@ -274,6 +289,36 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _showEmailConfirmationDialog(
+    EmailConfirmationRequiredException confirmation,
+  ) {
+    final signInRoute = _buildAuthRoute(
+      widget.variant == SignUpVariant.seller
+          ? '/auth/seller/sign-in'
+          : '/auth/sign-in',
+    );
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.mark_email_read_outlined),
+        title: Text(context.l10n.checkYourEmail),
+        content: Text('${confirmation.message}\n\n${confirmation.email}'),
+        actions: [
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              if (mounted) {
+                context.go(signInRoute);
+              }
+            },
+            child: Text(context.l10n.signIn),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<bool> _isSellerApproved(AccountProfile profile) async {

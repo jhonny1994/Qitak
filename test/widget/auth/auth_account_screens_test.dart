@@ -3,7 +3,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
+import 'package:qitak_app/features/auth/data/auth_repository.dart';
+import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/account_settings_screen.dart';
@@ -631,6 +634,60 @@ void main() {
     expect(container.read(appPreferencesProvider).guestBrowsingEnabled, isTrue);
   });
 
+  testWidgets('email confirmation signup shows success dialog then sign in', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: SignUpScreen()),
+        ),
+        GoRoute(
+          path: '/auth/sign-in',
+          builder: (context, state) =>
+              const Scaffold(body: Text('sign-in-target')),
+        ),
+      ],
+    );
+
+    final scope = await buildTestScope(
+      routerShell(router),
+      authRepositoryOverride: const _PendingConfirmationAuthRepository(),
+    );
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Pending Buyer');
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'pending.buyer@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(2), '+213555111333');
+    await tester.enterText(find.byType(TextFormField).at(3), 'password123');
+    await tester.enterText(find.byType(TextFormField).at(4), 'password123');
+    await tester.ensureVisible(find.byType(CheckboxListTile));
+    await tester.tap(find.byType(CheckboxListTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Create account').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Check your email'), findsOneWidget);
+    expect(
+      find.text(
+        'Account created. Please check your email and click the '
+        'confirmation link before signing in.\n\npending.buyer@qitak.test',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byType(SnackBar), findsNothing);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('sign-in-target'), findsOneWidget);
+  });
+
   testWidgets('admin sign in stays isolated from guest and sign-up paths', (
     tester,
   ) async {
@@ -1146,4 +1203,62 @@ class _ThrowingSellerApplicationRepository
   }) async {
     throw StateError('lookup failed');
   }
+}
+
+class _PendingConfirmationAuthRepository implements AuthRepository {
+  const _PendingConfirmationAuthRepository();
+
+  @override
+  Future<AuthSessionSnapshot> restoreSession() async =>
+      const AuthSessionSnapshot(isAuthenticated: false);
+
+  @override
+  Future<AccountProfile> signIn({
+    required String email,
+    required String password,
+  }) async {
+    throw const AppException('not-used');
+  }
+
+  @override
+  Future<AccountProfile> signUp({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String password,
+    required SignUpVariant variant,
+    String language = 'ar',
+  }) async {
+    throw EmailConfirmationRequiredException(
+      email: email,
+      message:
+          'Account created. Please check your email and click the '
+          'confirmation link before signing in.',
+    );
+  }
+
+  @override
+  Future<void> requestPasswordReset(String email) async {}
+
+  @override
+  Future<void> updatePassword(String newPassword) async {}
+
+  @override
+  Future<void> deactivateAccount() async {}
+
+  @override
+  Future<AccountProfile> updateProfile({
+    required String fullName,
+    required String phone,
+  }) async {
+    throw const AppException('not-used');
+  }
+
+  @override
+  Future<AccountProfile> updateLanguage(String language) async {
+    throw const AppException('not-used');
+  }
+
+  @override
+  Future<void> signOut() async {}
 }

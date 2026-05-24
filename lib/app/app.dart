@@ -53,8 +53,9 @@ class QitakApp extends ConsumerWidget {
     final router = ref.watch(goRouterProvider);
     final session = ref.watch(authSessionProvider);
     final rawLocale = session.profile?.language ?? preferences.guestLanguage;
-    final supportedLanguageCodes =
-        S.delegate.supportedLocales.map((l) => l.languageCode).toSet();
+    final supportedLanguageCodes = S.delegate.supportedLocales
+        .map((l) => l.languageCode)
+        .toSet();
     final localeCode = supportedLanguageCodes.contains(rawLocale)
         ? rawLocale
         : S.delegate.supportedLocales.first.languageCode;

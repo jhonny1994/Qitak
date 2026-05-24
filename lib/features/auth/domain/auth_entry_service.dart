@@ -106,7 +106,9 @@ class AuthEntryService {
     }
 
     // Seller onboarding: seller only, no approval required
-    if (path.startsWith('/seller/onboarding')) return role == AccountRole.seller;
+    if (path.startsWith('/seller/onboarding')) {
+      return role == AccountRole.seller;
+    }
 
     // Seller profile: seller only, no approval required
     if (path.startsWith('/seller/profile')) return role == AccountRole.seller;

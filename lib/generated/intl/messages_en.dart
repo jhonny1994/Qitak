@@ -1033,12 +1033,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Like new",
     ),
     "localListingConditionNew": MessageLookupByLibrary.simpleMessage("New"),
-    "localListingTitleBrakePadSet": MessageLookupByLibrary.simpleMessage(
-      "Brake pad set",
-    ),
-    "localListingTitleHeadlightAssembly": MessageLookupByLibrary.simpleMessage(
-      "Headlight assembly",
-    ),
     "localSeedModeBody": MessageLookupByLibrary.simpleMessage(
       "This build is using local fallback marketplace and auth data because Supabase is not configured on this device.",
     ),
@@ -1177,13 +1171,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Mark unread",
     ),
     "notificationsSavedMessageBody": MessageLookupByLibrary.simpleMessage(
-      "A verified seller replied to the Peugeot 308 headlight listing.",
+      "A verified seller replied to one of your saved listings.",
     ),
     "notificationsSavedMessageTitle": MessageLookupByLibrary.simpleMessage(
       "New message on your saved listing",
     ),
     "notificationsSavedPriceBody": MessageLookupByLibrary.simpleMessage(
-      "Brake pad set now shows a lower asking price.",
+      "One of your saved listings now shows a lower asking price.",
     ),
     "notificationsSavedPriceTitle": MessageLookupByLibrary.simpleMessage(
       "Saved listing price updated",

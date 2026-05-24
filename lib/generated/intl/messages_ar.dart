@@ -1023,12 +1023,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "شبه جديد",
     ),
     "localListingConditionNew": MessageLookupByLibrary.simpleMessage("جديد"),
-    "localListingTitleBrakePadSet": MessageLookupByLibrary.simpleMessage(
-      "طقم فحمات فرامل",
-    ),
-    "localListingTitleHeadlightAssembly": MessageLookupByLibrary.simpleMessage(
-      "مجموعة مصباح أمامي",
-    ),
     "localSeedModeBody": MessageLookupByLibrary.simpleMessage(
       "هذا البناء يستخدم بيانات محلية بديلة للحسابات والسوق لأن إعدادات Supabase غير مفعلة على هذا الجهاز.",
     ),
@@ -1167,13 +1161,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "تعليم كغير مقروء",
     ),
     "notificationsSavedMessageBody": MessageLookupByLibrary.simpleMessage(
-      "ردّ بائع موثّق على إعلان مصباح Peugeot 308 المحفوظ.",
+      "ردّ بائع موثّق على أحد إعلاناتك المحفوظة.",
     ),
     "notificationsSavedMessageTitle": MessageLookupByLibrary.simpleMessage(
       "رسالة جديدة على إعلانك المحفوظ",
     ),
     "notificationsSavedPriceBody": MessageLookupByLibrary.simpleMessage(
-      "أصبح عرض طقم الفرامل بسعر أقل الآن.",
+      "أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.",
     ),
     "notificationsSavedPriceTitle": MessageLookupByLibrary.simpleMessage(
       "تم تحديث سعر إعلان محفوظ",

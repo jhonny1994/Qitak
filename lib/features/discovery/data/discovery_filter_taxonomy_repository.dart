@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
@@ -23,89 +20,6 @@ final discoveryFilterTaxonomyRepositoryProvider =
       }
       return SupabaseDiscoveryFilterTaxonomyRepository(client);
     });
-
-class LocalDiscoveryFilterTaxonomyRepository
-    extends DiscoveryFilterTaxonomyRepository {
-  const LocalDiscoveryFilterTaxonomyRepository();
-
-  @override
-  Future<DiscoveryFilterTaxonomy> load() async {
-    final categoriesRaw = await rootBundle.loadString(
-      'docs/part_categories.json',
-    );
-    final wilayasRaw = await rootBundle.loadString('docs/wilayas.json');
-    final carsRaw = await rootBundle.loadString('docs/cars.json');
-
-    final categoriesJson = jsonDecode(categoriesRaw) as List<dynamic>;
-    final wilayasJson = jsonDecode(wilayasRaw) as List<dynamic>;
-    final carsJson = jsonDecode(carsRaw) as List<dynamic>;
-
-    return DiscoveryFilterTaxonomy(
-      categories: categoriesJson
-          .whereType<Map<String, dynamic>>()
-          .map(_mapLocalCategory)
-          .toList(growable: false),
-      wilayas: wilayasJson
-          .whereType<Map<String, dynamic>>()
-          .map(_mapLocalWilaya)
-          .toList(growable: false),
-      makes: _mapLocalMakes(carsJson.whereType<Map<String, dynamic>>()),
-    );
-  }
-
-  DiscoveryCategoryOption _mapLocalCategory(Map<String, dynamic> row) {
-    final policy =
-        (row['policy'] as Map?)?.cast<String, dynamic>() ??
-        const <String, dynamic>{};
-    return DiscoveryCategoryOption(
-      id: row['id'] as String? ?? '',
-      slug: row['slug'] as String? ?? '',
-      riskLevel: row['risk_level'] as String? ?? 'green',
-      requiresReview: policy['requires_review'] as bool? ?? false,
-      minPhotos: (policy['min_photos'] as num?)?.toInt() ?? 2,
-    );
-  }
-
-  WilayaOption _mapLocalWilaya(Map<String, dynamic> row) {
-    final communes = (row['communes'] as List<dynamic>? ?? const <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map(
-          (commune) => CommuneOption(
-            id: commune['id'].toString(),
-            name: commune['name'] as String? ?? '',
-            arabicName: commune['arabic_name'] as String? ?? '',
-          ),
-        )
-        .toList(growable: false);
-
-    return WilayaOption(
-      id: row['id'].toString(),
-      name: row['name'] as String? ?? '',
-      arabicName: row['arabic_name'] as String? ?? '',
-      communes: communes,
-    );
-  }
-
-  List<CarMakeOption> _mapLocalMakes(Iterable<Map<String, dynamic>> rows) {
-    final makeMap = <String, Map<String, Set<int>>>{};
-
-    for (final row in rows) {
-      final make = (row['Make'] as String? ?? '').trim();
-      final baseModel = (row['baseModel'] as String? ?? '').trim();
-      final year = (row['Year'] as num?)?.toInt();
-      if (make.isEmpty || baseModel.isEmpty || year == null) {
-        continue;
-      }
-
-      makeMap
-          .putIfAbsent(make, () => <String, Set<int>>{})
-          .putIfAbsent(baseModel, () => <int>{})
-          .add(year);
-    }
-
-    return _buildMakeOptions(makeMap);
-  }
-}
 
 class SupabaseDiscoveryFilterTaxonomyRepository
     extends DiscoveryFilterTaxonomyRepository {

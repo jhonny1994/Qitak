@@ -211,8 +211,6 @@
       "date": {}
     }
   },
-  "localListingTitleHeadlightAssembly": "Bloc optique avant",
-  "localListingTitleBrakePadSet": "Jeu de plaquettes de frein",
   "localListingConditionLikeNew": "Comme neuf",
   "localListingConditionNew": "Neuf",
   "localSellerLabelVerified": "Vendeur vérifié",
@@ -475,9 +473,9 @@
   "notificationsAllCaughtUp": "Toutes les notifications sont déjà à jour.",
   "notificationsErrorBody": "Impossible de charger les notifications pour le moment.",
   "notificationsSavedMessageTitle": "Nouveau message sur votre annonce enregistree",
-  "notificationsSavedMessageBody": "Un vendeur vérifié a répondu à l'annonce de phare Peugeot 308.",
+  "notificationsSavedMessageBody": "Un vendeur vérifié a répondu à l'une de vos annonces enregistrées.",
   "notificationsSavedPriceTitle": "Prix mis à jour sur une annonce enregistree",
-  "notificationsSavedPriceBody": "Le jeu de plaquettes de frein affiche maintenant un prix plus bas.",
+  "notificationsSavedPriceBody": "L'une de vos annonces enregistrées affiche maintenant un prix plus bas.",
   "notificationsCategoryMessage": "Message",
   "notificationsCategoryListing": "Annonce",
   "notificationsCategoryTransaction": "Transaction",

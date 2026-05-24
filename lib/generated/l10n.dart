@@ -1839,26 +1839,6 @@ class S {
     );
   }
 
-  /// `مجموعة مصباح أمامي`
-  String get localListingTitleHeadlightAssembly {
-    return Intl.message(
-      'مجموعة مصباح أمامي',
-      name: 'localListingTitleHeadlightAssembly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `طقم فحمات فرامل`
-  String get localListingTitleBrakePadSet {
-    return Intl.message(
-      'طقم فحمات فرامل',
-      name: 'localListingTitleBrakePadSet',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `شبه جديد`
   String get localListingConditionLikeNew {
     return Intl.message(
@@ -4379,10 +4359,10 @@ class S {
     );
   }
 
-  /// `ردّ بائع موثّق على إعلان مصباح Peugeot 308 المحفوظ.`
+  /// `ردّ بائع موثّق على أحد إعلاناتك المحفوظة.`
   String get notificationsSavedMessageBody {
     return Intl.message(
-      'ردّ بائع موثّق على إعلان مصباح Peugeot 308 المحفوظ.',
+      'ردّ بائع موثّق على أحد إعلاناتك المحفوظة.',
       name: 'notificationsSavedMessageBody',
       desc: '',
       args: [],
@@ -4399,10 +4379,10 @@ class S {
     );
   }
 
-  /// `أصبح عرض طقم الفرامل بسعر أقل الآن.`
+  /// `أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.`
   String get notificationsSavedPriceBody {
     return Intl.message(
-      'أصبح عرض طقم الفرامل بسعر أقل الآن.',
+      'أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.',
       name: 'notificationsSavedPriceBody',
       desc: '',
       args: [],

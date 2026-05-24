@@ -104,8 +104,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) =>
                             (value == null ||
-                                !RegExp(r'^[\w.%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
-                                    .hasMatch(value.trim()))
+                                !RegExp(
+                                  r'^[\w.%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$',
+                                ).hasMatch(value.trim()))
                             ? context.l10n.emailValidationError
                             : null,
                       ),

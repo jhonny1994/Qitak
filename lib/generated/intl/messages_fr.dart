@@ -1077,12 +1077,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Comme neuf",
     ),
     "localListingConditionNew": MessageLookupByLibrary.simpleMessage("Neuf"),
-    "localListingTitleBrakePadSet": MessageLookupByLibrary.simpleMessage(
-      "Jeu de plaquettes de frein",
-    ),
-    "localListingTitleHeadlightAssembly": MessageLookupByLibrary.simpleMessage(
-      "Bloc optique avant",
-    ),
     "localSeedModeBody": MessageLookupByLibrary.simpleMessage(
       "Cette version utilise des données locales de secours pour le marché et l\'authentification car Supabase n\'est pas configure sur cet appareil.",
     ),
@@ -1225,13 +1219,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Marquer non lu",
     ),
     "notificationsSavedMessageBody": MessageLookupByLibrary.simpleMessage(
-      "Un vendeur vérifié a répondu à l\'annonce de phare Peugeot 308.",
+      "Un vendeur vérifié a répondu à l\'une de vos annonces enregistrées.",
     ),
     "notificationsSavedMessageTitle": MessageLookupByLibrary.simpleMessage(
       "Nouveau message sur votre annonce enregistree",
     ),
     "notificationsSavedPriceBody": MessageLookupByLibrary.simpleMessage(
-      "Le jeu de plaquettes de frein affiche maintenant un prix plus bas.",
+      "L\'une de vos annonces enregistrées affiche maintenant un prix plus bas.",
     ),
     "notificationsSavedPriceTitle": MessageLookupByLibrary.simpleMessage(
       "Prix mis à jour sur une annonce enregistree",

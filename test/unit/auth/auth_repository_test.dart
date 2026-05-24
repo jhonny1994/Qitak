@@ -1,8 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:qitak_app/features/auth/data/auth_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../support/local_memory_auth_repository.dart';
 
 void main() {
   test(

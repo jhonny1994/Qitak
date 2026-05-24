@@ -4,6 +4,7 @@ import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
+import 'package:qitak_app/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -321,7 +322,7 @@ class SupabaseListingModerationRepository
       id: row['id'] as String,
       sellerUserId: seller?['user_id'] as String? ?? '',
       title: row['title'] as String? ?? '',
-      priceLabel: '${row['price'] ?? 0} DZD',
+      priceLabel: _priceWithDzd((row['price'] ?? 0) as Object),
       locationLabel: _locationLabel(
         communeName,
         wilayaName,
@@ -329,7 +330,7 @@ class SupabaseListingModerationRepository
         wilayaCode,
       ),
       fitmentLabel: _fitmentLabel(brand, model, year),
-      sellerLabel: 'Verified seller',
+      sellerLabel: _verifiedSellerLabel(),
       rating: 0,
       threadId: '',
       transactionId: '',
@@ -409,6 +410,22 @@ class SupabaseListingModerationRepository
         ? wilayaName!
         : (wilayaCode ?? '-');
     return '$commune | $wilaya';
+  }
+
+  String _priceWithDzd(Object amount) {
+    try {
+      return S.current.priceWithDzd(amount);
+    } on Object catch (_) {
+      return '$amount DZD';
+    }
+  }
+
+  String _verifiedSellerLabel() {
+    try {
+      return S.current.localSellerLabelVerified;
+    } on Object catch (_) {
+      return 'Verified seller';
+    }
   }
 }
 

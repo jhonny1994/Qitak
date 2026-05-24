@@ -42,7 +42,7 @@ bool get _supportsFirebaseRuntime {
 }
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  SentryWidgetsFlutterBinding.ensureInitialized();
 
   NotificationService notificationService = const NoopNotificationService();
   if (_supportsFirebaseRuntime) {

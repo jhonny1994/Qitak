@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
+import 'package:qitak_app/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalListingStore {
@@ -179,10 +180,10 @@ class LocalStoredListing {
       id: id,
       sellerUserId: sellerUserId,
       title: title,
-      priceLabel: '$price DZD',
+      priceLabel: _priceWithDzd(price),
       locationLabel: '$communeLabel | $wilayaLabel',
       fitmentLabel: '$brandCode $modelCode | $year',
-      sellerLabel: 'Verified seller',
+      sellerLabel: _verifiedSellerLabel(),
       rating: 0,
       threadId: '${id}_thread',
       transactionId: '${id}_transaction',
@@ -202,5 +203,21 @@ class LocalStoredListing {
       mediaUrls: mediaUrls,
       status: status,
     );
+  }
+
+  String _priceWithDzd(Object amount) {
+    try {
+      return S.current.priceWithDzd(amount);
+    } on Object catch (_) {
+      return '$amount DZD';
+    }
+  }
+
+  String _verifiedSellerLabel() {
+    try {
+      return S.current.localSellerLabelVerified;
+    } on Object catch (_) {
+      return 'Verified seller';
+    }
   }
 }

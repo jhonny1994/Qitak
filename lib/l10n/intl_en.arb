@@ -792,5 +792,19 @@
   "appLinksPromptTitle": "Open links in Qitak?",
   "appLinksPromptBody": "Allow Qitak to open product links directly, without asking each time.",
   "appLinksPromptAction": "Open Settings",
-  "appLinksPromptDismiss": "Not Now"
+  "appLinksPromptDismiss": "Not Now",
+  "appConfigurationRequiredTitle": "Configuration required",
+  "appConfigurationRequiredBody": "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
+  "priceWithDzd": "{amount} DZD",
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "disputeEvidenceCount": "{count} file(s)",
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

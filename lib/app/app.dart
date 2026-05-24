@@ -33,16 +33,13 @@ class QitakApp extends ConsumerWidget {
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
         themeMode: preferences.themeMode,
-        home: const Scaffold(
+        home: Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               child: QitakStateMessage(
-                title: 'Configuration required',
-                message:
-                    'Supabase runtime configuration is missing. Provide '
-                    'SUPABASE_URL and SUPABASE_ANON_KEY before launching '
-                    'the app.',
+                title: S.current.appConfigurationRequiredTitle,
+                message: S.current.appConfigurationRequiredBody,
               ),
             ),
           ),
@@ -61,27 +58,28 @@ class QitakApp extends ConsumerWidget {
         : S.delegate.supportedLocales.first.languageCode;
     final appLocale = Locale(localeCode);
 
-    return _NotificationRuntimeBindings(
-      router: router,
-      child: MaterialApp.router(
-        title: kAppBrandName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(locale: appLocale),
-        darkTheme: AppTheme.dark(locale: appLocale),
-        themeMode: preferences.themeMode,
-        routerConfig: router,
-        builder: (context, child) => OfflineBanner(
+    return MaterialApp.router(
+      title: kAppBrandName,
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(locale: appLocale),
+      darkTheme: AppTheme.dark(locale: appLocale),
+      themeMode: preferences.themeMode,
+      routerConfig: router,
+      builder: (context, child) => _NotificationRuntimeBindings(
+        router: router,
+        dialogContextProvider: () => appRootNavigatorKey.currentContext,
+        child: OfflineBanner(
           child: child ?? const SizedBox.shrink(),
         ),
-        locale: appLocale,
-        supportedLocales: S.delegate.supportedLocales,
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
       ),
+      locale: appLocale,
+      supportedLocales: S.delegate.supportedLocales,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }
@@ -89,10 +87,12 @@ class QitakApp extends ConsumerWidget {
 class _NotificationRuntimeBindings extends ConsumerStatefulWidget {
   const _NotificationRuntimeBindings({
     required this.router,
+    required this.dialogContextProvider,
     required this.child,
   });
 
   final GoRouter router;
+  final BuildContext? Function() dialogContextProvider;
   final Widget child;
 
   @override
@@ -151,16 +151,33 @@ class _NotificationRuntimeBindingsState
       ..read(foregroundNotificationSubscriptionProvider)
       ..read(notificationTokenRefreshSubscriptionProvider)
       ..invalidate(unreadCountsProvider);
-    unawaited(notificationService.handleInitialMessage());
+    final preferences = ref.read(appPreferencesProvider);
+    if (preferences.isLoaded && preferences.hasSeenOnboarding) {
+      unawaited(notificationService.handleInitialMessage());
+    }
   }
 
   Future<void> _maybeShowAppLinksPrompt() async {
+    final preferences = ref.read(appPreferencesProvider);
+
+    // Chain of command: onboarding owns the first-run user experience.
+    // Global runtime prompts may initialize at boot, but they must not
+    // display UI until onboarding has been completed.
+    if (!preferences.isLoaded || !preferences.hasSeenOnboarding) {
+      return;
+    }
+
     final shouldPrompt = await AppLinksPromptService.shouldPrompt();
     if (!shouldPrompt || !mounted) return;
+
+    final dialogContext = widget.dialogContextProvider();
+    if (dialogContext == null || !dialogContext.mounted) return;
+
     await AppLinksPromptService.markPrompted();
-    if (!mounted) return;
+    if (!mounted || !dialogContext.mounted) return;
+
     await showDialog<void>(
-      context: context,
+      context: dialogContext,
       builder: (ctx) => AlertDialog(
         title: Text(ctx.l10n.appLinksPromptTitle),
         content: Text(ctx.l10n.appLinksPromptBody),

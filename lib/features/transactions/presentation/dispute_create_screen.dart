@@ -117,7 +117,7 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
                     label: context.l10n.disputeEvidenceLabel,
                     value: _evidence.isEmpty
                         ? context.l10n.disputeEvidenceValue
-                        : '${_evidence.length} file(s)',
+                        : context.l10n.disputeEvidenceCount(_evidence.length),
                     status: context.l10n.disputeEvidenceStatus,
                   ),
                   const SizedBox(height: 12),

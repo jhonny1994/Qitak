@@ -792,5 +792,19 @@
   "appLinksPromptTitle": "فتح الروابط في قطعك؟",
   "appLinksPromptBody": "اسمح لقطعك بفتح روابط المنتجات مباشرةً دون الحاجة للاختيار في كل مرة.",
   "appLinksPromptAction": "فتح الإعدادات",
-  "appLinksPromptDismiss": "ليس الآن"
+  "appLinksPromptDismiss": "ليس الآن",
+  "appConfigurationRequiredTitle": "الإعداد مطلوب",
+  "appConfigurationRequiredBody": "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
+  "priceWithDzd": "{amount} د.ج",
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "disputeEvidenceCount": "{count} ملف",
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

@@ -8,6 +8,7 @@ void main() {
     final app = await buildQitakApp(
       seed: const <String, Object>{
         'qitak.local.session.email': 'buyer@qitak.test',
+        'qitak.ui.onboarding_seen': true,
       },
     );
 

@@ -11,7 +11,7 @@
 .idea/
 
 # VS Code — launch.json holds dart-define secrets; never commit
-.vscode/launch.json
+.vscode/**
 
 # Flutter DevTools local settings — IDE-only, not project config
 devtools_options.yaml

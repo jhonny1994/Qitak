@@ -58,7 +58,10 @@ abstract class PostAuthRedirectIntent with _$PostAuthRedirectIntent {
   }) {
     if (redirectPath == null || redirectPath.isEmpty) return null;
     // Route targets must be absolute paths; reject protocol-relative URLs (e.g. //evil.com).
-    if (redirectType == IntentTargetType.route && !redirectPath.startsWith('/')) return null;
+    if (redirectType == IntentTargetType.route &&
+        !redirectPath.startsWith('/')) {
+      return null;
+    }
 
     Map<String, String>? arguments;
     if (encodedArguments != null && encodedArguments.isNotEmpty) {

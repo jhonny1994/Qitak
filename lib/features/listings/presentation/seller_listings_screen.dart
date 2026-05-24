@@ -94,7 +94,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                         padding: const EdgeInsets.only(bottom: 16),
                         child: QitakListingSurface(
                           title: item.title,
-                          price: '${item.price} DZD',
+                          price: context.l10n.priceWithDzd(item.price),
                           subtitle: [
                             item.fitmentLabel,
                             item.locationLabel,

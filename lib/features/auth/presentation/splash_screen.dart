@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
@@ -22,46 +22,35 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  static const _service = AuthEntryService();
+
+  ProviderSubscription<AsyncValue<AuthSessionState>>? _resolutionSubscription;
+  ProviderSubscription<AppPreferencesState>? _preferencesSubscription;
+  var _navigated = false;
+
   @override
   void initState() {
     super.initState();
+
+    _resolutionSubscription = ref.listenManual<AsyncValue<AuthSessionState>>(
+      authResolutionProvider,
+      (_, _) => unawaited(_attemptNavigate()),
+    );
+    _preferencesSubscription = ref.listenManual<AppPreferencesState>(
+      appPreferencesProvider,
+      (_, _) => unawaited(_attemptNavigate()),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       unawaited(ref.read(authResolutionProvider.notifier).resolve());
+      unawaited(_attemptNavigate());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final resolution = ref.watch(authResolutionProvider);
-    final preferences = ref.watch(appPreferencesProvider);
-    const service = AuthEntryService();
-
-    if (preferences.isLoaded && resolution.hasValue) {
-      final session = resolution.value!;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (!mounted) {
-          return;
-        }
-        final router = GoRouter.of(context);
-        final route = await _resolveRoute(session, preferences, service);
-        if (mounted) {
-          router.go(route);
-        }
-      });
-    }
-
-    ref.listen<AsyncValue<AuthSessionState>>(authResolutionProvider, (_, next) {
-      next.whenData((session) async {
-        if (!preferences.isLoaded) {
-          return;
-        }
-        final router = GoRouter.of(context);
-        final route = await _resolveRoute(session, preferences, service);
-        if (context.mounted) {
-          router.go(route);
-        }
-      });
-    });
 
     return resolution.when(
       loading: () => Center(
@@ -84,6 +73,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       error: (error, stackTrace) => const AuthResolutionErrorView(),
       data: (_) => Center(child: Text(context.l10n.loading)),
     );
+  }
+
+  Future<void> _attemptNavigate() async {
+    if (!mounted || _navigated) return;
+
+    final preferences = ref.read(appPreferencesProvider);
+    final resolution = ref.read(authResolutionProvider);
+    if (!preferences.isLoaded || resolution.isLoading || !resolution.hasValue) {
+      return;
+    }
+
+    final route = await _resolveRoute(
+      resolution.value!,
+      preferences,
+      _service,
+    );
+    if (!mounted || _navigated) return;
+
+    _navigated = true;
+    GoRouter.of(context).go(route);
   }
 
   Future<String> _resolveRoute(
@@ -111,10 +120,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         isSellerApproved: approved,
       );
     }
-    return preferences.guestBrowsingEnabled
+
+    final route = preferences.guestBrowsingEnabled
         ? '/home'
         : preferences.hasSeenOnboarding
         ? '/guest/account'
         : '/intro/1';
+    if (kDebugMode) {
+      debugPrint(
+        '[QitakDebug][splash] unauthDecision '
+        'guest=${preferences.guestBrowsingEnabled} '
+        'seen=${preferences.hasSeenOnboarding} '
+        'route=$route',
+      );
+    }
+    return route;
+  }
+
+  @override
+  void dispose() {
+    _resolutionSubscription?.close();
+    _preferencesSubscription?.close();
+    super.dispose();
   }
 }

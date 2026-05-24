@@ -20,15 +20,19 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(count) => "${count}d";
+  static String m0(count) => "${count} file(s)";
 
-  static String m1(count) => "${count}h";
+  static String m1(count) => "${count}d";
 
-  static String m2(date) => "Submitted ${date}";
+  static String m2(count) => "${count}h";
 
-  static String m3(date) => "Updated ${date}";
+  static String m3(amount) => "${amount} DZD";
 
-  static String m4(title, link) => "${title} — ${link}";
+  static String m4(date) => "Submitted ${date}";
+
+  static String m5(date) => "Updated ${date}";
+
+  static String m6(title, link) => "${title} — ${link}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -475,6 +479,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminVerificationsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "Seller verification queue",
     ),
+    "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
+      "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
+    ),
+    "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
+      "Configuration required",
+    ),
     "appLinksPromptAction": MessageLookupByLibrary.simpleMessage(
       "Open Settings",
     ),
@@ -720,6 +730,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disputeDescriptionLabel": MessageLookupByLibrary.simpleMessage(
       "Description",
     ),
+    "disputeEvidenceCount": m0,
     "disputeEvidenceLabel": MessageLookupByLibrary.simpleMessage("Evidence"),
     "disputeEvidenceStatus": MessageLookupByLibrary.simpleMessage("Prepare"),
     "disputeEvidenceValue": MessageLookupByLibrary.simpleMessage(
@@ -1189,8 +1200,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "1 hour ago",
     ),
     "notificationsTime2mAgo": MessageLookupByLibrary.simpleMessage("2 min ago"),
-    "notificationsTimeDaysShort": m0,
-    "notificationsTimeHoursShort": m1,
+    "notificationsTimeDaysShort": m1,
+    "notificationsTimeHoursShort": m2,
     "notificationsTitle": MessageLookupByLibrary.simpleMessage("Notifications"),
     "offlineBannerLabel": MessageLookupByLibrary.simpleMessage(
       "You\'re offline",
@@ -1272,6 +1283,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "phoneValidationError": MessageLookupByLibrary.simpleMessage(
       "Enter a valid Algerian phone number.",
     ),
+    "priceWithDzd": m3,
     "profileCreateListing": MessageLookupByLibrary.simpleMessage(
       "Create a listing",
     ),
@@ -1509,8 +1521,8 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerListingResumeAction": MessageLookupByLibrary.simpleMessage("Resume"),
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("Submit"),
-    "sellerListingSubmittedLabel": m2,
-    "sellerListingUpdatedLabel": m3,
+    "sellerListingSubmittedLabel": m4,
+    "sellerListingUpdatedLabel": m5,
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
       "You do not have any seller listings yet.",
     ),
@@ -1715,7 +1727,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerTypeIndividual": MessageLookupByLibrary.simpleMessage("Individual"),
     "sellerTypeLabel": MessageLookupByLibrary.simpleMessage("Seller type"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send reset link"),
-    "shareListingText": m4,
+    "shareListingText": m6,
     "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
     "signIn": MessageLookupByLibrary.simpleMessage("Sign in"),
     "signInPrompt": MessageLookupByLibrary.simpleMessage(

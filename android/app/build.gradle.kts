@@ -84,13 +84,24 @@ android {
 
     buildTypes {
         release {
-            signingConfig = if (hasReleaseSigningCredentials) {
-                signingConfigs.getByName("release")
-            } else {
+            val isCi = System.getenv("CI").equals("true", ignoreCase = true)
+            val requestedTasks = gradle.startParameter.taskNames
+                .map { it.lowercase() }
+            val isReleaseTaskRequested = requestedTasks.any { task ->
+                // Restrict blocking to explicit release variants only.
+                task.contains("release")
+            }
+
+            if (hasReleaseSigningCredentials) {
+                signingConfig = signingConfigs.getByName("release")
+            } else if (isCi && isReleaseTaskRequested) {
                 throw GradleException(
-                    "Release signing credentials are missing. " +
-                    "Set ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD, " +
-                    "ANDROID_KEYSTORE_PATH, and ANDROID_STORE_PASSWORD."
+                    "Release signing credentials are required in CI for release/bundle/publish tasks. " +
+                    "Set ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD, ANDROID_KEYSTORE_PATH, and ANDROID_STORE_PASSWORD."
+                )
+            } else {
+                logger.lifecycle(
+                    "Release signing credentials not found. Local/non-CI build will continue without release signing."
                 )
             }
             isMinifyEnabled = true

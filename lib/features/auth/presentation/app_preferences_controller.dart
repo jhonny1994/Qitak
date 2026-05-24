@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
@@ -72,6 +73,11 @@ class AppPreferencesNotifier extends Notifier<AppPreferencesState> {
   }
 
   Future<void> setGuestBrowsingEnabled({required bool enabled}) async {
+    if (kDebugMode) {
+      debugPrint(
+        '[QitakDebug][prefs] setGuestBrowsingEnabled called enabled=$enabled',
+      );
+    }
     final prefs = ref.read(sharedPreferencesProvider);
     await prefs.setBool(_guestBrowsingEnabledKey, enabled);
     state = state.copyWith(

@@ -20,15 +20,19 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
-  static String m0(count) => "${count} ي";
+  static String m0(count) => "${count} ملف";
 
-  static String m1(count) => "${count} س";
+  static String m1(count) => "${count} ي";
 
-  static String m2(date) => "تم الإرسال ${date}";
+  static String m2(count) => "${count} س";
 
-  static String m3(date) => "آخر تحديث ${date}";
+  static String m3(amount) => "${amount} د.ج";
 
-  static String m4(title, link) => "${title} — ${link}";
+  static String m4(date) => "تم الإرسال ${date}";
+
+  static String m5(date) => "آخر تحديث ${date}";
+
+  static String m6(title, link) => "${title} — ${link}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -469,6 +473,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminVerificationsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "طابور توثيق البائعين",
     ),
+    "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
+      "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
+    ),
+    "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
+      "الإعداد مطلوب",
+    ),
     "appLinksPromptAction": MessageLookupByLibrary.simpleMessage(
       "فتح الإعدادات",
     ),
@@ -714,6 +724,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "اشرح المشكلة بوضوح. الحد الأدنى 50 حرفاً.",
     ),
     "disputeDescriptionLabel": MessageLookupByLibrary.simpleMessage("الوصف"),
+    "disputeEvidenceCount": m0,
     "disputeEvidenceLabel": MessageLookupByLibrary.simpleMessage("الأدلة"),
     "disputeEvidenceStatus": MessageLookupByLibrary.simpleMessage("تحضير"),
     "disputeEvidenceValue": MessageLookupByLibrary.simpleMessage(
@@ -1179,8 +1190,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "notificationsTime2mAgo": MessageLookupByLibrary.simpleMessage(
       "منذ دقيقتين",
     ),
-    "notificationsTimeDaysShort": m0,
-    "notificationsTimeHoursShort": m1,
+    "notificationsTimeDaysShort": m1,
+    "notificationsTimeHoursShort": m2,
     "notificationsTitle": MessageLookupByLibrary.simpleMessage("الإشعارات"),
     "offlineBannerLabel": MessageLookupByLibrary.simpleMessage("أنت غير متصل"),
     "onboardingActionMessages": MessageLookupByLibrary.simpleMessage("الرسائل"),
@@ -1250,6 +1261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "phoneValidationError": MessageLookupByLibrary.simpleMessage(
       "أدخل رقم هاتف جزائري صالحاً.",
     ),
+    "priceWithDzd": m3,
     "profileCreateListing": MessageLookupByLibrary.simpleMessage("إنشاء إعلان"),
     "profileEnableSeller": MessageLookupByLibrary.simpleMessage(
       "تفعيل مساحة البائع",
@@ -1479,8 +1491,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "استئناف",
     ),
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("إرسال"),
-    "sellerListingSubmittedLabel": m2,
-    "sellerListingUpdatedLabel": m3,
+    "sellerListingSubmittedLabel": m4,
+    "sellerListingUpdatedLabel": m5,
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
       "لا توجد لديك إعلانات كبائع بعد.",
     ),
@@ -1684,7 +1696,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sendResetLink": MessageLookupByLibrary.simpleMessage(
       "إرسال رابط إعادة التعيين",
     ),
-    "shareListingText": m4,
+    "shareListingText": m6,
     "showPassword": MessageLookupByLibrary.simpleMessage("إظهار كلمة المرور"),
     "signIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "signInPrompt": MessageLookupByLibrary.simpleMessage(

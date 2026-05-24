@@ -792,5 +792,19 @@
   "appLinksPromptTitle": "Ouvrir les liens dans Qitak ?",
   "appLinksPromptBody": "Autorisez Qitak à ouvrir les liens produits directement, sans demander à chaque fois.",
   "appLinksPromptAction": "Ouvrir les paramètres",
-  "appLinksPromptDismiss": "Pas maintenant"
+  "appLinksPromptDismiss": "Pas maintenant",
+  "appConfigurationRequiredTitle": "Configuration requise",
+  "appConfigurationRequiredBody": "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_ANON_KEY avant de lancer l'application.",
+  "priceWithDzd": "{amount} DZD",
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "disputeEvidenceCount": "{count} fichier(s)",
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

@@ -547,25 +547,32 @@ class _SceneMetric extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(isTight ? 10 : 14),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    fontSize: isTight ? 24 : null,
-                    height: 1,
+                Flexible(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontSize: isTight ? 22 : null,
+                      height: 1,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (!isTight) const Spacer() else const SizedBox(height: 6),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    height: 1.2,
+                SizedBox(height: isTight ? 4 : 8),
+                Flexible(
+                  child: Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.15,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: isTight ? 1 : 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

@@ -7483,6 +7483,46 @@ class S {
       args: [],
     );
   }
+
+  /// `الإعداد مطلوب`
+  String get appConfigurationRequiredTitle {
+    return Intl.message(
+      'الإعداد مطلوب',
+      name: 'appConfigurationRequiredTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.`
+  String get appConfigurationRequiredBody {
+    return Intl.message(
+      'إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.',
+      name: 'appConfigurationRequiredBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{amount} د.ج`
+  String priceWithDzd(Object amount) {
+    return Intl.message(
+      '$amount د.ج',
+      name: 'priceWithDzd',
+      desc: '',
+      args: [amount],
+    );
+  }
+
+  /// `{count} ملف`
+  String disputeEvidenceCount(Object count) {
+    return Intl.message(
+      '$count ملف',
+      name: 'disputeEvidenceCount',
+      desc: '',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

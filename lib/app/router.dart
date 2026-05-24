@@ -60,20 +60,36 @@ import 'package:qitak_app/shared/widgets/app_entry_shell.dart';
 import 'package:qitak_app/shared/widgets/qitak_navigation_shell.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+final appRootNavigatorKey = GlobalKey<NavigatorState>();
+
 final goRouterProvider = Provider<GoRouter>((ref) {
   final refreshListenable = GoRouterRefreshNotifier(ref);
 
   return GoRouter(
+    navigatorKey: appRootNavigatorKey,
     initialLocation: '/',
     refreshListenable: refreshListenable,
     observers: [SentryNavigatorObserver()],
+    redirect: (context, state) {
+      final preferences = ref.read(appPreferencesProvider);
+      final path = state.uri.path;
+      final isSplash = path == '/';
+      final isIntro = path.startsWith('/intro');
+      if (preferences.isLoaded &&
+          !preferences.hasSeenOnboarding &&
+          !isSplash &&
+          !isIntro) {
+        return '/intro/1';
+      }
+      return null;
+    },
     errorBuilder: (context, state) => AppEntryShell(
       child: UnknownRouteScreen(
         requestedPath: state.uri.toString(),
       ),
     ),
     routes: [
-      // ── Splash (no shell) ────────────────────────────────────
+      // Splash (no shell)
       GoRoute(
         path: '/',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -93,7 +109,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Auth routes (no bottom nav) ─────────────────────────
+      // Auth routes (no bottom nav)
       GoRoute(
         path: '/auth/sign-in',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -250,7 +266,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Primary navigation shell ────────────────────────────
+      // Section
       //
       // All main screens live inside a StatefulShellRoute that
       // provides persistent bottom navigation. The branches
@@ -270,7 +286,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state, navigationShell) =>
             QitakNavigationShell(navigationShell: navigationShell),
         branches: [
-          // ── Branch 0: Home / Discovery ──────────────────────
+          // Marketplace routes
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -346,7 +362,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // ── Branch 1: Search / Seller listings / Admin queues ─
+          // Seller routes
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -480,7 +496,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // ── Branch 2: Saved listings / Admin reports ─────────
+          // Admin routes
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -511,7 +527,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // ── Branch 3: Messages / Super admin team ────────────
+          // Section
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -580,7 +596,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
 
-          // ── Branch 4: Account / Profile ─────────────────────
+          // Section
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -616,7 +632,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ── Detail routes (pushed on top of shell) ──────────────
+      // Section
       GoRoute(
         path: '/listing/:id',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -629,7 +645,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Notifications ───────────────────────────────────────
+      // Section
       GoRoute(
         path: '/notifications',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -651,7 +667,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Seller routes ───────────────────────────────────────
+      // Seller routes
       GoRoute(
         path: '/seller/onboarding',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -736,7 +752,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Transaction routes ──────────────────────────────────
+      // Section
       GoRoute(
         path: '/deals',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -822,7 +838,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Admin routes ────────────────────────────────────────
+      // Admin routes
       GoRoute(
         path: '/admin/verifications/:id',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -875,7 +891,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Release routes ──────────────────────────────────────
+      // Section
       GoRoute(
         path: '/release/readiness',
         pageBuilder: (context, state) => _buildTransitionPage(
@@ -921,7 +937,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      // ── Rating ──────────────────────────────────────────────
+      // Section
       GoRoute(
         path: '/ratings/transaction/:id',
         pageBuilder: (context, state) => _buildTransitionPage(

@@ -151,10 +151,9 @@ class _NotificationRuntimeBindingsState
       ..read(foregroundNotificationSubscriptionProvider)
       ..read(notificationTokenRefreshSubscriptionProvider)
       ..invalidate(unreadCountsProvider);
-    final preferences = ref.read(appPreferencesProvider);
-    if (preferences.isLoaded && preferences.hasSeenOnboarding) {
-      unawaited(notificationService.handleInitialMessage());
-    }
+    // Terminated-state notification routing is handled by the splash screen
+    // reading initialNotificationRouteProvider (set in main.dart before
+    // runApp). No call to handleInitialMessage() is needed here.
   }
 
   Future<void> _maybeShowAppLinksPrompt() async {

@@ -51,7 +51,7 @@ void main() {
     expect(find.text('Model'), findsOneWidget);
     expect(find.text('Year'), findsOneWidget);
     expect(find.text('Quantity'), findsOneWidget);
-    expect(find.text('Peugeot'), findsOneWidget);
+    expect(find.text('Peugeot'), findsWidgets);
     expect(find.text('308'), findsOneWidget);
     expect(find.text('2018'), findsWidgets);
     expect(find.byType(RefreshIndicator), findsOneWidget);
@@ -130,15 +130,13 @@ void main() {
                 id: 'listing-media',
                 sellerUserId: 'seller-001',
                 title: 'Media listing',
-                priceLabel: '18,500 DZD',
-                locationLabel: 'Adrar | Adrar',
-                fitmentLabel: 'Audi TT Coupe | 2018',
-                sellerLabel: 'Verified seller',
+                priceAmount: 18500,
+                sellerLabelCode: 'seller_label_verified',
                 rating: 4.8,
                 threadId: 'l1',
                 transactionId: 't1',
-                categoryLabel: 'Lighting',
-                conditionLabel: 'Like new',
+                categoryCode: 'lighting',
+                conditionCode: 'like_new',
                 mediaUrls: [
                   testListingMediaDataUri,
                   'https://example.com/second.png',

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
-import 'package:qitak_app/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -103,7 +103,7 @@ class LocalListingModerationRepository implements ListingModerationRepository {
           (item) => ListingModerationQueueItem(
             listingId: item.id,
             title: item.title,
-            categoryLabel: item.categoryId,
+            categoryCode: item.categoryId,
             sellerName: item.sellerName,
             submittedAt: item.createdAt,
             riskLevel: 'yellow',
@@ -219,7 +219,7 @@ class SupabaseListingModerationRepository
           return ListingModerationQueueItem(
             listingId: row['id'] as String,
             title: row['title'] as String? ?? '',
-            categoryLabel: category?.slug ?? '',
+            categoryCode: category?.slug ?? '',
             sellerName: row['seller_display_name'] as String? ?? '',
             submittedAt:
                 DateTime.tryParse(
@@ -248,7 +248,7 @@ class SupabaseListingModerationRepository
         },
       );
     } on PostgrestException catch (error) {
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
   }
 
@@ -256,8 +256,6 @@ class SupabaseListingModerationRepository
     final results = await Future.wait([
       _client.from('part_categories').select('id, slug'),
       _client.from('part_categories').select('id, slug, risk_level'),
-      _client.from('wilayas').select('id, name'),
-      _client.from('communes').select('id, name'),
     ]);
 
     final categorySlugs = <String, String>{};
@@ -274,23 +272,9 @@ class SupabaseListingModerationRepository
       );
     }
 
-    final wilayaNames = <String, String>{};
-    for (final row
-        in (results[2] as List<dynamic>).whereType<Map<String, dynamic>>()) {
-      wilayaNames[row['id'].toString()] = row['name'] as String? ?? '';
-    }
-
-    final communeNames = <String, String>{};
-    for (final row
-        in (results[3] as List<dynamic>).whereType<Map<String, dynamic>>()) {
-      communeNames[row['id'].toString()] = row['name'] as String? ?? '';
-    }
-
     return _DiscoveryLookups(
       categorySlugs: categorySlugs,
       categoryMeta: categoryMeta,
-      wilayaNames: wilayaNames,
-      communeNames: communeNames,
     );
   }
 
@@ -308,12 +292,6 @@ class SupabaseListingModerationRepository
     final communeCode = row['commune_id']?.toString();
     final categoryId = row['category_id']?.toString();
     final seller = _extractSeller(row['sellers']);
-    final wilayaName = wilayaCode == null
-        ? null
-        : lookups.wilayaNames[wilayaCode];
-    final communeName = communeCode == null
-        ? null
-        : lookups.communeNames[communeCode];
     final categorySlug = categoryId == null
         ? null
         : lookups.categorySlugs[categoryId];
@@ -322,21 +300,14 @@ class SupabaseListingModerationRepository
       id: row['id'] as String,
       sellerUserId: seller?['user_id'] as String? ?? '',
       title: row['title'] as String? ?? '',
-      priceLabel: _priceWithDzd((row['price'] ?? 0) as Object),
-      locationLabel: _locationLabel(
-        communeName,
-        wilayaName,
-        communeCode,
-        wilayaCode,
-      ),
-      fitmentLabel: _fitmentLabel(brand, model, year),
-      sellerLabel: _verifiedSellerLabel(),
+      priceAmount: (row['price'] as num?)?.toInt() ?? 0,
+      sellerLabelCode: _verifiedSellerCode(),
       rating: 0,
       threadId: '',
       transactionId: '',
       categoryId: categoryId ?? '',
-      categoryLabel: categorySlug ?? categoryId ?? '',
-      conditionLabel: row['condition'] as String? ?? 'used',
+      categoryCode: categorySlug ?? categoryId ?? '',
+      conditionCode: row['condition'] as String? ?? 'used',
       description: row['description'] as String? ?? '',
       exchangeAllowed: (row['exchange_enabled'] as bool?) ?? false,
       wilayaCode: wilayaCode,
@@ -372,15 +343,6 @@ class SupabaseListingModerationRepository
     return null;
   }
 
-  String _fitmentLabel(String? brand, String? model, int? year) {
-    final parts = <String>[
-      if (brand != null && brand.isNotEmpty) brand,
-      if (model != null && model.isNotEmpty) model,
-      if (year != null) year.toString(),
-    ];
-    return parts.join(' | ');
-  }
-
   List<String> _extractMediaUrls(Object? raw) {
     if (raw is! List) {
       return const <String>[];
@@ -397,35 +359,8 @@ class SupabaseListingModerationRepository
         .toList(growable: false);
   }
 
-  String _locationLabel(
-    String? communeName,
-    String? wilayaName,
-    String? communeCode,
-    String? wilayaCode,
-  ) {
-    final commune = communeName?.trim().isNotEmpty == true
-        ? communeName!
-        : (communeCode ?? '-');
-    final wilaya = wilayaName?.trim().isNotEmpty == true
-        ? wilayaName!
-        : (wilayaCode ?? '-');
-    return '$commune | $wilaya';
-  }
-
-  String _priceWithDzd(Object amount) {
-    try {
-      return S.current.priceWithDzd(amount);
-    } on Object catch (_) {
-      return '$amount DZD';
-    }
-  }
-
-  String _verifiedSellerLabel() {
-    try {
-      return S.current.localSellerLabelVerified;
-    } on Object catch (_) {
-      return 'Verified seller';
-    }
+  String _verifiedSellerCode() {
+    return 'seller_label_verified';
   }
 }
 
@@ -433,14 +368,10 @@ class _DiscoveryLookups {
   const _DiscoveryLookups({
     required this.categorySlugs,
     required this.categoryMeta,
-    required this.wilayaNames,
-    required this.communeNames,
   });
 
   final Map<String, String> categorySlugs;
   final Map<String, _CategoryMeta> categoryMeta;
-  final Map<String, String> wilayaNames;
-  final Map<String, String> communeNames;
 }
 
 class _CategoryMeta {

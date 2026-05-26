@@ -93,12 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "accountSettingsUpdatePasswordTitle": MessageLookupByLibrary.simpleMessage(
       "تغيير كلمة المرور",
     ),
-    "accountUtilitiesEyebrow": MessageLookupByLibrary.simpleMessage("الأدوات"),
     "accountUtilitiesGuestSubtitle": MessageLookupByLibrary.simpleMessage(
       "قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.",
-    ),
-    "accountUtilitiesTitle": MessageLookupByLibrary.simpleMessage(
-      "التفضيلات والمساعدة",
     ),
     "adminAccess": MessageLookupByLibrary.simpleMessage("دخول الإدارة"),
     "adminAccessDenied": MessageLookupByLibrary.simpleMessage(
@@ -308,7 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تطبيق القرار",
     ),
     "adminReportDecisionDismiss": MessageLookupByLibrary.simpleMessage(
-      "حفظ بدون إجراء",
+      "إغلاق البلاغ بدون إجراء",
     ),
     "adminReportDecisionRemoveListing": MessageLookupByLibrary.simpleMessage(
       "إزالة الإعلان",
@@ -376,18 +372,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage(
       "خفض الصلاحية",
     ),
-    "adminTeamEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "واجهة الفريق جاهزة لتدفقات الدعوات وإدارة الصلاحيات بشكل مضبوط.",
-    ),
-    "adminTeamEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "لا توجد إجراءات فريق معلقة",
-    ),
     "adminTeamInviteAction": MessageLookupByLibrary.simpleMessage("دعوة مشرف"),
     "adminTeamInviteSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إرسال دعوة المشرف.",
-    ),
-    "adminTeamInviteUnavailable": MessageLookupByLibrary.simpleMessage(
-      "تدار دعوات الفريق عبر أدوات الإدارة الآمنة فقط.",
     ),
     "adminTeamLastActiveLabel": MessageLookupByLibrary.simpleMessage(
       "آخر نشاط",
@@ -489,7 +476,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "appLinksPromptTitle": MessageLookupByLibrary.simpleMessage(
       "فتح الروابط في قطعك؟",
     ),
-    "appTitle": MessageLookupByLibrary.simpleMessage("قطعك"),
     "appearanceModeDarkSubtitle": MessageLookupByLibrary.simpleMessage(
       "استخدم المظهر الداكن.",
     ),
@@ -506,9 +492,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "appearanceSettingsSaved": MessageLookupByLibrary.simpleMessage(
       "تم تحديث تفضيل المظهر.",
     ),
-    "appearanceSettingsStatus": MessageLookupByLibrary.simpleMessage(
-      "تفضيل الجهاز",
-    ),
     "appearanceSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
       "اختر طريقة عرض Qitak على هذا الجهاز.",
     ),
@@ -516,6 +499,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "authChoiceEyebrow": MessageLookupByLibrary.simpleMessage("البداية"),
     "authChoiceTitle": MessageLookupByLibrary.simpleMessage(
       "سجّل الدخول أو تصفح أولاً",
+    ),
+    "authErrorCheckEmailConfirmation": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد قبل تسجيل الدخول.",
+    ),
+    "authErrorConfirmEmailBeforeSignIn": MessageLookupByLibrary.simpleMessage(
+      "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول. تحقق من بريدك الوارد لرسالة التأكيد.",
+    ),
+    "authErrorEmailAlreadyExists": MessageLookupByLibrary.simpleMessage(
+      "يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.",
+    ),
+    "authErrorInvalidEmailOrPassword": MessageLookupByLibrary.simpleMessage(
+      "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    ),
+    "authErrorPasswordRequirements": MessageLookupByLibrary.simpleMessage(
+      "كلمة المرور لا تستوفي متطلبات الأمان.",
+    ),
+    "authErrorProfileSetupBlockedPolicy": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الحساب، لكن إعداد الملف الشخصي محجوب بسبب سياسة في الخلفية.",
+    ),
+    "authErrorProfileSetupBlockedRls": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء الحساب، لكن إعداد الملف الشخصي تم حظره. حاول تسجيل الدخول مرة أخرى بعد تحديث الخلفية.",
+    ),
+    "authErrorSessionNotFound": MessageLookupByLibrary.simpleMessage(
+      "لم يتم العثور على الجلسة.",
+    ),
+    "authErrorUnableSignIn": MessageLookupByLibrary.simpleMessage(
+      "تعذر تسجيل الدخول. حاول مرة أخرى.",
     ),
     "authGateBody": MessageLookupByLibrary.simpleMessage(
       "أنشئ حساباً أو سجّل الدخول لمتابعة هذا الإجراء.",
@@ -647,28 +657,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "discoveryEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "لا توجد إعلانات بعد",
     ),
-    "discoveryEnvironmentLabel": MessageLookupByLibrary.simpleMessage("البيئة"),
-    "discoveryEnvironmentLocal": MessageLookupByLibrary.simpleMessage(
-      "خلاصة تطوير محلية",
-    ),
-    "discoveryEnvironmentSeeded": MessageLookupByLibrary.simpleMessage(
-      "بيانات محلية مزروعة",
-    ),
     "discoveryErrorBody": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل إعلانات السوق. حاول مرة أخرى.",
     ),
-    "discoveryEyebrow": MessageLookupByLibrary.simpleMessage("السوق"),
     "discoveryFeaturedListingsTitle": MessageLookupByLibrary.simpleMessage(
       "إعلانات مميزة",
     ),
-    "discoveryFilterBody": MessageLookupByLibrary.simpleMessage("الهيكل"),
-    "discoveryFilterBrakes": MessageLookupByLibrary.simpleMessage("الفرامل"),
     "discoveryFilterButton": MessageLookupByLibrary.simpleMessage("تصفية"),
-    "discoveryFilterCommune": MessageLookupByLibrary.simpleMessage("البلدية"),
     "discoveryFilterCommuneHelper": MessageLookupByLibrary.simpleMessage(
       "يتفعّل بعد اختيار الولاية.",
     ),
-    "discoveryFilterEngine": MessageLookupByLibrary.simpleMessage("المحرك"),
     "discoveryFilterErrorBody": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل خيارات التصفية. حاول مرة أخرى.",
     ),
@@ -676,7 +674,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "discoveryFilterModelHelper": MessageLookupByLibrary.simpleMessage(
       "يتفعّل بعد اختيار العلامة.",
     ),
-    "discoveryFilterWilaya": MessageLookupByLibrary.simpleMessage("الولاية"),
     "discoveryFilterYearHelper": MessageLookupByLibrary.simpleMessage(
       "يتفعّل بعد اختيار الموديل.",
     ),
@@ -684,9 +681,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "حدّد الفئة والموقع وتفاصيل المركبة.",
     ),
     "discoveryFiltersTitle": MessageLookupByLibrary.simpleMessage("التصفية"),
-    "discoveryHeadline": MessageLookupByLibrary.simpleMessage(
-      "السوق الصح يبدأ بالبحث",
-    ),
     "discoveryLatestListingsTitle": MessageLookupByLibrary.simpleMessage(
       "أحدث الإعلانات",
     ),
@@ -699,10 +693,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "discoveryMinPriceLabel": MessageLookupByLibrary.simpleMessage(
       "السعر الأدنى",
     ),
-    "discoveryMinRating": MessageLookupByLibrary.simpleMessage(
-      "الحد الأدنى للتقييم",
-    ),
-    "discoveryRate": MessageLookupByLibrary.simpleMessage("قيّم"),
     "discoveryResetFiltersButton": MessageLookupByLibrary.simpleMessage(
       "إعادة ضبط",
     ),
@@ -713,10 +703,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "discoverySortFieldLabel": MessageLookupByLibrary.simpleMessage("الترتيب"),
     "discoverySortNewest": MessageLookupByLibrary.simpleMessage("الأحدث"),
-    "discoveryStartDeal": MessageLookupByLibrary.simpleMessage("بدء معاملة"),
-    "discoveryTagline": MessageLookupByLibrary.simpleMessage(
-      "اعثر على القطعة المناسبة بسرعة عبر بحث منظّم وتواصل واضح مع البائع.",
-    ),
     "disputeDescriptionError": MessageLookupByLibrary.simpleMessage(
       "أدخل 50 حرفاً على الأقل حتى يمكن مراجعة الحالة.",
     ),
@@ -728,7 +714,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disputeEvidenceLabel": MessageLookupByLibrary.simpleMessage("الأدلة"),
     "disputeEvidenceStatus": MessageLookupByLibrary.simpleMessage("تحضير"),
     "disputeEvidenceValue": MessageLookupByLibrary.simpleMessage(
-      "إرفاق الصور مطلوب في المسار الإنتاجي الكامل.",
+      "سيُطلب منك إرفاق صور كأدلة.",
     ),
     "disputeReasonCondition": MessageLookupByLibrary.simpleMessage(
       "الحالة غير مطابقة للوصف",
@@ -745,9 +731,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم استلام قطعة خاطئة",
     ),
     "disputeSubmit": MessageLookupByLibrary.simpleMessage("إرسال النزاع"),
-    "disputeSubmitted": MessageLookupByLibrary.simpleMessage(
-      "تم إرسال النزاع للمراجعة.",
-    ),
     "disputeSubtitle": MessageLookupByLibrary.simpleMessage(
       "اشرح المشكلة وأرسل ما يكفي من الأدلة لفريق التشغيل.",
     ),
@@ -761,6 +744,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "emailLabel": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
     "emailValidationError": MessageLookupByLibrary.simpleMessage(
       "أدخل بريداً إلكترونياً صحيحاً.",
+    ),
+    "errorNetworkUnavailable": MessageLookupByLibrary.simpleMessage(
+      "الشبكة غير متاحة. تحقق من الاتصال ثم أعد المحاولة.",
     ),
     "errorStateTitle": MessageLookupByLibrary.simpleMessage("حدث خطأ ما"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
@@ -878,9 +864,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingActionDockTitle": MessageLookupByLibrary.simpleMessage(
       "الخطوة التالية",
     ),
-    "listingAssuranceTitle": MessageLookupByLibrary.simpleMessage(
-      "لماذا يستحق هذا الإعلان المراجعة",
-    ),
     "listingCategoryRequired": MessageLookupByLibrary.simpleMessage(
       "اختر الفئة.",
     ),
@@ -899,20 +882,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingExchangeEnabled": MessageLookupByLibrary.simpleMessage(
       "التبادل مفعّل",
     ),
-    "listingFitmentLabel": MessageLookupByLibrary.simpleMessage(
-      "المركبة المستهدفة",
-    ),
-    "listingFitmentRequired": MessageLookupByLibrary.simpleMessage(
-      "العلامة والموديل مطلوبان.",
-    ),
     "listingLocationLabel": MessageLookupByLibrary.simpleMessage(
       "منطقة الاستلام",
     ),
     "listingMakeRequired": MessageLookupByLibrary.simpleMessage(
       "اختر العلامة.",
-    ),
-    "listingManageAction": MessageLookupByLibrary.simpleMessage(
-      "إدارة الإعلان",
     ),
     "listingMediaAttachAction": MessageLookupByLibrary.simpleMessage(
       "إضافة صور",
@@ -927,7 +901,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أضف صورة واحدة على الأقل للإعلان.",
     ),
     "listingMediaSectionBody": MessageLookupByLibrary.simpleMessage(
-      "حضّر صوراً واضحة للقطعة قبل النشر. المسار الإنتاجي النهائي يجب أن يطلب أدلة حقيقية.",
+      "حضّر صوراً واضحة للقطعة قبل النشر.",
     ),
     "listingMediaSectionTitle": MessageLookupByLibrary.simpleMessage(
       "متطلبات الصور",
@@ -935,26 +909,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingModelRequired": MessageLookupByLibrary.simpleMessage(
       "اختر الموديل.",
     ),
-    "listingNoMultiVehicle": MessageLookupByLibrary.simpleMessage(
-      "يسمح بمركبة مستهدفة واحدة فقط لكل إعلان.",
-    ),
     "listingOneVehicleHint": MessageLookupByLibrary.simpleMessage(
       "أضف بيانات المركبة المطابقة قبل نشر الإعلان.",
     ),
     "listingPartDetailsTitle": MessageLookupByLibrary.simpleMessage(
       "معلومات القطعة",
-    ),
-    "listingPolicySectionBody": MessageLookupByLibrary.simpleMessage(
-      "هدف مركبة واحد فقط، وهوية بائع واضحة، ولا اختصارات للموقع خارج الولاية والبلدية.",
-    ),
-    "listingPolicySectionTitle": MessageLookupByLibrary.simpleMessage(
-      "جاهزية السياسة",
-    ),
-    "listingPreviewSectionBody": MessageLookupByLibrary.simpleMessage(
-      "أكمل العلامة والموديل والسنة لإظهار معاينة إعلان واقعية.",
-    ),
-    "listingPreviewSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "حالة المعاينة",
     ),
     "listingPriceError": MessageLookupByLibrary.simpleMessage(
       "أدخل سعراً صحيحاً.",
@@ -973,37 +932,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingSaveDraftAction": MessageLookupByLibrary.simpleMessage(
       "حفظ كمسودة",
     ),
-    "listingSaveVehicle": MessageLookupByLibrary.simpleMessage("حفظ المركبة"),
     "listingSellerSectionTitle": MessageLookupByLibrary.simpleMessage("البائع"),
-    "listingSellerTrustAction": MessageLookupByLibrary.simpleMessage(
-      "تفاصيل ثقة البائع",
-    ),
-    "listingSellerTrustBody": MessageLookupByLibrary.simpleMessage(
-      "راجع سياق البائع قبل متابعة المراسلة أو بدء المعاملة.",
-    ),
-    "listingSellerTrustListingsLabel": MessageLookupByLibrary.simpleMessage(
-      "سياق الثقة",
-    ),
-    "listingSellerTrustTitle": MessageLookupByLibrary.simpleMessage(
-      "ملخص ثقة البائع",
-    ),
-    "listingSellerTrustVerifiedStatus": MessageLookupByLibrary.simpleMessage(
-      "موثّق",
-    ),
     "listingShareAction": MessageLookupByLibrary.simpleMessage(
       "مشاركة الإعلان",
     ),
-    "listingShareBody": MessageLookupByLibrary.simpleMessage(
-      "انسخ رابط الإعلان المباشر لمتابعة المحادثة خارج هذه الشاشة عند الحاجة.",
-    ),
-    "listingShareCopied": MessageLookupByLibrary.simpleMessage(
-      "تم نسخ رابط الإعلان.",
-    ),
-    "listingShareCopyAction": MessageLookupByLibrary.simpleMessage(
-      "نسخ الرابط",
-    ),
-    "listingShareTitle": MessageLookupByLibrary.simpleMessage("مشاركة الإعلان"),
-    "listingStatusActive": MessageLookupByLibrary.simpleMessage("نشط"),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("الحالة"),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "إرسال للمراجعة",
@@ -1021,25 +953,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingUnavailableTitle": MessageLookupByLibrary.simpleMessage(
       "الإعلان غير متاح",
     ),
-    "listingVehicleSaved": MessageLookupByLibrary.simpleMessage(
-      "تم حفظ هدف المركبة.",
-    ),
     "listingWilayaRequired": MessageLookupByLibrary.simpleMessage(
       "اختر الولاية.",
     ),
-    "listingYearError": MessageLookupByLibrary.simpleMessage("أدخل سنة صحيحة."),
     "listingYearRequired": MessageLookupByLibrary.simpleMessage("اختر السنة."),
     "loading": MessageLookupByLibrary.simpleMessage("جارٍ التحميل..."),
     "localListingConditionLikeNew": MessageLookupByLibrary.simpleMessage(
       "شبه جديد",
     ),
     "localListingConditionNew": MessageLookupByLibrary.simpleMessage("جديد"),
-    "localSeedModeBody": MessageLookupByLibrary.simpleMessage(
-      "هذا البناء يستخدم بيانات محلية بديلة للحسابات والسوق لأن إعدادات Supabase غير مفعلة على هذا الجهاز.",
-    ),
-    "localSeedModeTitle": MessageLookupByLibrary.simpleMessage(
-      "بيانات محلية تجريبية",
-    ),
     "localSellerLabelBusiness": MessageLookupByLibrary.simpleMessage(
       "بائع تجاري",
     ),
@@ -1075,11 +997,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesOnlineOnly": MessageLookupByLibrary.simpleMessage(
       "الرسائل متاحة عبر الإنترنت فقط حالياً.",
     ),
-    "messagesOnlineReady": MessageLookupByLibrary.simpleMessage(
-      "المراسلة متصلة وجاهزة لتنسيق التعامل.",
-    ),
     "messagesOpenStatus": MessageLookupByLibrary.simpleMessage("مفتوح"),
-    "messagesReadyStatus": MessageLookupByLibrary.simpleMessage("جاهز"),
     "messagesSend": MessageLookupByLibrary.simpleMessage("إرسال"),
     "messagesSendError": MessageLookupByLibrary.simpleMessage(
       "تعذّر إرسال الرسالة. يرجى المحاولة مرة أخرى.",
@@ -1088,14 +1006,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesTitle": MessageLookupByLibrary.simpleMessage("الرسائل"),
     "modelLabel": MessageLookupByLibrary.simpleMessage("الموديل"),
     "navAccount": MessageLookupByLibrary.simpleMessage("الحساب"),
-    "navDashboard": MessageLookupByLibrary.simpleMessage("اللوحة"),
     "navHome": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "navListings": MessageLookupByLibrary.simpleMessage("الإعلانات"),
     "navMessages": MessageLookupByLibrary.simpleMessage("الرسائل"),
     "navQueues": MessageLookupByLibrary.simpleMessage("الطوابير"),
     "navReports": MessageLookupByLibrary.simpleMessage("البلاغات"),
     "navSaved": MessageLookupByLibrary.simpleMessage("المحفوظات"),
-    "navSearch": MessageLookupByLibrary.simpleMessage("بحث"),
     "navTeam": MessageLookupByLibrary.simpleMessage("الفريق"),
     "noResultsBody": MessageLookupByLibrary.simpleMessage(
       "اخفض الحد الأدنى للتقييم لرؤية نتائج أكثر.",
@@ -1177,12 +1093,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "notificationsSavedMessageTitle": MessageLookupByLibrary.simpleMessage(
       "رسالة جديدة على إعلانك المحفوظ",
     ),
-    "notificationsSavedPriceBody": MessageLookupByLibrary.simpleMessage(
-      "أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.",
-    ),
-    "notificationsSavedPriceTitle": MessageLookupByLibrary.simpleMessage(
-      "تم تحديث سعر إعلان محفوظ",
-    ),
     "notificationsSubtitle": MessageLookupByLibrary.simpleMessage(
       "تابع الرسائل وتغييرات الإعلانات وإجراءات الحساب من مكان واحد.",
     ),
@@ -1262,23 +1172,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "أدخل رقم هاتف جزائري صالحاً.",
     ),
     "priceWithDzd": m3,
-    "profileCreateListing": MessageLookupByLibrary.simpleMessage("إنشاء إعلان"),
-    "profileEnableSeller": MessageLookupByLibrary.simpleMessage(
-      "تفعيل مساحة البائع",
-    ),
     "profileRoleAdmin": MessageLookupByLibrary.simpleMessage("مشرف"),
     "profileRoleAnonymous": MessageLookupByLibrary.simpleMessage("زائر"),
     "profileRoleBuyer": MessageLookupByLibrary.simpleMessage("مشتري"),
-    "profileRoleLabel": MessageLookupByLibrary.simpleMessage("الدور"),
     "profileRoleSeller": MessageLookupByLibrary.simpleMessage("بائع"),
     "profileRoleSuperAdmin": MessageLookupByLibrary.simpleMessage("مشرف عام"),
-    "profileSellerEnabled": MessageLookupByLibrary.simpleMessage(
-      "مساحة البائع مفعلة",
-    ),
-    "profileSellerLabel": MessageLookupByLibrary.simpleMessage("وضع البائع"),
-    "profileSellerNotEnabled": MessageLookupByLibrary.simpleMessage(
-      "مساحة البائع غير مفعلة بعد",
-    ),
     "quantityLabel": MessageLookupByLibrary.simpleMessage("الكمية"),
     "ratingAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
       "تم إرسال تقييم سابق لهذه المعاملة.",
@@ -1425,31 +1323,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "savedListingsTitle": MessageLookupByLibrary.simpleMessage(
       "الإعلانات المحفوظة",
     ),
-    "savedListingsViewAction": MessageLookupByLibrary.simpleMessage(
-      "فتح الإعلان",
-    ),
-    "searchEyebrow": MessageLookupByLibrary.simpleMessage("بحث دقيق"),
-    "searchFiltersSuffix": MessageLookupByLibrary.simpleMessage("فلاتر"),
     "searchHistoryClearAction": MessageLookupByLibrary.simpleMessage(
       "مسح السجل",
     ),
-    "searchNoFilters": MessageLookupByLibrary.simpleMessage("بدون فلاتر"),
     "searchRecentLabel": MessageLookupByLibrary.simpleMessage(
       "عمليات البحث الأخيرة",
     ),
-    "searchResultsLabel": MessageLookupByLibrary.simpleMessage("النتائج"),
     "searchResultsSuffix": MessageLookupByLibrary.simpleMessage("نتائج"),
-    "searchSubtitle": MessageLookupByLibrary.simpleMessage(
-      "استخدم النص والتقييم والتصنيف بدون أي مؤشرات ثقة شكلية.",
-    ),
-    "searchTitle": MessageLookupByLibrary.simpleMessage("صفِّ السوق بطريقتك"),
     "sellerAccessDenied": MessageLookupByLibrary.simpleMessage(
       "هذا الحساب ليس حساب بائع.",
     ),
     "sellerActionStatus": MessageLookupByLibrary.simpleMessage("إجراء"),
-    "sellerBusinessNameLabel": MessageLookupByLibrary.simpleMessage(
-      "اسم النشاط",
-    ),
     "sellerCommuneRequired": MessageLookupByLibrary.simpleMessage(
       "اختر البلدية.",
     ),
@@ -1596,7 +1480,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerPendingDealsTitle": MessageLookupByLibrary.simpleMessage(
       "المعاملات المعلقة",
     ),
-    "sellerQueueStatus": MessageLookupByLibrary.simpleMessage("طابور"),
     "sellerSignIn": MessageLookupByLibrary.simpleMessage("تسجيل دخول البائع"),
     "sellerSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل دخول مخصص لحسابات البائع فقط.",
@@ -1660,9 +1543,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "تمت الموافقة على التوثيق وتم تفعيل وصول البائع.",
         ),
-    "sellerStatusVerificationBody": MessageLookupByLibrary.simpleMessage(
-      "تبقى وثائق البائع وموقع النشاط متاحة للمراجعة.",
-    ),
     "sellerStatusVerificationDraftBody": MessageLookupByLibrary.simpleMessage(
       "أكمل الخطوات المتبقية ثم أرسل الطلب للمراجعة.",
     ),
@@ -1683,9 +1563,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerStatusWorkspaceApprovedBody": MessageLookupByLibrary.simpleMessage(
       "أدوات البائع مفعّلة لهذا الحساب.",
-    ),
-    "sellerStatusWorkspaceBody": MessageLookupByLibrary.simpleMessage(
-      "تُفتح الإعلانات والرسائل وأدوات البائع بعد الموافقة.",
     ),
     "sellerStatusWorkspaceWaitingBody": MessageLookupByLibrary.simpleMessage(
       "تبقى أدوات البائع مغلقة حتى تتم الموافقة على التوثيق.",
@@ -1710,7 +1587,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أنشئ حساب مشتري مع بيانات التواصل الأساسية.",
     ),
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
-      "جارٍ تحميل مسار السوق وحالة الحساب.",
+      "جارٍ تحميل بيانات الحساب والسوق.",
     ),
     "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
       "استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.",
@@ -1772,7 +1649,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل الصفقة",
     ),
-    "transactionExpire": MessageLookupByLibrary.simpleMessage("تمييز كمنتهية"),
+    "transactionExpire": MessageLookupByLibrary.simpleMessage("تعليم كمنتهية"),
     "transactionHistoryEmpty": MessageLookupByLibrary.simpleMessage(
       "لا توجد صفقات بعد",
     ),
@@ -1817,14 +1694,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionStartBody": MessageLookupByLibrary.simpleMessage(
       "أنشئ طلب معاملة مع البائع لهذا الإعلان.",
     ),
-    "transactionStartCta": MessageLookupByLibrary.simpleMessage("إنشاء طلب"),
     "transactionStartTitle": MessageLookupByLibrary.simpleMessage("بدء معاملة"),
     "transactionStateAccepted": MessageLookupByLibrary.simpleMessage(
       "تم القبول",
     ),
     "transactionStateCancelled": MessageLookupByLibrary.simpleMessage("ملغاة"),
     "transactionStateCompleted": MessageLookupByLibrary.simpleMessage("مكتملة"),
-    "transactionStateLabel": MessageLookupByLibrary.simpleMessage("الحالة"),
     "transactionStateRejected": MessageLookupByLibrary.simpleMessage("مرفوضة"),
     "transactionStateRequested": MessageLookupByLibrary.simpleMessage(
       "طلب مفتوح",

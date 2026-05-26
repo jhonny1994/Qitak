@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,10 +38,14 @@ abstract class TransactionRepository {
 
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
+  final prefs = ref.watch(sharedPreferencesProvider);
   if (client == null) {
     throw StateError('Supabase client is required for transactions.');
   }
-  return SupabaseTransactionRepository(client);
+  return SupabaseTransactionRepository(
+    client,
+    AppContractRepository(client, prefs),
+  );
 });
 
 class LocalTransactionRepository implements TransactionRepository {
@@ -65,7 +73,7 @@ class LocalTransactionRepository implements TransactionRepository {
           item.state != TransactionState.disputeResolved,
     );
     if (hasActive) {
-      throw const AppException('open-intent-exists');
+      throw AppException.fromCode(AppErrorCode.conflict);
     }
     final id = 'tx-${_id++}';
     final now = DateTime.now();
@@ -108,7 +116,7 @@ class LocalTransactionRepository implements TransactionRepository {
   }) async {
     final current = _records[transactionId];
     if (current == null) {
-      throw const AppException('transaction-not-found');
+      throw AppException.fromCode(AppErrorCode.notFound);
     }
     final allowed = _isAllowedTransition(
       current: current,
@@ -116,7 +124,7 @@ class LocalTransactionRepository implements TransactionRepository {
       nextState: nextState,
     );
     if (!allowed) {
-      throw const AppException('transition-denied');
+      throw AppException.fromCode(AppErrorCode.permissionDenied);
     }
     final updated = TransactionRecord(
       id: current.id,
@@ -200,9 +208,11 @@ class LocalTransactionRepository implements TransactionRepository {
 }
 
 class SupabaseTransactionRepository implements TransactionRepository {
-  SupabaseTransactionRepository(this._client);
+  SupabaseTransactionRepository(this._client, this._contracts);
 
   final SupabaseClient _client;
+  final AppContractRepository _contracts;
+  Set<String>? _cachedDealStates;
 
   @override
   Future<TransactionRecord> createIntent({
@@ -225,12 +235,10 @@ class SupabaseTransactionRepository implements TransactionRepository {
       );
       return _fromMap(created);
     } on PostgrestException catch (error) {
-      if (error.message.contains('tx_open_intent_unique') ||
-          error.message.contains('duplicate key') ||
-          error.code == '23505') {
-        throw const AppException('open-intent-exists');
+      if (error.code == '23505') {
+        throw AppException.fromCode(AppErrorCode.conflict);
       }
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
   }
 
@@ -263,6 +271,10 @@ class SupabaseTransactionRepository implements TransactionRepository {
     required TransactionState nextState,
   }) async {
     final _ = actorUserId;
+    final knownStates = await _dealStates();
+    if (!knownStates.contains(nextState.value)) {
+      throw AppException.fromCode(AppErrorCode.validationFailed);
+    }
     try {
       final updated = await _client.rpc<Map<String, dynamic>>(
         'transition_deal',
@@ -273,13 +285,14 @@ class SupabaseTransactionRepository implements TransactionRepository {
       );
       return _fromMap(updated);
     } on PostgrestException catch (error) {
-      if (error.message.contains('transition denied')) {
-        throw const AppException('transition-denied');
+      final mapped = classifyPostgrestException(error);
+      if (mapped == AppErrorCode.notFound) {
+        throw AppException.fromCode(AppErrorCode.notFound);
       }
-      if (error.message.contains('deal not found')) {
-        throw const AppException('transaction-not-found');
+      if (mapped == AppErrorCode.permissionDenied) {
+        throw AppException.fromCode(AppErrorCode.permissionDenied);
       }
-      throw AppException(error.message);
+      throw AppException.fromCode(mapped);
     }
   }
 
@@ -308,12 +321,14 @@ class SupabaseTransactionRepository implements TransactionRepository {
   }
 
   TransactionRecord _fromMap(Map<String, dynamic> row) {
+    final rawState =
+        row['status'] as String? ?? TransactionStateCatalog.intentCreated;
     return TransactionRecord(
       id: row['id'] as String,
       listingId: row['listing_id'] as String,
       buyerUserId: row['buyer_id'] as String,
       sellerUserId: row['seller_id'] as String,
-      state: TransactionStateX.fromValue(row['status'] as String),
+      state: TransactionStateX.fromValue(rawState),
       dealType: row['deal_type'] as String? ?? 'buy',
       exchangeOffer: row['exchange_offer'] as String?,
       expiresAt: DateTime.tryParse(
@@ -335,5 +350,19 @@ class SupabaseTransactionRepository implements TransactionRepository {
         row['updated_at'] as String? ?? '',
       )?.toLocal(),
     );
+  }
+
+  Future<Set<String>> _dealStates() async {
+    final cached = _cachedDealStates;
+    if (cached != null && cached.isNotEmpty) {
+      return cached;
+    }
+    final states = await _contracts.fetchDomainCodes(DomainKey.dealStatus);
+    final set = states.toSet();
+    if (set.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    _cachedDealStates = set;
+    return set;
   }
 }

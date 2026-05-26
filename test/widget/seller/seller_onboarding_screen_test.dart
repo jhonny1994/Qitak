@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
@@ -211,4 +212,125 @@ void main() {
       findsNothing,
     );
   });
+
+  testWidgets('onboarding document step follows contract policy options', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SellerOnboardingScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      sellerApplicationRepositoryOverride: _FrontIdOnlyPolicyRepository(),
+      overrides: [
+        currentSellerApplicationProvider.overrideWith((ref) async {
+          return const SellerApplication(
+            id: 'seller-app-2',
+            userId: 'seller-002',
+            sellerType: 'business',
+            businessName: 'Seller Co',
+            phone: '+213555999999',
+            email: 'seller@qitak.test',
+            wilayaId: '16',
+            communeId: '1601',
+            bio: '',
+            verificationStatus: 'draft',
+          );
+        }),
+        discoveryFilterTaxonomyProvider.overrideWith((ref) async {
+          return const DiscoveryFilterTaxonomy(
+            categories: <DiscoveryCategoryOption>[],
+            wilayas: <WilayaOption>[
+              WilayaOption(
+                id: '16',
+                name: 'Alger',
+                arabicName: 'الجزائر',
+                communes: <CommuneOption>[
+                  CommuneOption(
+                    id: '1601',
+                    name: 'Bab Ezzouar',
+                    arabicName: 'باب الزوار',
+                  ),
+                ],
+              ),
+            ],
+            makes: <CarMakeOption>[],
+          );
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerOnboardingScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Business'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('seller-onboarding-next')));
+    await tester.tap(find.byKey(const Key('seller-onboarding-next')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('seller-onboarding-next')));
+    await tester.tap(find.byKey(const Key('seller-onboarding-next')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Government ID (front)'), findsWidgets);
+    expect(find.text('Business registration'), findsNothing);
+  });
+}
+
+class _FrontIdOnlyPolicyRepository extends _NoopSellerRepository {
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async {
+    if (policyType == 'seller_document_type') {
+      return const <AppPolicyOption>[
+        AppPolicyOption(
+          policyType: 'seller_document_type',
+          code: 'government_id_front',
+          labelKey: 'sellerDocumentIdFrontLabel',
+          active: true,
+          sortOrder: 10,
+        ),
+      ];
+    }
+    return const <AppPolicyOption>[];
+  }
+}
+
+class _NoopSellerRepository implements SellerApplicationRepository {
+  @override
+  Future<SellerApplication?> fetchById(String applicationId) async => null;
+
+  @override
+  Future<SellerApplication?> fetchCurrentForUser(String userId) async => null;
+
+  @override
+  Future<List<SellerApplication>> listPendingApplications() async =>
+      const <SellerApplication>[];
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async =>
+      const <AppPolicyOption>[];
+
+  @override
+  Future<SellerApplication> submitApplication({
+    required String userId,
+    required SellerApplicationDraft draft,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<SellerApplication> updateStatus({
+    required String applicationId,
+    required String status,
+    String? reasonCode,
+    String? note,
+  }) async {
+    throw UnimplementedError();
+  }
 }

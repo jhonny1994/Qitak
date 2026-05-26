@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
@@ -28,17 +30,20 @@ abstract class SellerApplicationRepository {
     String? reasonCode,
     String? note,
   });
+
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType);
 }
 
 final sellerApplicationRepositoryProvider =
     Provider<SellerApplicationRepository>((ref) {
       final client = ref.watch(supabaseClientProvider);
+      final prefs = ref.watch(sharedPreferencesProvider);
       if (client == null) {
         throw StateError(
           'Supabase client is required for seller verification.',
         );
       }
-      return SupabaseSellerApplicationRepository(client);
+      return SupabaseSellerApplicationRepository(client, prefs);
     });
 
 final currentSellerApplicationProvider = FutureProvider<SellerApplication?>((
@@ -166,7 +171,7 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
     final rows = _loadRows();
     final index = rows.indexWhere((row) => row['id'] == applicationId);
     if (index < 0) {
-      throw const AppException('Seller application not found.');
+      throw AppException.fromCode(AppErrorCode.notFound);
     }
     rows[index] = <String, dynamic>{
       ...rows[index],
@@ -181,6 +186,61 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
       ..invalidate(currentSellerApplicationProvider)
       ..invalidate(adminPendingSellerApplicationsProvider);
     return _mapRow(rows[index]);
+  }
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async {
+    if (policyType == 'seller_document_type') {
+      return const <AppPolicyOption>[
+        AppPolicyOption(
+          policyType: 'seller_document_type',
+          code: 'government_id_front',
+          labelKey: 'sellerDocumentIdFrontLabel',
+          active: true,
+          sortOrder: 10,
+        ),
+        AppPolicyOption(
+          policyType: 'seller_document_type',
+          code: 'government_id_back',
+          labelKey: 'sellerDocumentIdBackLabel',
+          active: true,
+          sortOrder: 20,
+        ),
+        AppPolicyOption(
+          policyType: 'seller_document_type',
+          code: 'business_registration',
+          labelKey: 'sellerDocumentBusinessRegistrationLabel',
+          active: true,
+          sortOrder: 30,
+        ),
+      ];
+    }
+    if (policyType == 'seller_verification_reason_code') {
+      return const <AppPolicyOption>[
+        AppPolicyOption(
+          policyType: 'seller_verification_reason_code',
+          code: 'document_unreadable',
+          labelKey: 'adminVerificationReasonUnreadable',
+          active: true,
+          sortOrder: 10,
+        ),
+        AppPolicyOption(
+          policyType: 'seller_verification_reason_code',
+          code: 'identity_mismatch',
+          labelKey: 'adminVerificationReasonIdentityMismatch',
+          active: true,
+          sortOrder: 20,
+        ),
+        AppPolicyOption(
+          policyType: 'seller_verification_reason_code',
+          code: 'missing_business_registration',
+          labelKey: 'adminVerificationReasonMissingBusinessDocument',
+          active: true,
+          sortOrder: 30,
+        ),
+      ];
+    }
+    return const <AppPolicyOption>[];
   }
 
   SellerApplication _mapRow(Map<String, dynamic> row) {
@@ -209,9 +269,12 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
 
 class SupabaseSellerApplicationRepository
     implements SellerApplicationRepository {
-  SupabaseSellerApplicationRepository(this._client);
+  SupabaseSellerApplicationRepository(this._client, this._prefs);
 
   final SupabaseClient _client;
+  final SharedPreferences _prefs;
+  AppContractRepository get _contracts =>
+      AppContractRepository(_client, _prefs);
 
   @override
   Future<SellerApplication?> fetchCurrentForUser(String userId) async {
@@ -367,6 +430,11 @@ class SupabaseSellerApplicationRepository
       email: (profile?['email'] as String?) ?? '',
       documents: documents,
     );
+  }
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) {
+    return _contracts.fetchPolicyOptions(policyType);
   }
 
   SellerApplication _mapRow(

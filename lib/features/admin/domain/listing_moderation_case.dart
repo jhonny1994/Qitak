@@ -4,7 +4,7 @@ class ListingModerationQueueItem {
   const ListingModerationQueueItem({
     required this.listingId,
     required this.title,
-    required this.categoryLabel,
+    required this.categoryCode,
     required this.sellerName,
     required this.submittedAt,
     required this.riskLevel,
@@ -12,7 +12,7 @@ class ListingModerationQueueItem {
 
   final String listingId;
   final String title;
-  final String categoryLabel;
+  final String categoryCode;
   final String sellerName;
   final DateTime submittedAt;
   final String riskLevel;

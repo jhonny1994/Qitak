@@ -2,7 +2,11 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
@@ -38,10 +42,14 @@ class ListingSubmissionResult {
 
 final listingRepositoryProvider = Provider<ListingRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
+  final prefs = ref.watch(sharedPreferencesProvider);
   if (client == null) {
     throw StateError('Supabase client is required for listing writes.');
   }
-  return SupabaseListingRepository(client);
+  return SupabaseListingRepository(
+    client,
+    AppContractRepository(client, prefs),
+  );
 });
 
 class LocalListingRepository implements ListingRepository {
@@ -66,7 +74,7 @@ class LocalListingRepository implements ListingRepository {
   }) async {
     final profile = _profile;
     if (profile == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
 
     final now = DateTime.now().toUtc();
@@ -94,9 +102,11 @@ class LocalListingRepository implements ListingRepository {
 }
 
 class SupabaseListingRepository implements ListingRepository {
-  SupabaseListingRepository(this._client);
+  SupabaseListingRepository(this._client, this._contracts);
 
   final SupabaseClient _client;
+  final AppContractRepository _contracts;
+  Set<String>? _cachedListingStatuses;
 
   @override
   bool get isLocal => false;
@@ -105,7 +115,7 @@ class SupabaseListingRepository implements ListingRepository {
   Future<bool> hasUserReportedListing(String listingId) async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
 
     final existing = await _client
@@ -122,7 +132,7 @@ class SupabaseListingRepository implements ListingRepository {
   Future<void> reportListing(String listingId, String reason) async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
 
     try {
@@ -133,7 +143,7 @@ class SupabaseListingRepository implements ListingRepository {
         'report_type': reason,
       });
     } on PostgrestException catch (error) {
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
   }
 
@@ -144,7 +154,7 @@ class SupabaseListingRepository implements ListingRepository {
   }) async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
 
     final mediaRows = <Map<String, dynamic>>[
@@ -220,12 +230,19 @@ class SupabaseListingRepository implements ListingRepository {
         params: <String, dynamic>{'payload': payload},
       );
       final row = result as Map<String, dynamic>;
+      final status = row['status'] as String? ?? '';
+      if (status.isNotEmpty) {
+        final knownStatuses = await _listingStatuses();
+        if (!knownStatuses.contains(status)) {
+          throw AppException.fromCode(AppErrorCode.validationFailed);
+        }
+      }
       return ListingSubmissionResult(
         listingId: row['listing_id'] as String,
-        status: row['status'] as String? ?? '',
+        status: status,
       );
     } on PostgrestException catch (error) {
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
   }
 
@@ -234,5 +251,19 @@ class SupabaseListingRepository implements ListingRepository {
   String _sanitizeFileName(String raw) {
     final cleaned = raw.replaceAll(RegExp('[^A-Za-z0-9._-]'), '_');
     return cleaned.isEmpty ? 'listing_media.jpg' : cleaned;
+  }
+
+  Future<Set<String>> _listingStatuses() async {
+    final cached = _cachedListingStatuses;
+    if (cached != null && cached.isNotEmpty) {
+      return cached;
+    }
+    final statuses = await _contracts.fetchDomainCodes(DomainKey.listingStatus);
+    final set = statuses.toSet();
+    if (set.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    _cachedListingStatuses = set;
+    return set;
   }
 }

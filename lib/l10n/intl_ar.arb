@@ -1,7 +1,6 @@
 {
   "@@locale": "ar",
   "loading": "جارٍ التحميل...",
-  "appTitle": "قطعك",
   "brandWordmark": "قطعك",
   "errorStateTitle": "حدث خطأ ما",
   "retryAction": "إعادة المحاولة",
@@ -35,7 +34,7 @@
   "authGateMessageBody": "استخدم حسابك لفتح المحادثة ومتابعة التواصل مع البائع.",
   "authGateBuyTitle": "سجّل الدخول لطلب هذه القطعة",
   "authGateBuyBody": "استخدم حسابك للمتابعة إلى مسار طلب الشراء لهذا الإعلان.",
-  "splashSubtitle": "جارٍ تحميل مسار السوق وحالة الحساب.",
+  "splashSubtitle": "جارٍ تحميل بيانات الحساب والسوق.",
   "signUpSubtitle": "أنشئ حساب مشتري مع بيانات التواصل الأساسية.",
   "accountSettingsEyebrow": "الحساب",
   "accountSettingsTitle": "إعدادات الحساب",
@@ -70,7 +69,6 @@
   "appearanceSettingsTitle": "المظهر",
   "appearanceSettingsSubtitle": "اختر طريقة عرض Qitak على هذا الجهاز.",
   "appearanceSettingsSaved": "تم تحديث تفضيل المظهر.",
-  "appearanceSettingsStatus": "تفضيل الجهاز",
   "appearanceModeDarkTitle": "داكن",
   "appearanceModeDarkSubtitle": "استخدم المظهر الداكن.",
   "appearanceModeLightTitle": "فاتح",
@@ -143,8 +141,6 @@
   "legalInformationPrivacyBody": "لا تُستخدم بيانات الملف الشخصي وحقول الموقع وقنوات التواصل إلا لنشاط سوق مشروع.",
   "legalInformationMarketplaceTitle": "سلوك السوق",
   "legalInformationMarketplaceBody": "تظل الإعلانات والنزاعات وعمليات البائع خاضعة لسياسات الإشراف والثقة والمعاملات.",
-  "accountUtilitiesEyebrow": "الأدوات",
-  "accountUtilitiesTitle": "التفضيلات والمساعدة",
   "accountUtilitiesGuestSubtitle": "قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.",
   "sellerStatusEyebrow": "مساحة البائع",
   "sellerStatusTitle": "حالة توثيق البائع",
@@ -152,9 +148,7 @@
   "sellerStatusProfile": "هوية الحساب",
   "sellerStatusProfileBody": "اسم الحساب ورقم الهاتف مرتبطان بطلب توثيق البائع هذا.",
   "sellerStatusVerification": "مراجعة التوثيق",
-  "sellerStatusVerificationBody": "تبقى وثائق البائع وموقع النشاط متاحة للمراجعة.",
   "sellerStatusWorkspace": "وصول البائع",
-  "sellerStatusWorkspaceBody": "تُفتح الإعلانات والرسائل وأدوات البائع بعد الموافقة.",
   "sellerStatusBackToWorkspace": "الانتقال إلى مساحة البائع",
   "sellerStatusContinueApplication": "إكمال الطلب",
   "sellerStatusNotStarted": "لم يبدأ",
@@ -194,9 +188,18 @@
   "termsValidationError": "يجب قبول الشروط لإنشاء الحساب.",
   "invalidCredentialsGeneric": "بيانات الدخول غير صحيحة أو الحساب غير متاح.",
   "createAccountFailure": "تعذر إنشاء الحساب.",
+  "authErrorSessionNotFound": "لم يتم العثور على الجلسة.",
+  "authErrorConfirmEmailBeforeSignIn": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول. تحقق من بريدك الوارد لرسالة التأكيد.",
+  "authErrorInvalidEmailOrPassword": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "authErrorUnableSignIn": "تعذر تسجيل الدخول. حاول مرة أخرى.",
+  "errorNetworkUnavailable": "الشبكة غير متاحة. تحقق من الاتصال ثم أعد المحاولة.",
+  "authErrorEmailAlreadyExists": "يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.",
+  "authErrorPasswordRequirements": "كلمة المرور لا تستوفي متطلبات الأمان.",
+  "authErrorProfileSetupBlockedRls": "تم إنشاء الحساب، لكن إعداد الملف الشخصي تم حظره. حاول تسجيل الدخول مرة أخرى بعد تحديث الخلفية.",
+  "authErrorProfileSetupBlockedPolicy": "تم إنشاء الحساب، لكن إعداد الملف الشخصي محجوب بسبب سياسة في الخلفية.",
+  "authErrorCheckEmailConfirmation": "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد قبل تسجيل الدخول.",
   "sellerOnboardingTitle": "توثيق البائع",
   "sellerOnboardingBody": "أرسل بيانات البائع مرة واحدة حتى نراجع هذا الحساب ونفعّل وصول البائع.",
-  "sellerBusinessNameLabel": "اسم النشاط",
   "sellerOnboardingBack": "رجوع",
   "sellerOnboardingSubmit": "إرسال طلب التوثيق",
   "sellerOnboardingStepTypeTitle": "الخطوة 1 · نوع البائع",
@@ -228,17 +231,11 @@
   "sellerDashboardTitle": "لوحة البائع",
   "createListingCta": "إنشاء إعلان",
   "createListingSubtitle": "أضف توافق مركبة واحدة فقط لكل إعلان.",
-  "profileRoleLabel": "الدور",
   "profileRoleAnonymous": "زائر",
   "profileRoleBuyer": "مشتري",
   "profileRoleSeller": "بائع",
   "profileRoleAdmin": "مشرف",
   "profileRoleSuperAdmin": "مشرف عام",
-  "profileSellerLabel": "وضع البائع",
-  "profileSellerEnabled": "مساحة البائع مفعلة",
-  "profileSellerNotEnabled": "مساحة البائع غير مفعلة بعد",
-  "profileEnableSeller": "تفعيل مساحة البائع",
-  "profileCreateListing": "إنشاء إعلان",
   "signOutAction": "تسجيل الخروج",
   "sellerDashboardSubtitle": "تابع التوثيق والمخزون وحركة المعاملات الجارية.",
   "sellerPendingDealsTitle": "المعاملات المعلقة",
@@ -246,7 +243,6 @@
   "sellerLifecycleTitle": "دورة المعاملة",
   "sellerLifecycleBody": "أدر الطلبات والقبول والإكمال بحالة واضحة.",
   "sellerActionStatus": "إجراء",
-  "sellerQueueStatus": "طابور",
   "adminDashboardEyebrow": "التشغيل",
   "adminDashboardTitle": "لوحة الإدارة",
   "adminDashboardSubtitle": "راجع طوابير التحقق والإعلانات والنزاعات والبلاغات من لوحة تشغيل واحدة.",
@@ -275,27 +271,18 @@
   "listingPriceError": "أدخل سعراً صحيحاً.",
   "listingQuantityError": "أدخل كمية صحيحة.",
   "listingDescriptionRequired": "أدخل وصفاً.",
-  "listingSaveVehicle": "حفظ المركبة",
-  "listingVehicleSaved": "تم حفظ هدف المركبة.",
   "listingPublishedSuccess": "تم نشر الإعلان وإضافته إلى مخزونك.",
   "listingDraftSavedSuccess": "تم حفظ المسودة في مخزون البائع.",
   "listingSubmittedForReviewSuccess": "تم إرسال الإعلان للمراجعة.",
-  "listingNoMultiVehicle": "يسمح بمركبة مستهدفة واحدة فقط لكل إعلان.",
   "listingPublishAction": "نشر الإعلان",
   "listingSaveDraftAction": "حفظ كمسودة",
   "listingSubmitForReviewAction": "إرسال للمراجعة",
-  "listingFitmentRequired": "العلامة والموديل مطلوبان.",
-  "listingYearError": "أدخل سنة صحيحة.",
-  "listingPolicySectionTitle": "جاهزية السياسة",
-  "listingPolicySectionBody": "هدف مركبة واحد فقط، وهوية بائع واضحة، ولا اختصارات للموقع خارج الولاية والبلدية.",
   "listingMediaSectionTitle": "متطلبات الصور",
-  "listingMediaSectionBody": "حضّر صوراً واضحة للقطعة قبل النشر. المسار الإنتاجي النهائي يجب أن يطلب أدلة حقيقية.",
+  "listingMediaSectionBody": "حضّر صوراً واضحة للقطعة قبل النشر.",
   "listingMediaAttachAction": "إضافة صور",
   "listingMediaRemoveAction": "حذف الصورة",
   "listingMediaRequired": "أضف صورة واحدة على الأقل للإعلان.",
   "listingMediaMinimumRequired": "أضف صورتين على الأقل قبل إرسال الإعلان للمراجعة.",
-  "listingPreviewSectionTitle": "حالة المعاينة",
-  "listingPreviewSectionBody": "أكمل العلامة والموديل والسنة لإظهار معاينة إعلان واقعية.",
   "messagesTitle": "الرسائل",
   "messagesConversationTitle": "محادثة الإعلان",
   "messagesConversationSubtitle": "أبقِ نقاش المعاملة مرتبطاً بالإعلان وعبر الإنترنت فقط.",
@@ -304,12 +291,10 @@
   "messagesInboxSubtitle": "كل محادثة تبقى مرتبطة بإعلان ونية تعامل نشطة.",
   "messagesStatusLabel": "حالة الرسائل",
   "messagesBlockedStatus": "محجوب",
-  "messagesReadyStatus": "جاهز",
   "messagesInputHint": "اكتب رسالة...",
   "messagesSend": "إرسال",
   "messagesSendError": "تعذّر إرسال الرسالة. يرجى المحاولة مرة أخرى.",
   "messagesOnlineOnly": "الرسائل متاحة عبر الإنترنت فقط حالياً.",
-  "messagesOnlineReady": "المراسلة متصلة وجاهزة لتنسيق التعامل.",
   "messagesInboxEmpty": "لا توجد محادثات مرتبطة بإعلانات بعد. ابدأ من الإعلان عندما تحتاج مراسلة البائع.",
   "messagesBrowseListingsAction": "تصفح الإعلانات",
   "messagesOpenStatus": "مفتوح",
@@ -325,11 +310,6 @@
   "ratingListingContextFallback": "يجري تحميل سياق الإعلان",
   "ratingListingContextPending": "ما زلنا نستخرج الإعلان المرتبط بهذه الصفقة.",
   "ratingCounterpartyPending": "الطرف المقابل",
-  "discoveryTagline": "اعثر على القطعة المناسبة بسرعة عبر بحث منظّم وتواصل واضح مع البائع.",
-  "discoveryEyebrow": "السوق",
-  "discoveryHeadline": "السوق الصح يبدأ بالبحث",
-  "localSeedModeTitle": "بيانات محلية تجريبية",
-  "localSeedModeBody": "هذا البناء يستخدم بيانات محلية بديلة للحسابات والسوق لأن إعدادات Supabase غير مفعلة على هذا الجهاز.",
   "discoverySearchHint": "ابحث بالقطعة أو العلامة أو المركبة",
   "discoveryFilterButton": "تصفية",
   "discoverySearchButton": "بحث",
@@ -352,13 +332,7 @@
   "discoveryDealTypeBuy": "شراء",
   "discoveryDealTypeBuyOrExchange": "شراء أو تبديل إذا كان متاحاً",
   "discoverySortNewest": "الأحدث",
-  "discoveryEnvironmentLabel": "البيئة",
-  "discoveryEnvironmentLocal": "خلاصة تطوير محلية",
-  "discoveryEnvironmentSeeded": "بيانات محلية مزروعة",
-  "discoveryFilterEngine": "المحرك",
   "discoveryFilterLighting": "الإنارة",
-  "discoveryFilterBrakes": "الفرامل",
-  "discoveryFilterBody": "الهيكل",
   "categoryEngineIgnition": "المحرك والإشعال",
   "categoryCoolingSystem": "نظام التبريد",
   "categoryElectricalElectronics": "الكهرباء والإلكترونيات",
@@ -370,24 +344,13 @@
   "categoryWheelsTires": "العجلات والإطارات",
   "categoryBraking": "نظام الفرامل",
   "categoryExhaustEmissions": "العادم والانبعاثات",
-  "discoveryFilterWilaya": "الولاية",
-  "discoveryFilterCommune": "البلدية",
-  "discoveryMinRating": "الحد الأدنى للتقييم",
   "discoveryEmptyTitle": "لا توجد إعلانات بعد",
   "discoveryEmptyBody": "عند توفر مخزون فعلي في السوق الإنتاجي ستظهر الإعلانات هنا.",
   "discoveryErrorBody": "تعذر تحميل إعلانات السوق. حاول مرة أخرى.",
   "discoveryFilterErrorBody": "تعذر تحميل خيارات التصفية. حاول مرة أخرى.",
   "discoverySave": "حفظ",
   "discoveryMessageSeller": "مراسلة البائع",
-  "discoveryStartDeal": "بدء معاملة",
-  "discoveryRate": "قيّم",
-  "searchEyebrow": "بحث دقيق",
-  "searchTitle": "صفِّ السوق بطريقتك",
-  "searchSubtitle": "استخدم النص والتقييم والتصنيف بدون أي مؤشرات ثقة شكلية.",
-  "searchResultsLabel": "النتائج",
   "searchResultsSuffix": "نتائج",
-  "searchNoFilters": "بدون فلاتر",
-  "searchFiltersSuffix": "فلاتر",
   "categoryLabel": "الفئة",
   "listingDetailEyebrow": "تفاصيل الإعلان",
   "sellerOwnedListingEyebrow": "إعلاني",
@@ -397,25 +360,12 @@
   "listingSellerSectionTitle": "البائع",
   "quantityLabel": "الكمية",
   "listingStatusLabel": "الحالة",
-  "listingStatusActive": "نشط",
   "listingExchangeEnabled": "التبادل مفعّل",
-  "listingAssuranceTitle": "لماذا يستحق هذا الإعلان المراجعة",
   "listingLocationLabel": "منطقة الاستلام",
-  "listingFitmentLabel": "المركبة المستهدفة",
   "listingActionDockTitle": "الخطوة التالية",
-  "listingManageAction": "إدارة الإعلان",
   "listingEditAction": "تعديل الإعلان",
   "listingRequestToBuyAction": "طلب شراء",
   "listingShareAction": "مشاركة الإعلان",
-  "listingShareTitle": "مشاركة الإعلان",
-  "listingShareBody": "انسخ رابط الإعلان المباشر لمتابعة المحادثة خارج هذه الشاشة عند الحاجة.",
-  "listingShareCopyAction": "نسخ الرابط",
-  "listingShareCopied": "تم نسخ رابط الإعلان.",
-  "listingSellerTrustAction": "تفاصيل ثقة البائع",
-  "listingSellerTrustTitle": "ملخص ثقة البائع",
-  "listingSellerTrustBody": "راجع سياق البائع قبل متابعة المراسلة أو بدء المعاملة.",
-  "listingSellerTrustListingsLabel": "سياق الثقة",
-  "listingSellerTrustVerifiedStatus": "موثّق",
   "listingUnavailableTitle": "الإعلان غير متاح",
   "listingUnavailableBody": "هذا الإعلان لم يعد متاحاً أو لا يمكن فتحه حالياً.",
   "savedListingsEyebrow": "المحفوظات",
@@ -423,7 +373,6 @@
   "savedListingsSubtitle": "احتفظ بقائمة قصيرة للقطع التي قد تعود إليها لاحقاً.",
   "savedListingsEmptyBody": "لا توجد إعلانات محفوظة بعد. تصفح السوق واحفظ القطع التي تهمك.",
   "savedListingsBrowseAction": "تصفح الإعلانات",
-  "savedListingsViewAction": "فتح الإعلان",
   "savedListingsRemoveAction": "إزالة",
   "savedListingsErrorBody": "تعذر تحميل الإعلانات المحفوظة حالياً.",
   "offlineBannerLabel": "أنت غير متصل",
@@ -445,8 +394,6 @@
   "notificationsErrorBody": "تعذر تحميل الإشعارات حالياً.",
   "notificationsSavedMessageTitle": "رسالة جديدة على إعلانك المحفوظ",
   "notificationsSavedMessageBody": "ردّ بائع موثّق على أحد إعلاناتك المحفوظة.",
-  "notificationsSavedPriceTitle": "تم تحديث سعر إعلان محفوظ",
-  "notificationsSavedPriceBody": "أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.",
   "notificationsCategoryMessage": "رسالة",
   "notificationsCategoryListing": "إعلان",
   "notificationsCategoryTransaction": "معاملة",
@@ -459,24 +406,35 @@
   "notificationsTime2mAgo": "منذ دقيقتين",
   "notificationsTime1hAgo": "منذ ساعة",
   "notificationsTimeHoursShort": "{count} س",
-  "@notificationsTimeHoursShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeHoursShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "notificationsTimeDaysShort": "{count} ي",
-  "@notificationsTimeDaysShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeDaysShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "noResultsTitle": "لا توجد نتائج لهذا الحد الأدنى من التقييم.",
   "noResultsBody": "اخفض الحد الأدنى للتقييم لرؤية نتائج أكثر.",
   "messagesEmptyState": "لا توجد رسائل بعد. ابدأ المحادثة.",
   "ratingScoreLabel": "التقييم",
   "transactionStartTitle": "بدء معاملة",
   "transactionStartBody": "أنشئ طلب معاملة مع البائع لهذا الإعلان.",
-  "transactionStartCta": "إنشاء طلب",
   "requestPartCta": "طلب القطعة",
   "transactionListingContextLabel": "الإعلان",
   "transactionSellerContextLabel": "سياق البائع",
@@ -491,7 +449,6 @@
   "transactionHistoryEmpty": "لا توجد صفقات بعد",
   "transactionLifecycleSubtitle": "راجع الطلبات النشطة وحالات القبول والإكمال.",
   "transactionRecordLabel": "سجل المعاملة",
-  "transactionStateLabel": "الحالة",
   "transactionStateRequested": "طلب مفتوح",
   "transactionStateAccepted": "تم القبول",
   "transactionStateCompleted": "مكتملة",
@@ -499,7 +456,7 @@
   "transactionStateRejected": "مرفوضة",
   "transactionAccept": "قبول",
   "transactionComplete": "إكمال",
-  "transactionExpire": "تمييز كمنتهية",
+  "transactionExpire": "تعليم كمنتهية",
   "transactionCancel": "إلغاء",
   "cancelTransactionTitle": "إلغاء المعاملة",
   "cancelTransactionBody": "هل أنت متأكد من إلغاء هذه المعاملة؟",
@@ -535,10 +492,9 @@
   "disputeDescriptionHelper": "اشرح المشكلة بوضوح. الحد الأدنى 50 حرفاً.",
   "disputeDescriptionError": "أدخل 50 حرفاً على الأقل حتى يمكن مراجعة الحالة.",
   "disputeEvidenceLabel": "الأدلة",
-  "disputeEvidenceValue": "إرفاق الصور مطلوب في المسار الإنتاجي الكامل.",
+  "disputeEvidenceValue": "سيُطلب منك إرفاق صور كأدلة.",
   "disputeEvidenceStatus": "تحضير",
   "disputeSubmit": "إرسال النزاع",
-  "disputeSubmitted": "تم إرسال النزاع للمراجعة.",
   "disputeSuccessTitle": "تم إرسال النزاع",
   "disputeSuccessBody": "تم إرسال النزاع. سيراجع فريقنا الحالة خلال 24 إلى 48 ساعة.",
   "disputeReasonWrongPart": "تم استلام قطعة خاطئة",
@@ -556,12 +512,21 @@
   "searchHistoryClearAction": "مسح السجل",
   "searchRecentLabel": "عمليات البحث الأخيرة",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": {
-    "placeholders": {
-      "title": {},
-      "link": {}
-    }
-  },
+  "@shareListingText": [
+    [
+      "placeholders",
+      [
+        [
+          "title",
+          []
+        ],
+        [
+          "link",
+          []
+        ]
+      ]
+    ]
+  ],
   "adminVerificationsQueueTitle": "طابور توثيق البائعين",
   "adminVerificationsQueueSubtitle": "راجع طلبات التوثيق المعلقة مع جودة الوثائق ومدة الانتظار.",
   "adminQueueEmptyValue": "لا توجد عناصر نشطة",
@@ -604,7 +569,7 @@
   "adminReportDetailEmptyBody": "افتح هذه الشاشة من طابور البلاغات عندما يكون البلاغ جاهزاً للمراجعة.",
   "adminReportApplyDecisionAction": "تطبيق القرار",
   "adminReportDecisionSaved": "تم حفظ قرار البلاغ.",
-  "adminReportDecisionDismiss": "حفظ بدون إجراء",
+  "adminReportDecisionDismiss": "إغلاق البلاغ بدون إجراء",
   "adminReportDecisionWarnSeller": "إنذار البائع",
   "adminReportDecisionRemoveListing": "إزالة الإعلان",
   "adminReportDecisionSuspendSeller": "تعليق البائع",
@@ -672,10 +637,7 @@
   "adminModerationRejectSuccess": "تم رفض الإعلان وإرجاعه إلى البائع.",
   "adminTeamTitle": "فريق الإدارة",
   "adminTeamSubtitle": "إدارة المشغلين النشطين وتغطية المشرف العام ودعوات الوصول من مكان واحد.",
-  "adminTeamEmptyTitle": "لا توجد إجراءات فريق معلقة",
-  "adminTeamEmptyBody": "واجهة الفريق جاهزة لتدفقات الدعوات وإدارة الصلاحيات بشكل مضبوط.",
   "adminTeamInviteAction": "دعوة مشرف",
-  "adminTeamInviteUnavailable": "تدار دعوات الفريق عبر أدوات الإدارة الآمنة فقط.",
   "adminTeamInviteSuccess": "تم إرسال دعوة المشرف.",
   "adminTeamSuspendAction": "تعليق",
   "adminTeamReactivateAction": "إعادة تفعيل",
@@ -703,48 +665,32 @@
   "sellerListingResubmitAction": "إعادة الإرسال",
   "sellerListingActionUpdated": "تم تحديث مسار الإعلان.",
   "sellerListingSubmittedLabel": "تم الإرسال {date}",
-  "@sellerListingSubmittedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "@sellerListingSubmittedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "sellerListingUpdatedLabel": "آخر تحديث {date}",
-  "@sellerListingUpdatedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
-  "releaseReadinessTitle": "جاهزية إصدار الإنتاج",
-  "releaseReadinessRuntimeWarning": "هذه الشاشة لا تنفذ فحوصات Flutter أو Supabase أثناء التشغيل. تبقى الجاهزية غير مكتملة حتى يتم التحقق من الأدلة الخارجية.",
-  "releaseDecisionLabel": "القرار",
-  "releaseDecisionReady": "جاهز للإصدار",
-  "releaseDecisionNotReady": "غير جاهز للإصدار",
-  "releaseRunReadiness": "تشغيل فحص الجاهزية",
-  "releaseOpenBlockers": "العوائق المفتوحة",
+  "@sellerListingUpdatedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "releaseGateResults": "نتائج البوابات",
-  "releaseSeverityCritical": "حرج",
-  "releaseSeverityHigh": "مرتفع",
-  "releaseSeverityMedium": "متوسط",
   "releaseAreaAuth": "المصادقة",
   "releaseAreaTransactions": "المعاملات وسياسات الخلفية",
-  "releaseAreaLocalization": "التوطين",
-  "releaseAreaQuality": "الجودة",
-  "releaseAreaOperations": "التشغيل",
-  "launchOperationsTitle": "عمليات الإطلاق",
-  "launchOperationsSubtitle": "شغّل ضوابط الإطلاق وتحقق من تغطية البوابات وصعّد المخاطر التشغيلية من شاشة واحدة.",
-  "launchRunChecklist": "تشغيل قائمة الإطلاق",
-  "launchDecisionLabel": "القرار",
-  "launchDecisionPending": "بانتظار تشغيل القائمة",
-  "launchDecisionGo": "إطلاق",
-  "launchDecisionHold": "إيقاف",
-  "launchRaiseCriticalIncident": "تصعيد حادث حرج",
-  "launchChecklistRunning": "القائمة قيد التشغيل",
-  "launchChecklistCoverageTitle": "تغطية بوابات الإطلاق",
-  "launchChecklistCoverageBody": "أبقِ الواجهة الأولى للإطلاق مرتبطة ببوابات واضحة ومالكي الأدلة وجهوزية التصعيد التشغيلي.",
-  "launchChecklistPendingStatus": "بانتظار المراجعة",
-  "launchSignalPass": "ناجح",
-  "launchSignalFail": "فشل",
-  "launchSignalUnknown": "غير معروف",
   "launchChecklistAnalyzeTitle": "التحليل والفحوصات الثابتة",
   "launchChecklistAnalyzeMeta": "المالك: جودة تطبيق الجوال",
   "launchChecklistWidgetTestsTitle": "فحص الواجهات والمسارات",
@@ -753,38 +699,17 @@
   "launchChecklistIntegrationMeta": "المالك: تحقق تدفقات الجودة",
   "launchChecklistDatabaseTitle": "فحوصات سياسات قاعدة البيانات",
   "launchChecklistDatabaseMeta": "المالك: أمان إصدار الخلفية",
-  "cutoverTitle": "التحويل والتراجع",
-  "cutoverRun": "تشغيل التحويل",
-  "cutoverLabel": "التحويل",
-  "rollbackRun": "تشغيل التراجع",
-  "rollbackLabel": "التراجع",
-  "rollbackVerificationLabel": "التحقق",
-  "releaseObservabilityTitle": "مراقبة الإصدار",
-  "releaseObservabilityRefresh": "تحديث الصحة",
-  "releaseObservabilitySignals": "الإشارات",
-  "releaseObservabilityAlerts": "التنبيهات",
-  "releaseObservabilityAcknowledge": "تأكيد أول تنبيه",
-  "releaseObservabilityExportStable": "تصدير تقرير الاستقرار",
-  "releaseSnapshotTitle": "لقطة ما بعد الإطلاق",
-  "releaseSnapshotSignalLabel": "إشارة",
-  "releaseIncidentTitle": "آخر تصعيد للحوادث",
   "releaseSignalMessaging": "الرسائل",
-  "riskConfirmTitle": "تأكيد إجراء عالي الخطورة",
-  "riskConfirmBodyPrefix": "أنت على وشك تنفيذ:",
-  "riskRationaleLabel": "سبب التنفيذ (مطلوب)",
   "riskCancel": "إلغاء",
-  "riskConfirmAction": "تأكيد",
   "unknownRouteTitle": "الصفحة غير موجودة",
   "unknownRouteBody": "المسار غير صالح أو غير متاح:",
   "unknownRouteGoHome": "العودة للرئيسية",
   "showPassword": "إظهار كلمة المرور",
   "hidePassword": "إخفاء كلمة المرور",
   "navHome": "الرئيسية",
-  "navSearch": "بحث",
   "navSaved": "المحفوظات",
   "navMessages": "الرسائل",
   "navAccount": "الحساب",
-  "navDashboard": "اللوحة",
   "navListings": "الإعلانات",
   "navQueues": "الطوابير",
   "navReports": "البلاغات",
@@ -796,15 +721,27 @@
   "appConfigurationRequiredTitle": "الإعداد مطلوب",
   "appConfigurationRequiredBody": "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
   "priceWithDzd": "{amount} د.ج",
-  "@priceWithDzd": {
-    "placeholders": {
-      "amount": {}
-    }
-  },
+  "@priceWithDzd": [
+    [
+      "placeholders",
+      [
+        [
+          "amount",
+          []
+        ]
+      ]
+    ]
+  ],
   "disputeEvidenceCount": "{count} ملف",
-  "@disputeEvidenceCount": {
-    "placeholders": {
-      "count": {}
-    }
-  }
+  "@disputeEvidenceCount": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ]
 }

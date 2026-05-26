@@ -40,7 +40,7 @@ class ListingModerationQueueScreen extends ConsumerWidget {
                     child: QitakQueueRow(
                       title: item.title,
                       meta:
-                          '${context.l10n.localMarketplaceCategory(item.categoryLabel)} • ${item.sellerName}',
+                          '${context.l10n.localMarketplaceCategory(item.categoryCode)} • ${item.sellerName}',
                       status: item.riskLevel.toUpperCase(),
                       trailing: const Icon(Icons.chevron_right_rounded),
                     ),

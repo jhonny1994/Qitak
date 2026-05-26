@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
@@ -50,10 +53,17 @@ class _SellerOnboardingScreenState
   List<SellerDocumentDraft> _documents = const <SellerDocumentDraft>[];
   bool _hydratedExisting = false;
 
+  static const Map<String, String> _documentLabelFallbacks = <String, String>{
+    'government_id_front': 'sellerDocumentIdFrontLabel',
+    'government_id_back': 'sellerDocumentIdBackLabel',
+    'business_registration': 'sellerDocumentBusinessRegistrationLabel',
+  };
+
   @override
   Widget build(BuildContext context) {
     final taxonomy = ref.watch(discoveryFilterTaxonomyProvider);
     final existingApplication = ref.watch(currentSellerApplicationProvider);
+    final documentPolicies = ref.watch(sellerDocumentPoliciesProvider);
     final profile = ref.watch(authSessionProvider).profile;
 
     return SingleChildScrollView(
@@ -79,6 +89,10 @@ class _SellerOnboardingScreenState
               value?.documents ?? const <SellerDocument>[],
             _ => const <SellerDocument>[],
           };
+          final documentOptions =
+              documentPolicies.asData?.value ??
+              const <({String code, String labelKey})>[];
+          final requiredDocumentTypes = _requiredDocumentTypes(documentOptions);
 
           return Form(
             key: _formKey,
@@ -104,6 +118,8 @@ class _SellerOnboardingScreenState
                         sortedWilayas,
                         sortedCommunes,
                         existingDocs,
+                        documentOptions,
+                        requiredDocumentTypes,
                       ),
                       if (_step == 4) ...[
                         const SizedBox(height: 18),
@@ -199,7 +215,7 @@ class _SellerOnboardingScreenState
     try {
       final profile = ref.read(authSessionProvider).profile;
       if (profile == null) {
-        throw const AppException('Session not found.');
+        throw AppException.fromCode(AppErrorCode.sessionNotFound);
       }
       await ref
           .read(sellerApplicationRepositoryProvider)
@@ -223,7 +239,10 @@ class _SellerOnboardingScreenState
         });
       }
     } on AppException catch (error) {
-      _showSnack(error.message);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.appExceptionMessage(error));
     } on Object {
       _showSnack(genericFailure);
     } finally {
@@ -246,7 +265,14 @@ class _SellerOnboardingScreenState
         value?.documents ?? const <SellerDocument>[],
       _ => const <SellerDocument>[],
     };
-    if (_step == 3 && !_hasRequiredDocuments(existingDocuments)) {
+    final documentOptions =
+        ref.read(sellerDocumentPoliciesProvider).asData?.value ??
+        const <({String code, String labelKey})>[];
+    if (_step == 3 &&
+        !_hasRequiredDocuments(
+          existingDocuments,
+          _requiredDocumentTypes(documentOptions),
+        )) {
       return;
     }
     setState(() => _step += 1);
@@ -283,6 +309,8 @@ class _SellerOnboardingScreenState
     List<WilayaOption> sortedWilayas,
     List<CommuneOption> sortedCommunes,
     List<SellerDocument> existingDocuments,
+    List<({String code, String labelKey})> documentOptions,
+    List<String> requiredDocumentTypes,
   ) {
     switch (_step) {
       case 0:
@@ -384,6 +412,10 @@ class _SellerOnboardingScreenState
           ),
         ];
       case 2:
+        final uploadOrder = _documentUploadOrder(
+          documentOptions,
+          requiredDocumentTypes,
+        );
         return [
           QitakTimelineBlock(
             title: context.l10n.sellerOnboardingStepDocumentsTitle,
@@ -391,31 +423,26 @@ class _SellerOnboardingScreenState
             isCurrent: true,
           ),
           Text(
-            _sellerType == 'business'
-                ? '${context.l10n.sellerDocumentIdFrontLabel} • ${context.l10n.sellerDocumentBusinessRegistrationLabel}'
-                : context.l10n.sellerDocumentIdFrontLabel,
+            uploadOrder
+                .map((code) => _documentLabel(context, code, documentOptions))
+                .join(' • '),
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 12),
-          _DocumentUploadField(
-            title: context.l10n.sellerDocumentIdFrontLabel,
-            selectedDocument: _documentFor('government_id_front'),
-            existingDocument: _existingDocumentFor(
-              'government_id_front',
-              existingDocuments,
-            ),
-            onPick: () => _pickDocument('government_id_front'),
-          ),
-          if (_sellerType == 'business') ...[
-            const SizedBox(height: 12),
+          for (var index = 0; index < uploadOrder.length; index++) ...[
+            if (index > 0) const SizedBox(height: 12),
             _DocumentUploadField(
-              title: context.l10n.sellerDocumentBusinessRegistrationLabel,
-              selectedDocument: _documentFor('business_registration'),
+              title: _documentLabel(
+                context,
+                uploadOrder[index],
+                documentOptions,
+              ),
+              selectedDocument: _documentFor(uploadOrder[index]),
               existingDocument: _existingDocumentFor(
-                'business_registration',
+                uploadOrder[index],
                 existingDocuments,
               ),
-              onPick: () => _pickDocument('business_registration'),
+              onPick: () => _pickDocument(uploadOrder[index]),
             ),
           ],
           const SizedBox(height: 12),
@@ -425,7 +452,11 @@ class _SellerOnboardingScreenState
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
-          if (_submitted && !_hasRequiredDocuments(existingDocuments)) ...[
+          if (_submitted &&
+              !_hasRequiredDocuments(
+                existingDocuments,
+                requiredDocumentTypes,
+              )) ...[
             const SizedBox(height: 8),
             Text(
               context.l10n.sellerOnboardingDocumentsRequired,
@@ -473,16 +504,15 @@ class _SellerOnboardingScreenState
     }
   }
 
-  bool _hasRequiredDocuments(List<SellerDocument> existingDocuments) {
-    final requiredTypes = <String>{
-      'government_id_front',
-      if (_sellerType == 'business') 'business_registration',
-    };
+  bool _hasRequiredDocuments(
+    List<SellerDocument> existingDocuments,
+    List<String> requiredTypes,
+  ) {
     final availableTypes = <String>{
       ...existingDocuments.map((item) => item.documentType),
       ..._documents.map((item) => item.documentType),
     };
-    return requiredTypes.difference(availableTypes).isEmpty;
+    return requiredTypes.toSet().difference(availableTypes).isEmpty;
   }
 
   WilayaOption? _selectedWilaya(List<WilayaOption> wilayas) {
@@ -513,6 +543,74 @@ class _SellerOnboardingScreenState
       }
     }
     return null;
+  }
+
+  List<String> _requiredDocumentTypes(
+    List<({String code, String labelKey})> documentOptions,
+  ) {
+    final activeCodes = documentOptions.map((item) => item.code).toSet();
+    final required = <String>['government_id_front'];
+    if (_sellerType == 'business' &&
+        activeCodes.contains('business_registration')) {
+      required.add('business_registration');
+    }
+    return required;
+  }
+
+  List<String> _documentUploadOrder(
+    List<({String code, String labelKey})> documentOptions,
+    List<String> requiredDocumentTypes,
+  ) {
+    if (documentOptions.isEmpty) {
+      return requiredDocumentTypes;
+    }
+    final requiredSet = requiredDocumentTypes.toSet();
+    return documentOptions
+        .where((item) => requiredSet.contains(item.code))
+        .map((item) => item.code)
+        .toList(growable: false);
+  }
+
+  String _documentLabel(
+    BuildContext context,
+    String code,
+    List<({String code, String labelKey})> documentOptions,
+  ) {
+    ({String code, String labelKey})? option;
+    for (final item in documentOptions) {
+      if (item.code == code) {
+        option = item;
+        break;
+      }
+    }
+    return _documentLabelFromKey(
+      context,
+      option?.labelKey ?? _documentLabelFallbacks[code] ?? code,
+    );
+  }
+}
+
+final sellerDocumentPoliciesProvider =
+    FutureProvider<List<({String code, String labelKey})>>((ref) async {
+      final options = await ref
+          .read(sellerApplicationRepositoryProvider)
+          .fetchPolicyOptions(PolicyKey.sellerDocumentType);
+      return options
+          .where((option) => option.active)
+          .map((option) => (code: option.code, labelKey: option.labelKey))
+          .toList(growable: false);
+    });
+
+String _documentLabelFromKey(BuildContext context, String key) {
+  switch (key) {
+    case 'sellerDocumentIdFrontLabel':
+      return context.l10n.sellerDocumentIdFrontLabel;
+    case 'sellerDocumentIdBackLabel':
+      return context.l10n.sellerDocumentIdBackLabel;
+    case 'sellerDocumentBusinessRegistrationLabel':
+      return context.l10n.sellerDocumentBusinessRegistrationLabel;
+    default:
+      return key;
   }
 }
 

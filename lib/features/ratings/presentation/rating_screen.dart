@@ -105,7 +105,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                       title: listing.localizedTitle(context.l10n),
                       price: context.l10n.ratingListingContextValue,
                       subtitle:
-                          '${listing.fitmentLabel} | ${listing.locationLabel}',
+                          '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}',
                       ratingLabel: listing.localizedCondition(context.l10n),
                       badges: [
                         QitakChip(

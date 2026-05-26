@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
@@ -274,7 +275,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       await _showEmailConfirmationDialog(confirmation);
     } on AppException catch (error) {
       if (!mounted) return;
-      _showSnack(error.message);
+      _showSnack(context.appExceptionMessage(error));
     } on Object {
       if (!mounted) return;
       _showSnack(context.l10n.createAccountFailure);

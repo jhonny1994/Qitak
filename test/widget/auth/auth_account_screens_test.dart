@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/data/auth_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
@@ -1201,6 +1202,11 @@ class _ThrowingSellerApplicationRepository
     String? reasonCode,
     String? note,
   }) async {
+    throw StateError('lookup failed');
+  }
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async {
     throw StateError('lookup failed');
   }
 }

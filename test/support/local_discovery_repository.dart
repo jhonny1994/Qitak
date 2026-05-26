@@ -14,16 +14,14 @@ class LocalDiscoveryRepository implements DiscoveryRepository {
       id: 'listing-1',
       sellerUserId: 'seller-001',
       title: 'Headlight assembly',
-      priceLabel: '18,500 DZD',
-      locationLabel: 'Bab Ezzouar | Alger',
-      fitmentLabel: 'Peugeot 308 | 2018',
-      sellerLabel: 'Verified seller',
+      priceAmount: 18500,
+      sellerLabelCode: 'seller_label_verified',
       rating: 4.8,
       threadId: 'l1',
       transactionId: 't1',
       categoryId: 'lighting',
-      categoryLabel: 'Lighting',
-      conditionLabel: 'Like new',
+      categoryCode: 'lighting',
+      conditionCode: 'like_new',
       description:
           'Verified fitment listing with clear lens condition and working mounts.',
       memberSinceLabel: 'Since 2023',
@@ -41,16 +39,14 @@ class LocalDiscoveryRepository implements DiscoveryRepository {
       id: 'listing-2',
       sellerUserId: 'seller-001',
       title: 'Brake pad set',
-      priceLabel: '7,500 DZD',
-      locationLabel: 'Bir El Djir | Oran',
-      fitmentLabel: 'Renault Symbol | 2016',
-      sellerLabel: 'Business seller',
+      priceAmount: 7500,
+      sellerLabelCode: 'seller_label_business',
       rating: 4.1,
       threadId: 'l2',
       transactionId: 't2',
       categoryId: 'braking',
-      categoryLabel: 'Brakes',
-      conditionLabel: 'New',
+      categoryCode: 'braking',
+      conditionCode: 'new',
       description:
           'Fresh stock brake pad kit for one fitment target, ready for pickup.',
       memberSinceLabel: 'Since 2022',
@@ -94,9 +90,11 @@ class LocalDiscoveryRepository implements DiscoveryRepository {
             final haystack = [
               item.title,
               item.description,
-              item.locationLabel,
-              item.fitmentLabel,
-              item.categoryLabel,
+              item.communeCode ?? '',
+              item.wilayaCode ?? '',
+              item.brand ?? '',
+              item.model ?? '',
+              item.categoryCode,
             ].join(' ').toLowerCase();
             if (!haystack.contains(normalizedQuery)) {
               return false;
@@ -125,14 +123,13 @@ class LocalDiscoveryRepository implements DiscoveryRepository {
             return false;
           }
           if (filters.condition != null &&
-              _conditionIdForListing(item.conditionLabel) !=
-                  filters.condition) {
+              item.conditionCode != filters.condition) {
             return false;
           }
           if (filters.dealType == 'buy_or_exchange' && !item.exchangeAllowed) {
             return false;
           }
-          final price = _parsePrice(item.priceLabel);
+          final price = item.priceAmount;
           if (filters.priceMin != null && price < filters.priceMin!) {
             return false;
           }
@@ -159,23 +156,5 @@ class LocalDiscoveryRepository implements DiscoveryRepository {
       }
     }
     return null;
-  }
-
-  String _conditionIdForListing(String conditionLabel) {
-    switch (conditionLabel.toLowerCase()) {
-      case 'new':
-        return 'new';
-      case 'like new':
-        return 'like_new';
-      case 'used':
-        return 'used';
-      default:
-        return conditionLabel.toLowerCase();
-    }
-  }
-
-  int _parsePrice(String priceLabel) {
-    final digits = priceLabel.replaceAll(RegExp('[^0-9]'), '');
-    return int.tryParse(digits) ?? 0;
   }
 }

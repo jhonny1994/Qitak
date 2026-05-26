@@ -1,5 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/admin/domain/admin_report.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,13 +28,15 @@ final adminReportsRepositoryProvider = Provider<AdminReportsRepository>((ref) {
   if (client == null) {
     throw StateError('Supabase client is required for admin reports.');
   }
-  return SupabaseAdminReportsRepository(client);
+  final contracts = ref.watch(appContractRepositoryProvider);
+  return SupabaseAdminReportsRepository(client, contracts);
 });
 
 class SupabaseAdminReportsRepository implements AdminReportsRepository {
-  const SupabaseAdminReportsRepository(this._client);
+  const SupabaseAdminReportsRepository(this._client, this._contracts);
 
   final SupabaseClient _client;
+  final AppContractRepository _contracts;
 
   @override
   Future<AdminReport?> fetchReport(String reportId) async {
@@ -46,10 +53,11 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
 
   @override
   Future<List<AdminReport>> listOpenReports() async {
+    final statuses = await _queueStatuses();
     final rows = await _client
         .from('reports')
         .select()
-        .inFilter('status', ['open', 'under_review'])
+        .inFilter('status', statuses)
         .order('created_at', ascending: false);
     return rows
         .whereType<Map<String, dynamic>>()
@@ -64,15 +72,19 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
     required String reasonCode,
     String? note,
   }) async {
-    await _client.rpc<dynamic>(
-      'admin_resolve_report',
-      params: <String, dynamic>{
-        'p_report_id': reportId,
-        'p_decision': decision,
-        'p_reason_code': reasonCode,
-        'p_note': note,
-      },
-    );
+    try {
+      await _client.rpc<dynamic>(
+        'admin_resolve_report',
+        params: <String, dynamic>{
+          'p_report_id': reportId,
+          'p_decision': decision,
+          'p_reason_code': reasonCode,
+          'p_note': note,
+        },
+      );
+    } on PostgrestException catch (error) {
+      throw AppException.fromCode(classifyPostgrestException(error));
+    }
   }
 
   AdminReport _mapRow(Map<String, dynamic> row) {
@@ -194,6 +206,17 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
       return entityId;
     }
     return '$entityType • $entityId';
+  }
+
+  Future<List<String>> _queueStatuses() async {
+    final statusSet = await _contracts.fetchDomainCodes(DomainKey.reportStatus);
+    final queue = statusSet
+        .where((code) => code == 'open' || code == 'under_review')
+        .toList(growable: false);
+    if (queue.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    return queue;
   }
 }
 

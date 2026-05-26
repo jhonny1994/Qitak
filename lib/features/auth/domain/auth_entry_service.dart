@@ -118,8 +118,8 @@ class AuthEntryService {
       return role == AccountRole.seller && isSellerApproved;
     }
 
-    // Admin and release management routes: admin/super_admin only
-    if (path.startsWith('/admin') || path.startsWith('/release')) {
+    // Admin routes: admin/super_admin only
+    if (path.startsWith('/admin')) {
       return role == AccountRole.admin || role == AccountRole.superAdmin;
     }
 

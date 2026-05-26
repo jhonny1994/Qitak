@@ -1,5 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_dispute.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,13 +38,15 @@ final disputeRepositoryProvider = Provider<DisputeRepository>((ref) {
   if (client == null) {
     throw StateError('Supabase client is required for disputes.');
   }
-  return SupabaseDisputeRepository(client);
+  final contracts = ref.watch(appContractRepositoryProvider);
+  return SupabaseDisputeRepository(client, contracts);
 });
 
 class SupabaseDisputeRepository implements DisputeRepository {
-  const SupabaseDisputeRepository(this._client);
+  const SupabaseDisputeRepository(this._client, this._contracts);
 
   final SupabaseClient _client;
+  final AppContractRepository _contracts;
 
   static const _bucket = 'dispute-evidence';
 
@@ -134,10 +141,11 @@ class SupabaseDisputeRepository implements DisputeRepository {
 
   @override
   Future<List<TransactionDispute>> listOpenDisputes() async {
+    final queueStatuses = await _queueStatuses();
     final rows = await _client
         .from('disputes')
         .select()
-        .inFilter('status', ['open', 'under_review'])
+        .inFilter('status', queueStatuses)
         .order('created_at', ascending: false);
     final disputes = <TransactionDispute>[];
     for (final row in rows.whereType<Map<String, dynamic>>()) {
@@ -154,17 +162,22 @@ class SupabaseDisputeRepository implements DisputeRepository {
     required String description,
     List<ListingMediaSelection> evidence = const <ListingMediaSelection>[],
   }) async {
-    final row = await _client
-        .from('disputes')
-        .insert(<String, dynamic>{
-          'deal_id': transactionId,
-          'filed_by': createdByUserId,
-          'dispute_type': reason,
-          'description': description,
-          'status': 'open',
-        })
-        .select()
-        .single();
+    late final Map<String, dynamic> row;
+    try {
+      row = await _client
+          .from('disputes')
+          .insert(<String, dynamic>{
+            'deal_id': transactionId,
+            'filed_by': createdByUserId,
+            'dispute_type': reason,
+            'description': description,
+            'status': 'open',
+          })
+          .select()
+          .single();
+    } on PostgrestException catch (error) {
+      throw AppException.fromCode(classifyPostgrestException(error));
+    }
 
     final disputeId = row['id'] as String;
     for (var index = 0; index < evidence.length; index++) {
@@ -195,16 +208,20 @@ class SupabaseDisputeRepository implements DisputeRepository {
     required String outcomeAction,
     String? note,
   }) async {
-    await _client.rpc<dynamic>(
-      'admin_resolve_dispute',
-      params: <String, dynamic>{
-        'p_dispute_id': disputeId,
-        'p_decision': decision,
-        'p_reason_code': reasonCode,
-        'p_outcome_action': outcomeAction,
-        'p_note': note,
-      },
-    );
+    try {
+      await _client.rpc<dynamic>(
+        'admin_resolve_dispute',
+        params: <String, dynamic>{
+          'p_dispute_id': disputeId,
+          'p_decision': decision,
+          'p_reason_code': reasonCode,
+          'p_outcome_action': outcomeAction,
+          'p_note': note,
+        },
+      );
+    } on PostgrestException catch (error) {
+      throw AppException.fromCode(classifyPostgrestException(error));
+    }
   }
 
   TransactionDispute _mapRow(
@@ -236,6 +253,19 @@ class SupabaseDisputeRepository implements DisputeRepository {
   String _sanitizeFileName(String raw) {
     final cleaned = raw.replaceAll(RegExp('[^A-Za-z0-9._-]'), '_');
     return cleaned.isEmpty ? 'dispute_evidence.jpg' : cleaned;
+  }
+
+  Future<List<String>> _queueStatuses() async {
+    final statusSet = await _contracts.fetchDomainCodes(
+      DomainKey.disputeStatus,
+    );
+    final queue = statusSet
+        .where((code) => code == 'open' || code == 'under_review')
+        .toList(growable: false);
+    if (queue.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    return queue;
   }
 }
 

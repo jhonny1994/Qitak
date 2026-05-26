@@ -109,7 +109,7 @@ class _TransactionDetailScreenState
                     : context.l10n.transactionDecisionActive,
                 subtitle: listing == null
                     ? context.l10n.transactionDetailListingContext
-                    : '${listing.fitmentLabel} | ${listing.locationLabel}',
+                    : '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}',
                 badges: [
                   QitakChip(
                     label:

@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
-import 'package:qitak_app/features/release/domain/launch_operations_models.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:qitak_app/generated/l10n.dart';
 
@@ -125,8 +124,10 @@ extension AppRoleL10nX on S {
   String localMarketplaceSellerLabel(String raw) {
     switch (raw) {
       case 'Verified seller':
+      case 'seller_label_verified':
         return localSellerLabelVerified;
       case 'Business seller':
+      case 'seller_label_business':
         return localSellerLabelBusiness;
       default:
         return raw;
@@ -200,37 +201,6 @@ extension AppRoleL10nX on S {
     }
   }
 
-  String launchDecisionText(LaunchDecision decision) {
-    switch (decision) {
-      case LaunchDecision.go:
-        return launchDecisionGo;
-      case LaunchDecision.hold:
-        return launchDecisionHold;
-    }
-  }
-
-  String launchSignalStatusText(SignalStatus status) {
-    switch (status) {
-      case SignalStatus.pass:
-        return launchSignalPass;
-      case SignalStatus.fail:
-        return launchSignalFail;
-      case SignalStatus.unknown:
-        return launchSignalUnknown;
-    }
-  }
-
-  String incidentSeverityText(IncidentSeverity severity) {
-    switch (severity) {
-      case IncidentSeverity.critical:
-        return releaseSeverityCritical;
-      case IncidentSeverity.high:
-        return releaseSeverityHigh;
-      case IncidentSeverity.medium:
-        return releaseSeverityMedium;
-    }
-  }
-
   String launchChecklistTitle(String name) {
     switch (name) {
       case 'flutter_analyze':
@@ -293,11 +263,28 @@ extension MarketplaceListingL10nX on MarketplaceListing {
   String localizedTitle(S l10n) => l10n.localMarketplaceTitle(title);
 
   String localizedCategory(S l10n) =>
-      l10n.localMarketplaceCategory(categoryLabel);
+      l10n.localMarketplaceCategory(categoryCode);
 
   String localizedCondition(S l10n) =>
-      l10n.localMarketplaceCondition(conditionLabel);
+      l10n.localMarketplaceCondition(conditionCode);
 
   String localizedSellerLabel(S l10n) =>
-      l10n.localMarketplaceSellerLabel(sellerLabel);
+      l10n.localMarketplaceSellerLabel(sellerLabelCode);
+
+  String localizedPrice(S l10n) => '$priceAmount DZD';
+
+  String localizedFitment(S l10n) {
+    final parts = <String>[
+      if (brand != null && brand!.isNotEmpty) brand!,
+      if (model != null && model!.isNotEmpty) model!,
+      if (year != null) year.toString(),
+    ];
+    return parts.join(' | ');
+  }
+
+  String localizedLocation(S l10n) {
+    final commune = communeCode?.trim().isNotEmpty == true ? communeCode! : '-';
+    final wilaya = wilayaCode?.trim().isNotEmpty == true ? wilayaCode! : '-';
+    return '$commune | $wilaya';
+  }
 }

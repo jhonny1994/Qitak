@@ -3,10 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
+
+final disputeDecisionPolicyOptionsProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) async {
+      return ref.watch(disputeResolutionDecisionPolicyProvider.future);
+    });
+
+final disputeOutcomePolicyOptionsProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) async {
+      return ref.watch(disputeResolutionOutcomeActionPolicyProvider.future);
+    });
+
+final disputeReasonPolicyOptionsProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) async {
+      return ref.watch(disputeResolutionReasonPolicyProvider.future);
+    });
 
 class DisputeDetailScreen extends ConsumerStatefulWidget {
   const DisputeDetailScreen({required this.disputeId, super.key});
@@ -33,6 +50,39 @@ class _DisputeDetailScreenState extends ConsumerState<DisputeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final dispute = ref.watch(adminDisputeProvider(widget.disputeId));
+    final decisionOptions = ref.watch(disputeDecisionPolicyOptionsProvider);
+    final outcomeOptions = ref.watch(disputeOutcomePolicyOptionsProvider);
+    final reasonOptions = ref.watch(disputeReasonPolicyOptionsProvider);
+
+    final availableDecisionOptions =
+        decisionOptions.asData?.value ?? const <AppPolicyOption>[];
+    final availableOutcomeOptions =
+        outcomeOptions.asData?.value ?? const <AppPolicyOption>[];
+    final availableReasonOptions =
+        reasonOptions.asData?.value ?? const <AppPolicyOption>[];
+
+    final selectedDecision =
+        availableDecisionOptions.any(
+          (item) => item.code == _decision,
+        )
+        ? _decision
+        : (availableDecisionOptions.isNotEmpty
+              ? availableDecisionOptions.first.code
+              : _decision);
+    final selectedOutcomeAction =
+        availableOutcomeOptions.any(
+          (item) => item.code == _outcomeAction,
+        )
+        ? _outcomeAction
+        : (availableOutcomeOptions.isNotEmpty
+              ? availableOutcomeOptions.first.code
+              : _outcomeAction);
+    final selectedReasonCode =
+        (_reasonCode != null &&
+            availableReasonOptions.any((item) => item.code == _reasonCode))
+        ? _reasonCode
+        : null;
+
     return dispute.when(
       data: (item) => AdminSurfaceScaffold(
         eyebrow: context.l10n.adminDisputesQueueTitle,
@@ -173,56 +223,30 @@ class _DisputeDetailScreenState extends ConsumerState<DisputeDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       QitakDropdownField<String>(
-                        value: _decision,
+                        value: selectedDecision,
                         items: [
-                          DropdownMenuItem(
-                            value: 'buyer',
-                            child: Text(
-                              context.l10n.adminDisputeDecisionBuyer,
+                          for (final option in availableDecisionOptions)
+                            DropdownMenuItem(
+                              value: option.code,
+                              child: Text(
+                                _policyLabel(context, option.labelKey),
+                              ),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'seller',
-                            child: Text(
-                              context.l10n.adminDisputeDecisionSeller,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'dismiss',
-                            child: Text(
-                              context.l10n.adminDisputeDecisionDismiss,
-                            ),
-                          ),
                         ],
                         onChanged: (value) =>
                             setState(() => _decision = value ?? 'buyer'),
                       ),
                       const SizedBox(height: 12),
                       QitakDropdownField<String>(
-                        value: _outcomeAction,
+                        value: selectedOutcomeAction,
                         items: [
-                          DropdownMenuItem(
-                            value: 'no_action',
-                            child: Text(
-                              context.l10n.adminDisputeOutcomeNoAction,
+                          for (final option in availableOutcomeOptions)
+                            DropdownMenuItem(
+                              value: option.code,
+                              child: Text(
+                                _policyLabel(context, option.labelKey),
+                              ),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'warn',
-                            child: Text(context.l10n.adminDisputeOutcomeWarn),
-                          ),
-                          DropdownMenuItem(
-                            value: 'suspend',
-                            child: Text(
-                              context.l10n.adminDisputeOutcomeSuspend,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'remove_listing',
-                            child: Text(
-                              context.l10n.adminDisputeOutcomeRemoveListing,
-                            ),
-                          ),
                         ],
                         onChanged: (value) => setState(
                           () => _outcomeAction = value ?? 'no_action',
@@ -230,28 +254,15 @@ class _DisputeDetailScreenState extends ConsumerState<DisputeDetailScreen> {
                       ),
                       const SizedBox(height: 12),
                       QitakDropdownField<String>(
-                        value: _reasonCode,
+                        value: selectedReasonCode,
                         items: [
-                          DropdownMenuItem(
-                            value: 'damaged_part',
-                            child: Text(
-                              context.l10n.adminDisputeReasonDamagedPart,
+                          for (final option in availableReasonOptions)
+                            DropdownMenuItem(
+                              value: option.code,
+                              child: Text(
+                                _policyLabel(context, option.labelKey),
+                              ),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'wrong_part',
-                            child: Text(
-                              context.l10n.adminDisputeReasonWrongPart,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'insufficient_evidence',
-                            child: Text(
-                              context
-                                  .l10n
-                                  .adminDisputeReasonInsufficientEvidence,
-                            ),
-                          ),
                         ],
                         onChanged: (value) =>
                             setState(() => _reasonCode = value),
@@ -322,5 +333,32 @@ class _DisputeDetailScreenState extends ConsumerState<DisputeDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.l10n.adminDisputeDecisionSaved)),
     );
+  }
+}
+
+String _policyLabel(BuildContext context, String labelKey) {
+  switch (labelKey) {
+    case 'adminDisputeDecisionBuyer':
+      return context.l10n.adminDisputeDecisionBuyer;
+    case 'adminDisputeDecisionSeller':
+      return context.l10n.adminDisputeDecisionSeller;
+    case 'adminDisputeDecisionDismiss':
+      return context.l10n.adminDisputeDecisionDismiss;
+    case 'adminDisputeOutcomeNoAction':
+      return context.l10n.adminDisputeOutcomeNoAction;
+    case 'adminDisputeOutcomeWarn':
+      return context.l10n.adminDisputeOutcomeWarn;
+    case 'adminDisputeOutcomeSuspend':
+      return context.l10n.adminDisputeOutcomeSuspend;
+    case 'adminDisputeOutcomeRemoveListing':
+      return context.l10n.adminDisputeOutcomeRemoveListing;
+    case 'adminDisputeReasonDamagedPart':
+      return context.l10n.adminDisputeReasonDamagedPart;
+    case 'adminDisputeReasonWrongPart':
+      return context.l10n.adminDisputeReasonWrongPart;
+    case 'adminDisputeReasonInsufficientEvidence':
+      return context.l10n.adminDisputeReasonInsufficientEvidence;
+    default:
+      return labelKey;
   }
 }

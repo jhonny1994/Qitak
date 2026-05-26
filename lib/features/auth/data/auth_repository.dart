@@ -4,7 +4,9 @@ import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/core/notifications/notification_service.dart';
 import 'package:qitak_app/core/storage/secure_storage_service.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
@@ -116,7 +118,7 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> deactivateAccount() async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
     await _client.rpc<dynamic>('self_deactivate_account');
     await _deleteCurrentDeviceToken();
@@ -136,11 +138,11 @@ class SupabaseAuthRepository implements AuthRepository {
         password: password,
       );
     } on AuthException catch (error) {
-      throw AppException(_friendlySignInError(error.message));
+      throw AppException.fromCode(classifyAuthException(error));
     }
     final user = response.user;
     if (user == null) {
-      throw const AppException('Invalid credentials.');
+      throw AppException.fromCode(AppErrorCode.invalidCredentials);
     }
     final refreshToken = response.session?.refreshToken;
     if (refreshToken != null && refreshToken.isNotEmpty) {
@@ -180,12 +182,12 @@ class SupabaseAuthRepository implements AuthRepository {
         },
       );
     } on AuthException catch (error) {
-      throw AppException(_friendlySignUpError(error.message));
+      throw AppException.fromCode(classifyAuthException(error));
     }
 
     final user = response.user;
     if (user == null) {
-      throw const AppException('Unable to create account.');
+      throw AppException.fromCode(AppErrorCode.unknown);
     }
     final refreshToken = response.session?.refreshToken;
     if (refreshToken != null && refreshToken.isNotEmpty) {
@@ -224,7 +226,11 @@ class SupabaseAuthRepository implements AuthRepository {
             'message': error.message,
           },
         );
-        throw AppException(_friendlyProfileSetupError(error));
+        final mapped = classifyPostgrestException(error);
+        if (mapped == AppErrorCode.permissionDenied) {
+          throw AppException.fromCode(AppErrorCode.profileSetupBlocked);
+        }
+        throw AppException.fromCode(mapped);
       }
     }
 
@@ -260,7 +266,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }) async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
     await _client
         .from('profiles')
@@ -283,7 +289,7 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<AccountProfile> updateLanguage(String language) async {
     final user = _client.auth.currentUser;
     if (user == null) {
-      throw const AppException('Session not found.');
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
     }
     final existing = await _client
         .from('profiles')
@@ -452,49 +458,6 @@ class SupabaseAuthRepository implements AuthRepository {
       // Sign-out should continue even if token cleanup fails.
     }
   }
-}
-
-String _friendlySignInError(String message) {
-  final normalized = message.toLowerCase();
-  if (normalized.contains('email not confirmed') ||
-      normalized.contains('email_not_confirmed')) {
-    return 'Please confirm your email address before signing in. '
-        'Check your inbox for the confirmation link.';
-  }
-  if (normalized.contains('invalid login credentials') ||
-      normalized.contains('invalid credentials')) {
-    return 'Invalid email or password.';
-  }
-  return 'Unable to sign in. Please try again.';
-}
-
-String _friendlySignUpError(String message) {
-  final normalized = message.toLowerCase();
-  if (normalized.contains('already registered') ||
-      normalized.contains('already exists')) {
-    return 'An account with this email already exists.';
-  }
-  if (normalized.contains('password')) {
-    return 'Password does not meet security requirements.';
-  }
-  if (normalized.contains('invalid email')) {
-    return 'Please enter a valid email address.';
-  }
-  return 'Unable to create account.';
-}
-
-String _friendlyProfileSetupError(PostgrestException error) {
-  final message = error.message.toLowerCase();
-  final details = '${error.details ?? ''}'.toLowerCase();
-  if (message.contains('row-level security') ||
-      details.contains('row-level security') ||
-      message.contains('new row violates row-level security policy')) {
-    return 'Account created, but profile setup was blocked. Please try signing in again after updating the backend.';
-  }
-  if (message.contains('infinite recursion')) {
-    return 'Account created, but profile setup is blocked by a backend policy issue.';
-  }
-  return 'Account created, but profile setup could not finish.';
 }
 
 String _nameFromEmail(String? email) {

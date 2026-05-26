@@ -15,7 +15,6 @@ abstract interface class NotificationService {
   Stream<String> get onTokenRefresh;
   Future<void> requestPermission();
   void bindRouter(GoRouter router);
-  Future<void> handleInitialMessage();
   void dispose();
   DevicePlatform? get currentPlatform;
 }
@@ -23,6 +22,15 @@ abstract interface class NotificationService {
 final notificationServiceProvider = Provider<NotificationService>((ref) {
   return const NoopNotificationService();
 });
+
+/// Holds the target route resolved from the notification that launched the app
+/// from a terminated state. Set as a [ProviderScope] override in `main.dart`
+/// before [runApp], so the splash screen can incorporate it into its auth-aware
+/// route resolution without any timing race.
+///
+/// Null (the default) means the app was opened normally — not via a
+/// notification tap from the terminated state.
+final initialNotificationRouteProvider = Provider<String?>((ref) => null);
 
 class FirebaseNotificationService implements NotificationService {
   FirebaseNotificationService({
@@ -81,10 +89,16 @@ class FirebaseNotificationService implements NotificationService {
     );
   }
 
-  @override
-  Future<void> handleInitialMessage() async {
-    final message = await _messaging.getInitialMessage();
-    _navigateFromMessage(message);
+  /// Resolves the deep-link target route from a [RemoteMessage] payload.
+  ///
+  /// Exposed as a static method so main can compute the initial
+  /// notification route before the widget tree is built, eliminating the
+  /// race condition between [FirebaseMessaging.getInitialMessage] and the
+  /// splash-screen navigation.
+  static String resolveDeepLink(RemoteMessage message) {
+    final deepLink = message.data['deep_link'] as String?;
+    if (deepLink == null || deepLink.isEmpty) return '/notifications';
+    return _isAllowedDeepLink(deepLink) ? deepLink : '/notifications';
   }
 
   @override
@@ -93,21 +107,17 @@ class FirebaseNotificationService implements NotificationService {
     _openedAppSubscription = null;
   }
 
-  void _navigateFromMessage(RemoteMessage? message) {
+  // Called by onMessageOpenedApp (background → foreground tap).
+  // Uses push so the notification screen overlays the existing stack.
+  void _navigateFromMessage(RemoteMessage message) {
     final router = _router;
     if (router == null) {
       return;
     }
-    final deepLink = message?.data['deep_link'] as String?;
-    final target = _resolveTarget(deepLink);
+    final target = resolveDeepLink(message);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      router.go(target);
+      unawaited(router.push(target));
     });
-  }
-
-  String _resolveTarget(String? deepLink) {
-    if (deepLink == null || deepLink.isEmpty) return '/notifications';
-    return _isAllowedDeepLink(deepLink) ? deepLink : '/notifications';
   }
 
   static bool _isAllowedDeepLink(String path) {
@@ -156,9 +166,6 @@ class NoopNotificationService implements NotificationService {
   void bindRouter(GoRouter router) {
     final _ = router;
   }
-
-  @override
-  Future<void> handleInitialMessage() async {}
 
   @override
   void dispose() {}

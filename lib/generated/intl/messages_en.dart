@@ -93,14 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "accountSettingsUpdatePasswordTitle": MessageLookupByLibrary.simpleMessage(
       "Change password",
     ),
-    "accountUtilitiesEyebrow": MessageLookupByLibrary.simpleMessage(
-      "Utilities",
-    ),
     "accountUtilitiesGuestSubtitle": MessageLookupByLibrary.simpleMessage(
       "Before signing in, you can still set language, appearance, and support guidance.",
-    ),
-    "accountUtilitiesTitle": MessageLookupByLibrary.simpleMessage(
-      "Preferences and help",
     ),
     "adminAccess": MessageLookupByLibrary.simpleMessage("Admin access"),
     "adminAccessDenied": MessageLookupByLibrary.simpleMessage(
@@ -378,20 +372,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Restricted sign-in for admin users only.",
     ),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage("Demote"),
-    "adminTeamEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "The team surface is ready for controlled invite and access-management flows.",
-    ),
-    "adminTeamEmptyTitle": MessageLookupByLibrary.simpleMessage(
-      "No team actions pending",
-    ),
     "adminTeamInviteAction": MessageLookupByLibrary.simpleMessage(
       "Invite admin",
     ),
     "adminTeamInviteSuccess": MessageLookupByLibrary.simpleMessage(
       "Admin invite sent.",
-    ),
-    "adminTeamInviteUnavailable": MessageLookupByLibrary.simpleMessage(
-      "Team invites are managed through secure admin operations only.",
     ),
     "adminTeamLastActiveLabel": MessageLookupByLibrary.simpleMessage(
       "Last active",
@@ -495,7 +480,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "appLinksPromptTitle": MessageLookupByLibrary.simpleMessage(
       "Open links in Qitak?",
     ),
-    "appTitle": MessageLookupByLibrary.simpleMessage("Qitak"),
     "appearanceModeDarkSubtitle": MessageLookupByLibrary.simpleMessage(
       "Use the dark appearance.",
     ),
@@ -514,9 +498,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "appearanceSettingsSaved": MessageLookupByLibrary.simpleMessage(
       "Appearance preference updated.",
     ),
-    "appearanceSettingsStatus": MessageLookupByLibrary.simpleMessage(
-      "Device preference",
-    ),
     "appearanceSettingsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Choose how Qitak should look on this device.",
     ),
@@ -526,6 +507,33 @@ class MessageLookup extends MessageLookupByLibrary {
     "authChoiceEyebrow": MessageLookupByLibrary.simpleMessage("Start"),
     "authChoiceTitle": MessageLookupByLibrary.simpleMessage(
       "Sign in or browse first",
+    ),
+    "authErrorCheckEmailConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Account created. Please check your email and click the confirmation link before signing in.",
+    ),
+    "authErrorConfirmEmailBeforeSignIn": MessageLookupByLibrary.simpleMessage(
+      "Please confirm your email address before signing in. Check your inbox for the confirmation link.",
+    ),
+    "authErrorEmailAlreadyExists": MessageLookupByLibrary.simpleMessage(
+      "An account with this email already exists.",
+    ),
+    "authErrorInvalidEmailOrPassword": MessageLookupByLibrary.simpleMessage(
+      "Invalid email or password.",
+    ),
+    "authErrorPasswordRequirements": MessageLookupByLibrary.simpleMessage(
+      "Password does not meet security requirements.",
+    ),
+    "authErrorProfileSetupBlockedPolicy": MessageLookupByLibrary.simpleMessage(
+      "Account created, but profile setup is blocked by a backend policy issue.",
+    ),
+    "authErrorProfileSetupBlockedRls": MessageLookupByLibrary.simpleMessage(
+      "Account created, but profile setup was blocked. Please try signing in again after updating the backend.",
+    ),
+    "authErrorSessionNotFound": MessageLookupByLibrary.simpleMessage(
+      "Session not found.",
+    ),
+    "authErrorUnableSignIn": MessageLookupByLibrary.simpleMessage(
+      "Unable to sign in. Please try again.",
     ),
     "authGateBody": MessageLookupByLibrary.simpleMessage(
       "Create an account or sign in to continue this action.",
@@ -655,30 +663,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "discoveryEmptyTitle": MessageLookupByLibrary.simpleMessage(
       "No listings yet",
     ),
-    "discoveryEnvironmentLabel": MessageLookupByLibrary.simpleMessage(
-      "Environment",
-    ),
-    "discoveryEnvironmentLocal": MessageLookupByLibrary.simpleMessage(
-      "Local development feed",
-    ),
-    "discoveryEnvironmentSeeded": MessageLookupByLibrary.simpleMessage(
-      "Seeded fallback",
-    ),
     "discoveryErrorBody": MessageLookupByLibrary.simpleMessage(
       "We could not load marketplace listings. Try again.",
     ),
-    "discoveryEyebrow": MessageLookupByLibrary.simpleMessage("Marketplace"),
     "discoveryFeaturedListingsTitle": MessageLookupByLibrary.simpleMessage(
       "Featured listings",
     ),
-    "discoveryFilterBody": MessageLookupByLibrary.simpleMessage("Body"),
-    "discoveryFilterBrakes": MessageLookupByLibrary.simpleMessage("Brakes"),
     "discoveryFilterButton": MessageLookupByLibrary.simpleMessage("Filter"),
-    "discoveryFilterCommune": MessageLookupByLibrary.simpleMessage("Commune"),
     "discoveryFilterCommuneHelper": MessageLookupByLibrary.simpleMessage(
       "Enabled after selecting a wilaya.",
     ),
-    "discoveryFilterEngine": MessageLookupByLibrary.simpleMessage("Engine"),
     "discoveryFilterErrorBody": MessageLookupByLibrary.simpleMessage(
       "We could not load filter options. Try again.",
     ),
@@ -686,7 +680,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "discoveryFilterModelHelper": MessageLookupByLibrary.simpleMessage(
       "Enabled after selecting a car make.",
     ),
-    "discoveryFilterWilaya": MessageLookupByLibrary.simpleMessage("Wilaya"),
     "discoveryFilterYearHelper": MessageLookupByLibrary.simpleMessage(
       "Enabled after selecting a car model.",
     ),
@@ -694,9 +687,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Refine by category, location, and vehicle details.",
     ),
     "discoveryFiltersTitle": MessageLookupByLibrary.simpleMessage("Filters"),
-    "discoveryHeadline": MessageLookupByLibrary.simpleMessage(
-      "Search-first discovery for real buyers",
-    ),
     "discoveryLatestListingsTitle": MessageLookupByLibrary.simpleMessage(
       "Latest listings",
     ),
@@ -705,8 +695,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Message seller",
     ),
     "discoveryMinPriceLabel": MessageLookupByLibrary.simpleMessage("Min price"),
-    "discoveryMinRating": MessageLookupByLibrary.simpleMessage("Min rating"),
-    "discoveryRate": MessageLookupByLibrary.simpleMessage("Rate"),
     "discoveryResetFiltersButton": MessageLookupByLibrary.simpleMessage(
       "Reset",
     ),
@@ -717,10 +705,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "discoverySortFieldLabel": MessageLookupByLibrary.simpleMessage("Sort"),
     "discoverySortNewest": MessageLookupByLibrary.simpleMessage("Newest"),
-    "discoveryStartDeal": MessageLookupByLibrary.simpleMessage("Start deal"),
-    "discoveryTagline": MessageLookupByLibrary.simpleMessage(
-      "Find the right part faster with structured search and clear seller contact.",
-    ),
     "disputeDescriptionError": MessageLookupByLibrary.simpleMessage(
       "Enter at least 50 characters so the case can be reviewed.",
     ),
@@ -734,7 +718,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disputeEvidenceLabel": MessageLookupByLibrary.simpleMessage("Evidence"),
     "disputeEvidenceStatus": MessageLookupByLibrary.simpleMessage("Prepare"),
     "disputeEvidenceValue": MessageLookupByLibrary.simpleMessage(
-      "Photo evidence is required in the final production flow.",
+      "Photo evidence will be required.",
     ),
     "disputeReasonCondition": MessageLookupByLibrary.simpleMessage(
       "Condition misrepresented",
@@ -751,9 +735,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wrong part received",
     ),
     "disputeSubmit": MessageLookupByLibrary.simpleMessage("Submit dispute"),
-    "disputeSubmitted": MessageLookupByLibrary.simpleMessage(
-      "Dispute submitted for review.",
-    ),
     "disputeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Explain what went wrong and submit enough evidence for the operations team.",
     ),
@@ -767,6 +748,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "emailLabel": MessageLookupByLibrary.simpleMessage("Email"),
     "emailValidationError": MessageLookupByLibrary.simpleMessage(
       "Enter a valid email address.",
+    ),
+    "errorNetworkUnavailable": MessageLookupByLibrary.simpleMessage(
+      "Network unavailable. Check your connection and try again.",
     ),
     "errorStateTitle": MessageLookupByLibrary.simpleMessage(
       "Something went wrong",
@@ -886,9 +870,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Terms and privacy",
     ),
     "listingActionDockTitle": MessageLookupByLibrary.simpleMessage("Next step"),
-    "listingAssuranceTitle": MessageLookupByLibrary.simpleMessage(
-      "Why this listing is worth checking",
-    ),
     "listingCategoryRequired": MessageLookupByLibrary.simpleMessage(
       "Select a category.",
     ),
@@ -909,18 +890,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingExchangeEnabled": MessageLookupByLibrary.simpleMessage(
       "Exchange enabled",
     ),
-    "listingFitmentLabel": MessageLookupByLibrary.simpleMessage(
-      "Vehicle target",
-    ),
-    "listingFitmentRequired": MessageLookupByLibrary.simpleMessage(
-      "Brand and model are required.",
-    ),
     "listingLocationLabel": MessageLookupByLibrary.simpleMessage("Pickup area"),
     "listingMakeRequired": MessageLookupByLibrary.simpleMessage(
       "Select a car make.",
-    ),
-    "listingManageAction": MessageLookupByLibrary.simpleMessage(
-      "Manage listing",
     ),
     "listingMediaAttachAction": MessageLookupByLibrary.simpleMessage(
       "Add photos",
@@ -935,7 +907,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Add at least one listing photo.",
     ),
     "listingMediaSectionBody": MessageLookupByLibrary.simpleMessage(
-      "Prepare clear part photos before publishing. The final flow should require production-ready evidence.",
+      "Prepare clear part photos before publishing.",
     ),
     "listingMediaSectionTitle": MessageLookupByLibrary.simpleMessage(
       "Media requirements",
@@ -943,26 +915,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingModelRequired": MessageLookupByLibrary.simpleMessage(
       "Select a car model.",
     ),
-    "listingNoMultiVehicle": MessageLookupByLibrary.simpleMessage(
-      "Only one vehicle target is allowed per listing.",
-    ),
     "listingOneVehicleHint": MessageLookupByLibrary.simpleMessage(
       "Add the matching vehicle details before publishing the listing.",
     ),
     "listingPartDetailsTitle": MessageLookupByLibrary.simpleMessage(
       "Part details",
-    ),
-    "listingPolicySectionBody": MessageLookupByLibrary.simpleMessage(
-      "One vehicle target, clear seller identity, and no location shortcuts outside wilaya and commune.",
-    ),
-    "listingPolicySectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Policy readiness",
-    ),
-    "listingPreviewSectionBody": MessageLookupByLibrary.simpleMessage(
-      "Complete brand, model, and year to unlock a realistic listing preview.",
-    ),
-    "listingPreviewSectionTitle": MessageLookupByLibrary.simpleMessage(
-      "Preview status",
     ),
     "listingPriceError": MessageLookupByLibrary.simpleMessage(
       "Enter a valid price.",
@@ -983,33 +940,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingSaveDraftAction": MessageLookupByLibrary.simpleMessage(
       "Save draft",
     ),
-    "listingSaveVehicle": MessageLookupByLibrary.simpleMessage("Save vehicle"),
     "listingSellerSectionTitle": MessageLookupByLibrary.simpleMessage("Seller"),
-    "listingSellerTrustAction": MessageLookupByLibrary.simpleMessage(
-      "Seller trust details",
-    ),
-    "listingSellerTrustBody": MessageLookupByLibrary.simpleMessage(
-      "Review the seller context before you continue with messaging or a deal.",
-    ),
-    "listingSellerTrustListingsLabel": MessageLookupByLibrary.simpleMessage(
-      "Trust context",
-    ),
-    "listingSellerTrustTitle": MessageLookupByLibrary.simpleMessage(
-      "Seller trust summary",
-    ),
-    "listingSellerTrustVerifiedStatus": MessageLookupByLibrary.simpleMessage(
-      "Verified",
-    ),
     "listingShareAction": MessageLookupByLibrary.simpleMessage("Share listing"),
-    "listingShareBody": MessageLookupByLibrary.simpleMessage(
-      "Copy a direct listing link to continue the conversation outside the current screen.",
-    ),
-    "listingShareCopied": MessageLookupByLibrary.simpleMessage(
-      "Listing link copied.",
-    ),
-    "listingShareCopyAction": MessageLookupByLibrary.simpleMessage("Copy link"),
-    "listingShareTitle": MessageLookupByLibrary.simpleMessage("Share listing"),
-    "listingStatusActive": MessageLookupByLibrary.simpleMessage("Active"),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("Status"),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "Submit for review",
@@ -1027,14 +959,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingUnavailableTitle": MessageLookupByLibrary.simpleMessage(
       "Listing unavailable",
     ),
-    "listingVehicleSaved": MessageLookupByLibrary.simpleMessage(
-      "Vehicle target saved.",
-    ),
     "listingWilayaRequired": MessageLookupByLibrary.simpleMessage(
       "Select a wilaya.",
-    ),
-    "listingYearError": MessageLookupByLibrary.simpleMessage(
-      "Enter a valid year.",
     ),
     "listingYearRequired": MessageLookupByLibrary.simpleMessage(
       "Select a year.",
@@ -1044,12 +970,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Like new",
     ),
     "localListingConditionNew": MessageLookupByLibrary.simpleMessage("New"),
-    "localSeedModeBody": MessageLookupByLibrary.simpleMessage(
-      "This build is using local fallback marketplace and auth data because Supabase is not configured on this device.",
-    ),
-    "localSeedModeTitle": MessageLookupByLibrary.simpleMessage(
-      "Local seed data",
-    ),
     "localSellerLabelBusiness": MessageLookupByLibrary.simpleMessage(
       "Business seller",
     ),
@@ -1087,11 +1007,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesOnlineOnly": MessageLookupByLibrary.simpleMessage(
       "Messages are online-only right now.",
     ),
-    "messagesOnlineReady": MessageLookupByLibrary.simpleMessage(
-      "Online and ready for marketplace coordination.",
-    ),
     "messagesOpenStatus": MessageLookupByLibrary.simpleMessage("Open"),
-    "messagesReadyStatus": MessageLookupByLibrary.simpleMessage("Ready"),
     "messagesSend": MessageLookupByLibrary.simpleMessage("Send"),
     "messagesSendError": MessageLookupByLibrary.simpleMessage(
       "Message couldn\'t be sent. Please try again.",
@@ -1102,14 +1018,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesTitle": MessageLookupByLibrary.simpleMessage("Messages"),
     "modelLabel": MessageLookupByLibrary.simpleMessage("Model"),
     "navAccount": MessageLookupByLibrary.simpleMessage("Account"),
-    "navDashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
     "navHome": MessageLookupByLibrary.simpleMessage("Home"),
     "navListings": MessageLookupByLibrary.simpleMessage("Listings"),
     "navMessages": MessageLookupByLibrary.simpleMessage("Messages"),
     "navQueues": MessageLookupByLibrary.simpleMessage("Queues"),
     "navReports": MessageLookupByLibrary.simpleMessage("Reports"),
     "navSaved": MessageLookupByLibrary.simpleMessage("Saved"),
-    "navSearch": MessageLookupByLibrary.simpleMessage("Search"),
     "navTeam": MessageLookupByLibrary.simpleMessage("Team"),
     "noResultsBody": MessageLookupByLibrary.simpleMessage(
       "Lower the minimum rating to see more listings.",
@@ -1186,12 +1100,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "notificationsSavedMessageTitle": MessageLookupByLibrary.simpleMessage(
       "New message on your saved listing",
-    ),
-    "notificationsSavedPriceBody": MessageLookupByLibrary.simpleMessage(
-      "One of your saved listings now shows a lower asking price.",
-    ),
-    "notificationsSavedPriceTitle": MessageLookupByLibrary.simpleMessage(
-      "Saved listing price updated",
     ),
     "notificationsSubtitle": MessageLookupByLibrary.simpleMessage(
       "Track messages, listing changes, and account actions in one feed.",
@@ -1284,28 +1192,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter a valid Algerian phone number.",
     ),
     "priceWithDzd": m3,
-    "profileCreateListing": MessageLookupByLibrary.simpleMessage(
-      "Create a listing",
-    ),
-    "profileEnableSeller": MessageLookupByLibrary.simpleMessage(
-      "Enable seller workspace",
-    ),
     "profileRoleAdmin": MessageLookupByLibrary.simpleMessage("Admin"),
     "profileRoleAnonymous": MessageLookupByLibrary.simpleMessage("Anonymous"),
     "profileRoleBuyer": MessageLookupByLibrary.simpleMessage("Buyer"),
-    "profileRoleLabel": MessageLookupByLibrary.simpleMessage("Role"),
     "profileRoleSeller": MessageLookupByLibrary.simpleMessage("Seller"),
     "profileRoleSuperAdmin": MessageLookupByLibrary.simpleMessage(
       "Super admin",
-    ),
-    "profileSellerEnabled": MessageLookupByLibrary.simpleMessage(
-      "Seller workspace enabled",
-    ),
-    "profileSellerLabel": MessageLookupByLibrary.simpleMessage(
-      "Seller capability",
-    ),
-    "profileSellerNotEnabled": MessageLookupByLibrary.simpleMessage(
-      "Seller workspace not enabled yet",
     ),
     "quantityLabel": MessageLookupByLibrary.simpleMessage("Quantity"),
     "ratingAlreadySubmitted": MessageLookupByLibrary.simpleMessage(
@@ -1453,33 +1345,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "savedListingsTitle": MessageLookupByLibrary.simpleMessage(
       "Saved listings",
     ),
-    "savedListingsViewAction": MessageLookupByLibrary.simpleMessage(
-      "Open listing",
-    ),
-    "searchEyebrow": MessageLookupByLibrary.simpleMessage("Precision search"),
-    "searchFiltersSuffix": MessageLookupByLibrary.simpleMessage("filters"),
     "searchHistoryClearAction": MessageLookupByLibrary.simpleMessage(
       "Clear history",
     ),
-    "searchNoFilters": MessageLookupByLibrary.simpleMessage("No filters"),
     "searchRecentLabel": MessageLookupByLibrary.simpleMessage(
       "Recent searches",
     ),
-    "searchResultsLabel": MessageLookupByLibrary.simpleMessage("Results"),
     "searchResultsSuffix": MessageLookupByLibrary.simpleMessage("matches"),
-    "searchSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Use text, rating, and category signals without fake confidence scores.",
-    ),
-    "searchTitle": MessageLookupByLibrary.simpleMessage(
-      "Filter the market your way",
-    ),
     "sellerAccessDenied": MessageLookupByLibrary.simpleMessage(
       "This account is not a seller account.",
     ),
     "sellerActionStatus": MessageLookupByLibrary.simpleMessage("Action"),
-    "sellerBusinessNameLabel": MessageLookupByLibrary.simpleMessage(
-      "Business name",
-    ),
     "sellerCommuneRequired": MessageLookupByLibrary.simpleMessage(
       "Select a commune.",
     ),
@@ -1631,7 +1507,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerPendingDealsTitle": MessageLookupByLibrary.simpleMessage(
       "Pending deals",
     ),
-    "sellerQueueStatus": MessageLookupByLibrary.simpleMessage("Queue"),
     "sellerSignIn": MessageLookupByLibrary.simpleMessage("Seller sign in"),
     "sellerSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "Restricted sign-in for seller accounts only.",
@@ -1695,9 +1570,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Verification is approved and seller access is now active.",
         ),
-    "sellerStatusVerificationBody": MessageLookupByLibrary.simpleMessage(
-      "Your seller documents and operating location stay available for review.",
-    ),
     "sellerStatusVerificationDraftBody": MessageLookupByLibrary.simpleMessage(
       "Complete the remaining steps and submit the application for review.",
     ),
@@ -1716,9 +1588,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerStatusWorkspaceApprovedBody": MessageLookupByLibrary.simpleMessage(
       "Seller tools are active for this account.",
-    ),
-    "sellerStatusWorkspaceBody": MessageLookupByLibrary.simpleMessage(
-      "Listings, messages, and seller tools unlock after approval.",
     ),
     "sellerStatusWorkspaceWaitingBody": MessageLookupByLibrary.simpleMessage(
       "Seller tools stay locked until verification is approved.",
@@ -1741,7 +1610,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create a buyer account with your core contact details.",
     ),
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Loading the marketplace routing and account state.",
+      "Loading your account and marketplace data.",
     ),
     "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
       "Use account settings for identity details and sign-in recovery for password access.",
@@ -1850,9 +1719,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionStartBody": MessageLookupByLibrary.simpleMessage(
       "Create a transaction intent with the seller for this listing.",
     ),
-    "transactionStartCta": MessageLookupByLibrary.simpleMessage(
-      "Create intent",
-    ),
     "transactionStartTitle": MessageLookupByLibrary.simpleMessage(
       "Start transaction",
     ),
@@ -1865,7 +1731,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionStateCompleted": MessageLookupByLibrary.simpleMessage(
       "Completed",
     ),
-    "transactionStateLabel": MessageLookupByLibrary.simpleMessage("State"),
     "transactionStateRejected": MessageLookupByLibrary.simpleMessage(
       "Rejected",
     ),

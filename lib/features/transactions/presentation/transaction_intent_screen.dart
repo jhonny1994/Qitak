@@ -80,13 +80,13 @@ class _TransactionIntentScreenState
                   QitakSignalStrip(
                     label: context.l10n.transactionListingContextLabel,
                     value: item.title,
-                    status: item.priceLabel,
+                    status: item.localizedPrice(context.l10n),
                   ),
                   const SizedBox(height: 12),
                   QitakSignalStrip(
                     label: context.l10n.transactionSellerContextLabel,
-                    value: item.locationLabel,
-                    status: item.fitmentLabel,
+                    value: item.localizedLocation(context.l10n),
+                    status: item.localizedFitment(context.l10n),
                   ),
                   const SizedBox(height: 16),
                   Wrap(

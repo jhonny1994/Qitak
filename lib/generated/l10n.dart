@@ -60,11 +60,6 @@ class S {
   }
 
   /// `قطعك`
-  String get appTitle {
-    return Intl.message('قطعك', name: 'appTitle', desc: '', args: []);
-  }
-
-  /// `قطعك`
   String get brandWordmark {
     return Intl.message('قطعك', name: 'brandWordmark', desc: '', args: []);
   }
@@ -379,10 +374,10 @@ class S {
     );
   }
 
-  /// `جارٍ تحميل مسار السوق وحالة الحساب.`
+  /// `جارٍ تحميل بيانات الحساب والسوق.`
   String get splashSubtitle {
     return Intl.message(
-      'جارٍ تحميل مسار السوق وحالة الحساب.',
+      'جارٍ تحميل بيانات الحساب والسوق.',
       name: 'splashSubtitle',
       desc: '',
       args: [],
@@ -724,16 +719,6 @@ class S {
     return Intl.message(
       'تم تحديث تفضيل المظهر.',
       name: 'appearanceSettingsSaved',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تفضيل الجهاز`
-  String get appearanceSettingsStatus {
-    return Intl.message(
-      'تفضيل الجهاز',
-      name: 'appearanceSettingsStatus',
       desc: '',
       args: [],
     );
@@ -1449,26 +1434,6 @@ class S {
     );
   }
 
-  /// `الأدوات`
-  String get accountUtilitiesEyebrow {
-    return Intl.message(
-      'الأدوات',
-      name: 'accountUtilitiesEyebrow',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `التفضيلات والمساعدة`
-  String get accountUtilitiesTitle {
-    return Intl.message(
-      'التفضيلات والمساعدة',
-      name: 'accountUtilitiesTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.`
   String get accountUtilitiesGuestSubtitle {
     return Intl.message(
@@ -1539,31 +1504,11 @@ class S {
     );
   }
 
-  /// `تبقى وثائق البائع وموقع النشاط متاحة للمراجعة.`
-  String get sellerStatusVerificationBody {
-    return Intl.message(
-      'تبقى وثائق البائع وموقع النشاط متاحة للمراجعة.',
-      name: 'sellerStatusVerificationBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `وصول البائع`
   String get sellerStatusWorkspace {
     return Intl.message(
       'وصول البائع',
       name: 'sellerStatusWorkspace',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تُفتح الإعلانات والرسائل وأدوات البائع بعد الموافقة.`
-  String get sellerStatusWorkspaceBody {
-    return Intl.message(
-      'تُفتح الإعلانات والرسائل وأدوات البائع بعد الموافقة.',
-      name: 'sellerStatusWorkspaceBody',
       desc: '',
       args: [],
     );
@@ -1959,6 +1904,106 @@ class S {
     );
   }
 
+  /// `لم يتم العثور على الجلسة.`
+  String get authErrorSessionNotFound {
+    return Intl.message(
+      'لم يتم العثور على الجلسة.',
+      name: 'authErrorSessionNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول. تحقق من بريدك الوارد لرسالة التأكيد.`
+  String get authErrorConfirmEmailBeforeSignIn {
+    return Intl.message(
+      'يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول. تحقق من بريدك الوارد لرسالة التأكيد.',
+      name: 'authErrorConfirmEmailBeforeSignIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `البريد الإلكتروني أو كلمة المرور غير صحيحة.`
+  String get authErrorInvalidEmailOrPassword {
+    return Intl.message(
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+      name: 'authErrorInvalidEmailOrPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تعذر تسجيل الدخول. حاول مرة أخرى.`
+  String get authErrorUnableSignIn {
+    return Intl.message(
+      'تعذر تسجيل الدخول. حاول مرة أخرى.',
+      name: 'authErrorUnableSignIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الشبكة غير متاحة. تحقق من الاتصال ثم أعد المحاولة.`
+  String get errorNetworkUnavailable {
+    return Intl.message(
+      'الشبكة غير متاحة. تحقق من الاتصال ثم أعد المحاولة.',
+      name: 'errorNetworkUnavailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.`
+  String get authErrorEmailAlreadyExists {
+    return Intl.message(
+      'يوجد حساب مرتبط بهذا البريد الإلكتروني بالفعل.',
+      name: 'authErrorEmailAlreadyExists',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `كلمة المرور لا تستوفي متطلبات الأمان.`
+  String get authErrorPasswordRequirements {
+    return Intl.message(
+      'كلمة المرور لا تستوفي متطلبات الأمان.',
+      name: 'authErrorPasswordRequirements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إنشاء الحساب، لكن إعداد الملف الشخصي تم حظره. حاول تسجيل الدخول مرة أخرى بعد تحديث الخلفية.`
+  String get authErrorProfileSetupBlockedRls {
+    return Intl.message(
+      'تم إنشاء الحساب، لكن إعداد الملف الشخصي تم حظره. حاول تسجيل الدخول مرة أخرى بعد تحديث الخلفية.',
+      name: 'authErrorProfileSetupBlockedRls',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إنشاء الحساب، لكن إعداد الملف الشخصي محجوب بسبب سياسة في الخلفية.`
+  String get authErrorProfileSetupBlockedPolicy {
+    return Intl.message(
+      'تم إنشاء الحساب، لكن إعداد الملف الشخصي محجوب بسبب سياسة في الخلفية.',
+      name: 'authErrorProfileSetupBlockedPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد قبل تسجيل الدخول.`
+  String get authErrorCheckEmailConfirmation {
+    return Intl.message(
+      'تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد قبل تسجيل الدخول.',
+      name: 'authErrorCheckEmailConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `توثيق البائع`
   String get sellerOnboardingTitle {
     return Intl.message(
@@ -1974,16 +2019,6 @@ class S {
     return Intl.message(
       'أرسل بيانات البائع مرة واحدة حتى نراجع هذا الحساب ونفعّل وصول البائع.',
       name: 'sellerOnboardingBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `اسم النشاط`
-  String get sellerBusinessNameLabel {
-    return Intl.message(
-      'اسم النشاط',
-      name: 'sellerBusinessNameLabel',
       desc: '',
       args: [],
     );
@@ -2299,11 +2334,6 @@ class S {
     );
   }
 
-  /// `الدور`
-  String get profileRoleLabel {
-    return Intl.message('الدور', name: 'profileRoleLabel', desc: '', args: []);
-  }
-
   /// `زائر`
   String get profileRoleAnonymous {
     return Intl.message(
@@ -2334,56 +2364,6 @@ class S {
     return Intl.message(
       'مشرف عام',
       name: 'profileRoleSuperAdmin',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `وضع البائع`
-  String get profileSellerLabel {
-    return Intl.message(
-      'وضع البائع',
-      name: 'profileSellerLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `مساحة البائع مفعلة`
-  String get profileSellerEnabled {
-    return Intl.message(
-      'مساحة البائع مفعلة',
-      name: 'profileSellerEnabled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `مساحة البائع غير مفعلة بعد`
-  String get profileSellerNotEnabled {
-    return Intl.message(
-      'مساحة البائع غير مفعلة بعد',
-      name: 'profileSellerNotEnabled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تفعيل مساحة البائع`
-  String get profileEnableSeller {
-    return Intl.message(
-      'تفعيل مساحة البائع',
-      name: 'profileEnableSeller',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `إنشاء إعلان`
-  String get profileCreateListing {
-    return Intl.message(
-      'إنشاء إعلان',
-      name: 'profileCreateListing',
       desc: '',
       args: [],
     );
@@ -2457,11 +2437,6 @@ class S {
       desc: '',
       args: [],
     );
-  }
-
-  /// `طابور`
-  String get sellerQueueStatus {
-    return Intl.message('طابور', name: 'sellerQueueStatus', desc: '', args: []);
   }
 
   /// `التشغيل`
@@ -2719,26 +2694,6 @@ class S {
     );
   }
 
-  /// `حفظ المركبة`
-  String get listingSaveVehicle {
-    return Intl.message(
-      'حفظ المركبة',
-      name: 'listingSaveVehicle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تم حفظ هدف المركبة.`
-  String get listingVehicleSaved {
-    return Intl.message(
-      'تم حفظ هدف المركبة.',
-      name: 'listingVehicleSaved',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `تم نشر الإعلان وإضافته إلى مخزونك.`
   String get listingPublishedSuccess {
     return Intl.message(
@@ -2764,16 +2719,6 @@ class S {
     return Intl.message(
       'تم إرسال الإعلان للمراجعة.',
       name: 'listingSubmittedForReviewSuccess',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `يسمح بمركبة مستهدفة واحدة فقط لكل إعلان.`
-  String get listingNoMultiVehicle {
-    return Intl.message(
-      'يسمح بمركبة مستهدفة واحدة فقط لكل إعلان.',
-      name: 'listingNoMultiVehicle',
       desc: '',
       args: [],
     );
@@ -2809,46 +2754,6 @@ class S {
     );
   }
 
-  /// `العلامة والموديل مطلوبان.`
-  String get listingFitmentRequired {
-    return Intl.message(
-      'العلامة والموديل مطلوبان.',
-      name: 'listingFitmentRequired',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `أدخل سنة صحيحة.`
-  String get listingYearError {
-    return Intl.message(
-      'أدخل سنة صحيحة.',
-      name: 'listingYearError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `جاهزية السياسة`
-  String get listingPolicySectionTitle {
-    return Intl.message(
-      'جاهزية السياسة',
-      name: 'listingPolicySectionTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `هدف مركبة واحد فقط، وهوية بائع واضحة، ولا اختصارات للموقع خارج الولاية والبلدية.`
-  String get listingPolicySectionBody {
-    return Intl.message(
-      'هدف مركبة واحد فقط، وهوية بائع واضحة، ولا اختصارات للموقع خارج الولاية والبلدية.',
-      name: 'listingPolicySectionBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `متطلبات الصور`
   String get listingMediaSectionTitle {
     return Intl.message(
@@ -2859,10 +2764,10 @@ class S {
     );
   }
 
-  /// `حضّر صوراً واضحة للقطعة قبل النشر. المسار الإنتاجي النهائي يجب أن يطلب أدلة حقيقية.`
+  /// `حضّر صوراً واضحة للقطعة قبل النشر.`
   String get listingMediaSectionBody {
     return Intl.message(
-      'حضّر صوراً واضحة للقطعة قبل النشر. المسار الإنتاجي النهائي يجب أن يطلب أدلة حقيقية.',
+      'حضّر صوراً واضحة للقطعة قبل النشر.',
       name: 'listingMediaSectionBody',
       desc: '',
       args: [],
@@ -2904,26 +2809,6 @@ class S {
     return Intl.message(
       'أضف صورتين على الأقل قبل إرسال الإعلان للمراجعة.',
       name: 'listingMediaMinimumRequired',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `حالة المعاينة`
-  String get listingPreviewSectionTitle {
-    return Intl.message(
-      'حالة المعاينة',
-      name: 'listingPreviewSectionTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `أكمل العلامة والموديل والسنة لإظهار معاينة إعلان واقعية.`
-  String get listingPreviewSectionBody {
-    return Intl.message(
-      'أكمل العلامة والموديل والسنة لإظهار معاينة إعلان واقعية.',
-      name: 'listingPreviewSectionBody',
       desc: '',
       args: [],
     );
@@ -3004,16 +2889,6 @@ class S {
     );
   }
 
-  /// `جاهز`
-  String get messagesReadyStatus {
-    return Intl.message(
-      'جاهز',
-      name: 'messagesReadyStatus',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `اكتب رسالة...`
   String get messagesInputHint {
     return Intl.message(
@@ -3044,16 +2919,6 @@ class S {
     return Intl.message(
       'الرسائل متاحة عبر الإنترنت فقط حالياً.',
       name: 'messagesOnlineOnly',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `المراسلة متصلة وجاهزة لتنسيق التعامل.`
-  String get messagesOnlineReady {
-    return Intl.message(
-      'المراسلة متصلة وجاهزة لتنسيق التعامل.',
-      name: 'messagesOnlineReady',
       desc: '',
       args: [],
     );
@@ -3204,51 +3069,6 @@ class S {
     return Intl.message(
       'الطرف المقابل',
       name: 'ratingCounterpartyPending',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `اعثر على القطعة المناسبة بسرعة عبر بحث منظّم وتواصل واضح مع البائع.`
-  String get discoveryTagline {
-    return Intl.message(
-      'اعثر على القطعة المناسبة بسرعة عبر بحث منظّم وتواصل واضح مع البائع.',
-      name: 'discoveryTagline',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `السوق`
-  String get discoveryEyebrow {
-    return Intl.message('السوق', name: 'discoveryEyebrow', desc: '', args: []);
-  }
-
-  /// `السوق الصح يبدأ بالبحث`
-  String get discoveryHeadline {
-    return Intl.message(
-      'السوق الصح يبدأ بالبحث',
-      name: 'discoveryHeadline',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `بيانات محلية تجريبية`
-  String get localSeedModeTitle {
-    return Intl.message(
-      'بيانات محلية تجريبية',
-      name: 'localSeedModeTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `هذا البناء يستخدم بيانات محلية بديلة للحسابات والسوق لأن إعدادات Supabase غير مفعلة على هذا الجهاز.`
-  String get localSeedModeBody {
-    return Intl.message(
-      'هذا البناء يستخدم بيانات محلية بديلة للحسابات والسوق لأن إعدادات Supabase غير مفعلة على هذا الجهاز.',
-      name: 'localSeedModeBody',
       desc: '',
       args: [],
     );
@@ -3474,71 +3294,11 @@ class S {
     );
   }
 
-  /// `البيئة`
-  String get discoveryEnvironmentLabel {
-    return Intl.message(
-      'البيئة',
-      name: 'discoveryEnvironmentLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `خلاصة تطوير محلية`
-  String get discoveryEnvironmentLocal {
-    return Intl.message(
-      'خلاصة تطوير محلية',
-      name: 'discoveryEnvironmentLocal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `بيانات محلية مزروعة`
-  String get discoveryEnvironmentSeeded {
-    return Intl.message(
-      'بيانات محلية مزروعة',
-      name: 'discoveryEnvironmentSeeded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `المحرك`
-  String get discoveryFilterEngine {
-    return Intl.message(
-      'المحرك',
-      name: 'discoveryFilterEngine',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `الإنارة`
   String get discoveryFilterLighting {
     return Intl.message(
       'الإنارة',
       name: 'discoveryFilterLighting',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `الفرامل`
-  String get discoveryFilterBrakes {
-    return Intl.message(
-      'الفرامل',
-      name: 'discoveryFilterBrakes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `الهيكل`
-  String get discoveryFilterBody {
-    return Intl.message(
-      'الهيكل',
-      name: 'discoveryFilterBody',
       desc: '',
       args: [],
     );
@@ -3654,36 +3414,6 @@ class S {
     );
   }
 
-  /// `الولاية`
-  String get discoveryFilterWilaya {
-    return Intl.message(
-      'الولاية',
-      name: 'discoveryFilterWilaya',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `البلدية`
-  String get discoveryFilterCommune {
-    return Intl.message(
-      'البلدية',
-      name: 'discoveryFilterCommune',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `الحد الأدنى للتقييم`
-  String get discoveryMinRating {
-    return Intl.message(
-      'الحد الأدنى للتقييم',
-      name: 'discoveryMinRating',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `لا توجد إعلانات بعد`
   String get discoveryEmptyTitle {
     return Intl.message(
@@ -3739,81 +3469,11 @@ class S {
     );
   }
 
-  /// `بدء معاملة`
-  String get discoveryStartDeal {
-    return Intl.message(
-      'بدء معاملة',
-      name: 'discoveryStartDeal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `قيّم`
-  String get discoveryRate {
-    return Intl.message('قيّم', name: 'discoveryRate', desc: '', args: []);
-  }
-
-  /// `بحث دقيق`
-  String get searchEyebrow {
-    return Intl.message('بحث دقيق', name: 'searchEyebrow', desc: '', args: []);
-  }
-
-  /// `صفِّ السوق بطريقتك`
-  String get searchTitle {
-    return Intl.message(
-      'صفِّ السوق بطريقتك',
-      name: 'searchTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `استخدم النص والتقييم والتصنيف بدون أي مؤشرات ثقة شكلية.`
-  String get searchSubtitle {
-    return Intl.message(
-      'استخدم النص والتقييم والتصنيف بدون أي مؤشرات ثقة شكلية.',
-      name: 'searchSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `النتائج`
-  String get searchResultsLabel {
-    return Intl.message(
-      'النتائج',
-      name: 'searchResultsLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `نتائج`
   String get searchResultsSuffix {
     return Intl.message(
       'نتائج',
       name: 'searchResultsSuffix',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `بدون فلاتر`
-  String get searchNoFilters {
-    return Intl.message(
-      'بدون فلاتر',
-      name: 'searchNoFilters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `فلاتر`
-  String get searchFiltersSuffix {
-    return Intl.message(
-      'فلاتر',
-      name: 'searchFiltersSuffix',
       desc: '',
       args: [],
     );
@@ -3894,26 +3554,11 @@ class S {
     );
   }
 
-  /// `نشط`
-  String get listingStatusActive {
-    return Intl.message('نشط', name: 'listingStatusActive', desc: '', args: []);
-  }
-
   /// `التبادل مفعّل`
   String get listingExchangeEnabled {
     return Intl.message(
       'التبادل مفعّل',
       name: 'listingExchangeEnabled',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `لماذا يستحق هذا الإعلان المراجعة`
-  String get listingAssuranceTitle {
-    return Intl.message(
-      'لماذا يستحق هذا الإعلان المراجعة',
-      name: 'listingAssuranceTitle',
       desc: '',
       args: [],
     );
@@ -3929,31 +3574,11 @@ class S {
     );
   }
 
-  /// `المركبة المستهدفة`
-  String get listingFitmentLabel {
-    return Intl.message(
-      'المركبة المستهدفة',
-      name: 'listingFitmentLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `الخطوة التالية`
   String get listingActionDockTitle {
     return Intl.message(
       'الخطوة التالية',
       name: 'listingActionDockTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `إدارة الإعلان`
-  String get listingManageAction {
-    return Intl.message(
-      'إدارة الإعلان',
-      name: 'listingManageAction',
       desc: '',
       args: [],
     );
@@ -3984,96 +3609,6 @@ class S {
     return Intl.message(
       'مشاركة الإعلان',
       name: 'listingShareAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `مشاركة الإعلان`
-  String get listingShareTitle {
-    return Intl.message(
-      'مشاركة الإعلان',
-      name: 'listingShareTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `انسخ رابط الإعلان المباشر لمتابعة المحادثة خارج هذه الشاشة عند الحاجة.`
-  String get listingShareBody {
-    return Intl.message(
-      'انسخ رابط الإعلان المباشر لمتابعة المحادثة خارج هذه الشاشة عند الحاجة.',
-      name: 'listingShareBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `نسخ الرابط`
-  String get listingShareCopyAction {
-    return Intl.message(
-      'نسخ الرابط',
-      name: 'listingShareCopyAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تم نسخ رابط الإعلان.`
-  String get listingShareCopied {
-    return Intl.message(
-      'تم نسخ رابط الإعلان.',
-      name: 'listingShareCopied',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تفاصيل ثقة البائع`
-  String get listingSellerTrustAction {
-    return Intl.message(
-      'تفاصيل ثقة البائع',
-      name: 'listingSellerTrustAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ملخص ثقة البائع`
-  String get listingSellerTrustTitle {
-    return Intl.message(
-      'ملخص ثقة البائع',
-      name: 'listingSellerTrustTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `راجع سياق البائع قبل متابعة المراسلة أو بدء المعاملة.`
-  String get listingSellerTrustBody {
-    return Intl.message(
-      'راجع سياق البائع قبل متابعة المراسلة أو بدء المعاملة.',
-      name: 'listingSellerTrustBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `سياق الثقة`
-  String get listingSellerTrustListingsLabel {
-    return Intl.message(
-      'سياق الثقة',
-      name: 'listingSellerTrustListingsLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `موثّق`
-  String get listingSellerTrustVerifiedStatus {
-    return Intl.message(
-      'موثّق',
-      name: 'listingSellerTrustVerifiedStatus',
       desc: '',
       args: [],
     );
@@ -4144,16 +3679,6 @@ class S {
     return Intl.message(
       'تصفح الإعلانات',
       name: 'savedListingsBrowseAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `فتح الإعلان`
-  String get savedListingsViewAction {
-    return Intl.message(
-      'فتح الإعلان',
-      name: 'savedListingsViewAction',
       desc: '',
       args: [],
     );
@@ -4369,26 +3894,6 @@ class S {
     );
   }
 
-  /// `تم تحديث سعر إعلان محفوظ`
-  String get notificationsSavedPriceTitle {
-    return Intl.message(
-      'تم تحديث سعر إعلان محفوظ',
-      name: 'notificationsSavedPriceTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.`
-  String get notificationsSavedPriceBody {
-    return Intl.message(
-      'أصبح أحد إعلاناتك المحفوظة بسعر أقل الآن.',
-      name: 'notificationsSavedPriceBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `رسالة`
   String get notificationsCategoryMessage {
     return Intl.message(
@@ -4579,16 +4084,6 @@ class S {
     );
   }
 
-  /// `إنشاء طلب`
-  String get transactionStartCta {
-    return Intl.message(
-      'إنشاء طلب',
-      name: 'transactionStartCta',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `طلب القطعة`
   String get requestPartCta {
     return Intl.message(
@@ -4729,16 +4224,6 @@ class S {
     );
   }
 
-  /// `الحالة`
-  String get transactionStateLabel {
-    return Intl.message(
-      'الحالة',
-      name: 'transactionStateLabel',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `طلب مفتوح`
   String get transactionStateRequested {
     return Intl.message(
@@ -4804,10 +4289,10 @@ class S {
     );
   }
 
-  /// `تمييز كمنتهية`
+  /// `تعليم كمنتهية`
   String get transactionExpire {
     return Intl.message(
-      'تمييز كمنتهية',
+      'تعليم كمنتهية',
       name: 'transactionExpire',
       desc: '',
       args: [],
@@ -5149,10 +4634,10 @@ class S {
     );
   }
 
-  /// `إرفاق الصور مطلوب في المسار الإنتاجي الكامل.`
+  /// `سيُطلب منك إرفاق صور كأدلة.`
   String get disputeEvidenceValue {
     return Intl.message(
-      'إرفاق الصور مطلوب في المسار الإنتاجي الكامل.',
+      'سيُطلب منك إرفاق صور كأدلة.',
       name: 'disputeEvidenceValue',
       desc: '',
       args: [],
@@ -5174,16 +4659,6 @@ class S {
     return Intl.message(
       'إرسال النزاع',
       name: 'disputeSubmit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تم إرسال النزاع للمراجعة.`
-  String get disputeSubmitted {
-    return Intl.message(
-      'تم إرسال النزاع للمراجعة.',
-      name: 'disputeSubmitted',
       desc: '',
       args: [],
     );
@@ -5779,10 +5254,10 @@ class S {
     );
   }
 
-  /// `حفظ بدون إجراء`
+  /// `إغلاق البلاغ بدون إجراء`
   String get adminReportDecisionDismiss {
     return Intl.message(
-      'حفظ بدون إجراء',
+      'إغلاق البلاغ بدون إجراء',
       name: 'adminReportDecisionDismiss',
       desc: '',
       args: [],
@@ -6459,41 +5934,11 @@ class S {
     );
   }
 
-  /// `لا توجد إجراءات فريق معلقة`
-  String get adminTeamEmptyTitle {
-    return Intl.message(
-      'لا توجد إجراءات فريق معلقة',
-      name: 'adminTeamEmptyTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `واجهة الفريق جاهزة لتدفقات الدعوات وإدارة الصلاحيات بشكل مضبوط.`
-  String get adminTeamEmptyBody {
-    return Intl.message(
-      'واجهة الفريق جاهزة لتدفقات الدعوات وإدارة الصلاحيات بشكل مضبوط.',
-      name: 'adminTeamEmptyBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `دعوة مشرف`
   String get adminTeamInviteAction {
     return Intl.message(
       'دعوة مشرف',
       name: 'adminTeamInviteAction',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تدار دعوات الفريق عبر أدوات الإدارة الآمنة فقط.`
-  String get adminTeamInviteUnavailable {
-    return Intl.message(
-      'تدار دعوات الفريق عبر أدوات الإدارة الآمنة فقط.',
-      name: 'adminTeamInviteUnavailable',
       desc: '',
       args: [],
     );
@@ -7399,11 +6844,6 @@ class S {
     return Intl.message('الرئيسية', name: 'navHome', desc: '', args: []);
   }
 
-  /// `بحث`
-  String get navSearch {
-    return Intl.message('بحث', name: 'navSearch', desc: '', args: []);
-  }
-
   /// `المحفوظات`
   String get navSaved {
     return Intl.message('المحفوظات', name: 'navSaved', desc: '', args: []);
@@ -7417,11 +6857,6 @@ class S {
   /// `الحساب`
   String get navAccount {
     return Intl.message('الحساب', name: 'navAccount', desc: '', args: []);
-  }
-
-  /// `اللوحة`
-  String get navDashboard {
-    return Intl.message('اللوحة', name: 'navDashboard', desc: '', args: []);
   }
 
   /// `الإعلانات`

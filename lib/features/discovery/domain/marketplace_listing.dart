@@ -3,16 +3,14 @@ class MarketplaceListing {
     required this.id,
     required this.sellerUserId,
     required this.title,
-    required this.priceLabel,
-    required this.locationLabel,
-    required this.fitmentLabel,
-    required this.sellerLabel,
+    required this.priceAmount,
+    required this.sellerLabelCode,
     required this.rating,
     required this.threadId,
     required this.transactionId,
     this.categoryId,
-    this.categoryLabel = '',
-    this.conditionLabel = '',
+    this.categoryCode = '',
+    this.conditionCode = '',
     this.description = '',
     this.memberSinceLabel = '',
     this.exchangeAllowed = false,
@@ -31,16 +29,14 @@ class MarketplaceListing {
   final String id;
   final String sellerUserId;
   final String title;
-  final String priceLabel;
-  final String locationLabel;
-  final String fitmentLabel;
-  final String sellerLabel;
+  final int priceAmount;
+  final String sellerLabelCode;
   final double rating;
   final String threadId;
   final String transactionId;
   final String? categoryId;
-  final String categoryLabel;
-  final String conditionLabel;
+  final String categoryCode;
+  final String conditionCode;
   final String description;
   final String memberSinceLabel;
   final bool exchangeAllowed;

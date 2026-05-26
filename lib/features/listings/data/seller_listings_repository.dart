@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SellerManagedListingMedia {
@@ -23,8 +24,6 @@ class SellerManagedListing {
     required this.title,
     required this.status,
     required this.price,
-    required this.fitmentLabel,
-    required this.locationLabel,
     required this.categoryId,
     required this.condition,
     required this.primaryImageUrl,
@@ -47,8 +46,6 @@ class SellerManagedListing {
   final String title;
   final String status;
   final num price;
-  final String fitmentLabel;
-  final String locationLabel;
   final String categoryId;
   final String condition;
   final String? primaryImageUrl;
@@ -125,7 +122,7 @@ class SupabaseSellerListingsRepository implements SellerListingsRepository {
         },
       );
     } on PostgrestException catch (error) {
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
   }
 
@@ -143,9 +140,7 @@ class SupabaseSellerListingsRepository implements SellerListingsRepository {
     if (row == null) {
       return null;
     }
-    final wilayaNames = await _loadWilayaNames();
-    final communeNames = await _loadCommuneNames();
-    return _mapListingRow(row, wilayaNames, communeNames);
+    return _mapListingRow(row);
   }
 
   @override
@@ -169,34 +164,14 @@ class SupabaseSellerListingsRepository implements SellerListingsRepository {
         )
         .eq('seller_id', sellerId)
         .order('updated_at', ascending: false);
-    final wilayaNames = await _loadWilayaNames();
-    final communeNames = await _loadCommuneNames();
     return rows
         .whereType<Map<String, dynamic>>()
-        .map((row) => _mapListingRow(row, wilayaNames, communeNames))
+        .map(_mapListingRow)
         .toList(growable: false);
-  }
-
-  Future<Map<String, String>> _loadWilayaNames() async {
-    final wilayas = await _client.from('wilayas').select('id, name');
-    return <String, String>{
-      for (final row in wilayas.whereType<Map<String, dynamic>>())
-        row['id'].toString(): row['name'] as String? ?? '',
-    };
-  }
-
-  Future<Map<String, String>> _loadCommuneNames() async {
-    final communes = await _client.from('communes').select('id, name');
-    return <String, String>{
-      for (final row in communes.whereType<Map<String, dynamic>>())
-        row['id'].toString(): row['name'] as String? ?? '',
-    };
   }
 
   SellerManagedListing _mapListingRow(
     Map<String, dynamic> row,
-    Map<String, String> wilayaNames,
-    Map<String, String> communeNames,
   ) {
     final fitment = _extractFitment(row['vehicle_fitment']);
     final media = _extractMediaRows(row['listing_media']);
@@ -210,13 +185,6 @@ class SupabaseSellerListingsRepository implements SellerListingsRepository {
       title: row['title'] as String? ?? '',
       status: row['status'] as String? ?? 'draft',
       price: row['price'] as num? ?? 0,
-      fitmentLabel: [
-        brand,
-        model,
-        year?.toString(),
-      ].whereType<String>().where((part) => part.isNotEmpty).join(' | '),
-      locationLabel:
-          '${communeNames[communeCode ?? ''] ?? communeCode ?? '-'} | ${wilayaNames[wilayaCode ?? ''] ?? wilayaCode ?? '-'}',
       categoryId: row['category_id']?.toString() ?? '',
       condition: row['condition'] as String? ?? 'used',
       primaryImageUrl: media.isEmpty ? null : media.first.publicUrl,

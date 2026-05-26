@@ -93,8 +93,9 @@ class _SavedListingRow extends ConsumerWidget {
           borderRadius: BorderRadius.circular(18),
           child: QitakQueueRow(
             title: item.title,
-            meta: '${item.fitmentLabel} • ${item.locationLabel}',
-            status: item.priceLabel,
+            meta:
+                '${item.localizedFitment(context.l10n)} • ${item.localizedLocation(context.l10n)}',
+            status: item.localizedPrice(context.l10n),
             trailing: const Icon(Icons.chevron_right_rounded),
           ),
         ),
@@ -103,7 +104,7 @@ class _SavedListingRow extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              item.categoryLabel,
+              item.localizedCategory(context.l10n),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             TextButton(

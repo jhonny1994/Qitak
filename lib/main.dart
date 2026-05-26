@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/app/app.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/notifications/notification_service.dart';
 import 'package:qitak_app/core/observability/sentry_config.dart';
@@ -45,6 +47,7 @@ Future<void> main() async {
   SentryWidgetsFlutterBinding.ensureInitialized();
 
   NotificationService notificationService = const NoopNotificationService();
+  String? initialNotificationRoute;
   if (_supportsFirebaseRuntime) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -52,6 +55,21 @@ Future<void> main() async {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     notificationService = FirebaseNotificationService();
     await notificationService.initialize();
+    // Capture the notification that launched the app from a terminated state
+    // BEFORE the widget tree builds. This eliminates the race condition between
+    // getInitialMessage() and the splash-screen navigation.
+    // Wrapped in try/catch: a Firebase SDK error must not crash startup.
+    try {
+      final initialMessage = await FirebaseMessaging.instance
+          .getInitialMessage();
+      if (initialMessage != null) {
+        initialNotificationRoute = FirebaseNotificationService.resolveDeepLink(
+          initialMessage,
+        );
+      }
+    } on Exception catch (e, st) {
+      debugPrint('[QitakDebug] getInitialMessage failed: $e\n$st');
+    }
   }
 
   FlutterError.onError = (details) {
@@ -94,6 +112,12 @@ Future<void> main() async {
           ),
         ),
       );
+      unawaited(
+        AppContractRepository(
+          Supabase.instance.client,
+          sharedPreferences,
+        ).warmAll(DomainKey.all),
+      );
     }
 
     runApp(
@@ -104,6 +128,10 @@ Future<void> main() async {
           appSupabaseConfigProvider.overrideWithValue(config),
           secureStorageServiceProvider.overrideWithValue(secureStorageService),
           notificationServiceProvider.overrideWithValue(notificationService),
+          if (initialNotificationRoute != null)
+            initialNotificationRouteProvider.overrideWithValue(
+              initialNotificationRoute,
+            ),
         ],
         child: const QitakApp(),
       ),

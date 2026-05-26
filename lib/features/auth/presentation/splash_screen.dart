@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/notifications/notification_service.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
@@ -115,6 +116,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           approved = false;
         }
       }
+      // If the app was launched by tapping a notification from the terminated
+      // state, honour that intent — provided the authenticated user has access.
+      final pendingNotificationRoute = ref.read(
+        initialNotificationRouteProvider,
+      );
+      if (pendingNotificationRoute != null) {
+        final canAccess = _service.canAccessRoleRoute(
+          profile.role,
+          pendingNotificationRoute,
+          isSellerApproved: approved,
+        );
+        if (canAccess) {
+          return pendingNotificationRoute;
+        }
+      }
+
       return service.resolveLandingRoute(
         profile,
         isSellerApproved: approved,

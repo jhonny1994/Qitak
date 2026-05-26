@@ -404,8 +404,8 @@ class _FeaturedListingCard extends StatelessWidget {
       onTap: onOpen,
       child: QitakListingSurface(
         title: item.localizedTitle(context.l10n),
-        price: item.priceLabel,
-        subtitle: item.locationLabel,
+        price: item.localizedPrice(context.l10n),
+        subtitle: item.localizedLocation(context.l10n),
         imageUrl: item.preferredImageUrl,
         heroTag: qitakListingHeroTag(item.id),
         actions: [
@@ -461,7 +461,7 @@ class _ListingRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    item.locationLabel,
+                    item.localizedLocation(context.l10n),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
@@ -474,7 +474,7 @@ class _ListingRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  item.priceLabel,
+                  item.localizedPrice(context.l10n),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

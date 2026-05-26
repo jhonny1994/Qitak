@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/listings/data/seller_listings_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
@@ -21,6 +22,14 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(authSessionProvider);
+    final statusContracts = ref.watch(listingStatusContractsProvider);
+    final statusCatalog = statusContracts.asData?.value
+        .map((entry) => (code: entry.code, labelKey: entry.labelKey))
+        .toList(growable: false);
+    final options = _statusOptions(context, statusCatalog);
+    final effectiveStatus = options.any((option) => option.value == _status)
+        ? _status
+        : options.first.value;
     final sellerId = session.profile?.id;
     if (sellerId == null) {
       return Padding(
@@ -37,7 +46,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
       data: (items) {
         final filtered = items.where((item) => item.status == _status).toList();
         final counts = <String, int>{
-          for (final option in _statusOptions(context))
+          for (final option in options)
             option.value: items
                 .where((item) => item.status == option.value)
                 .length,
@@ -66,11 +75,11 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      for (final option in _statusOptions(context))
+                      for (final option in options)
                         QitakChip(
                           label:
                               '${option.label} (${counts[option.value] ?? 0})',
-                          selected: option.value == _status,
+                          selected: option.value == effectiveStatus,
                           onTap: () => setState(() => _status = option.value),
                         ),
                     ],
@@ -96,8 +105,8 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                           title: item.title,
                           price: context.l10n.priceWithDzd(item.price),
                           subtitle: [
-                            item.fitmentLabel,
-                            item.locationLabel,
+                            item.fitmentSummary,
+                            item.locationSummary,
                             _listingMeta(context, item),
                           ].where((part) => part.isNotEmpty).join(' | '),
                           imageUrl: item.primaryImageUrl,
@@ -238,6 +247,23 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
   }
 }
 
+extension _SellerManagedListingPresentationX on SellerManagedListing {
+  String get fitmentSummary {
+    final parts = <String>[
+      if (brand != null && brand!.isNotEmpty) brand!,
+      if (model != null && model!.isNotEmpty) model!,
+      if (year != null) year.toString(),
+    ];
+    return parts.join(' | ');
+  }
+
+  String get locationSummary {
+    final commune = communeId?.trim().isNotEmpty == true ? communeId! : '-';
+    final wilaya = wilayaId?.trim().isNotEmpty == true ? wilayaId! : '-';
+    return '$commune | $wilaya';
+  }
+}
+
 String _listingMeta(BuildContext context, SellerManagedListing item) {
   if (item.status == 'pending_review' && item.submittedAt != null) {
     return context.l10n.sellerListingSubmittedLabel(
@@ -266,21 +292,50 @@ class _SellerListingsLoadingState extends StatelessWidget {
   }
 }
 
-List<({String value, String label})> _statusOptions(BuildContext context) {
+List<({String value, String label})> _statusOptions(
+  BuildContext context,
+  List<({String code, String? labelKey})>? statusContracts,
+) {
+  final contracts =
+      statusContracts ??
+      const <({String code, String? labelKey})>[
+        (code: 'active', labelKey: 'sellerListingsStatusActive'),
+        (code: 'draft', labelKey: 'sellerListingsStatusDrafts'),
+        (code: 'pending_review', labelKey: 'sellerListingsStatusUnderReview'),
+        (code: 'paused', labelKey: 'sellerListingsStatusPaused'),
+        (code: 'rejected', labelKey: 'sellerListingsStatusRejected'),
+        (code: 'closed', labelKey: 'sellerListingsStatusClosed'),
+      ];
   return [
-    (value: 'active', label: context.l10n.sellerListingsStatusActive),
-    (value: 'draft', label: context.l10n.sellerListingsStatusDrafts),
-    (
-      value: 'pending_review',
-      label: context.l10n.sellerListingsStatusUnderReview,
-    ),
-    (value: 'paused', label: context.l10n.sellerListingsStatusPaused),
-    (value: 'rejected', label: context.l10n.sellerListingsStatusRejected),
-    (value: 'closed', label: context.l10n.sellerListingsStatusClosed),
+    for (final contract in contracts)
+      (
+        value: contract.code,
+        label: _statusLabel(
+          context,
+          contract.code,
+          contract.labelKey,
+        ),
+      ),
   ];
 }
 
-String _statusLabel(BuildContext context, String status) {
+String _statusLabel(BuildContext context, String status, [String? labelKey]) {
+  switch (labelKey) {
+    case 'sellerListingsStatusActive':
+      return context.l10n.sellerListingsStatusActive;
+    case 'sellerListingsStatusDrafts':
+      return context.l10n.sellerListingsStatusDrafts;
+    case 'sellerListingsStatusUnderReview':
+      return context.l10n.sellerListingsStatusUnderReview;
+    case 'sellerListingsStatusPaused':
+      return context.l10n.sellerListingsStatusPaused;
+    case 'sellerListingsStatusRejected':
+      return context.l10n.sellerListingsStatusRejected;
+    case 'sellerListingsStatusClosed':
+      return context.l10n.sellerListingsStatusClosed;
+    default:
+      break;
+  }
   switch (status) {
     case 'active':
       return context.l10n.sellerListingsStatusActive;

@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/listings/data/listing_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
+
+final listingReportReasonOptionsProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) async {
+      return ref.watch(listingReportReasonPolicyProvider.future);
+    });
 
 Future<void> showReportListingSheet(
   BuildContext context, {
@@ -35,6 +44,9 @@ class _ReportListingSheetState extends ConsumerState<ReportListingSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final options = ref.watch(listingReportReasonOptionsProvider);
+    final reasonOptions = options.asData?.value ?? const <AppPolicyOption>[];
+
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.68,
@@ -62,22 +74,11 @@ class _ReportListingSheetState extends ConsumerState<ReportListingSheet> {
                 onChanged: _submitting ? _ignoreReasonChange : _selectReason,
                 child: Column(
                   children: [
-                    _ReasonTile(
-                      title: context.l10n.reportListingReasonSpam,
-                      value: 'spam',
-                    ),
-                    _ReasonTile(
-                      title: context.l10n.reportListingReasonMisleading,
-                      value: 'misleading',
-                    ),
-                    _ReasonTile(
-                      title: context.l10n.reportListingReasonWrongCategory,
-                      value: 'wrong_category',
-                    ),
-                    _ReasonTile(
-                      title: context.l10n.reportListingReasonOther,
-                      value: 'other',
-                    ),
+                    for (final option in reasonOptions)
+                      _ReasonTile(
+                        title: _policyLabel(context, option.labelKey),
+                        value: option.code,
+                      ),
                   ],
                 ),
               ),
@@ -131,6 +132,14 @@ class _ReportListingSheetState extends ConsumerState<ReportListingSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.reportListingSuccess)),
       );
+    } on AppException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.appExceptionMessage(error))),
+      );
+      setState(() => _submitting = false);
     } on Object catch (error) {
       if (!mounted) {
         return;
@@ -140,6 +149,21 @@ class _ReportListingSheetState extends ConsumerState<ReportListingSheet> {
       );
       setState(() => _submitting = false);
     }
+  }
+}
+
+String _policyLabel(BuildContext context, String labelKey) {
+  switch (labelKey) {
+    case 'reportListingReasonSpam':
+      return context.l10n.reportListingReasonSpam;
+    case 'reportListingReasonMisleading':
+      return context.l10n.reportListingReasonMisleading;
+    case 'reportListingReasonWrongCategory':
+      return context.l10n.reportListingReasonWrongCategory;
+    case 'reportListingReasonOther':
+      return context.l10n.reportListingReasonOther;
+    default:
+      return labelKey;
   }
 }
 

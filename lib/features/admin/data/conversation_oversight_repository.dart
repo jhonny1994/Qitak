@@ -1,6 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/admin/domain/conversation_oversight_case.dart';
 import 'package:qitak_app/features/messaging/domain/conversation_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,14 +37,16 @@ final conversationOversightRepositoryProvider =
           'Supabase client is required for conversation oversight.',
         );
       }
-      return SupabaseConversationOversightRepository(client);
+      final contracts = ref.watch(appContractRepositoryProvider);
+      return SupabaseConversationOversightRepository(client, contracts);
     });
 
 class SupabaseConversationOversightRepository
     implements ConversationOversightRepository {
-  const SupabaseConversationOversightRepository(this._client);
+  const SupabaseConversationOversightRepository(this._client, this._contracts);
 
   final SupabaseClient _client;
+  final AppContractRepository _contracts;
 
   @override
   Future<ConversationOversightCase> loadCase({
@@ -60,7 +66,7 @@ class SupabaseConversationOversightRepository
         .eq('id', threadId)
         .maybeSingle();
     if (thread == null) {
-      throw const AppException('Conversation thread not found.');
+      throw AppException.fromCode(AppErrorCode.notFound);
     }
 
     final listingId = thread['listing_id'] as String? ?? '';
@@ -93,7 +99,7 @@ class SupabaseConversationOversightRepository
     final reportsFuture = _client
         .from('reports')
         .select('id, reported_entity_type, reported_entity_id, status')
-        .inFilter('status', ['open', 'under_review'])
+        .inFilter('status', await _openReportStatuses())
         .or('reported_entity_id.eq.$listingId,reported_entity_id.eq.$threadId')
         .order('created_at', ascending: false)
         .limit(1);
@@ -107,11 +113,12 @@ class SupabaseConversationOversightRepository
     String? disputeId;
     final transactionId = transaction?['id'] as String?;
     if (transactionId != null && transactionId.isNotEmpty) {
+      final disputeStatuses = await _openDisputeStatuses();
       final dispute = await _client
           .from('disputes')
           .select('id')
           .eq('deal_id', transactionId)
-          .inFilter('status', ['open', 'under_review'])
+          .inFilter('status', disputeStatuses)
           .order('created_at', ascending: false)
           .limit(1)
           .maybeSingle();
@@ -169,7 +176,31 @@ class SupabaseConversationOversightRepository
         },
       );
     } on PostgrestException catch (error) {
-      throw AppException(error.message);
+      throw AppException.fromCode(classifyPostgrestException(error));
     }
+  }
+
+  Future<List<String>> _openReportStatuses() async {
+    final statusSet = await _contracts.fetchDomainCodes(DomainKey.reportStatus);
+    final queue = statusSet
+        .where((code) => code == 'open' || code == 'under_review')
+        .toList(growable: false);
+    if (queue.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    return queue;
+  }
+
+  Future<List<String>> _openDisputeStatuses() async {
+    final statusSet = await _contracts.fetchDomainCodes(
+      DomainKey.disputeStatus,
+    );
+    final queue = statusSet
+        .where((code) => code == 'open' || code == 'under_review')
+        .toList(growable: false);
+    if (queue.isEmpty) {
+      throw AppException.fromCode(AppErrorCode.contractUnavailable);
+    }
+    return queue;
   }
 }

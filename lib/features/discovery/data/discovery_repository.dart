@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/discovery/domain/search_filter_state.dart';
-import 'package:qitak_app/generated/l10n.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class DiscoveryRepository {
@@ -74,7 +73,7 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
         .map((row) => _mapListingRow(row, lookups))
         .where((listing) => listing.rating >= minimumRating)
         .where((listing) {
-          final price = _parsePrice(listing.priceLabel);
+          final price = listing.priceAmount;
           if (filters.priceMin != null && price < filters.priceMin!) {
             return false;
           }
@@ -199,12 +198,6 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
     final communeCode = row['commune_id']?.toString();
     final categoryId = row['category_id']?.toString();
     final seller = _extractSeller(row['sellers']);
-    final wilayaName = wilayaCode == null
-        ? null
-        : lookups.wilayaNames[wilayaCode];
-    final communeName = communeCode == null
-        ? null
-        : lookups.communeNames[communeCode];
     final categorySlug = categoryId == null
         ? null
         : lookups.categorySlugs[categoryId];
@@ -213,21 +206,14 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
       id: row['id'] as String,
       sellerUserId: seller?['user_id'] as String? ?? '',
       title: (row['title'] as String?) ?? '',
-      priceLabel: _priceWithDzd((row['price'] ?? 0) as Object),
-      locationLabel: _locationLabel(
-        communeName,
-        wilayaName,
-        communeCode,
-        wilayaCode,
-      ),
-      fitmentLabel: _fitmentLabel(brand, model, year),
-      sellerLabel: _verifiedSellerLabel(),
+      priceAmount: (row['price'] as num?)?.toInt() ?? 0,
+      sellerLabelCode: _verifiedSellerCode(),
       rating: 0,
       threadId: '',
       transactionId: '',
       categoryId: categoryId ?? '',
-      categoryLabel: categorySlug ?? categoryId ?? '',
-      conditionLabel: (row['condition'] as String?) ?? 'used',
+      categoryCode: categorySlug ?? categoryId ?? '',
+      conditionCode: (row['condition'] as String?) ?? 'used',
       description: (row['description'] as String?) ?? '',
       exchangeAllowed: (row['exchange_enabled'] as bool?) ?? false,
       wilayaCode: wilayaCode,
@@ -295,15 +281,6 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
     return null;
   }
 
-  String _fitmentLabel(String? brand, String? model, int? year) {
-    final parts = <String>[
-      if (brand != null && brand.isNotEmpty) brand,
-      if (model != null && model.isNotEmpty) model,
-      if (year != null) year.toString(),
-    ];
-    return parts.join(' | ');
-  }
-
   List<String> _extractMediaUrls(Object? raw) {
     if (raw is! List) {
       return const <String>[];
@@ -320,49 +297,12 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
         .toList(growable: false);
   }
 
-  String _locationLabel(
-    String? communeName,
-    String? wilayaName,
-    String? communeCode,
-    String? wilayaCode,
-  ) {
-    final commune = communeName?.trim().isNotEmpty == true
-        ? communeName!
-        : (communeCode ?? '-');
-    final wilaya = wilayaName?.trim().isNotEmpty == true
-        ? wilayaName!
-        : (wilayaCode ?? '-');
-    return '$commune | $wilaya';
-  }
-
   String _conditionValueForQuery(String condition) {
-    switch (condition) {
-      case 'like_new':
-        return 'like new';
-      default:
-        return condition;
-    }
+    return condition;
   }
 
-  int _parsePrice(String priceLabel) {
-    final digits = priceLabel.replaceAll(RegExp('[^0-9]'), '');
-    return int.tryParse(digits) ?? 0;
-  }
-
-  String _priceWithDzd(Object amount) {
-    try {
-      return S.current.priceWithDzd(amount);
-    } on Object catch (_) {
-      return '$amount DZD';
-    }
-  }
-
-  String _verifiedSellerLabel() {
-    try {
-      return S.current.localSellerLabelVerified;
-    } on Object catch (_) {
-      return 'Verified seller';
-    }
+  String _verifiedSellerCode() {
+    return 'seller_label_verified';
   }
 }
 

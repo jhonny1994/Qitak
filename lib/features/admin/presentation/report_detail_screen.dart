@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
+
+final reportDecisionPolicyOptionsProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) async {
+      return ref.watch(reportResolutionDecisionPolicyProvider.future);
+    });
+
+final reportReasonPolicyOptionsProvider = FutureProvider<List<AppPolicyOption>>(
+  (ref) async {
+    return ref.watch(reportResolutionReasonPolicyProvider.future);
+  },
+);
 
 class ReportDetailScreen extends ConsumerStatefulWidget {
   const ReportDetailScreen({required this.reportId, super.key});
@@ -29,6 +42,28 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final report = ref.watch(adminReportProvider(widget.reportId));
+    final decisionOptions = ref.watch(reportDecisionPolicyOptionsProvider);
+    final reasonOptions = ref.watch(reportReasonPolicyOptionsProvider);
+
+    final availableDecisionOptions =
+        decisionOptions.asData?.value ?? const <AppPolicyOption>[];
+    final availableReasonOptions =
+        reasonOptions.asData?.value ?? const <AppPolicyOption>[];
+
+    final selectedDecision =
+        availableDecisionOptions.any(
+          (item) => item.code == _decision,
+        )
+        ? _decision
+        : (availableDecisionOptions.isNotEmpty
+              ? availableDecisionOptions.first.code
+              : _decision);
+    final selectedReasonCode =
+        (_reasonCode != null &&
+            availableReasonOptions.any((item) => item.code == _reasonCode))
+        ? _reasonCode
+        : null;
+
     return report.when(
       data: (item) => AdminSurfaceScaffold(
         eyebrow: context.l10n.adminReportsQueueTitle,
@@ -101,58 +136,30 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       QitakDropdownField<String>(
-                        value: _decision,
+                        value: selectedDecision,
                         items: [
-                          DropdownMenuItem(
-                            value: 'dismiss',
-                            child: Text(
-                              context.l10n.adminReportDecisionDismiss,
+                          for (final option in availableDecisionOptions)
+                            DropdownMenuItem(
+                              value: option.code,
+                              child: Text(
+                                _policyLabel(context, option.labelKey),
+                              ),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'warn_seller',
-                            child: Text(
-                              context.l10n.adminReportDecisionWarnSeller,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'remove_listing',
-                            child: Text(
-                              context.l10n.adminReportDecisionRemoveListing,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'suspend_seller',
-                            child: Text(
-                              context.l10n.adminReportDecisionSuspendSeller,
-                            ),
-                          ),
                         ],
                         onChanged: (value) =>
                             setState(() => _decision = value ?? 'dismiss'),
                       ),
                       const SizedBox(height: 12),
                       QitakDropdownField<String>(
-                        value: _reasonCode,
+                        value: selectedReasonCode,
                         items: [
-                          DropdownMenuItem(
-                            value: 'spam',
-                            child: Text(context.l10n.adminReportReasonSpam),
-                          ),
-                          DropdownMenuItem(
-                            value: 'policy_violation',
-                            child: Text(
-                              context.l10n.adminReportReasonPolicyViolation,
+                          for (final option in availableReasonOptions)
+                            DropdownMenuItem(
+                              value: option.code,
+                              child: Text(
+                                _policyLabel(context, option.labelKey),
+                              ),
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'insufficient_evidence',
-                            child: Text(
-                              context
-                                  .l10n
-                                  .adminReportReasonInsufficientEvidence,
-                            ),
-                          ),
                         ],
                         onChanged: (value) =>
                             setState(() => _reasonCode = value),
@@ -222,5 +229,26 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(context.l10n.adminReportDecisionSaved)),
     );
+  }
+}
+
+String _policyLabel(BuildContext context, String labelKey) {
+  switch (labelKey) {
+    case 'adminReportDecisionDismiss':
+      return context.l10n.adminReportDecisionDismiss;
+    case 'adminReportDecisionWarnSeller':
+      return context.l10n.adminReportDecisionWarnSeller;
+    case 'adminReportDecisionRemoveListing':
+      return context.l10n.adminReportDecisionRemoveListing;
+    case 'adminReportDecisionSuspendSeller':
+      return context.l10n.adminReportDecisionSuspendSeller;
+    case 'adminReportReasonSpam':
+      return context.l10n.adminReportReasonSpam;
+    case 'adminReportReasonPolicyViolation':
+      return context.l10n.adminReportReasonPolicyViolation;
+    case 'adminReportReasonInsufficientEvidence':
+      return context.l10n.adminReportReasonInsufficientEvidence;
+    default:
+      return labelKey;
   }
 }

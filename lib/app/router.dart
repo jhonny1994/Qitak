@@ -45,10 +45,6 @@ import 'package:qitak_app/features/messaging/presentation/conversation_screen.da
 import 'package:qitak_app/features/notifications/presentation/notification_center_screen.dart';
 import 'package:qitak_app/features/notifications/presentation/notification_preferences_screen.dart';
 import 'package:qitak_app/features/ratings/presentation/rating_screen.dart';
-import 'package:qitak_app/features/release/presentation/cutover_rollback_screen.dart';
-import 'package:qitak_app/features/release/presentation/launch_operations_screen.dart';
-import 'package:qitak_app/features/release/presentation/release_observability_screen.dart';
-import 'package:qitak_app/features/release/presentation/release_readiness_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
@@ -887,52 +883,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 conversationId: state.pathParameters['id'] ?? '',
               ),
             ),
-          ),
-        ),
-      ),
-
-      // Section
-      GoRoute(
-        path: '/release/readiness',
-        pageBuilder: (context, state) => _buildTransitionPage(
-          state: state,
-          child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.admin, AccountRole.superAdmin],
-            intent: PostAuthRedirectIntent.route('/release/readiness'),
-            child: const AppEntryShell(child: ReleaseReadinessScreen()),
-          ),
-        ),
-      ),
-      GoRoute(
-        path: '/release/operations',
-        pageBuilder: (context, state) => _buildTransitionPage(
-          state: state,
-          child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.admin, AccountRole.superAdmin],
-            intent: PostAuthRedirectIntent.route('/release/operations'),
-            child: const AppEntryShell(child: LaunchOperationsScreen()),
-          ),
-        ),
-      ),
-      GoRoute(
-        path: '/release/cutover',
-        pageBuilder: (context, state) => _buildTransitionPage(
-          state: state,
-          child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.admin, AccountRole.superAdmin],
-            intent: PostAuthRedirectIntent.route('/release/cutover'),
-            child: const AppEntryShell(child: CutoverRollbackScreen()),
-          ),
-        ),
-      ),
-      GoRoute(
-        path: '/release/observability',
-        pageBuilder: (context, state) => _buildTransitionPage(
-          state: state,
-          child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.admin, AccountRole.superAdmin],
-            intent: PostAuthRedirectIntent.route('/release/observability'),
-            child: const AppEntryShell(child: ReleaseObservabilityScreen()),
           ),
         ),
       ),

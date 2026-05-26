@@ -181,7 +181,7 @@ class ListingDetailScreen extends ConsumerWidget {
                       children: [
                         QitakSignalStrip(
                           label: context.l10n.listingPriceLabel,
-                          value: item.priceLabel,
+                          value: item.localizedPrice(context.l10n),
                           status: sellerOwnedPreview
                               ? sellerStatus
                               : detail.condition,
@@ -556,7 +556,8 @@ class _ListingDetailViewData {
     BuildContext context,
     MarketplaceListing item,
   ) {
-    final fitmentParts = item.fitmentLabel
+    final fitmentParts = item
+        .localizedFitment(context.l10n)
         .split('|')
         .map((part) => part.trim())
         .where((part) => part.isNotEmpty)
@@ -566,14 +567,15 @@ class _ListingDetailViewData {
     final fallbackModel = vehicleLabel.startsWith(fallbackBrand)
         ? vehicleLabel.substring(fallbackBrand.length).trim()
         : '';
-    final locationParts = item.locationLabel
+    final locationParts = item
+        .localizedLocation(context.l10n)
         .split('|')
         .map((part) => part.trim())
         .where((part) => part.isNotEmpty)
         .toList(growable: false);
     final displayLocation = locationParts.length >= 2
         ? '${locationParts[1]} > ${locationParts[0]}'
-        : item.locationLabel;
+        : item.localizedLocation(context.l10n);
 
     return _ListingDetailViewData(
       brand: item.brand ?? fallbackBrand,

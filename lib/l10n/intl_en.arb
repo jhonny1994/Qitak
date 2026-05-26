@@ -1,7 +1,6 @@
 {
   "@@locale": "en",
   "loading": "Loading...",
-  "appTitle": "Qitak",
   "brandWordmark": "Qitak",
   "errorStateTitle": "Something went wrong",
   "retryAction": "Retry",
@@ -35,7 +34,7 @@
   "authGateMessageBody": "Use your account to open the conversation and continue with the seller.",
   "authGateBuyTitle": "Sign in to request this part",
   "authGateBuyBody": "Use your account to continue into the purchase request flow for this listing.",
-  "splashSubtitle": "Loading the marketplace routing and account state.",
+  "splashSubtitle": "Loading your account and marketplace data.",
   "signUpSubtitle": "Create a buyer account with your core contact details.",
   "accountSettingsEyebrow": "Account",
   "accountSettingsTitle": "Account settings",
@@ -70,7 +69,6 @@
   "appearanceSettingsTitle": "Appearance",
   "appearanceSettingsSubtitle": "Choose how Qitak should look on this device.",
   "appearanceSettingsSaved": "Appearance preference updated.",
-  "appearanceSettingsStatus": "Device preference",
   "appearanceModeDarkTitle": "Dark",
   "appearanceModeDarkSubtitle": "Use the dark appearance.",
   "appearanceModeLightTitle": "Light",
@@ -143,8 +141,6 @@
   "legalInformationPrivacyBody": "Profile details, location fields, and contact paths should only be used for legitimate marketplace activity.",
   "legalInformationMarketplaceTitle": "Marketplace conduct",
   "legalInformationMarketplaceBody": "Listings, disputes, and seller operations remain subject to moderation, trust, and transaction policies.",
-  "accountUtilitiesEyebrow": "Utilities",
-  "accountUtilitiesTitle": "Preferences and help",
   "accountUtilitiesGuestSubtitle": "Before signing in, you can still set language, appearance, and support guidance.",
   "sellerStatusEyebrow": "Seller workspace",
   "sellerStatusTitle": "Seller verification status",
@@ -152,9 +148,7 @@
   "sellerStatusProfile": "Account identity",
   "sellerStatusProfileBody": "Your account name and phone are linked to this seller application.",
   "sellerStatusVerification": "Verification review",
-  "sellerStatusVerificationBody": "Your seller documents and operating location stay available for review.",
   "sellerStatusWorkspace": "Seller access",
-  "sellerStatusWorkspaceBody": "Listings, messages, and seller tools unlock after approval.",
   "sellerStatusBackToWorkspace": "Go to seller workspace",
   "sellerStatusContinueApplication": "Finish application",
   "sellerStatusNotStarted": "Not started",
@@ -194,9 +188,18 @@
   "termsValidationError": "You must accept the terms to create an account.",
   "invalidCredentialsGeneric": "Invalid credentials or account unavailable.",
   "createAccountFailure": "We could not create your account.",
+  "authErrorSessionNotFound": "Session not found.",
+  "authErrorConfirmEmailBeforeSignIn": "Please confirm your email address before signing in. Check your inbox for the confirmation link.",
+  "authErrorInvalidEmailOrPassword": "Invalid email or password.",
+  "authErrorUnableSignIn": "Unable to sign in. Please try again.",
+  "errorNetworkUnavailable": "Network unavailable. Check your connection and try again.",
+  "authErrorEmailAlreadyExists": "An account with this email already exists.",
+  "authErrorPasswordRequirements": "Password does not meet security requirements.",
+  "authErrorProfileSetupBlockedRls": "Account created, but profile setup was blocked. Please try signing in again after updating the backend.",
+  "authErrorProfileSetupBlockedPolicy": "Account created, but profile setup is blocked by a backend policy issue.",
+  "authErrorCheckEmailConfirmation": "Account created. Please check your email and click the confirmation link before signing in.",
   "sellerOnboardingTitle": "Seller verification",
   "sellerOnboardingBody": "Submit your seller details once so we can review this account and unlock seller access.",
-  "sellerBusinessNameLabel": "Business name",
   "sellerOnboardingBack": "Back",
   "sellerOnboardingSubmit": "Submit verification",
   "sellerOnboardingStepTypeTitle": "Step 1 · Seller type",
@@ -228,17 +231,11 @@
   "sellerDashboardTitle": "Seller Dashboard",
   "createListingCta": "Create listing",
   "createListingSubtitle": "Publish one vehicle fitment per listing.",
-  "profileRoleLabel": "Role",
   "profileRoleAnonymous": "Anonymous",
   "profileRoleBuyer": "Buyer",
   "profileRoleSeller": "Seller",
   "profileRoleAdmin": "Admin",
   "profileRoleSuperAdmin": "Super admin",
-  "profileSellerLabel": "Seller capability",
-  "profileSellerEnabled": "Seller workspace enabled",
-  "profileSellerNotEnabled": "Seller workspace not enabled yet",
-  "profileEnableSeller": "Enable seller workspace",
-  "profileCreateListing": "Create a listing",
   "signOutAction": "Sign out",
   "sellerDashboardSubtitle": "Track verification, inventory, and live deal work.",
   "sellerPendingDealsTitle": "Pending deals",
@@ -246,7 +243,6 @@
   "sellerLifecycleTitle": "Transaction lifecycle",
   "sellerLifecycleBody": "Move requests, acceptances, and completions with clear state.",
   "sellerActionStatus": "Action",
-  "sellerQueueStatus": "Queue",
   "adminDashboardEyebrow": "Operations",
   "adminDashboardTitle": "Admin dashboard",
   "adminDashboardSubtitle": "Review verification, listing, dispute, and report queues from one operational dashboard.",
@@ -275,27 +271,18 @@
   "listingPriceError": "Enter a valid price.",
   "listingQuantityError": "Enter a valid quantity.",
   "listingDescriptionRequired": "Enter a description.",
-  "listingSaveVehicle": "Save vehicle",
-  "listingVehicleSaved": "Vehicle target saved.",
   "listingPublishedSuccess": "Listing published and added to your inventory.",
   "listingDraftSavedSuccess": "Draft saved to your seller inventory.",
   "listingSubmittedForReviewSuccess": "Listing submitted for review.",
-  "listingNoMultiVehicle": "Only one vehicle target is allowed per listing.",
   "listingPublishAction": "Publish listing",
   "listingSaveDraftAction": "Save draft",
   "listingSubmitForReviewAction": "Submit for review",
-  "listingFitmentRequired": "Brand and model are required.",
-  "listingYearError": "Enter a valid year.",
-  "listingPolicySectionTitle": "Policy readiness",
-  "listingPolicySectionBody": "One vehicle target, clear seller identity, and no location shortcuts outside wilaya and commune.",
   "listingMediaSectionTitle": "Media requirements",
-  "listingMediaSectionBody": "Prepare clear part photos before publishing. The final flow should require production-ready evidence.",
+  "listingMediaSectionBody": "Prepare clear part photos before publishing.",
   "listingMediaAttachAction": "Add photos",
   "listingMediaRemoveAction": "Remove photo",
   "listingMediaRequired": "Add at least one listing photo.",
   "listingMediaMinimumRequired": "Add at least two listing photos before review submission.",
-  "listingPreviewSectionTitle": "Preview status",
-  "listingPreviewSectionBody": "Complete brand, model, and year to unlock a realistic listing preview.",
   "messagesTitle": "Messages",
   "messagesConversationTitle": "Listing conversation",
   "messagesConversationSubtitle": "Keep deal discussion tied to the listing and online-only.",
@@ -304,12 +291,10 @@
   "messagesInboxSubtitle": "Every conversation stays tied to a listing and an active marketplace intent.",
   "messagesStatusLabel": "Messaging status",
   "messagesBlockedStatus": "Blocked",
-  "messagesReadyStatus": "Ready",
   "messagesInputHint": "Write a message...",
   "messagesSend": "Send",
   "messagesSendError": "Message couldn't be sent. Please try again.",
   "messagesOnlineOnly": "Messages are online-only right now.",
-  "messagesOnlineReady": "Online and ready for marketplace coordination.",
   "messagesInboxEmpty": "No listing-anchored conversations yet. Start from a listing when you need to message a seller.",
   "messagesBrowseListingsAction": "Browse listings",
   "messagesOpenStatus": "Open",
@@ -325,11 +310,6 @@
   "ratingListingContextFallback": "Listing context is loading",
   "ratingListingContextPending": "We are still resolving the linked listing for this deal.",
   "ratingCounterpartyPending": "Counterparty",
-  "discoveryTagline": "Find the right part faster with structured search and clear seller contact.",
-  "discoveryEyebrow": "Marketplace",
-  "discoveryHeadline": "Search-first discovery for real buyers",
-  "localSeedModeTitle": "Local seed data",
-  "localSeedModeBody": "This build is using local fallback marketplace and auth data because Supabase is not configured on this device.",
   "discoverySearchHint": "Search by part, brand, or vehicle",
   "discoveryFilterButton": "Filter",
   "discoverySearchButton": "Search",
@@ -352,13 +332,7 @@
   "discoveryDealTypeBuy": "Buy",
   "discoveryDealTypeBuyOrExchange": "Buy or exchange if available",
   "discoverySortNewest": "Newest",
-  "discoveryEnvironmentLabel": "Environment",
-  "discoveryEnvironmentLocal": "Local development feed",
-  "discoveryEnvironmentSeeded": "Seeded fallback",
-  "discoveryFilterEngine": "Engine",
   "discoveryFilterLighting": "Lighting",
-  "discoveryFilterBrakes": "Brakes",
-  "discoveryFilterBody": "Body",
   "categoryEngineIgnition": "Engine & ignition",
   "categoryCoolingSystem": "Cooling system",
   "categoryElectricalElectronics": "Electrical & electronics",
@@ -370,24 +344,13 @@
   "categoryWheelsTires": "Wheels & tires",
   "categoryBraking": "Braking",
   "categoryExhaustEmissions": "Exhaust & emissions",
-  "discoveryFilterWilaya": "Wilaya",
-  "discoveryFilterCommune": "Commune",
-  "discoveryMinRating": "Min rating",
   "discoveryEmptyTitle": "No listings yet",
   "discoveryEmptyBody": "When the production marketplace has active stock, listings will appear here.",
   "discoveryErrorBody": "We could not load marketplace listings. Try again.",
   "discoveryFilterErrorBody": "We could not load filter options. Try again.",
   "discoverySave": "Save",
   "discoveryMessageSeller": "Message seller",
-  "discoveryStartDeal": "Start deal",
-  "discoveryRate": "Rate",
-  "searchEyebrow": "Precision search",
-  "searchTitle": "Filter the market your way",
-  "searchSubtitle": "Use text, rating, and category signals without fake confidence scores.",
-  "searchResultsLabel": "Results",
   "searchResultsSuffix": "matches",
-  "searchNoFilters": "No filters",
-  "searchFiltersSuffix": "filters",
   "categoryLabel": "Category",
   "listingDetailEyebrow": "Listing detail",
   "sellerOwnedListingEyebrow": "My listing",
@@ -397,25 +360,12 @@
   "listingSellerSectionTitle": "Seller",
   "quantityLabel": "Quantity",
   "listingStatusLabel": "Status",
-  "listingStatusActive": "Active",
   "listingExchangeEnabled": "Exchange enabled",
-  "listingAssuranceTitle": "Why this listing is worth checking",
   "listingLocationLabel": "Pickup area",
-  "listingFitmentLabel": "Vehicle target",
   "listingActionDockTitle": "Next step",
-  "listingManageAction": "Manage listing",
   "listingEditAction": "Edit listing",
   "listingRequestToBuyAction": "Request to buy",
   "listingShareAction": "Share listing",
-  "listingShareTitle": "Share listing",
-  "listingShareBody": "Copy a direct listing link to continue the conversation outside the current screen.",
-  "listingShareCopyAction": "Copy link",
-  "listingShareCopied": "Listing link copied.",
-  "listingSellerTrustAction": "Seller trust details",
-  "listingSellerTrustTitle": "Seller trust summary",
-  "listingSellerTrustBody": "Review the seller context before you continue with messaging or a deal.",
-  "listingSellerTrustListingsLabel": "Trust context",
-  "listingSellerTrustVerifiedStatus": "Verified",
   "listingUnavailableTitle": "Listing unavailable",
   "listingUnavailableBody": "This listing is no longer available or cannot be opened right now.",
   "savedListingsEyebrow": "Saved",
@@ -423,7 +373,6 @@
   "savedListingsSubtitle": "Keep a short shortlist of parts you may return to later.",
   "savedListingsEmptyBody": "No saved listings yet. Browse and save parts you're interested in.",
   "savedListingsBrowseAction": "Browse listings",
-  "savedListingsViewAction": "Open listing",
   "savedListingsRemoveAction": "Remove",
   "savedListingsErrorBody": "Saved listings could not be loaded right now.",
   "offlineBannerLabel": "You're offline",
@@ -445,8 +394,6 @@
   "notificationsErrorBody": "Notifications could not be loaded right now.",
   "notificationsSavedMessageTitle": "New message on your saved listing",
   "notificationsSavedMessageBody": "A verified seller replied to one of your saved listings.",
-  "notificationsSavedPriceTitle": "Saved listing price updated",
-  "notificationsSavedPriceBody": "One of your saved listings now shows a lower asking price.",
   "notificationsCategoryMessage": "Message",
   "notificationsCategoryListing": "Listing",
   "notificationsCategoryTransaction": "Transaction",
@@ -459,24 +406,35 @@
   "notificationsTime2mAgo": "2 min ago",
   "notificationsTime1hAgo": "1 hour ago",
   "notificationsTimeHoursShort": "{count}h",
-  "@notificationsTimeHoursShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeHoursShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "notificationsTimeDaysShort": "{count}d",
-  "@notificationsTimeDaysShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeDaysShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "noResultsTitle": "No results for this rating threshold.",
   "noResultsBody": "Lower the minimum rating to see more listings.",
   "messagesEmptyState": "No messages yet. Start the conversation.",
   "ratingScoreLabel": "Score",
   "transactionStartTitle": "Start transaction",
   "transactionStartBody": "Create a transaction intent with the seller for this listing.",
-  "transactionStartCta": "Create intent",
   "requestPartCta": "Request part",
   "transactionListingContextLabel": "Listing",
   "transactionSellerContextLabel": "Seller context",
@@ -491,7 +449,6 @@
   "transactionHistoryEmpty": "No transactions yet",
   "transactionLifecycleSubtitle": "Review active requests, approvals, and completion states.",
   "transactionRecordLabel": "Transaction record",
-  "transactionStateLabel": "State",
   "transactionStateRequested": "Requested",
   "transactionStateAccepted": "Accepted",
   "transactionStateCompleted": "Completed",
@@ -535,10 +492,9 @@
   "disputeDescriptionHelper": "Describe the issue clearly. Minimum 50 characters.",
   "disputeDescriptionError": "Enter at least 50 characters so the case can be reviewed.",
   "disputeEvidenceLabel": "Evidence",
-  "disputeEvidenceValue": "Photo evidence is required in the final production flow.",
+  "disputeEvidenceValue": "Photo evidence will be required.",
   "disputeEvidenceStatus": "Prepare",
   "disputeSubmit": "Submit dispute",
-  "disputeSubmitted": "Dispute submitted for review.",
   "disputeSuccessTitle": "Dispute submitted",
   "disputeSuccessBody": "Dispute submitted. Our team will review within 24 to 48 hours.",
   "disputeReasonWrongPart": "Wrong part received",
@@ -556,12 +512,21 @@
   "searchHistoryClearAction": "Clear history",
   "searchRecentLabel": "Recent searches",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": {
-    "placeholders": {
-      "title": {},
-      "link": {}
-    }
-  },
+  "@shareListingText": [
+    [
+      "placeholders",
+      [
+        [
+          "title",
+          []
+        ],
+        [
+          "link",
+          []
+        ]
+      ]
+    ]
+  ],
   "adminVerificationsQueueTitle": "Seller verification queue",
   "adminVerificationsQueueSubtitle": "Review pending verification work with document quality and wait-time context.",
   "adminQueueEmptyValue": "No active items",
@@ -672,10 +637,7 @@
   "adminModerationRejectSuccess": "Listing rejected and returned to the seller.",
   "adminTeamTitle": "Admin team",
   "adminTeamSubtitle": "Manage active operators, super-admin coverage, and invite flows from one place.",
-  "adminTeamEmptyTitle": "No team actions pending",
-  "adminTeamEmptyBody": "The team surface is ready for controlled invite and access-management flows.",
   "adminTeamInviteAction": "Invite admin",
-  "adminTeamInviteUnavailable": "Team invites are managed through secure admin operations only.",
   "adminTeamInviteSuccess": "Admin invite sent.",
   "adminTeamSuspendAction": "Suspend",
   "adminTeamReactivateAction": "Reactivate",
@@ -703,48 +665,32 @@
   "sellerListingResubmitAction": "Resubmit",
   "sellerListingActionUpdated": "Listing workflow updated.",
   "sellerListingSubmittedLabel": "Submitted {date}",
-  "@sellerListingSubmittedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "@sellerListingSubmittedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "sellerListingUpdatedLabel": "Updated {date}",
-  "@sellerListingUpdatedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
-  "releaseReadinessTitle": "Production release readiness",
-  "releaseReadinessRuntimeWarning": "This screen does not execute Flutter or Supabase gates at runtime. Readiness stays not ready until external evidence is verified.",
-  "releaseDecisionLabel": "Decision",
-  "releaseDecisionReady": "Ready",
-  "releaseDecisionNotReady": "Not ready",
-  "releaseRunReadiness": "Run readiness sweep",
-  "releaseOpenBlockers": "Open blockers",
+  "@sellerListingUpdatedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "releaseGateResults": "Gate results",
-  "releaseSeverityCritical": "Critical",
-  "releaseSeverityHigh": "High",
-  "releaseSeverityMedium": "Medium",
   "releaseAreaAuth": "Authentication",
   "releaseAreaTransactions": "Transactions and backend policy",
-  "releaseAreaLocalization": "Localization",
-  "releaseAreaQuality": "Quality",
-  "releaseAreaOperations": "Operations",
-  "launchOperationsTitle": "Launch operations",
-  "launchOperationsSubtitle": "Run launch controls, verify gate coverage, and escalate operational risk from one surface.",
-  "launchRunChecklist": "Run launch checklist",
-  "launchDecisionLabel": "Decision",
-  "launchDecisionPending": "Awaiting checklist run",
-  "launchDecisionGo": "Go",
-  "launchDecisionHold": "Hold",
-  "launchRaiseCriticalIncident": "Raise critical incident",
-  "launchChecklistRunning": "Checklist running",
-  "launchChecklistCoverageTitle": "Launch gate coverage",
-  "launchChecklistCoverageBody": "Keep the first release fold tied to concrete gates, evidence owners, and incident escalation readiness.",
-  "launchChecklistPendingStatus": "Awaiting review",
-  "launchSignalPass": "Pass",
-  "launchSignalFail": "Fail",
-  "launchSignalUnknown": "Unknown",
   "launchChecklistAnalyzeTitle": "Analyzer and static checks",
   "launchChecklistAnalyzeMeta": "Owner: mobile quality gate",
   "launchChecklistWidgetTestsTitle": "Widget and route test sweep",
@@ -753,38 +699,17 @@
   "launchChecklistIntegrationMeta": "Owner: QA flow verification",
   "launchChecklistDatabaseTitle": "Database policy checks",
   "launchChecklistDatabaseMeta": "Owner: backend release safety",
-  "cutoverTitle": "Cutover and rollback",
-  "cutoverRun": "Run cutover",
-  "cutoverLabel": "Cutover",
-  "rollbackRun": "Trigger rollback",
-  "rollbackLabel": "Rollback",
-  "rollbackVerificationLabel": "Verification",
-  "releaseObservabilityTitle": "Release observability",
-  "releaseObservabilityRefresh": "Refresh health",
-  "releaseObservabilitySignals": "Signals",
-  "releaseObservabilityAlerts": "Alerts",
-  "releaseObservabilityAcknowledge": "Acknowledge first alert",
-  "releaseObservabilityExportStable": "Export stable report",
-  "releaseSnapshotTitle": "Post-launch snapshot",
-  "releaseSnapshotSignalLabel": "Signal",
-  "releaseIncidentTitle": "Latest incident escalation",
   "releaseSignalMessaging": "Messaging",
-  "riskConfirmTitle": "Confirm high-risk action",
-  "riskConfirmBodyPrefix": "You are about to execute:",
-  "riskRationaleLabel": "Rationale (required)",
   "riskCancel": "Cancel",
-  "riskConfirmAction": "Confirm",
   "unknownRouteTitle": "Page not found",
   "unknownRouteBody": "This route is invalid or unavailable:",
   "unknownRouteGoHome": "Go to home",
   "showPassword": "Show password",
   "hidePassword": "Hide password",
   "navHome": "Home",
-  "navSearch": "Search",
   "navSaved": "Saved",
   "navMessages": "Messages",
   "navAccount": "Account",
-  "navDashboard": "Dashboard",
   "navListings": "Listings",
   "navQueues": "Queues",
   "navReports": "Reports",
@@ -796,15 +721,27 @@
   "appConfigurationRequiredTitle": "Configuration required",
   "appConfigurationRequiredBody": "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
   "priceWithDzd": "{amount} DZD",
-  "@priceWithDzd": {
-    "placeholders": {
-      "amount": {}
-    }
-  },
+  "@priceWithDzd": [
+    [
+      "placeholders",
+      [
+        [
+          "amount",
+          []
+        ]
+      ]
+    ]
+  ],
   "disputeEvidenceCount": "{count} file(s)",
-  "@disputeEvidenceCount": {
-    "placeholders": {
-      "count": {}
-    }
-  }
+  "@disputeEvidenceCount": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ]
 }

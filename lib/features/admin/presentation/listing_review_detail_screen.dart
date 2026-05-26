@@ -88,9 +88,9 @@ class _ListingReviewDetailScreenState
     return [
       QitakListingSurface(
         title: item.listing.localizedTitle(context.l10n),
-        price: item.listing.priceLabel,
+        price: item.listing.localizedPrice(context.l10n),
         subtitle:
-            '${item.listing.fitmentLabel} | ${item.listing.locationLabel}',
+            '${item.listing.localizedFitment(context.l10n)} | ${item.listing.localizedLocation(context.l10n)}',
         imageUrl: item.listing.preferredImageUrl,
         ratingLabel: item.listing.localizedCondition(context.l10n),
         badges: [
@@ -147,7 +147,7 @@ class _ListingReviewDetailScreenState
             ),
             _detailRow(
               context.l10n.listingLocationLabel,
-              item.listing.locationLabel,
+              item.listing.localizedLocation(context.l10n),
             ),
             _detailRow(
               context.l10n.quantityLabel,

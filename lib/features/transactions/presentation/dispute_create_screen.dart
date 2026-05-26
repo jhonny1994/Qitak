@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
+
+final buyerDisputeReasonOptionsProvider = FutureProvider<List<AppPolicyOption>>(
+  (ref) async {
+    return ref.watch(buyerDisputeReasonPolicyProvider.future);
+  },
+);
 
 class DisputeCreateScreen extends ConsumerStatefulWidget {
   const DisputeCreateScreen({required this.transactionId, super.key});
@@ -34,6 +44,13 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final reasonOptionsAsync = ref.watch(buyerDisputeReasonOptionsProvider);
+    final reasonOptions =
+        reasonOptionsAsync.asData?.value ?? const <AppPolicyOption>[];
+    final selectedReason = reasonOptions.any((option) => option.code == _reason)
+        ? _reason
+        : (reasonOptions.isNotEmpty ? reasonOptions.first.code : _reason);
+
     if (_submitted) {
       return ListView(
         padding: qitakPagePadding,
@@ -72,28 +89,15 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
                   QitakFormGroup(
                     label: context.l10n.disputeReasonLabel,
                     child: DropdownButtonFormField<String>(
-                      initialValue: _reason,
+                      initialValue: selectedReason,
                       items: [
-                        DropdownMenuItem(
-                          value: 'wrong_part',
-                          child: Text(context.l10n.disputeReasonWrongPart),
-                        ),
-                        DropdownMenuItem(
-                          value: 'condition',
-                          child: Text(context.l10n.disputeReasonCondition),
-                        ),
-                        DropdownMenuItem(
-                          value: 'not_received',
-                          child: Text(context.l10n.disputeReasonNotReceived),
-                        ),
-                        DropdownMenuItem(
-                          value: 'unresponsive',
-                          child: Text(context.l10n.disputeReasonUnresponsive),
-                        ),
-                        DropdownMenuItem(
-                          value: 'other',
-                          child: Text(context.l10n.disputeReasonOther),
-                        ),
+                        for (final option in reasonOptions)
+                          DropdownMenuItem(
+                            value: option.code,
+                            child: Text(
+                              _policyLabel(context, option.labelKey),
+                            ),
+                          ),
                       ],
                       onChanged: (value) =>
                           setState(() => _reason = value ?? 'wrong_part'),
@@ -196,6 +200,13 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
         return;
       }
       setState(() => _submitted = true);
+    } on AppException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.appExceptionMessage(error))),
+      );
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -212,5 +223,22 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
     setState(() {
       _evidence = [..._evidence, ...picked].take(4).toList(growable: false);
     });
+  }
+}
+
+String _policyLabel(BuildContext context, String labelKey) {
+  switch (labelKey) {
+    case 'disputeReasonWrongPart':
+      return context.l10n.disputeReasonWrongPart;
+    case 'disputeReasonCondition':
+      return context.l10n.disputeReasonCondition;
+    case 'disputeReasonNotReceived':
+      return context.l10n.disputeReasonNotReceived;
+    case 'disputeReasonUnresponsive':
+      return context.l10n.disputeReasonUnresponsive;
+    case 'disputeReasonOther':
+      return context.l10n.disputeReasonOther;
+    default:
+      return labelKey;
   }
 }

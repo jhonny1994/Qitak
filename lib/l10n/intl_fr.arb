@@ -1,7 +1,6 @@
 {
   "@@locale": "fr",
   "loading": "Chargement...",
-  "appTitle": "Qitak",
   "brandWordmark": "Qitak",
   "errorStateTitle": "Une erreur est survenue",
   "retryAction": "Réessayer",
@@ -35,7 +34,7 @@
   "authGateMessageBody": "Utilisez votre compte pour ouvrir la conversation et poursuivre l'échange avec le vendeur.",
   "authGateBuyTitle": "Connectez-vous pour demander cette pièce",
   "authGateBuyBody": "Utilisez votre compte pour continuer vers le flux de demande d'achat de cette annonce.",
-  "splashSubtitle": "Chargement du routage du marché et de l'état du compte.",
+  "splashSubtitle": "Chargement de votre compte et des données du marché.",
   "signUpSubtitle": "Créez un compte acheteur avec vos informations de contact essentielles.",
   "accountSettingsEyebrow": "Compte",
   "accountSettingsTitle": "Paramètres du compte",
@@ -70,7 +69,6 @@
   "appearanceSettingsTitle": "Apparence",
   "appearanceSettingsSubtitle": "Choisissez l'apparence de Qitak sur cet appareil.",
   "appearanceSettingsSaved": "Préférence d'apparence mise à jour.",
-  "appearanceSettingsStatus": "Préférence appareil",
   "appearanceModeDarkTitle": "Sombre",
   "appearanceModeDarkSubtitle": "Utiliser l'apparence sombre.",
   "appearanceModeLightTitle": "Clair",
@@ -143,8 +141,6 @@
   "legalInformationPrivacyBody": "Les données du profil, les champs de localisation et les moyens de contact ne doivent servir qu'a une activité legitime du marché.",
   "legalInformationMarketplaceTitle": "Conduite du marché",
   "legalInformationMarketplaceBody": "Les annonces, litiges et opérations vendeur restent soumis aux politiques de moderation, de confiance et de transaction.",
-  "accountUtilitiesEyebrow": "Utilitaires",
-  "accountUtilitiesTitle": "Préférences et aide",
   "accountUtilitiesGuestSubtitle": "Avant de vous connecter, vous pouvez encore régler la langue, l'apparence et l'aide.",
   "sellerStatusEyebrow": "Espace vendeur",
   "sellerStatusTitle": "Statut de vérification vendeur",
@@ -152,9 +148,7 @@
   "sellerStatusProfile": "Identité du compte",
   "sellerStatusProfileBody": "Le nom et le numéro de téléphone du compte sont liés à cette demande vendeur.",
   "sellerStatusVerification": "Revue de vérification",
-  "sellerStatusVerificationBody": "Vos documents vendeur et votre zone d'activité restent disponibles pour la revue.",
   "sellerStatusWorkspace": "Accès vendeur",
-  "sellerStatusWorkspaceBody": "Les annonces, messages et outils vendeur se débloquent après approbation.",
   "sellerStatusBackToWorkspace": "Aller a l'espace vendeur",
   "sellerStatusContinueApplication": "Terminer la demande",
   "sellerStatusNotStarted": "Non commencé",
@@ -200,17 +194,29 @@
   "sellerListingResubmitAction": "Resoumettre",
   "sellerListingActionUpdated": "Le flux de l'annonce a été mis à jour.",
   "sellerListingSubmittedLabel": "Soumise le {date}",
-  "@sellerListingSubmittedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "@sellerListingSubmittedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "sellerListingUpdatedLabel": "Mise à jour le {date}",
-  "@sellerListingUpdatedLabel": {
-    "placeholders": {
-      "date": {}
-    }
-  },
+  "@sellerListingUpdatedLabel": [
+    [
+      "placeholders",
+      [
+        [
+          "date",
+          []
+        ]
+      ]
+    ]
+  ],
   "localListingConditionLikeNew": "Comme neuf",
   "localListingConditionNew": "Neuf",
   "localSellerLabelVerified": "Vendeur vérifié",
@@ -223,9 +229,18 @@
   "termsValidationError": "Vous devez accepter les conditions pour creer un compte.",
   "invalidCredentialsGeneric": "Identifiants invalides ou compte indisponible.",
   "createAccountFailure": "Impossible de creer votre compte.",
+  "authErrorSessionNotFound": "Session introuvable.",
+  "authErrorConfirmEmailBeforeSignIn": "Veuillez confirmer votre adresse e-mail avant de vous connecter. Vérifiez votre boîte de réception pour le lien de confirmation.",
+  "authErrorInvalidEmailOrPassword": "E-mail ou mot de passe invalide.",
+  "authErrorUnableSignIn": "Impossible de se connecter. Réessayez.",
+  "errorNetworkUnavailable": "Réseau indisponible. Vérifiez votre connexion puis réessayez.",
+  "authErrorEmailAlreadyExists": "Un compte avec cet e-mail existe déjà.",
+  "authErrorPasswordRequirements": "Le mot de passe ne respecte pas les exigences de sécurité.",
+  "authErrorProfileSetupBlockedRls": "Compte créé, mais la configuration du profil a été bloquée. Réessayez de vous connecter après la mise à jour du backend.",
+  "authErrorProfileSetupBlockedPolicy": "Compte créé, mais la configuration du profil est bloquée par une politique backend.",
+  "authErrorCheckEmailConfirmation": "Compte créé. Vérifiez votre e-mail et cliquez sur le lien de confirmation avant de vous connecter.",
   "sellerOnboardingTitle": "Vérification vendeur",
   "sellerOnboardingBody": "Envoyez vos informations vendeur une seule fois afin que nous puissions revoir ce compte et débloquer l'accès vendeur.",
-  "sellerBusinessNameLabel": "Nom commercial",
   "sellerOnboardingBack": "Retour",
   "sellerOnboardingSubmit": "Envoyer la vérification",
   "sellerOnboardingStepTypeTitle": "Étape 1 · Type de vendeur",
@@ -257,17 +272,11 @@
   "sellerDashboardTitle": "Tableau vendeur",
   "createListingCta": "Créer une annonce",
   "createListingSubtitle": "Publiez une seule compatibilité vehicule par annonce.",
-  "profileRoleLabel": "Role",
   "profileRoleAnonymous": "Visiteur",
   "profileRoleBuyer": "Acheteur",
   "profileRoleSeller": "Vendeur",
   "profileRoleAdmin": "Admin",
-  "profileRoleSuperAdmin": "Super admin",
-  "profileSellerLabel": "Capacite vendeur",
-  "profileSellerEnabled": "Espace vendeur activé",
-  "profileSellerNotEnabled": "Espace vendeur pas encore activé",
-  "profileEnableSeller": "Activer l'espace vendeur",
-  "profileCreateListing": "Créer une annonce",
+  "profileRoleSuperAdmin": "Super administrateur",
   "signOutAction": "Se déconnecter",
   "sellerDashboardSubtitle": "Suivez vérification, stock et flux de deals actifs.",
   "sellerPendingDealsTitle": "Deals en attente",
@@ -275,7 +284,6 @@
   "sellerLifecycleTitle": "Cycle transactionnel",
   "sellerLifecycleBody": "Faites avancer demandes, acceptations et clotures avec un état clair.",
   "sellerActionStatus": "Action",
-  "sellerQueueStatus": "File",
   "adminDashboardEyebrow": "Opérations",
   "adminDashboardTitle": "Tableau admin",
   "adminDashboardSubtitle": "Revoyez les files de vérification, d'annonces, de litiges et de signalements depuis un tableau de bord opérationnel.",
@@ -304,27 +312,18 @@
   "listingPriceError": "Entrez un prix valide.",
   "listingQuantityError": "Entrez une quantité valide.",
   "listingDescriptionRequired": "Entrez une description.",
-  "listingSaveVehicle": "Enregistrer le véhicule",
-  "listingVehicleSaved": "Cible véhicule enregistrée.",
   "listingPublishedSuccess": "L'annonce a été publiée et ajoutée à votre inventaire.",
   "listingDraftSavedSuccess": "Le brouillon a été enregistré dans votre inventaire vendeur.",
   "listingSubmittedForReviewSuccess": "L'annonce a été envoyée pour révision.",
-  "listingNoMultiVehicle": "Une seule cible véhicule est autorisée par annonce.",
   "listingPublishAction": "Publier l'annonce",
   "listingSaveDraftAction": "Enregistrer le brouillon",
   "listingSubmitForReviewAction": "Envoyer pour révision",
-  "listingFitmentRequired": "La marque et le modèle sont obligatoires.",
-  "listingYearError": "Entrez une année valide.",
-  "listingPolicySectionTitle": "Préparation politique",
-  "listingPolicySectionBody": "Une seule cible véhicule, identité vendeur claire, et aucun raccourci de localisation hors wilaya et commune.",
   "listingMediaSectionTitle": "Exigences médias",
   "listingMediaSectionBody": "Préparez des photos nettes et lisibles avant envoi.",
   "listingMediaAttachAction": "Ajouter des photos",
   "listingMediaRemoveAction": "Supprimer la photo",
   "listingMediaRequired": "Ajoutez au moins une photo a l'annonce.",
   "listingMediaMinimumRequired": "Ajoutez au moins deux photos avant l'envoi en revision.",
-  "listingPreviewSectionTitle": "État de l'aperçu",
-  "listingPreviewSectionBody": "Renseignez marque, modèle et année pour afficher un apercu d'annonce credible.",
   "messagesTitle": "Messages",
   "messagesConversationTitle": "Conversation d'annonce",
   "messagesConversationSubtitle": "Gardez la discussion du deal liee a l'annonce et en ligne uniquement.",
@@ -333,12 +332,10 @@
   "messagesInboxSubtitle": "Chaque conversation reste liee a une annonce et a une intention de transaction claire.",
   "messagesStatusLabel": "Statut messagerie",
   "messagesBlockedStatus": "Bloque",
-  "messagesReadyStatus": "Pret",
   "messagesInputHint": "Ecrire un message...",
   "messagesSend": "Envoyer",
   "messagesSendError": "Impossible d'envoyer le message. Veuillez reessayer.",
   "messagesOnlineOnly": "Les messages sont uniquement en ligne pour le moment.",
-  "messagesOnlineReady": "Messagerie en ligne et prete pour la coordination.",
   "messagesInboxEmpty": "Aucune conversation liee a une annonce. Demarrez depuis une annonce pour contacter un vendeur.",
   "messagesBrowseListingsAction": "Parcourir les annonces",
   "messagesOpenStatus": "Ouvert",
@@ -354,11 +351,6 @@
   "ratingListingContextFallback": "Le contexte de l'annonce charge",
   "ratingListingContextPending": "Le chargement de l'annonce liee a cette transaction est en cours.",
   "ratingCounterpartyPending": "Contrepartie",
-  "discoveryTagline": "Trouvez la bonne pièce plus vite grace a une recherche structuree et un contact vendeur clair.",
-  "discoveryEyebrow": "Marché",
-  "discoveryHeadline": "Une decouverte pilotee par la recherche",
-  "localSeedModeTitle": "Donnees locales de test",
-  "localSeedModeBody": "Cette version utilise des données locales de secours pour le marché et l'authentification car Supabase n'est pas configure sur cet appareil.",
   "discoverySearchHint": "Rechercher par pièce, marque ou vehicule",
   "discoveryFilterButton": "Filtrer",
   "discoverySearchButton": "Rechercher",
@@ -381,13 +373,7 @@
   "discoveryDealTypeBuy": "Acheter",
   "discoveryDealTypeBuyOrExchange": "Acheter ou echanger si disponible",
   "discoverySortNewest": "Plus recentes",
-  "discoveryEnvironmentLabel": "Environnement",
-  "discoveryEnvironmentLocal": "Flux local de developpement",
-  "discoveryEnvironmentSeeded": "Fallback pre-rempli",
-  "discoveryFilterEngine": "Moteur",
   "discoveryFilterLighting": "Eclairage",
-  "discoveryFilterBrakes": "Freinage",
-  "discoveryFilterBody": "Carrosserie",
   "categoryEngineIgnition": "Moteur et allumage",
   "categoryCoolingSystem": "Système de refroidissement",
   "categoryElectricalElectronics": "Electricite et electronique",
@@ -399,24 +385,13 @@
   "categoryWheelsTires": "Roues et pneus",
   "categoryBraking": "Freinage",
   "categoryExhaustEmissions": "Echappement et emissions",
-  "discoveryFilterWilaya": "Wilaya",
-  "discoveryFilterCommune": "Commune",
-  "discoveryMinRating": "Note minimale",
   "discoveryEmptyTitle": "Aucune annonce pour le moment",
   "discoveryEmptyBody": "Les annonces apparaitront ici lorsque le marché production aura du stock actif.",
   "discoveryErrorBody": "Impossible de charger les annonces. Réessayez.",
   "discoveryFilterErrorBody": "Impossible de charger les options de filtre. Réessayez.",
   "discoverySave": "Enregistrer",
   "discoveryMessageSeller": "Contacter le vendeur",
-  "discoveryStartDeal": "Demarrer le deal",
-  "discoveryRate": "Noter",
-  "searchEyebrow": "Recherche precise",
-  "searchTitle": "Filtrez le marché à votre facon",
-  "searchSubtitle": "Utilisez texte, note et catégorie sans faux score de confiance.",
-  "searchResultsLabel": "Résultats",
   "searchResultsSuffix": "résultats",
-  "searchNoFilters": "Aucun filtre",
-  "searchFiltersSuffix": "filtres",
   "categoryLabel": "Catégorie",
   "listingDetailEyebrow": "Detail de l'annonce",
   "sellerOwnedListingEyebrow": "Mon annonce",
@@ -426,25 +401,12 @@
   "listingSellerSectionTitle": "Vendeur",
   "quantityLabel": "Quantite",
   "listingStatusLabel": "Statut",
-  "listingStatusActive": "Active",
   "listingExchangeEnabled": "Echange active",
-  "listingAssuranceTitle": "Pourquoi cette annonce merite votre attention",
   "listingLocationLabel": "Zone de retrait",
-  "listingFitmentLabel": "Vehicule cible",
   "listingActionDockTitle": "Etape suivante",
-  "listingManageAction": "Gerer l'annonce",
   "listingEditAction": "Modifier l'annonce",
   "listingRequestToBuyAction": "Demander l'achat",
   "listingShareAction": "Partager l'annonce",
-  "listingShareTitle": "Partager l'annonce",
-  "listingShareBody": "Copiez un lien direct vers l'annonce pour continuer hors de cet écran si nécessaire.",
-  "listingShareCopyAction": "Copier le lien",
-  "listingShareCopied": "Lien de l'annonce copié.",
-  "listingSellerTrustAction": "Details de confiance vendeur",
-  "listingSellerTrustTitle": "Résumé de confiance vendeur",
-  "listingSellerTrustBody": "Revoyez le contexte vendeur avant de poursuivre en message ou en deal.",
-  "listingSellerTrustListingsLabel": "Contexte confiance",
-  "listingSellerTrustVerifiedStatus": "Vérifié",
   "listingUnavailableTitle": "Annonce indisponible",
   "listingUnavailableBody": "Cette annonce n'est plus disponible ou ne peut pas etre ouverte maintenant.",
   "savedListingsEyebrow": "Enregistrées",
@@ -452,7 +414,6 @@
   "savedListingsSubtitle": "Gardez une courte sélection de pièces à revoir plus tard.",
   "savedListingsEmptyBody": "Aucune annonce enregistrée. Parcourez le marché et sauvegardez les pièces utiles.",
   "savedListingsBrowseAction": "Parcourir les annonces",
-  "savedListingsViewAction": "Ouvrir l'annonce",
   "savedListingsRemoveAction": "Retirer",
   "savedListingsErrorBody": "Impossible de charger les annonces enregistrées.",
   "offlineBannerLabel": "Hors ligne",
@@ -474,8 +435,6 @@
   "notificationsErrorBody": "Impossible de charger les notifications pour le moment.",
   "notificationsSavedMessageTitle": "Nouveau message sur votre annonce enregistree",
   "notificationsSavedMessageBody": "Un vendeur vérifié a répondu à l'une de vos annonces enregistrées.",
-  "notificationsSavedPriceTitle": "Prix mis à jour sur une annonce enregistree",
-  "notificationsSavedPriceBody": "L'une de vos annonces enregistrées affiche maintenant un prix plus bas.",
   "notificationsCategoryMessage": "Message",
   "notificationsCategoryListing": "Annonce",
   "notificationsCategoryTransaction": "Transaction",
@@ -488,24 +447,35 @@
   "notificationsTime2mAgo": "Il y a 2 min",
   "notificationsTime1hAgo": "Il y a 1 heure",
   "notificationsTimeHoursShort": "{count}h",
-  "@notificationsTimeHoursShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeHoursShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "notificationsTimeDaysShort": "{count}j",
-  "@notificationsTimeDaysShort": {
-    "placeholders": {
-      "count": {}
-    }
-  },
+  "@notificationsTimeDaysShort": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ],
   "noResultsTitle": "Aucun résultat pour ce seuil de note.",
   "noResultsBody": "Réduisez la note minimale pour voir plus d'annonces.",
   "messagesEmptyState": "Aucun message pour le moment. Lancez la conversation.",
   "ratingScoreLabel": "Note",
   "transactionStartTitle": "Demarrer une transaction",
   "transactionStartBody": "Créez une intention de transaction avec le vendeur pour cette annonce.",
-  "transactionStartCta": "Créer l'intention",
   "requestPartCta": "Demander la pièce",
   "transactionListingContextLabel": "Annonce",
   "transactionSellerContextLabel": "Contexte vendeur",
@@ -520,7 +490,6 @@
   "transactionHistoryEmpty": "Aucune transaction",
   "transactionLifecycleSubtitle": "Revoyez demandes actives, validations et clôtures.",
   "transactionRecordLabel": "Enregistrement transaction",
-  "transactionStateLabel": "État",
   "transactionStateRequested": "Demande ouverte",
   "transactionStateAccepted": "Acceptée",
   "transactionStateCompleted": "Terminée",
@@ -528,7 +497,7 @@
   "transactionStateRejected": "Refusée",
   "transactionAccept": "Accepter",
   "transactionComplete": "Finaliser",
-  "transactionExpire": "Marquer expire",
+  "transactionExpire": "Marquer comme expiré",
   "transactionCancel": "Annuler",
   "cancelTransactionTitle": "Annuler la transaction",
   "cancelTransactionBody": "Êtes-vous sur de vouloir annuler cette transaction ?",
@@ -564,10 +533,9 @@
   "disputeDescriptionHelper": "Décrivez clairement le problème. Minimum 50 caractères.",
   "disputeDescriptionError": "Saisissez au moins 50 caractères pour permettre la revue du dossier.",
   "disputeEvidenceLabel": "Preuves",
-  "disputeEvidenceValue": "Des photos seront requises dans le flux production final.",
+  "disputeEvidenceValue": "Des photos seront requises comme preuve.",
   "disputeEvidenceStatus": "Preparation",
   "disputeSubmit": "Soumettre le litige",
-  "disputeSubmitted": "Litige soumis pour revue.",
   "disputeSuccessTitle": "Litige soumis",
   "disputeSuccessBody": "Litige soumis. Notre équipe reviendra sous 24 à 48 heures.",
   "disputeReasonWrongPart": "Mauvaise pièce reçue",
@@ -585,12 +553,21 @@
   "searchHistoryClearAction": "Effacer l'historique",
   "searchRecentLabel": "Recherches récentes",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": {
-    "placeholders": {
-      "title": {},
-      "link": {}
-    }
-  },
+  "@shareListingText": [
+    [
+      "placeholders",
+      [
+        [
+          "title",
+          []
+        ],
+        [
+          "link",
+          []
+        ]
+      ]
+    ]
+  ],
   "adminVerificationsQueueTitle": "File de vérification vendeurs",
   "adminVerificationsQueueSubtitle": "Revoyez les vérifications en attente avec contexte documents et délai.",
   "adminQueueEmptyValue": "Aucun element actif",
@@ -677,7 +654,7 @@
   "adminPurposeOptionAbuse": "Revue d'abus",
   "adminPurposeOptionSupport": "Intervention support",
   "adminConversationLoadAction": "Charger le transcript",
-  "adminConversationTranscriptTitle": "Transcript",
+  "adminConversationTranscriptTitle": "Transcription",
   "adminConversationRelatedContextTitle": "Contexte lié",
   "adminConversationBuyerLabel": "Acheteur",
   "adminConversationSellerLabel": "Vendeur",
@@ -701,10 +678,7 @@
   "adminModerationRejectSuccess": "Annonce rejetée et retournée au vendeur.",
   "adminTeamTitle": "Équipe admin",
   "adminTeamSubtitle": "Gérez opérateurs actifs, couverture super-admin et invitations depuis un seul écran.",
-  "adminTeamEmptyTitle": "Aucune action équipe en attente",
-  "adminTeamEmptyBody": "La surface équipe est prete pour les flux d'invitation et de gestion d'accès.",
   "adminTeamInviteAction": "Inviter un admin",
-  "adminTeamInviteUnavailable": "Les invitations d'équipe sont gérées uniquement via les opérations admin sécurisées.",
   "adminTeamInviteSuccess": "Invitation admin envoyée.",
   "adminTeamSuspendAction": "Suspendre",
   "adminTeamReactivateAction": "Réactiver",
@@ -714,37 +688,9 @@
   "adminTeamLastActiveLabel": "Dernière activité",
   "adminTeamStatusActive": "Actif",
   "adminTeamStatusSuspended": "Suspendu",
-  "releaseReadinessTitle": "Préparation de la release production",
-  "releaseReadinessRuntimeWarning": "Cet écran n'exécute pas les gates Flutter ou Supabase à l'exécution. L'état reste non prêt tant qu'une preuve externe vérifiée n'existe pas.",
-  "releaseDecisionLabel": "Décision",
-  "releaseDecisionReady": "Prêt",
-  "releaseDecisionNotReady": "Non pret",
-  "releaseRunReadiness": "Lancer le contrôle",
-  "releaseOpenBlockers": "Blocages ouverts",
   "releaseGateResults": "Résultats des contrôles",
-  "releaseSeverityCritical": "Critique",
-  "releaseSeverityHigh": "Élevé",
-  "releaseSeverityMedium": "Moyen",
   "releaseAreaAuth": "Authentification",
   "releaseAreaTransactions": "Transactions et politiques backend",
-  "releaseAreaLocalization": "Localisation",
-  "releaseAreaQuality": "Qualité",
-  "releaseAreaOperations": "Opérations",
-  "launchOperationsTitle": "Opérations de lancement",
-  "launchOperationsSubtitle": "Pilotez les contrôles de lancement, la couverture des gates et l'escalade opérationnelle depuis une seule surface.",
-  "launchRunChecklist": "Exécuter la checklist",
-  "launchDecisionLabel": "Decision",
-  "launchDecisionPending": "Checklist en attente",
-  "launchDecisionGo": "Go",
-  "launchDecisionHold": "Hold",
-  "launchRaiseCriticalIncident": "Escalader un incident critique",
-  "launchChecklistRunning": "Checklist en cours",
-  "launchChecklistCoverageTitle": "Couverture des gates",
-  "launchChecklistCoverageBody": "Le premier pli doit montrer des gates concrètes, des responsables de preuve et un chemin clair d'escalade.",
-  "launchChecklistPendingStatus": "En attente de revue",
-  "launchSignalPass": "Passé",
-  "launchSignalFail": "Échec",
-  "launchSignalUnknown": "Inconnu",
   "launchChecklistAnalyzeTitle": "Analyseur et vérifications statiques",
   "launchChecklistAnalyzeMeta": "Owner: gate qualité mobile",
   "launchChecklistWidgetTestsTitle": "Widgets et vérification des routes",
@@ -753,38 +699,17 @@
   "launchChecklistIntegrationMeta": "Owner: vérification QA des flux",
   "launchChecklistDatabaseTitle": "Vérification des politiques base de données",
   "launchChecklistDatabaseMeta": "Owner: sécurité release backend",
-  "cutoverTitle": "Bascule et rollback",
-  "cutoverRun": "Exécuter la bascule",
-  "cutoverLabel": "Bascule",
-  "rollbackRun": "Déclencher rollback",
-  "rollbackLabel": "Rollback",
-  "rollbackVerificationLabel": "Vérification",
-  "releaseObservabilityTitle": "Observabilité de release",
-  "releaseObservabilityRefresh": "Rafraîchir la santé",
-  "releaseObservabilitySignals": "Signaux",
-  "releaseObservabilityAlerts": "Alertes",
-  "releaseObservabilityAcknowledge": "Accuser la première alerte",
-  "releaseObservabilityExportStable": "Exporter rapport stable",
-  "releaseSnapshotTitle": "Snapshot post-lancement",
-  "releaseSnapshotSignalLabel": "Signal",
-  "releaseIncidentTitle": "Dernière escalation d'incident",
   "releaseSignalMessaging": "Messagerie",
-  "riskConfirmTitle": "Confirmer action à risque",
-  "riskConfirmBodyPrefix": "Vous allez exécuter:",
-  "riskRationaleLabel": "Raison (obligatoire)",
   "riskCancel": "Annuler",
-  "riskConfirmAction": "Confirmer",
   "unknownRouteTitle": "Page introuvable",
   "unknownRouteBody": "Cette route est invalide ou indisponible:",
   "unknownRouteGoHome": "Aller à l'accueil",
   "showPassword": "Afficher le mot de passe",
   "hidePassword": "Masquer le mot de passe",
   "navHome": "Accueil",
-  "navSearch": "Recherche",
   "navSaved": "Favoris",
   "navMessages": "Messages",
   "navAccount": "Compte",
-  "navDashboard": "Tableau",
   "navListings": "Annonces",
   "navQueues": "Files",
   "navReports": "Signalements",
@@ -796,15 +721,27 @@
   "appConfigurationRequiredTitle": "Configuration requise",
   "appConfigurationRequiredBody": "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_ANON_KEY avant de lancer l'application.",
   "priceWithDzd": "{amount} DZD",
-  "@priceWithDzd": {
-    "placeholders": {
-      "amount": {}
-    }
-  },
+  "@priceWithDzd": [
+    [
+      "placeholders",
+      [
+        [
+          "amount",
+          []
+        ]
+      ]
+    ]
+  ],
   "disputeEvidenceCount": "{count} fichier(s)",
-  "@disputeEvidenceCount": {
-    "placeholders": {
-      "count": {}
-    }
-  }
+  "@disputeEvidenceCount": [
+    [
+      "placeholders",
+      [
+        [
+          "count",
+          []
+        ]
+      ]
+    ]
+  ]
 }

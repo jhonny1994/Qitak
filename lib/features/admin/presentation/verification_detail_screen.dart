@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
+import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
@@ -14,6 +16,36 @@ final verificationApplicationProvider =
       return ref
           .read(sellerApplicationRepositoryProvider)
           .fetchById(applicationId);
+    });
+
+final verificationDocumentPolicyOptionsProvider =
+    FutureProvider<List<({String code, String labelKey})>>((ref) async {
+      final options = await ref
+          .read(sellerApplicationRepositoryProvider)
+          .fetchPolicyOptions(PolicyKey.sellerDocumentType);
+      return options
+          .map((option) => (code: option.code, labelKey: option.labelKey))
+          .toList(growable: false);
+    });
+
+final verificationReasonPolicyOptionsProvider =
+    FutureProvider<List<({String code, String labelKey})>>((ref) async {
+      final options = await ref
+          .read(sellerApplicationRepositoryProvider)
+          .fetchPolicyOptions(PolicyKey.sellerVerificationReasonCode);
+      return options
+          .map((option) => (code: option.code, labelKey: option.labelKey))
+          .toList(growable: false);
+    });
+
+final verificationStatusContractsProvider =
+    FutureProvider<List<({String code, String? labelKey})>>((ref) async {
+      final contracts = await ref.watch(
+        sellerVerificationStatusContractsProvider.future,
+      );
+      return contracts
+          .map((entry) => (code: entry.code, labelKey: entry.labelKey))
+          .toList(growable: false);
     });
 
 class VerificationDetailScreen extends ConsumerStatefulWidget {
@@ -43,6 +75,27 @@ class _VerificationDetailScreenState
     final application = ref.watch(
       verificationApplicationProvider(widget.verificationId),
     );
+    final documentPolicies = ref.watch(
+      verificationDocumentPolicyOptionsProvider,
+    );
+    final reasonPolicies = ref.watch(verificationReasonPolicyOptionsProvider);
+    final statusContracts = ref.watch(verificationStatusContractsProvider);
+
+    final documentPolicyMap = {
+      for (final option
+          in documentPolicies.asData?.value ??
+              const <({String code, String labelKey})>[])
+        option.code: option.labelKey,
+    };
+    final reasonOptions =
+        reasonPolicies.asData?.value ??
+        const <({String code, String labelKey})>[];
+    final availableStatuses = <String>{
+      for (final option
+          in statusContracts.asData?.value ??
+              const <({String code, String? labelKey})>[])
+        option.code,
+    };
     return AdminSurfaceScaffold(
       eyebrow: context.l10n.adminVerificationsQueueTitle,
       title: context.l10n.adminVerificationDetailTitle,
@@ -121,6 +174,7 @@ class _VerificationDetailScreenState
                                 title: _documentTypeLabel(
                                   context,
                                   document.documentType,
+                                  documentPolicyMap[document.documentType],
                                 ),
                                 meta: document.storagePath,
                                 status: context.l10n.sellerStatusSubmitted,
@@ -177,10 +231,12 @@ class _VerificationDetailScreenState
                         child: QitakDropdownField<String>(
                           value: _reasonCode,
                           items: [
-                            for (final reason in _reasonOptions(context))
+                            for (final reason in reasonOptions)
                               DropdownMenuItem(
-                                value: reason.value,
-                                child: Text(reason.label),
+                                value: reason.code,
+                                child: Text(
+                                  _labelFromKey(context, reason.labelKey),
+                                ),
                               ),
                           ],
                           onChanged: (value) =>
@@ -204,31 +260,38 @@ class _VerificationDetailScreenState
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          FilledButton(
-                            onPressed: _submitting
-                                ? null
-                                : () => _updateStatus(status: 'approved'),
-                            child: Text(
-                              context.l10n.adminVerificationApproveAction,
+                          if (availableStatuses.isEmpty ||
+                              availableStatuses.contains('approved'))
+                            FilledButton(
+                              onPressed: _submitting
+                                  ? null
+                                  : () => _updateStatus(status: 'approved'),
+                              child: Text(
+                                context.l10n.adminVerificationApproveAction,
+                              ),
                             ),
-                          ),
-                          OutlinedButton(
-                            onPressed: _submitting
-                                ? null
-                                : () =>
-                                      _updateStatus(status: 'needs_more_info'),
-                            child: Text(
-                              context.l10n.adminVerificationNeedsInfoAction,
+                          if (availableStatuses.isEmpty ||
+                              availableStatuses.contains('needs_more_info'))
+                            OutlinedButton(
+                              onPressed: _submitting
+                                  ? null
+                                  : () => _updateStatus(
+                                      status: 'needs_more_info',
+                                    ),
+                              child: Text(
+                                context.l10n.adminVerificationNeedsInfoAction,
+                              ),
                             ),
-                          ),
-                          OutlinedButton(
-                            onPressed: _submitting
-                                ? null
-                                : () => _updateStatus(status: 'rejected'),
-                            child: Text(
-                              context.l10n.adminVerificationRejectAction,
+                          if (availableStatuses.isEmpty ||
+                              availableStatuses.contains('rejected'))
+                            OutlinedButton(
+                              onPressed: _submitting
+                                  ? null
+                                  : () => _updateStatus(status: 'rejected'),
+                              child: Text(
+                                context.l10n.adminVerificationRejectAction,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ],
@@ -304,7 +367,14 @@ String _statusLabel(BuildContext context, String status) {
   }
 }
 
-String _documentTypeLabel(BuildContext context, String documentType) {
+String _documentTypeLabel(
+  BuildContext context,
+  String documentType,
+  String? labelKey,
+) {
+  if (labelKey != null && labelKey.isNotEmpty) {
+    return _labelFromKey(context, labelKey);
+  }
   switch (documentType) {
     case 'government_id_front':
       return context.l10n.sellerDocumentIdFrontLabel;
@@ -317,19 +387,21 @@ String _documentTypeLabel(BuildContext context, String documentType) {
   }
 }
 
-List<({String value, String label})> _reasonOptions(BuildContext context) {
-  return [
-    (
-      value: 'document_unreadable',
-      label: context.l10n.adminVerificationReasonUnreadable,
-    ),
-    (
-      value: 'identity_mismatch',
-      label: context.l10n.adminVerificationReasonIdentityMismatch,
-    ),
-    (
-      value: 'missing_business_registration',
-      label: context.l10n.adminVerificationReasonMissingBusinessDocument,
-    ),
-  ];
+String _labelFromKey(BuildContext context, String key) {
+  switch (key) {
+    case 'sellerDocumentIdFrontLabel':
+      return context.l10n.sellerDocumentIdFrontLabel;
+    case 'sellerDocumentIdBackLabel':
+      return context.l10n.sellerDocumentIdBackLabel;
+    case 'sellerDocumentBusinessRegistrationLabel':
+      return context.l10n.sellerDocumentBusinessRegistrationLabel;
+    case 'adminVerificationReasonUnreadable':
+      return context.l10n.adminVerificationReasonUnreadable;
+    case 'adminVerificationReasonIdentityMismatch':
+      return context.l10n.adminVerificationReasonIdentityMismatch;
+    case 'adminVerificationReasonMissingBusinessDocument':
+      return context.l10n.adminVerificationReasonMissingBusinessDocument;
+    default:
+      return key;
+  }
 }

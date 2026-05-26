@@ -350,7 +350,7 @@ class _SearchResultRow extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          item.locationLabel,
+                          item.localizedLocation(context.l10n),
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: Theme.of(
@@ -370,7 +370,7 @@ class _SearchResultRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                item.priceLabel,
+                item.localizedPrice(context.l10n),
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),

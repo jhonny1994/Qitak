@@ -281,6 +281,136 @@ void main() {
     expect(find.text('Government ID (front)'), findsWidgets);
     expect(find.text('Business registration'), findsNothing);
   });
+
+  testWidgets('document step blocks Next when required documents are missing', (
+    tester,
+  ) async {
+    // Application with no documents — step 2 must reject Next.
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SellerOnboardingScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: [
+        currentSellerApplicationProvider.overrideWith((ref) async {
+          return const SellerApplication(
+            id: 'seller-app-docs',
+            userId: 'buyer-001',
+            sellerType: 'individual',
+            businessName: 'Test Seller',
+            phone: '+213555000111',
+            email: 'buyer@qitak.test',
+            wilayaId: '16',
+            communeId: '1601',
+            bio: '',
+            verificationStatus: 'draft',
+          );
+        }),
+        discoveryFilterTaxonomyProvider.overrideWith((ref) async {
+          return const DiscoveryFilterTaxonomy(
+            categories: <DiscoveryCategoryOption>[],
+            wilayas: <WilayaOption>[
+              WilayaOption(
+                id: '16',
+                name: 'Alger',
+                arabicName: 'الجزائر',
+                communes: <CommuneOption>[
+                  CommuneOption(
+                    id: '1601',
+                    name: 'Bab Ezzouar',
+                    arabicName: 'باب الزوار',
+                  ),
+                ],
+              ),
+            ],
+            makes: <CarMakeOption>[],
+          );
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerOnboardingScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    // Advance step 0 → 1 → 2
+    for (var i = 0; i < 2; i++) {
+      await tester.ensureVisible(
+        find.byKey(const Key('seller-onboarding-next')),
+      );
+      await tester.tap(find.byKey(const Key('seller-onboarding-next')));
+      await tester.pumpAndSettle();
+    }
+
+    // On step 2 — tap Next without any documents
+    await tester.ensureVisible(
+      find.byKey(const Key('seller-onboarding-next')),
+    );
+    await tester.tap(find.byKey(const Key('seller-onboarding-next')));
+    await tester.pumpAndSettle();
+
+    // Must stay on step 2 and show the error
+    expect(
+      find.text(
+        'Attach the required verification documents before submitting.',
+      ),
+      findsOneWidget,
+    );
+    // Step 3 content must NOT be visible
+    expect(find.byKey(const Key('seller-onboarding-submit')), findsNothing);
+  });
+
+  testWidgets('submitted application shows read-only status view', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SellerOnboardingScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        currentSellerApplicationProvider.overrideWith((ref) async {
+          return const SellerApplication(
+            id: 'seller-app-submitted',
+            userId: 'seller-001',
+            sellerType: 'individual',
+            businessName: 'Test Seller',
+            phone: '+213555000111',
+            email: 'seller@qitak.test',
+            wilayaId: '16',
+            communeId: '1601',
+            bio: '',
+            verificationStatus: 'submitted',
+          );
+        }),
+        discoveryFilterTaxonomyProvider.overrideWith((ref) async {
+          return const DiscoveryFilterTaxonomy(
+            categories: <DiscoveryCategoryOption>[],
+            wilayas: <WilayaOption>[],
+            makes: <CarMakeOption>[],
+          );
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerOnboardingScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    // The form must NOT be shown; the read-only status view must be shown
+    expect(find.byKey(const Key('seller-onboarding-next')), findsNothing);
+    expect(find.text('View verification status'), findsOneWidget);
+  });
 }
 
 class _FrontIdOnlyPolicyRepository extends _NoopSellerRepository {

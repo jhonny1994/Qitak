@@ -94,6 +94,21 @@ class _SellerOnboardingScreenState
               const <({String code, String labelKey})>[];
           final requiredDocumentTypes = _requiredDocumentTypes(documentOptions);
 
+          final currentApplication = existingApplication.asData?.value;
+          if (currentApplication?.isSubmitted == true && !_submittedForReview) {
+            return Padding(
+              padding: qitakPagePadding,
+              child: QitakStateMessage(
+                title: context.l10n.sellerStatusTitle,
+                message: context.l10n.sellerStatusVerificationSubmittedBody,
+                action: FilledButton(
+                  onPressed: () => context.go('/seller/onboarding/status'),
+                  child: Text(context.l10n.sellerOnboardingViewStatus),
+                ),
+              ),
+            );
+          }
+
           return Form(
             key: _formKey,
             child: Column(
@@ -268,7 +283,7 @@ class _SellerOnboardingScreenState
     final documentOptions =
         ref.read(sellerDocumentPoliciesProvider).asData?.value ??
         const <({String code, String labelKey})>[];
-    if (_step == 3 &&
+    if (_step == 2 &&
         !_hasRequiredDocuments(
           existingDocuments,
           _requiredDocumentTypes(documentOptions),

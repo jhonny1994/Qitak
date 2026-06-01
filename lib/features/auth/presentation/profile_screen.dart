@@ -202,7 +202,9 @@ class ProfileScreen extends ConsumerWidget {
                       .read(appPreferencesProvider.notifier)
                       .setGuestBrowsingEnabled(enabled: true);
                   if (context.mounted) {
-                    context.go('/home');
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (context.mounted) context.go('/home');
+                    });
                   }
                 },
                 child: Text(context.l10n.signOutAction),

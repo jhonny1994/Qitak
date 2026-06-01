@@ -96,7 +96,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 key: const Key('search-results-field'),
                 controller: _controller,
                 textInputAction: TextInputAction.search,
-                onSubmitted: (_) => setState(() {}),
+                onSubmitted: (value) async {
+                  _debounce?.cancel();
+                  final trimmed = value.trim();
+                  setState(() => _activeQuery = trimmed);
+                  if (trimmed.isNotEmpty) {
+                    await ref.read(searchHistoryProvider.notifier).add(trimmed);
+                  }
+                },
                 onChanged: _onSearchChanged,
                 decoration: InputDecoration(
                   hintText: context.l10n.discoverySearchHint,

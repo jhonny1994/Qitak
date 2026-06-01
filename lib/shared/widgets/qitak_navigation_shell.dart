@@ -55,33 +55,39 @@ class QitakNavigationShell extends ConsumerWidget {
     final tokens = context.qitakTokens;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      body: QitakPageCanvas(
-        child: SafeArea(
-          bottom: false,
-          child: navigationShell,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) context.go('/home');
+      },
+      child: Scaffold(
+        body: QitakPageCanvas(
+          child: SafeArea(
+            bottom: false,
+            child: navigationShell,
+          ),
         ),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: selectedIndex,
+          onDestinationSelected: (index) => context.go(items[index].path),
+          backgroundColor: tokens.panel,
+          surfaceTintColor: Colors.transparent,
+          indicatorColor: colorScheme.primary.withValues(alpha: 0.15),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          elevation: 0,
+          height: 72,
+          destinations: items.map((item) => item.destination).toList(),
+        ),
+        floatingActionButton: role == AccountRole.seller && sellerApproved
+            ? FloatingActionButton(
+                onPressed: () => context.go('/seller/listings/new'),
+                tooltip: context.l10n.createListingCta,
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+                child: const Icon(Icons.add_rounded),
+              )
+            : null,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        onDestinationSelected: (index) => context.go(items[index].path),
-        backgroundColor: tokens.panel,
-        surfaceTintColor: Colors.transparent,
-        indicatorColor: colorScheme.primary.withValues(alpha: 0.15),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        elevation: 0,
-        height: 72,
-        destinations: items.map((item) => item.destination).toList(),
-      ),
-      floatingActionButton: role == AccountRole.seller && sellerApproved
-          ? FloatingActionButton(
-              onPressed: () => context.go('/seller/listings/new'),
-              tooltip: context.l10n.createListingCta,
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-              child: const Icon(Icons.add_rounded),
-            )
-          : null,
     );
   }
 

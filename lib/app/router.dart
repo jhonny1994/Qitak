@@ -1009,17 +1009,28 @@ Widget _buildStandaloneUtilityShell({
 }) {
   return AppEntryShell(
     child: LayoutBuilder(
-      builder: (context, constraints) => SizedBox(
-        height: constraints.maxHeight,
-        child: Column(
-          children: [
-            _RouteWayfindingBar(
-              title: title,
-              fallbackPath: fallbackPath,
-            ),
-            const SizedBox(height: 12),
-            Expanded(child: child),
-          ],
+      builder: (context, constraints) => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, _) {
+          if (didPop) return;
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(fallbackPath);
+          }
+        },
+        child: SizedBox(
+          height: constraints.maxHeight,
+          child: Column(
+            children: [
+              _RouteWayfindingBar(
+                title: title,
+                fallbackPath: fallbackPath,
+              ),
+              const SizedBox(height: 12),
+              Expanded(child: child),
+            ],
+          ),
         ),
       ),
     ),

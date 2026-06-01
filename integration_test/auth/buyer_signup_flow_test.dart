@@ -12,7 +12,9 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('sign-up route can create buyer account', (tester) async {
-    final app = await buildQitakApp();
+    final app = await buildQitakApp(
+      seed: const <String, Object>{'qitak.ui.onboarding_seen': true},
+    );
     await tester.pumpWidget(app);
     await tester.pumpAndSettle();
 
@@ -32,9 +34,15 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(4), 'Password1!');
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
-    await tester.tap(find.byType(CheckboxListTile));
+    // Wait for Android soft-keyboard close animation (OS-level, not caught by pumpAndSettle).
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     await tester.pumpAndSettle();
-    final submit = find.byType(FilledButton).first;
+    final checkbox = find.byType(CheckboxListTile);
+    await tester.ensureVisible(checkbox);
+    await tester.pumpAndSettle();
+    await tester.tap(checkbox);
+    await tester.pumpAndSettle();
+    final submit = find.byType(FilledButton).last;
     await tester.ensureVisible(submit);
     await tester.tap(submit);
     await tester.pumpAndSettle();

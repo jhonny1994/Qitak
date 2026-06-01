@@ -1,0 +1,32 @@
+-- Restore EXECUTE on public.is_admin_actor for the authenticated role.
+--
+-- Root cause: migration 20260526140000_security_linter_fixes.sql revoked
+-- EXECUTE on public.is_admin_actor(uuid) from authenticated, citing a linter
+-- warning that the function was "callable via RPC". The justification in that
+-- migration was factually wrong:
+--
+--   PostgreSQL requires the calling role to hold EXECUTE on any function
+--   referenced in an RLS USING / WITH CHECK expression, regardless of whether
+--   the function is SECURITY DEFINER. SECURITY DEFINER only controls the
+--   execution context (owner vs. caller); it does NOT waive the privilege
+--   check on the caller before the function is invoked.
+--
+-- Impact of the revoke (confirmed on live DB 2026-05-31):
+--   - ACL was left as {postgres=X/postgres, service_role=X/postgres}
+--   - 6 RLS policies calling is_admin_actor() returned HTTP 403 for every
+--     authenticated non-admin user:
+--       public.listing_media  -- listing_media_select_authenticated_consolidated
+--       public.listings       -- listings_select_authenticated_consolidated
+--       public.profiles       -- profiles_select_authenticated_consolidated
+--       public.profiles       -- profiles_update_consolidated
+--       public.seller_documents -- seller_documents_select_authenticated_consolidated
+--       public.sellers        -- sellers_select_authenticated_consolidated
+--   - public.messages was broken indirectly: its RLS policy does a subquery
+--     against profiles, which triggered the broken profiles SELECT policy.
+--
+-- Fix: re-grant EXECUTE to authenticated. The function is SECURITY DEFINER
+-- and returns only a boolean (is the caller an admin?), which is already
+-- visible through the caller's own profile row. There is no privilege
+-- escalation or data-leakage risk.
+
+grant execute on function public.is_admin_actor(uuid) to authenticated;

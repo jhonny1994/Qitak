@@ -14,8 +14,23 @@
 -- These views are part of the pgTAP test framework and should only be
 -- accessible internally (service_role / postgres), never via the REST API.
 -- ---------------------------------------------------------------------------
-revoke select on public.pg_all_foreign_keys from anon, authenticated;
-revoke select on public.tap_funky            from anon, authenticated;
+do $$
+begin
+  if exists (
+    select 1 from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relname = 'pg_all_foreign_keys'
+  ) then
+    revoke select on public.pg_all_foreign_keys from anon, authenticated;
+  end if;
+  if exists (
+    select 1 from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relname = 'tap_funky'
+  ) then
+    revoke select on public.tap_funky from anon, authenticated;
+  end if;
+end $$;
 
 
 -- ---------------------------------------------------------------------------

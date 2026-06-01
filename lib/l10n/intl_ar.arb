@@ -406,29 +406,17 @@
   "notificationsTime2mAgo": "منذ دقيقتين",
   "notificationsTime1hAgo": "منذ ساعة",
   "notificationsTimeHoursShort": "{count} س",
-  "@notificationsTimeHoursShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeHoursShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "notificationsTimeDaysShort": "{count} ي",
-  "@notificationsTimeDaysShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeDaysShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "noResultsTitle": "لا توجد نتائج لهذا الحد الأدنى من التقييم.",
   "noResultsBody": "اخفض الحد الأدنى للتقييم لرؤية نتائج أكثر.",
   "messagesEmptyState": "لا توجد رسائل بعد. ابدأ المحادثة.",
@@ -512,21 +500,12 @@
   "searchHistoryClearAction": "مسح السجل",
   "searchRecentLabel": "عمليات البحث الأخيرة",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": [
-    [
-      "placeholders",
-      [
-        [
-          "title",
-          []
-        ],
-        [
-          "link",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@shareListingText": {
+    "placeholders": {
+      "title": {},
+      "link": {}
+    }
+  },
   "adminVerificationsQueueTitle": "طابور توثيق البائعين",
   "adminVerificationsQueueSubtitle": "راجع طلبات التوثيق المعلقة مع جودة الوثائق ومدة الانتظار.",
   "adminQueueEmptyValue": "لا توجد عناصر نشطة",
@@ -665,29 +644,17 @@
   "sellerListingResubmitAction": "إعادة الإرسال",
   "sellerListingActionUpdated": "تم تحديث مسار الإعلان.",
   "sellerListingSubmittedLabel": "تم الإرسال {date}",
-  "@sellerListingSubmittedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingSubmittedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "sellerListingUpdatedLabel": "آخر تحديث {date}",
-  "@sellerListingUpdatedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingUpdatedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "releaseGateResults": "نتائج البوابات",
   "releaseAreaAuth": "المصادقة",
   "releaseAreaTransactions": "المعاملات وسياسات الخلفية",
@@ -721,27 +688,15 @@
   "appConfigurationRequiredTitle": "الإعداد مطلوب",
   "appConfigurationRequiredBody": "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
   "priceWithDzd": "{amount} د.ج",
-  "@priceWithDzd": [
-    [
-      "placeholders",
-      [
-        [
-          "amount",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "disputeEvidenceCount": "{count} ملف",
-  "@disputeEvidenceCount": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ]
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

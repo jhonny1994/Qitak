@@ -1,3 +1,5 @@
+set search_path = public, extensions;
+
 begin;
 
 -- Verifies the profiles RLS policies:

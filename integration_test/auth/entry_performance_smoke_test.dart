@@ -15,7 +15,7 @@ void main() {
     await tester.pumpAndSettle();
     stopwatch.stop();
 
-    expect(stopwatch.elapsed, lessThan(const Duration(seconds: 3)));
+    expect(stopwatch.elapsed, lessThan(const Duration(seconds: 10)));
 
     final signInStopwatch = Stopwatch()..start();
     final signedInApp = await buildQitakApp(

@@ -367,18 +367,21 @@ class SupabaseSellerApplicationRepository
   }) async {
     final row = await _client
         .from('sellers')
-        .upsert(<String, dynamic>{
-          'user_id': userId,
-          'seller_type': draft.sellerType,
-          'business_name': draft.businessName,
-          'bio': draft.bio,
-          'wilaya_id': int.parse(draft.wilayaId),
-          'commune_id': draft.communeId,
-          'policy_accepted_at': draft.policiesAccepted
-              ? DateTime.now().toIso8601String()
-              : null,
-          'verification_status': 'submitted',
-        })
+        .upsert(
+          <String, dynamic>{
+            'user_id': userId,
+            'seller_type': draft.sellerType,
+            'business_name': draft.businessName,
+            'bio': draft.bio,
+            'wilaya_id': int.parse(draft.wilayaId),
+            'commune_id': draft.communeId,
+            'policy_accepted_at': draft.policiesAccepted
+                ? DateTime.now().toIso8601String()
+                : null,
+            'verification_status': 'submitted',
+          },
+          onConflict: 'user_id',
+        )
         .select(
           'id, user_id, seller_type, business_name, bio, wilaya_id, commune_id, '
           'verification_status, created_at, verified_at, review_reason_code, review_note',

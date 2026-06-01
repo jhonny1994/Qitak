@@ -21,11 +21,18 @@
 -- 1. Create the extensions schema (idempotent)
 create schema if not exists extensions;
 
--- 2. Move pgTAP — all its functions/types/operators move with it
-alter extension pgtap set schema extensions;
+-- 2–3. Move pgTAP and grant access — only if pgtap is actually installed.
+--      In CI (Supabase Docker) pgtap may not be present; skipping is safe
+--      because there is nothing in public to expose via PostgREST there.
+do $$
+begin
+  if exists (select 1 from pg_extension where extname = 'pgtap') then
+    -- Move all pgtap functions/types/operators out of public
+    alter extension pgtap set schema extensions;
 
--- 3. Allow DB-level test sessions (anon/authenticated local-role switches) to
---    resolve pgTAP symbols. PostgREST does NOT expose the extensions schema
---    so these grants do not create REST API surface.
-grant usage on schema extensions to anon, authenticated;
-grant execute on all functions in schema extensions to anon, authenticated;
+    -- Allow DB-level test sessions (anon/authenticated local-role switches)
+    -- to resolve pgTAP symbols without exposing them via the REST API.
+    grant usage on schema extensions to anon, authenticated;
+    grant execute on all functions in schema extensions to anon, authenticated;
+  end if;
+end $$;

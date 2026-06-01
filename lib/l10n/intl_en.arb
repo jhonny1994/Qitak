@@ -406,29 +406,17 @@
   "notificationsTime2mAgo": "2 min ago",
   "notificationsTime1hAgo": "1 hour ago",
   "notificationsTimeHoursShort": "{count}h",
-  "@notificationsTimeHoursShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeHoursShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "notificationsTimeDaysShort": "{count}d",
-  "@notificationsTimeDaysShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeDaysShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "noResultsTitle": "No results for this rating threshold.",
   "noResultsBody": "Lower the minimum rating to see more listings.",
   "messagesEmptyState": "No messages yet. Start the conversation.",
@@ -512,21 +500,12 @@
   "searchHistoryClearAction": "Clear history",
   "searchRecentLabel": "Recent searches",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": [
-    [
-      "placeholders",
-      [
-        [
-          "title",
-          []
-        ],
-        [
-          "link",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@shareListingText": {
+    "placeholders": {
+      "title": {},
+      "link": {}
+    }
+  },
   "adminVerificationsQueueTitle": "Seller verification queue",
   "adminVerificationsQueueSubtitle": "Review pending verification work with document quality and wait-time context.",
   "adminQueueEmptyValue": "No active items",
@@ -665,29 +644,17 @@
   "sellerListingResubmitAction": "Resubmit",
   "sellerListingActionUpdated": "Listing workflow updated.",
   "sellerListingSubmittedLabel": "Submitted {date}",
-  "@sellerListingSubmittedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingSubmittedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "sellerListingUpdatedLabel": "Updated {date}",
-  "@sellerListingUpdatedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingUpdatedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "releaseGateResults": "Gate results",
   "releaseAreaAuth": "Authentication",
   "releaseAreaTransactions": "Transactions and backend policy",
@@ -721,27 +688,15 @@
   "appConfigurationRequiredTitle": "Configuration required",
   "appConfigurationRequiredBody": "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
   "priceWithDzd": "{amount} DZD",
-  "@priceWithDzd": [
-    [
-      "placeholders",
-      [
-        [
-          "amount",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "disputeEvidenceCount": "{count} file(s)",
-  "@disputeEvidenceCount": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ]
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

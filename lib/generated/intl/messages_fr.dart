@@ -640,9 +640,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "createListingSubtitle": MessageLookupByLibrary.simpleMessage(
       "Publiez une seule compatibilité vehicule par annonce.",
     ),
-    "cutoverLabel": MessageLookupByLibrary.simpleMessage("Bascule"),
-    "cutoverRun": MessageLookupByLibrary.simpleMessage("Exécuter la bascule"),
-    "cutoverTitle": MessageLookupByLibrary.simpleMessage("Bascule et rollback"),
     "deleteListingBody": MessageLookupByLibrary.simpleMessage(
       "Êtes-vous sûr ? Cette action est irréversible.",
     ),
@@ -809,12 +806,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "launchChecklistAnalyzeTitle": MessageLookupByLibrary.simpleMessage(
       "Analyseur et vérifications statiques",
     ),
-    "launchChecklistCoverageBody": MessageLookupByLibrary.simpleMessage(
-      "Le premier pli doit montrer des gates concrètes, des responsables de preuve et un chemin clair d\'escalade.",
-    ),
-    "launchChecklistCoverageTitle": MessageLookupByLibrary.simpleMessage(
-      "Couverture des gates",
-    ),
     "launchChecklistDatabaseMeta": MessageLookupByLibrary.simpleMessage(
       "Owner: sécurité release backend",
     ),
@@ -827,39 +818,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "launchChecklistIntegrationTitle": MessageLookupByLibrary.simpleMessage(
       "Couverture d\'intégration",
     ),
-    "launchChecklistPendingStatus": MessageLookupByLibrary.simpleMessage(
-      "En attente de revue",
-    ),
-    "launchChecklistRunning": MessageLookupByLibrary.simpleMessage(
-      "Checklist en cours",
-    ),
     "launchChecklistWidgetTestsMeta": MessageLookupByLibrary.simpleMessage(
       "Owner: gate de régression mobile",
     ),
     "launchChecklistWidgetTestsTitle": MessageLookupByLibrary.simpleMessage(
       "Widgets et vérification des routes",
     ),
-    "launchDecisionGo": MessageLookupByLibrary.simpleMessage("Lancer"),
-    "launchDecisionHold": MessageLookupByLibrary.simpleMessage("En attente"),
-    "launchDecisionLabel": MessageLookupByLibrary.simpleMessage("Décision"),
-    "launchDecisionPending": MessageLookupByLibrary.simpleMessage(
-      "Checklist en attente",
-    ),
-    "launchOperationsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Pilotez les contrôles de lancement, la couverture des gates et l\'escalade opérationnelle depuis une seule surface.",
-    ),
-    "launchOperationsTitle": MessageLookupByLibrary.simpleMessage(
-      "Opérations de lancement",
-    ),
-    "launchRaiseCriticalIncident": MessageLookupByLibrary.simpleMessage(
-      "Escalader un incident critique",
-    ),
-    "launchRunChecklist": MessageLookupByLibrary.simpleMessage(
-      "Exécuter la checklist",
-    ),
-    "launchSignalFail": MessageLookupByLibrary.simpleMessage("Échec"),
-    "launchSignalPass": MessageLookupByLibrary.simpleMessage("Passé"),
-    "launchSignalUnknown": MessageLookupByLibrary.simpleMessage("Inconnu"),
     "legalInformationEyebrow": MessageLookupByLibrary.simpleMessage(
       "Juridique",
     ),
@@ -1272,64 +1236,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Noter cette transaction",
     ),
     "releaseAreaAuth": MessageLookupByLibrary.simpleMessage("Authentification"),
-    "releaseAreaLocalization": MessageLookupByLibrary.simpleMessage(
-      "Localisation",
-    ),
-    "releaseAreaOperations": MessageLookupByLibrary.simpleMessage("Opérations"),
-    "releaseAreaQuality": MessageLookupByLibrary.simpleMessage("Qualité"),
     "releaseAreaTransactions": MessageLookupByLibrary.simpleMessage(
       "Transactions et politiques backend",
     ),
-    "releaseDecisionLabel": MessageLookupByLibrary.simpleMessage("Décision"),
-    "releaseDecisionNotReady": MessageLookupByLibrary.simpleMessage("Non pret"),
-    "releaseDecisionReady": MessageLookupByLibrary.simpleMessage("Prêt"),
     "releaseGateResults": MessageLookupByLibrary.simpleMessage(
       "Résultats des contrôles",
     ),
-    "releaseIncidentTitle": MessageLookupByLibrary.simpleMessage(
-      "Dernière escalation d\'incident",
-    ),
-    "releaseObservabilityAcknowledge": MessageLookupByLibrary.simpleMessage(
-      "Accuser la première alerte",
-    ),
-    "releaseObservabilityAlerts": MessageLookupByLibrary.simpleMessage(
-      "Alertes",
-    ),
-    "releaseObservabilityExportStable": MessageLookupByLibrary.simpleMessage(
-      "Exporter rapport stable",
-    ),
-    "releaseObservabilityRefresh": MessageLookupByLibrary.simpleMessage(
-      "Rafraîchir la santé",
-    ),
-    "releaseObservabilitySignals": MessageLookupByLibrary.simpleMessage(
-      "Signaux",
-    ),
-    "releaseObservabilityTitle": MessageLookupByLibrary.simpleMessage(
-      "Observabilité de release",
-    ),
-    "releaseOpenBlockers": MessageLookupByLibrary.simpleMessage(
-      "Blocages ouverts",
-    ),
-    "releaseReadinessRuntimeWarning": MessageLookupByLibrary.simpleMessage(
-      "Cet écran n\'exécute pas les gates Flutter ou Supabase à l\'exécution. L\'état reste non prêt tant qu\'une preuve externe vérifiée n\'existe pas.",
-    ),
-    "releaseReadinessTitle": MessageLookupByLibrary.simpleMessage(
-      "Préparation de la release production",
-    ),
-    "releaseRunReadiness": MessageLookupByLibrary.simpleMessage(
-      "Lancer le contrôle",
-    ),
-    "releaseSeverityCritical": MessageLookupByLibrary.simpleMessage("Critique"),
-    "releaseSeverityHigh": MessageLookupByLibrary.simpleMessage("Élevé"),
-    "releaseSeverityMedium": MessageLookupByLibrary.simpleMessage("Moyen"),
     "releaseSignalMessaging": MessageLookupByLibrary.simpleMessage(
       "Messagerie",
-    ),
-    "releaseSnapshotSignalLabel": MessageLookupByLibrary.simpleMessage(
-      "Signal",
-    ),
-    "releaseSnapshotTitle": MessageLookupByLibrary.simpleMessage(
-      "Snapshot post-lancement",
     ),
     "reportListingAction": MessageLookupByLibrary.simpleMessage(
       "Signaler l\'annonce",
@@ -1357,21 +1271,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "retryAction": MessageLookupByLibrary.simpleMessage("Réessayer"),
     "riskCancel": MessageLookupByLibrary.simpleMessage("Annuler"),
-    "riskConfirmAction": MessageLookupByLibrary.simpleMessage("Confirmer"),
-    "riskConfirmBodyPrefix": MessageLookupByLibrary.simpleMessage(
-      "Vous allez exécuter:",
-    ),
-    "riskConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "Confirmer action à risque",
-    ),
-    "riskRationaleLabel": MessageLookupByLibrary.simpleMessage(
-      "Raison (obligatoire)",
-    ),
-    "rollbackLabel": MessageLookupByLibrary.simpleMessage("Retour arrière"),
-    "rollbackRun": MessageLookupByLibrary.simpleMessage("Déclencher rollback"),
-    "rollbackVerificationLabel": MessageLookupByLibrary.simpleMessage(
-      "Vérification",
-    ),
     "savedListingsBrowseAction": MessageLookupByLibrary.simpleMessage(
       "Parcourir les annonces",
     ),

@@ -194,29 +194,17 @@
   "sellerListingResubmitAction": "Resoumettre",
   "sellerListingActionUpdated": "Le flux de l'annonce a été mis à jour.",
   "sellerListingSubmittedLabel": "Soumise le {date}",
-  "@sellerListingSubmittedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingSubmittedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "sellerListingUpdatedLabel": "Mise à jour le {date}",
-  "@sellerListingUpdatedLabel": [
-    [
-      "placeholders",
-      [
-        [
-          "date",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@sellerListingUpdatedLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "localListingConditionLikeNew": "Comme neuf",
   "localListingConditionNew": "Neuf",
   "localSellerLabelVerified": "Vendeur vérifié",
@@ -447,29 +435,17 @@
   "notificationsTime2mAgo": "Il y a 2 min",
   "notificationsTime1hAgo": "Il y a 1 heure",
   "notificationsTimeHoursShort": "{count}h",
-  "@notificationsTimeHoursShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeHoursShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "notificationsTimeDaysShort": "{count}j",
-  "@notificationsTimeDaysShort": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@notificationsTimeDaysShort": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "noResultsTitle": "Aucun résultat pour ce seuil de note.",
   "noResultsBody": "Réduisez la note minimale pour voir plus d'annonces.",
   "messagesEmptyState": "Aucun message pour le moment. Lancez la conversation.",
@@ -553,21 +529,12 @@
   "searchHistoryClearAction": "Effacer l'historique",
   "searchRecentLabel": "Recherches récentes",
   "shareListingText": "{title} — {link}",
-  "@shareListingText": [
-    [
-      "placeholders",
-      [
-        [
-          "title",
-          []
-        ],
-        [
-          "link",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@shareListingText": {
+    "placeholders": {
+      "title": {},
+      "link": {}
+    }
+  },
   "adminVerificationsQueueTitle": "File de vérification vendeurs",
   "adminVerificationsQueueSubtitle": "Revoyez les vérifications en attente avec contexte documents et délai.",
   "adminQueueEmptyValue": "Aucun element actif",
@@ -721,27 +688,15 @@
   "appConfigurationRequiredTitle": "Configuration requise",
   "appConfigurationRequiredBody": "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_ANON_KEY avant de lancer l'application.",
   "priceWithDzd": "{amount} DZD",
-  "@priceWithDzd": [
-    [
-      "placeholders",
-      [
-        [
-          "amount",
-          []
-        ]
-      ]
-    ]
-  ],
+  "@priceWithDzd": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
   "disputeEvidenceCount": "{count} fichier(s)",
-  "@disputeEvidenceCount": [
-    [
-      "placeholders",
-      [
-        [
-          "count",
-          []
-        ]
-      ]
-    ]
-  ]
+  "@disputeEvidenceCount": {
+    "placeholders": {
+      "count": {}
+    }
+  }
 }

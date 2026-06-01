@@ -626,9 +626,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "createListingSubtitle": MessageLookupByLibrary.simpleMessage(
       "أضف توافق مركبة واحدة فقط لكل إعلان.",
     ),
-    "cutoverLabel": MessageLookupByLibrary.simpleMessage("التحويل"),
-    "cutoverRun": MessageLookupByLibrary.simpleMessage("تشغيل التحويل"),
-    "cutoverTitle": MessageLookupByLibrary.simpleMessage("التحويل والتراجع"),
     "deleteListingBody": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.",
     ),
@@ -781,12 +778,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "launchChecklistAnalyzeTitle": MessageLookupByLibrary.simpleMessage(
       "التحليل والفحوصات الثابتة",
     ),
-    "launchChecklistCoverageBody": MessageLookupByLibrary.simpleMessage(
-      "أبقِ الواجهة الأولى للإطلاق مرتبطة ببوابات واضحة ومالكي الأدلة وجهوزية التصعيد التشغيلي.",
-    ),
-    "launchChecklistCoverageTitle": MessageLookupByLibrary.simpleMessage(
-      "تغطية بوابات الإطلاق",
-    ),
     "launchChecklistDatabaseMeta": MessageLookupByLibrary.simpleMessage(
       "المالك: أمان إصدار الخلفية",
     ),
@@ -799,39 +790,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "launchChecklistIntegrationTitle": MessageLookupByLibrary.simpleMessage(
       "تغطية التكامل",
     ),
-    "launchChecklistPendingStatus": MessageLookupByLibrary.simpleMessage(
-      "بانتظار المراجعة",
-    ),
-    "launchChecklistRunning": MessageLookupByLibrary.simpleMessage(
-      "القائمة قيد التشغيل",
-    ),
     "launchChecklistWidgetTestsMeta": MessageLookupByLibrary.simpleMessage(
       "المالك: بوابة الانحدار للجوال",
     ),
     "launchChecklistWidgetTestsTitle": MessageLookupByLibrary.simpleMessage(
       "فحص الواجهات والمسارات",
     ),
-    "launchDecisionGo": MessageLookupByLibrary.simpleMessage("إطلاق"),
-    "launchDecisionHold": MessageLookupByLibrary.simpleMessage("إيقاف"),
-    "launchDecisionLabel": MessageLookupByLibrary.simpleMessage("القرار"),
-    "launchDecisionPending": MessageLookupByLibrary.simpleMessage(
-      "بانتظار تشغيل القائمة",
-    ),
-    "launchOperationsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "شغّل ضوابط الإطلاق وتحقق من تغطية البوابات وصعّد المخاطر التشغيلية من شاشة واحدة.",
-    ),
-    "launchOperationsTitle": MessageLookupByLibrary.simpleMessage(
-      "عمليات الإطلاق",
-    ),
-    "launchRaiseCriticalIncident": MessageLookupByLibrary.simpleMessage(
-      "تصعيد حادث حرج",
-    ),
-    "launchRunChecklist": MessageLookupByLibrary.simpleMessage(
-      "تشغيل قائمة الإطلاق",
-    ),
-    "launchSignalFail": MessageLookupByLibrary.simpleMessage("فشل"),
-    "launchSignalPass": MessageLookupByLibrary.simpleMessage("ناجح"),
-    "launchSignalUnknown": MessageLookupByLibrary.simpleMessage("غير معروف"),
     "legalInformationEyebrow": MessageLookupByLibrary.simpleMessage("القانوني"),
     "legalInformationMarketplaceBody": MessageLookupByLibrary.simpleMessage(
       "تظل الإعلانات والنزاعات وعمليات البائع خاضعة لسياسات الإشراف والثقة والمعاملات.",
@@ -1208,63 +1172,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ratingTitle": MessageLookupByLibrary.simpleMessage("قيّم هذه المعاملة"),
     "releaseAreaAuth": MessageLookupByLibrary.simpleMessage("المصادقة"),
-    "releaseAreaLocalization": MessageLookupByLibrary.simpleMessage("التوطين"),
-    "releaseAreaOperations": MessageLookupByLibrary.simpleMessage("التشغيل"),
-    "releaseAreaQuality": MessageLookupByLibrary.simpleMessage("الجودة"),
     "releaseAreaTransactions": MessageLookupByLibrary.simpleMessage(
       "المعاملات وسياسات الخلفية",
-    ),
-    "releaseDecisionLabel": MessageLookupByLibrary.simpleMessage("القرار"),
-    "releaseDecisionNotReady": MessageLookupByLibrary.simpleMessage(
-      "غير جاهز للإصدار",
-    ),
-    "releaseDecisionReady": MessageLookupByLibrary.simpleMessage(
-      "جاهز للإصدار",
     ),
     "releaseGateResults": MessageLookupByLibrary.simpleMessage(
       "نتائج البوابات",
     ),
-    "releaseIncidentTitle": MessageLookupByLibrary.simpleMessage(
-      "آخر تصعيد للحوادث",
-    ),
-    "releaseObservabilityAcknowledge": MessageLookupByLibrary.simpleMessage(
-      "تأكيد أول تنبيه",
-    ),
-    "releaseObservabilityAlerts": MessageLookupByLibrary.simpleMessage(
-      "التنبيهات",
-    ),
-    "releaseObservabilityExportStable": MessageLookupByLibrary.simpleMessage(
-      "تصدير تقرير الاستقرار",
-    ),
-    "releaseObservabilityRefresh": MessageLookupByLibrary.simpleMessage(
-      "تحديث الصحة",
-    ),
-    "releaseObservabilitySignals": MessageLookupByLibrary.simpleMessage(
-      "الإشارات",
-    ),
-    "releaseObservabilityTitle": MessageLookupByLibrary.simpleMessage(
-      "مراقبة الإصدار",
-    ),
-    "releaseOpenBlockers": MessageLookupByLibrary.simpleMessage(
-      "العوائق المفتوحة",
-    ),
-    "releaseReadinessRuntimeWarning": MessageLookupByLibrary.simpleMessage(
-      "هذه الشاشة لا تنفذ فحوصات Flutter أو Supabase أثناء التشغيل. تبقى الجاهزية غير مكتملة حتى يتم التحقق من الأدلة الخارجية.",
-    ),
-    "releaseReadinessTitle": MessageLookupByLibrary.simpleMessage(
-      "جاهزية إصدار الإنتاج",
-    ),
-    "releaseRunReadiness": MessageLookupByLibrary.simpleMessage(
-      "تشغيل فحص الجاهزية",
-    ),
-    "releaseSeverityCritical": MessageLookupByLibrary.simpleMessage("حرج"),
-    "releaseSeverityHigh": MessageLookupByLibrary.simpleMessage("مرتفع"),
-    "releaseSeverityMedium": MessageLookupByLibrary.simpleMessage("متوسط"),
     "releaseSignalMessaging": MessageLookupByLibrary.simpleMessage("الرسائل"),
-    "releaseSnapshotSignalLabel": MessageLookupByLibrary.simpleMessage("إشارة"),
-    "releaseSnapshotTitle": MessageLookupByLibrary.simpleMessage(
-      "لقطة ما بعد الإطلاق",
-    ),
     "reportListingAction": MessageLookupByLibrary.simpleMessage(
       "الإبلاغ عن الإعلان",
     ),
@@ -1293,19 +1207,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "retryAction": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "riskCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
-    "riskConfirmAction": MessageLookupByLibrary.simpleMessage("تأكيد"),
-    "riskConfirmBodyPrefix": MessageLookupByLibrary.simpleMessage(
-      "أنت على وشك تنفيذ:",
-    ),
-    "riskConfirmTitle": MessageLookupByLibrary.simpleMessage(
-      "تأكيد إجراء عالي الخطورة",
-    ),
-    "riskRationaleLabel": MessageLookupByLibrary.simpleMessage(
-      "سبب التنفيذ (مطلوب)",
-    ),
-    "rollbackLabel": MessageLookupByLibrary.simpleMessage("التراجع"),
-    "rollbackRun": MessageLookupByLibrary.simpleMessage("تشغيل التراجع"),
-    "rollbackVerificationLabel": MessageLookupByLibrary.simpleMessage("التحقق"),
     "savedListingsBrowseAction": MessageLookupByLibrary.simpleMessage(
       "تصفح الإعلانات",
     ),

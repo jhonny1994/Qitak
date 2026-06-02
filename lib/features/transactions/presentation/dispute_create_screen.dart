@@ -84,6 +84,7 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
                     eyebrow: context.l10n.transactionsTitle,
                     title: context.l10n.disputeTitle,
                     subtitle: context.l10n.disputeSubtitle,
+                    leading: const QitakRouteBackButton(fallbackPath: '/deals'),
                   ),
                   const SizedBox(height: 18),
                   QitakFormGroup(

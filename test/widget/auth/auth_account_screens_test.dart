@@ -1198,7 +1198,7 @@ class _ThrowingSellerApplicationRepository
   @override
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   }) async {

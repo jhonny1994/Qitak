@@ -48,7 +48,7 @@ void main() {
         ),
       );
       expect(first.id, isNotEmpty);
-      expect(first.verificationStatus, 'submitted');
+      expect(first.verificationStatus, SellerVerificationStatus.submitted);
 
       // Second submission — must UPDATE the existing row, not throw.
       final second = await repository.submitApplication(
@@ -65,7 +65,7 @@ void main() {
       );
       expect(second.id, equals(first.id));
       expect(second.businessName, 'Karim Auto (updated)');
-      expect(second.verificationStatus, 'submitted');
+      expect(second.verificationStatus, SellerVerificationStatus.submitted);
 
       // Sanity: only one application record exists for the user.
       final fetched = await repository.fetchCurrentForUser(profile.id);

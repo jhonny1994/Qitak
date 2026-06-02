@@ -129,7 +129,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(24),
-                    onTap: () => context.go('/deals/${item.transaction.id}'),
+                    onTap: () => context.push('/deals/${item.transaction.id}'),
                     child: QitakPanel(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

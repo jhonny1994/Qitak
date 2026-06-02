@@ -84,6 +84,7 @@ class ListingDetailScreen extends ConsumerWidget {
               title: item.localizedTitle(context.l10n),
               subtitle: detail.displayLocation,
               expandedHeight: 140,
+              fallbackPath: sellerOwnedPreview ? '/seller/listings' : '/home',
               actions: sellerOwnedPreview
                   ? const <Widget>[]
                   : [
@@ -471,7 +472,7 @@ class ListingDetailScreen extends ConsumerWidget {
       return;
     }
     if (context.mounted) {
-      context.go(route);
+      unawaited(context.push(route));
     }
   }
 
@@ -506,7 +507,7 @@ class ListingDetailScreen extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    context.go('/messages/thread/$threadId');
+    unawaited(context.push('/messages/thread/$threadId'));
   }
 
   Future<void> _showShareSheet(

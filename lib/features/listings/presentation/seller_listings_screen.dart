@@ -145,7 +145,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
             child: Text(context.l10n.sellerListingPauseAction),
           ),
           OutlinedButton(
-            onPressed: () => context.go('/seller/listings/${item.id}/edit'),
+            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
             child: Text(context.l10n.sellerListingEditAction),
           ),
           FilledButton.tonal(
@@ -156,7 +156,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
       case 'draft':
         return [
           OutlinedButton(
-            onPressed: () => context.go('/seller/listings/${item.id}/edit'),
+            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
             child: Text(context.l10n.sellerListingEditAction),
           ),
           OutlinedButton(
@@ -171,7 +171,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
       case 'pending_review':
         return [
           FilledButton.tonal(
-            onPressed: () => context.go('/seller/listings/${item.id}'),
+            onPressed: () => context.push('/seller/listings/${item.id}'),
             child: Text(context.l10n.sellerListingsPreviewAction),
           ),
         ];
@@ -182,7 +182,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
             child: Text(context.l10n.sellerListingResumeAction),
           ),
           OutlinedButton(
-            onPressed: () => context.go('/seller/listings/${item.id}/edit'),
+            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
             child: Text(context.l10n.sellerListingEditAction),
           ),
           FilledButton.tonal(
@@ -193,7 +193,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
       case 'rejected':
         return [
           OutlinedButton(
-            onPressed: () => context.go('/seller/listings/${item.id}/edit'),
+            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
             child: Text(context.l10n.sellerListingEditAction),
           ),
           FilledButton(
@@ -204,7 +204,7 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
       default:
         return [
           FilledButton.tonal(
-            onPressed: () => context.go('/seller/listings/${item.id}'),
+            onPressed: () => context.push('/seller/listings/${item.id}'),
             child: Text(context.l10n.sellerListingsPreviewAction),
           ),
         ];

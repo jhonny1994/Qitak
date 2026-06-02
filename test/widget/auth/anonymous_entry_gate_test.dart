@@ -19,7 +19,7 @@ void main() {
 
     await tester.pumpWidget(app);
     await tester.pumpAndSettle();
-    final button = find.byKey(const Key('home-featured-save-button'));
+    final button = find.byKey(const Key('listing-row-save-listing-1'));
     await tester.ensureVisible(button);
     await tester.pumpAndSettle();
     await tester.tap(button);

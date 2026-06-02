@@ -92,6 +92,7 @@ class _TransactionDetailScreenState
                 eyebrow: context.l10n.transactionsTitle,
                 title: context.l10n.transactionDetailTitle,
                 subtitle: context.l10n.transactionDetailSubtitle,
+                leading: const QitakRouteBackButton(fallbackPath: '/deals'),
               ),
               const SizedBox(height: 16),
               QitakSignalStrip(
@@ -153,7 +154,7 @@ class _TransactionDetailScreenState
                   if (record.state == TransactionState.expired &&
                       record.buyerUserId == profile.id)
                     FilledButton(
-                      onPressed: () => context.go(
+                      onPressed: () => context.push(
                         '/transactions/listing/${record.listingId}/new',
                       ),
                       child: Text(context.l10n.retryAction),
@@ -170,7 +171,7 @@ class _TransactionDetailScreenState
                       if (!context.mounted) {
                         return;
                       }
-                      context.go('/messages/thread/$threadId');
+                      unawaited(context.push('/messages/thread/$threadId'));
                     },
                     child: Text(context.l10n.transactionMessageAction),
                   ),
@@ -178,13 +179,13 @@ class _TransactionDetailScreenState
                       record.state == TransactionState.completed)
                     OutlinedButton(
                       onPressed: () =>
-                          context.go('/deals/${record.id}/dispute'),
+                          context.push('/deals/${record.id}/dispute'),
                       child: Text(context.l10n.transactionOpenDisputeAction),
                     ),
                   if (record.state == TransactionState.completed)
                     FilledButton(
                       onPressed: () =>
-                          context.go('/ratings/transaction/${record.id}'),
+                          context.push('/ratings/transaction/${record.id}'),
                       child: Text(context.l10n.transactionRateAction),
                     ),
                 ],

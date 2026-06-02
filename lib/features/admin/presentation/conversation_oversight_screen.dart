@@ -37,6 +37,7 @@ class _ConversationOversightScreenState
       eyebrow: context.l10n.adminDashboardEyebrow,
       title: context.l10n.adminConversationOversightTitle,
       subtitle: context.l10n.adminConversationOversightSubtitle,
+      leading: const QitakRouteBackButton(fallbackPath: '/admin/queues'),
       children: [
         if (_caseFuture == null) ...[
           QitakSignalStrip(

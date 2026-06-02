@@ -4,9 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
+import 'package:qitak_app/features/admin/data/listing_moderation_repository.dart';
+import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/admin/presentation/admin_team_screen.dart';
+import 'package:qitak_app/features/admin/presentation/listing_review_detail_screen.dart';
 import 'package:qitak_app/features/admin/presentation/seller_verification_queue_screen.dart';
 import 'package:qitak_app/features/admin/presentation/verification_detail_screen.dart';
+import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import 'package:qitak_app/generated/l10n.dart';
@@ -30,6 +34,29 @@ void main() {
     expect(find.text('Seller verification queue'), findsOneWidget);
     expect(find.text('Queue is empty'), findsOneWidget);
   });
+
+  testWidgets(
+    'seller verification queue localizes verification status labels',
+    (
+      tester,
+    ) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SellerVerificationQueueScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'admin@qitak.test',
+        },
+        sellerApplicationRepositoryOverride: _QueueStatusSellerRepository(),
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Submitted'), findsOneWidget);
+      expect(find.text('submitted'), findsNothing);
+    },
+  );
 
   testWidgets('admin team renders invite action surface', (tester) async {
     final scope = await buildTestScope(
@@ -91,6 +118,26 @@ void main() {
     expect(find.text('Business registration'), findsOneWidget);
     expect(find.text('Reason code'), findsOneWidget);
   });
+
+  testWidgets('listing review detail localizes seller verification status', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: ListingReviewDetailScreen(listingId: 'listing-1'),
+        ),
+      ),
+      listingModerationRepositoryOverride:
+          const _LocalizedListingModerationRepository(),
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Needs info'), findsOneWidget);
+    expect(find.textContaining('needs_more_info'), findsNothing);
+  });
 }
 
 class _PolicyAwareSellerRepository implements SellerApplicationRepository {
@@ -106,7 +153,7 @@ class _PolicyAwareSellerRepository implements SellerApplicationRepository {
       wilayaId: '16',
       communeId: '1601',
       bio: 'Parts specialist',
-      verificationStatus: 'submitted',
+      verificationStatus: SellerVerificationStatus.submitted,
       documents: <SellerDocument>[
         SellerDocument(
           id: 'doc-1',
@@ -163,10 +210,73 @@ class _PolicyAwareSellerRepository implements SellerApplicationRepository {
   @override
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   }) {
     throw UnimplementedError();
   }
+}
+
+class _QueueStatusSellerRepository extends _PolicyAwareSellerRepository {
+  @override
+  Future<List<SellerApplication>> listPendingApplications() async {
+    final application = await fetchById('app-queue-1');
+    return [?application];
+  }
+}
+
+class _LocalizedListingModerationRepository
+    implements ListingModerationRepository {
+  const _LocalizedListingModerationRepository();
+
+  @override
+  Future<int> countPendingReviewListings() async => 1;
+
+  @override
+  Future<int> countSellerListings(String sellerUserId) async => 1;
+
+  @override
+  Future<ListingModerationCase?> fetchListingCase(String listingId) async {
+    return ListingModerationCase(
+      listing: const MarketplaceListing(
+        id: 'listing-1',
+        sellerUserId: 'seller-1',
+        title: 'Headlight',
+        priceAmount: 12000,
+        sellerLabelCode: 'seller_label_verified',
+        rating: 0,
+        threadId: '',
+        transactionId: '',
+        categoryId: 'lighting',
+        categoryCode: 'lighting',
+        conditionCode: 'used',
+        description: 'Clean used headlight',
+        wilayaCode: 'Algiers',
+        communeCode: 'Bab Ezzouar',
+        brand: 'Audi',
+        model: 'A3',
+        year: 2018,
+        sellerName: 'Qitak Motors',
+        mediaUrls: ['https://example.com/headlight.png'],
+        status: 'pending_review',
+      ),
+      submittedAt: DateTime(2026, 6, 2),
+      riskLevel: 'yellow',
+      sellerVerificationStatus: SellerVerificationStatus.needsMoreInfo,
+      sellerOpenReportCount: 1,
+      photoCount: 2,
+    );
+  }
+
+  @override
+  Future<List<ListingModerationQueueItem>> listPendingReviewListings() async =>
+      const [];
+
+  @override
+  Future<void> reviewListing({
+    required String listingId,
+    required bool approved,
+    String? note,
+  }) async {}
 }

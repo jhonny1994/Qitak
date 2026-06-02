@@ -5,6 +5,7 @@ import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -88,7 +89,7 @@ class LocalListingModerationRepository implements ListingModerationRepository {
       listing: item,
       submittedAt: DateTime.now(),
       riskLevel: 'yellow',
-      sellerVerificationStatus: 'approved',
+      sellerVerificationStatus: SellerVerificationStatus.approved,
       sellerOpenReportCount: 0,
       photoCount: item.mediaUrls.length,
     );
@@ -192,8 +193,9 @@ class SupabaseListingModerationRepository
           DateTime.tryParse(row['submitted_at'] as String? ?? '')?.toLocal() ??
           DateTime.now(),
       riskLevel: category?.riskLevel ?? 'yellow',
-      sellerVerificationStatus:
-          seller?['verification_status'] as String? ?? 'not_started',
+      sellerVerificationStatus: SellerVerificationStatus.fromWire(
+        seller?['verification_status'] as String?,
+      ),
       sellerOpenReportCount: sellerReports.length,
       photoCount: listing.mediaUrls.length,
       rejectionReason: row['rejection_reason'] as String?,

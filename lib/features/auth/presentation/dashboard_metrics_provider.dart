@@ -3,6 +3,7 @@ import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/data/listing_moderation_repository.dart';
 import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
@@ -18,7 +19,7 @@ class SellerDashboardMetrics {
   final int listingCount;
   final int openDeals;
   final int recentMessages;
-  final String verificationStatus;
+  final SellerVerificationStatus verificationStatus;
 }
 
 class AdminDashboardMetrics {
@@ -72,7 +73,9 @@ final sellerDashboardMetricsProvider =
         recentMessages: threads
             .where((item) => item.lastSenderId != userId)
             .length,
-        verificationStatus: application?.verificationStatus ?? 'not_started',
+        verificationStatus:
+            application?.verificationStatus ??
+            SellerVerificationStatus.notStarted,
       );
     });
 

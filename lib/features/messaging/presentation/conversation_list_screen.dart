@@ -56,7 +56,7 @@ class ConversationListScreen extends ConsumerWidget {
                       children: [
                         for (var index = 0; index < items.length; index++) ...[
                           InkWell(
-                            onTap: () => context.go(
+                            onTap: () => context.push(
                               '/messages/thread/${items[index].id}',
                             ),
                             borderRadius: BorderRadius.circular(18),

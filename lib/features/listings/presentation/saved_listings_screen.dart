@@ -89,7 +89,7 @@ class _SavedListingRow extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         InkWell(
-          onTap: () => context.go('/listing/${item.id}'),
+          onTap: () => context.push('/listing/${item.id}'),
           borderRadius: BorderRadius.circular(18),
           child: QitakQueueRow(
             title: item.title,

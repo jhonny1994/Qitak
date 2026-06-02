@@ -7,6 +7,7 @@ import 'package:qitak_app/features/admin/data/listing_moderation_repository.dart
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class ListingReviewDetailScreen extends ConsumerStatefulWidget {
@@ -40,6 +41,7 @@ class _ListingReviewDetailScreenState
       eyebrow: context.l10n.adminListingsQueueTitle,
       title: context.l10n.adminListingReviewTitle,
       subtitle: context.l10n.adminListingReviewSubtitle,
+      leading: const QitakRouteBackButton(fallbackPath: '/admin/listings'),
       children: listingCase.when(
         data: (item) => item == null
             ? [
@@ -139,7 +141,7 @@ class _ListingReviewDetailScreenState
           children: [
             _detailRow(
               context.l10n.adminModerationSellerStatusLabel,
-              item.sellerVerificationStatus,
+              item.sellerVerificationStatus.label(context.l10n),
             ),
             _detailRow(
               context.l10n.adminModerationSellerReportsLabel,
@@ -204,7 +206,7 @@ class _ListingReviewDetailScreenState
                   child: Text(context.l10n.adminVerificationRejectAction),
                 ),
                 FilledButton.tonal(
-                  onPressed: () => context.go('/listing/${widget.listingId}'),
+                  onPressed: () => context.push('/listing/${widget.listingId}'),
                   child: Text(context.l10n.sellerListingsPreviewAction),
                 ),
               ],

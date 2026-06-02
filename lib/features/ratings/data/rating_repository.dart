@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class RatingRepository {
@@ -70,16 +72,17 @@ class SupabaseRatingRepository implements RatingRepository {
     required String toUserId,
     required int score,
   }) async {
-    final seller = await _client
-        .from('sellers')
-        .select('id')
-        .eq('user_id', toUserId)
-        .single();
-    await _client.from('seller_reviews').insert(<String, dynamic>{
-      'deal_id': transactionId,
-      'buyer_id': fromUserId,
-      'seller_id': seller['id'],
-      'rating': score,
-    });
+    try {
+      await _client.rpc<void>(
+        'submit_seller_review',
+        params: <String, dynamic>{
+          'p_deal_id': transactionId,
+          'p_rating': score,
+          'p_comment': null,
+        },
+      );
+    } on PostgrestException catch (error) {
+      throw AppException.fromCode(classifyPostgrestException(error));
+    }
   }
 }

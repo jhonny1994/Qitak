@@ -1,4 +1,5 @@
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
 
 class ListingModerationQueueItem {
   const ListingModerationQueueItem({
@@ -32,7 +33,7 @@ class ListingModerationCase {
   final MarketplaceListing listing;
   final DateTime submittedAt;
   final String riskLevel;
-  final String sellerVerificationStatus;
+  final SellerVerificationStatus sellerVerificationStatus;
   final int sellerOpenReportCount;
   final int photoCount;
   final String? rejectionReason;

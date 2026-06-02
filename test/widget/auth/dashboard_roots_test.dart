@@ -5,6 +5,7 @@ import 'package:qitak_app/features/auth/presentation/admin_dashboard_screen.dart
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
 import 'package:qitak_app/features/auth/presentation/seller_dashboard_screen.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
 
 import '../../test_bootstrap.dart';
 
@@ -59,7 +60,7 @@ void main() {
                 listingCount: 2,
                 openDeals: 1,
                 recentMessages: 3,
-                verificationStatus: 'needs_more_info',
+                verificationStatus: SellerVerificationStatus.needsMoreInfo,
               ),
             ),
           ),

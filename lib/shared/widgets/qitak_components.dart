@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/theme/app_theme.dart';
 
@@ -76,12 +77,14 @@ class QitakSectionHeader extends StatelessWidget {
     required this.title,
     super.key,
     this.subtitle,
+    this.leading,
     this.trailing,
   });
 
   final String eyebrow;
   final String title;
   final String? subtitle;
+  final Widget? leading;
   final Widget? trailing;
 
   @override
@@ -92,6 +95,10 @@ class QitakSectionHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (leading != null) ...[
+          leading!,
+          SizedBox(width: tokens.screenPadding),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -364,6 +371,7 @@ class QitakCollapsingSliverAppBar extends StatelessWidget {
     this.subtitle,
     this.actions = const <Widget>[],
     this.expandedHeight = 188,
+    this.fallbackPath,
   });
 
   final String eyebrow;
@@ -371,25 +379,37 @@ class QitakCollapsingSliverAppBar extends StatelessWidget {
   final String? subtitle;
   final List<Widget> actions;
   final double expandedHeight;
+  final String? fallbackPath;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tokens = context.qitakTokens;
+    final canNavigateBack = Navigator.canPop(context) || fallbackPath != null;
+    final topPadding = MediaQuery.paddingOf(context).top;
 
     return SliverAppBar(
       pinned: true,
       stretch: true,
       toolbarHeight: 72,
       expandedHeight: expandedHeight,
+      automaticallyImplyLeading: false,
       backgroundColor: Color.alphaBlend(
-        theme.colorScheme.surface.withValues(alpha: 0.92),
+        theme.colorScheme.surface.withValues(alpha: 0.96),
         theme.scaffoldBackgroundColor,
       ),
       surfaceTintColor: Colors.transparent,
       scrolledUnderElevation: 0,
       elevation: 0,
       titleSpacing: 0,
+      leading: canNavigateBack
+          ? Padding(
+              padding: const EdgeInsetsDirectional.only(start: 8),
+              child: QitakRouteBackButton(
+                fallbackPath: fallbackPath,
+              ),
+            )
+          : null,
       title: Text(
         title,
         maxLines: 1,
@@ -410,11 +430,56 @@ class QitakCollapsingSliverAppBar extends StatelessWidget {
               end: Alignment.bottomCenter,
               colors: [
                 Color.alphaBlend(
-                  theme.colorScheme.primary.withValues(alpha: 0.08),
+                  theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.42,
+                  ),
                   theme.scaffoldBackgroundColor,
                 ),
                 theme.scaffoldBackgroundColor,
               ],
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              24,
+              topPadding + 18,
+              24,
+              20,
+            ),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: canNavigateBack ? 52 : 0,
+                  end: actions.isEmpty ? 0 : 40,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      eyebrow.toUpperCase(),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 1.4,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        subtitle!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -625,9 +690,12 @@ class _QitakListingGalleryState extends State<QitakListingGallery> {
           itemCount: images.length,
           onPageChanged: (value) => setState(() => _currentPage = value),
           itemBuilder: (context, index) {
-            return _QitakNetworkImage(
-              imageUrl: images[index],
-              height: widget.height,
+            return InkWell(
+              onTap: () => _openImagePreview(context, images, index),
+              child: _QitakNetworkImage(
+                imageUrl: images[index],
+                height: widget.height,
+              ),
             );
           },
         ),
@@ -692,6 +760,49 @@ class _QitakListingGalleryState extends State<QitakListingGallery> {
           ),
         ],
       ],
+    );
+  }
+
+  Future<void> _openImagePreview(
+    BuildContext context,
+    List<String> images,
+    int initialIndex,
+  ) {
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) => Dialog.fullscreen(
+        backgroundColor: Colors.black,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              PageView.builder(
+                controller: PageController(initialPage: initialIndex),
+                itemCount: images.length,
+                itemBuilder: (context, index) => InteractiveViewer(
+                  child: Center(
+                    child: images[index].startsWith('data:image/')
+                        ? _QitakPreviewDataImage(imageUrl: images[index])
+                        : Image.network(
+                            images[index],
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const _QitakImageFallback(height: 220),
+                          ),
+                  ),
+                ),
+              ),
+              PositionedDirectional(
+                top: 12,
+                end: 12,
+                child: IconButton.filled(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  icon: const Icon(Icons.close_rounded),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -788,6 +899,105 @@ class QitakListingThumbnail extends StatelessWidget {
   }
 }
 
+class QitakMarketplaceListingRow extends StatelessWidget {
+  const QitakMarketplaceListingRow({
+    required this.title,
+    required this.meta,
+    required this.price,
+    required this.onOpen,
+    super.key,
+    this.imageUrl,
+    this.onToggleSave,
+    this.saveButtonKey,
+    this.saveTooltip,
+    this.isSaved = false,
+  });
+
+  final String title;
+  final String meta;
+  final String price;
+  final String? imageUrl;
+  final VoidCallback onOpen;
+  final VoidCallback? onToggleSave;
+  final Key? saveButtonKey;
+  final String? saveTooltip;
+  final bool isSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    return QitakPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(22),
+              onTap: onOpen,
+              child: Row(
+                children: [
+                  QitakListingThumbnail(imageUrl: imageUrl),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          meta,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                price,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              if (onToggleSave != null) ...[
+                const SizedBox(height: 6),
+                IconButton(
+                  key: saveButtonKey,
+                  onPressed: onToggleSave,
+                  icon: Icon(
+                    isSaved
+                        ? Icons.bookmark_rounded
+                        : Icons.bookmark_border_rounded,
+                  ),
+                  tooltip: saveTooltip,
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _QitakListingImage extends StatelessWidget {
   const _QitakListingImage({
     required this.imageUrl,
@@ -854,6 +1064,59 @@ class _QitakListingImage extends StatelessWidget {
       WidgetsBinding.instance.runtimeType.toString().contains(
         'TestWidgetsFlutterBinding',
       );
+}
+
+class _QitakPreviewDataImage extends StatelessWidget {
+  const _QitakPreviewDataImage({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    final commaIndex = imageUrl.indexOf(',');
+    if (commaIndex == -1 || commaIndex == imageUrl.length - 1) {
+      return const _QitakImageFallback(height: 220);
+    }
+
+    try {
+      final bytes = base64Decode(imageUrl.substring(commaIndex + 1));
+      return Image.memory(
+        bytes,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) =>
+            const _QitakImageFallback(height: 220),
+      );
+    } on FormatException {
+      return const _QitakImageFallback(height: 220);
+    }
+  }
+}
+
+class QitakRouteBackButton extends StatelessWidget {
+  const QitakRouteBackButton({super.key, this.fallbackPath});
+
+  final String? fallbackPath;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton.filledTonal(
+      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+      onPressed: () async {
+        if (Navigator.canPop(context)) {
+          await Navigator.of(context).maybePop();
+          return;
+        }
+        final fallback = fallbackPath;
+        if (fallback != null) {
+          final router = GoRouter.maybeOf(context);
+          if (router != null) {
+            router.go(fallback);
+          }
+        }
+      },
+      icon: const Icon(Icons.arrow_back_rounded),
+    );
+  }
 }
 
 class QitakTimelineBlock extends StatelessWidget {

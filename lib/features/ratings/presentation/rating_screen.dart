@@ -92,6 +92,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                     eyebrow: context.l10n.ratingContextEyebrow,
                     title: context.l10n.ratingContextTitle,
                     subtitle: context.l10n.ratingContextSubtitle,
+                    leading: const QitakRouteBackButton(fallbackPath: '/deals'),
                   ),
                   const SizedBox(height: 16),
                   QitakSignalStrip(

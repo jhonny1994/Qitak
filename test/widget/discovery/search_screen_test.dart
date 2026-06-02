@@ -41,6 +41,7 @@ void main() {
 
     expect(find.text('Brake pad set'), findsOneWidget);
     expect(find.text('Headlight assembly'), findsNothing);
+    expect(find.textContaining('Samir Auto Parts'), findsOneWidget);
     expect(
       find.byKey(const Key('search-results-filter-button')),
       findsOneWidget,

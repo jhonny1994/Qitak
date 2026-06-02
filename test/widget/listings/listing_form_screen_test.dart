@@ -64,7 +64,7 @@ void main() {
     wilayaId: '1',
     communeId: '1001',
     bio: 'Verified seller profile',
-    verificationStatus: 'approved',
+    verificationStatus: SellerVerificationStatus.approved,
   );
 
   Finder fieldKey(String prefix) => find.byWidgetPredicate(

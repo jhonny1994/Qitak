@@ -69,6 +69,7 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
         eyebrow: context.l10n.adminReportsQueueTitle,
         title: context.l10n.adminReportDetailTitle,
         subtitle: context.l10n.adminReportDetailSubtitle,
+        leading: const QitakRouteBackButton(fallbackPath: '/admin/reports'),
         children: item == null
             ? [
                 QitakStateMessage(

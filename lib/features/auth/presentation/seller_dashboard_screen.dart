@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerDashboardScreen extends ConsumerWidget {
@@ -35,11 +37,10 @@ class SellerDashboardScreen extends ConsumerWidget {
                 const SizedBox(height: 14),
                 QitakSignalStrip(
                   label: context.l10n.sellerStatusTitle,
-                  value: _verificationLabel(
-                    context,
-                    summary.verificationStatus,
-                  ),
-                  status: summary.verificationStatus == 'approved'
+                  value: summary.verificationStatus.label(context.l10n),
+                  status:
+                      summary.verificationStatus ==
+                          SellerVerificationStatus.approved
                       ? context.l10n.adminQueueReadyStatus
                       : context.l10n.adminQueueStatus,
                 ),
@@ -140,22 +141,5 @@ class SellerDashboardScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-String _verificationLabel(BuildContext context, String status) {
-  switch (status) {
-    case 'approved':
-      return context.l10n.sellerStatusApproved;
-    case 'submitted':
-      return context.l10n.sellerStatusSubmitted;
-    case 'needs_more_info':
-      return context.l10n.sellerStatusNeedsInfo;
-    case 'rejected':
-      return context.l10n.sellerStatusRejected;
-    case 'draft':
-    case 'not_started':
-    default:
-      return context.l10n.sellerStatusNotStarted;
   }
 }

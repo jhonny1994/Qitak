@@ -156,6 +156,7 @@
   "sellerStatusApproved": "Approved",
   "sellerStatusRejected": "Rejected",
   "sellerStatusNeedsInfo": "Needs info",
+  "sellerStatusSuspended": "Suspended",
   "sellerStatusProfileDraftBody": "You have not submitted your seller verification yet.",
   "sellerStatusVerificationDraftBody": "Complete the remaining steps and submit the application for review.",
   "sellerStatusVerificationSubmittedBody": "Your application is under review. Seller access stays locked until approval.",

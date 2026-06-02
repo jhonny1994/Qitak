@@ -151,6 +151,7 @@ void main() {
 
     expect(find.textContaining('listing-1'), findsNothing);
     expect(find.text('Headlight assembly'), findsOneWidget);
+    expect(find.byTooltip('Back'), findsOneWidget);
   });
 
   testWidgets('dispute screen validates description length', (tester) async {

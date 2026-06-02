@@ -1515,6 +1515,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(
       "Suivez l\'avancement de la revue, les documents envoyés et les prochaines étapes depuis un seul écran vendeur.",
     ),
+    "sellerStatusSuspended": MessageLookupByLibrary.simpleMessage("Suspendu"),
     "sellerStatusTitle": MessageLookupByLibrary.simpleMessage(
       "Statut de vérification vendeur",
     ),

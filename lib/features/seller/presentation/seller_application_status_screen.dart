@@ -8,6 +8,7 @@ import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerApplicationStatusScreen extends ConsumerWidget {
@@ -16,9 +17,6 @@ class SellerApplicationStatusScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final application = ref.watch(currentSellerApplicationProvider);
-    final statusContracts = ref.watch(
-      sellerVerificationStatusOptionsProvider,
-    );
     final reasonPolicies = ref.watch(sellerVerificationReasonOptionsProvider);
     final documentPolicies = ref.watch(sellerStatusDocumentOptionsProvider);
     final profile = ref.watch(authSessionProvider).profile;
@@ -43,18 +41,12 @@ class SellerApplicationStatusScreen extends ConsumerWidget {
           const SizedBox(height: 18),
           QitakSignalStrip(
             label: context.l10n.sellerStatusTitle,
-            value: _statusBadge(
-              context,
-              item?.verificationStatus,
-              statusContracts.asData?.value,
-            ),
+            value:
+                item?.verificationStatus.label(context.l10n) ??
+                context.l10n.sellerStatusNotStarted,
             status: item == null
                 ? context.l10n.sellerStatusProfileDraftBody
-                : _statusSubtitle(
-                    context,
-                    item.verificationStatus,
-                    statusContracts.asData?.value,
-                  ),
+                : item.verificationStatus.subtitle(context.l10n),
           ),
           const SizedBox(height: 16),
           QitakPanel(
@@ -70,11 +62,11 @@ class SellerApplicationStatusScreen extends ConsumerWidget {
                 ),
                 QitakTimelineBlock(
                   title: context.l10n.sellerStatusVerification,
-                  subtitle: _statusSubtitle(
-                    context,
-                    item?.verificationStatus,
-                    statusContracts.asData?.value,
-                  ),
+                  subtitle:
+                      item?.verificationStatus.subtitle(
+                        context.l10n,
+                      ) ??
+                      context.l10n.sellerStatusVerificationDraftBody,
                   isCurrent: item != null,
                 ),
                 QitakTimelineBlock(
@@ -199,12 +191,15 @@ String _primaryActionPath(SellerApplication? item) {
     return '/seller/home';
   }
   switch (item?.verificationStatus) {
-    case 'submitted':
+    case SellerVerificationStatus.submitted:
       return '/seller/profile';
-    case 'rejected':
-    case 'needs_more_info':
-    case 'draft':
-    default:
+    case SellerVerificationStatus.rejected:
+    case SellerVerificationStatus.needsMoreInfo:
+    case SellerVerificationStatus.draft:
+    case SellerVerificationStatus.notStarted:
+    case SellerVerificationStatus.approved:
+    case SellerVerificationStatus.suspended:
+    case null:
       return '/seller/onboarding';
   }
 }
@@ -214,159 +209,70 @@ String _primaryActionLabel(BuildContext context, SellerApplication? item) {
     return context.l10n.sellerStatusBackToWorkspace;
   }
   switch (item?.verificationStatus) {
-    case 'submitted':
+    case SellerVerificationStatus.submitted:
       return context.l10n.sellerStatusBackToProfile;
-    case 'rejected':
+    case SellerVerificationStatus.rejected:
       return context.l10n.sellerStatusRestartApplication;
-    case 'needs_more_info':
-    case 'draft':
-    default:
+    case SellerVerificationStatus.needsMoreInfo:
+    case SellerVerificationStatus.draft:
+    case SellerVerificationStatus.notStarted:
+    case SellerVerificationStatus.approved:
+    case SellerVerificationStatus.suspended:
+    case null:
       return context.l10n.sellerStatusContinueApplication;
   }
 }
 
 Widget _requirementsPanel(BuildContext context, SellerApplication? item) {
-  final status = item?.verificationStatus;
   if (item == null) {
     return Text(context.l10n.sellerStatusProfileDraftBody);
   }
-  if (status == 'needs_more_info') {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.sellerStatusRequirementsTitle,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(_reasonLabelOrFallback(context, item, true)),
-        if ((item.reviewNote ?? '').isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(item.reviewNote!),
-        ],
-      ],
-    );
+  switch (item.verificationStatus) {
+    case SellerVerificationStatus.needsMoreInfo:
+      return _reviewFeedbackPanel(
+        context,
+        item,
+        needsInfoFallback: true,
+      );
+    case SellerVerificationStatus.rejected:
+      return _reviewFeedbackPanel(
+        context,
+        item,
+        needsInfoFallback: false,
+      );
+    case SellerVerificationStatus.approved:
+      return Text(context.l10n.sellerStatusWorkspaceApprovedBody);
+    case SellerVerificationStatus.submitted:
+      return Text(context.l10n.sellerStatusVerificationSubmittedBody);
+    case SellerVerificationStatus.notStarted:
+    case SellerVerificationStatus.draft:
+    case SellerVerificationStatus.suspended:
+      return Text(context.l10n.sellerStatusVerificationDraftBody);
   }
-  if (status == 'rejected') {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.sellerStatusRequirementsTitle,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(_reasonLabelOrFallback(context, item, false)),
-        if ((item.reviewNote ?? '').isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(item.reviewNote!),
-        ],
-      ],
-    );
-  }
-  if (status == 'approved') {
-    return Text(context.l10n.sellerStatusWorkspaceApprovedBody);
-  }
-  return Text(context.l10n.sellerStatusVerificationSubmittedBody);
 }
 
-String _statusSubtitle(
+Widget _reviewFeedbackPanel(
   BuildContext context,
-  String? status,
-  List<({String code, String? labelKey})>? contracts,
-) {
-  return _statusLabelFromKey(
-    context,
-    _findStatusLabelKey(status, contracts),
-    fallbackStatus: status,
-    subtitle: true,
-  );
-}
-
-String _statusBadge(
-  BuildContext context,
-  String? status,
-  List<({String code, String? labelKey})>? contracts,
-) {
-  return _statusLabelFromKey(
-    context,
-    _findStatusLabelKey(status, contracts),
-    fallbackStatus: status,
-    subtitle: false,
-  );
-}
-
-String? _findStatusLabelKey(
-  String? status,
-  List<({String code, String? labelKey})>? contracts,
-) {
-  if (status == null || contracts == null) {
-    return null;
-  }
-  for (final entry in contracts) {
-    if (entry.code == status && (entry.labelKey ?? '').isNotEmpty) {
-      return entry.labelKey;
-    }
-  }
-  return null;
-}
-
-String _statusLabelFromKey(
-  BuildContext context,
-  String? labelKey, {
-  required bool subtitle,
-  String? fallbackStatus,
+  SellerApplication item, {
+  required bool needsInfoFallback,
 }) {
-  switch (labelKey) {
-    case 'sellerStatusApproved':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationApprovedBody
-          : context.l10n.sellerStatusApproved;
-    case 'sellerStatusNeedsInfo':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationNeedsInfoBody
-          : context.l10n.sellerStatusNeedsInfo;
-    case 'sellerStatusRejected':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationRejectedBody
-          : context.l10n.sellerStatusRejected;
-    case 'sellerStatusSubmitted':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationSubmittedBody
-          : context.l10n.sellerStatusSubmitted;
-    case 'sellerStatusNotStarted':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationDraftBody
-          : context.l10n.sellerStatusNotStarted;
-    default:
-      break;
-  }
-  switch (fallbackStatus) {
-    case 'approved':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationApprovedBody
-          : context.l10n.sellerStatusApproved;
-    case 'needs_more_info':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationNeedsInfoBody
-          : context.l10n.sellerStatusNeedsInfo;
-    case 'rejected':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationRejectedBody
-          : context.l10n.sellerStatusRejected;
-    case 'submitted':
-      return subtitle
-          ? context.l10n.sellerStatusVerificationSubmittedBody
-          : context.l10n.sellerStatusSubmitted;
-    default:
-      return subtitle
-          ? context.l10n.sellerStatusVerificationDraftBody
-          : context.l10n.sellerStatusNotStarted;
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        context.l10n.sellerStatusRequirementsTitle,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(_reasonLabelOrFallback(context, item, needsInfoFallback)),
+      if ((item.reviewNote ?? '').isNotEmpty) ...[
+        const SizedBox(height: 8),
+        Text(item.reviewNote!),
+      ],
+    ],
+  );
 }
 
 String _documentTypeLabel(
@@ -450,16 +356,6 @@ String _reasonLabelOrFallback(
       ? context.l10n.sellerStatusVerificationNeedsInfoBody
       : context.l10n.sellerStatusVerificationRejectedBody;
 }
-
-final sellerVerificationStatusOptionsProvider =
-    FutureProvider<List<({String code, String? labelKey})>>((ref) async {
-      final contracts = await ref.watch(
-        sellerVerificationStatusContractsProvider.future,
-      );
-      return contracts
-          .map((entry) => (code: entry.code, labelKey: entry.labelKey))
-          .toList(growable: false);
-    });
 
 final sellerVerificationReasonOptionsProvider =
     FutureProvider<List<({String code, String labelKey})>>((ref) async {

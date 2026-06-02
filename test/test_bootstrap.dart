@@ -30,6 +30,7 @@ Future<ProviderScope> buildTestScope(
   MessagingRepository? messagingRepositoryOverride,
   TransactionRepository? transactionRepositoryOverride,
   SellerApplicationRepository? sellerApplicationRepositoryOverride,
+  ListingModerationRepository? listingModerationRepositoryOverride,
 }) async {
   SharedPreferences.setMockInitialValues(seed);
   final prefs = await SharedPreferences.getInstance();
@@ -68,7 +69,8 @@ Future<ProviderScope> buildTestScope(
         const LocalAdminTeamRepository(),
       ),
       listingModerationRepositoryProvider.overrideWithValue(
-        LocalListingModerationRepository(prefs),
+        listingModerationRepositoryOverride ??
+            LocalListingModerationRepository(prefs),
       ),
       disputeRepositoryProvider.overrideWithValue(
         const LocalDisputeRepository(),

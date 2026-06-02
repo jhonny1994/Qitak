@@ -60,6 +60,9 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                       eyebrow: context.l10n.messagesTitle,
                       title: context.l10n.messagesConversationTitle,
                       subtitle: context.l10n.messagesConversationSubtitle,
+                      leading: const QitakRouteBackButton(
+                        fallbackPath: '/messages',
+                      ),
                     ),
                     const SizedBox(height: 16),
                     if (items.isEmpty)

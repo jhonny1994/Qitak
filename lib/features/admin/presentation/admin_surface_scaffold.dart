@@ -9,12 +9,14 @@ class AdminSurfaceScaffold extends StatelessWidget {
     required this.subtitle,
     required this.children,
     super.key,
+    this.leading,
   });
 
   final String eyebrow;
   final String title;
   final String subtitle;
   final List<Widget> children;
+  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class AdminSurfaceScaffold extends StatelessWidget {
                 eyebrow: eyebrow,
                 title: title,
                 subtitle: subtitle,
+                leading: leading,
               ),
               const SizedBox(height: 18),
               ...children,

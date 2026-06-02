@@ -289,7 +289,7 @@ Future<void> _approveSeller(WidgetTester tester) async {
   if (!application.isApproved) {
     await repository.updateStatus(
       applicationId: application.id,
-      status: 'approved',
+      status: SellerVerificationStatus.approved,
     );
   }
 }

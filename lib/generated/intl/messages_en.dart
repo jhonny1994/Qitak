@@ -1455,6 +1455,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(
       "Track your review progress, submitted documents, and next steps from one seller-only screen.",
     ),
+    "sellerStatusSuspended": MessageLookupByLibrary.simpleMessage("Suspended"),
     "sellerStatusTitle": MessageLookupByLibrary.simpleMessage(
       "Seller verification status",
     ),

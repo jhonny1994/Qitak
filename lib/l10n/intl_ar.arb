@@ -156,6 +156,7 @@
   "sellerStatusApproved": "تمت الموافقة",
   "sellerStatusRejected": "مرفوض",
   "sellerStatusNeedsInfo": "يحتاج معلومات",
+  "sellerStatusSuspended": "موقوف",
   "sellerStatusProfileDraftBody": "لم تُرسل طلب توثيق البائع بعد.",
   "sellerStatusVerificationDraftBody": "أكمل الخطوات المتبقية ثم أرسل الطلب للمراجعة.",
   "sellerStatusVerificationSubmittedBody": "طلبك قيد المراجعة. سيبقى وصول البائع مغلقاً حتى الموافقة.",

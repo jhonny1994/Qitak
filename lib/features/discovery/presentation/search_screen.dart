@@ -328,78 +328,25 @@ class _SearchResultRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QitakPanel(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(22),
-              onTap: () => context.go('/listing/${item.id}'),
-              child: Row(
-                children: [
-                  QitakListingThumbnail(
-                    imageUrl: item.preferredImageUrl,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.localizedTitle(context.l10n),
-                          style:
-                              Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          item.localizedLocation(context.l10n),
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                item.localizedPrice(context.l10n),
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (canShowSave) ...[
-                const SizedBox(height: 6),
-                IconButton(
-                  key: Key('search-result-save-${item.id}'),
-                  onPressed: onToggleSave,
-                  icon: Icon(
-                    isSaved
-                        ? Icons.bookmark_rounded
-                        : Icons.bookmark_border_rounded,
-                  ),
-                  tooltip: context.l10n.discoverySave,
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
+    return QitakMarketplaceListingRow(
+      title: item.localizedTitle(context.l10n),
+      meta: _listingRowMeta(context),
+      price: item.localizedPrice(context.l10n),
+      imageUrl: item.preferredImageUrl,
+      isSaved: isSaved,
+      onOpen: () => context.push('/listing/${item.id}'),
+      onToggleSave: canShowSave ? onToggleSave : null,
+      saveButtonKey: Key('search-result-save-${item.id}'),
+      saveTooltip: context.l10n.discoverySave,
     );
+  }
+
+  String _listingRowMeta(BuildContext context) {
+    final location = item.localizedLocation(context.l10n);
+    if (item.sellerName.isEmpty) {
+      return location;
+    }
+    return '$location • ${item.sellerName}';
   }
 }
 

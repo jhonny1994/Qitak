@@ -1584,6 +1584,16 @@ class S {
     );
   }
 
+  /// `موقوف`
+  String get sellerStatusSuspended {
+    return Intl.message(
+      'موقوف',
+      name: 'sellerStatusSuspended',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `لم تُرسل طلب توثيق البائع بعد.`
   String get sellerStatusProfileDraftBody {
     return Intl.message(

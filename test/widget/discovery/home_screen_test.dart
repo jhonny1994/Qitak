@@ -115,6 +115,7 @@ void main() {
     expect(find.byKey(const Key('home-search-button')), findsOneWidget);
     expect(find.text('Featured listings'), findsOneWidget);
     expect(find.text('Headlight assembly'), findsOneWidget);
+    expect(find.textContaining('Samir Auto Parts'), findsWidgets);
     await tester.scrollUntilVisible(
       find.text('Latest listings'),
       200,
@@ -212,7 +213,7 @@ void main() {
     await tester.pumpWidget(scope);
     await settleDiscovery(tester);
 
-    final button = find.byKey(const Key('home-featured-save-button'));
+    final button = find.byKey(const Key('listing-row-save-listing-1'));
     await tester.ensureVisible(button);
     await tester.pumpAndSettle();
     await tester.tap(button);
@@ -241,30 +242,10 @@ void main() {
     await container.read(authSessionProvider.notifier).restore();
     await settleDiscovery(tester);
 
-    expect(find.byKey(const Key('home-featured-save-button')), findsOneWidget);
+    expect(find.byKey(const Key('listing-row-save-listing-1')), findsOneWidget);
   });
 
-  testWidgets('listing cards expose hero tags for detail transition', (
-    tester,
-  ) async {
-    final scope = await buildSliceTestScope(
-      buildShell(const HomeScreen()),
-      overrides: defaultOverrides(),
-    );
-
-    await tester.pumpWidget(scope);
-    await settleDiscovery(tester);
-
-    expect(
-      find.byWidgetPredicate(
-        (widget) =>
-            widget is Hero && widget.tag == qitakListingHeroTag('listing-1'),
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('featured listing uses media url when discovery provides one', (
+  testWidgets('featured listing surfaces its primary image url', (
     tester,
   ) async {
     final scope = await buildSliceTestScope(
@@ -295,10 +276,10 @@ void main() {
     await tester.pumpWidget(scope);
     await settleDiscovery(tester);
 
-    final surface = tester.widget<QitakListingSurface>(
-      find.byType(QitakListingSurface),
+    final thumbnail = tester.widget<QitakListingThumbnail>(
+      find.byType(QitakListingThumbnail),
     );
-    expect(surface.imageUrl, 'https://example.com/headlight.png');
+    expect(thumbnail.imageUrl, 'https://example.com/headlight.png');
   });
 
   testWidgets('categories are not exposed as persistent home chips', (

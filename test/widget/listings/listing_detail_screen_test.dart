@@ -56,6 +56,7 @@ void main() {
     expect(find.text('2018'), findsWidgets);
     expect(find.byType(RefreshIndicator), findsOneWidget);
     expect(find.byType(SliverAppBar), findsOneWidget);
+    expect(find.byTooltip('Back'), findsOneWidget);
   });
 
   testWidgets('guest buyer actions stay gated from listing detail', (

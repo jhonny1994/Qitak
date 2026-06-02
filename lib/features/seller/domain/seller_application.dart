@@ -1,5 +1,31 @@
 import 'package:flutter/foundation.dart';
 
+enum SellerVerificationStatus {
+  notStarted('not_started'),
+  draft('draft'),
+  submitted('submitted'),
+  needsMoreInfo('needs_more_info'),
+  approved('approved'),
+  rejected('rejected'),
+  suspended('suspended')
+  ;
+
+  const SellerVerificationStatus(this.wireName);
+
+  final String wireName;
+
+  static const SellerVerificationStatus _fallback =
+      SellerVerificationStatus.notStarted;
+
+  static SellerVerificationStatus fromWire(String? raw) {
+    if (raw == null) return _fallback;
+    for (final value in SellerVerificationStatus.values) {
+      if (value.wireName == raw) return value;
+    }
+    return _fallback;
+  }
+}
+
 @immutable
 class SellerApplication {
   const SellerApplication({
@@ -29,17 +55,23 @@ class SellerApplication {
   final String wilayaId;
   final String communeId;
   final String bio;
-  final String verificationStatus;
+  final SellerVerificationStatus verificationStatus;
   final List<SellerDocument> documents;
   final String? reviewReasonCode;
   final String? reviewNote;
   final DateTime? submittedAt;
   final DateTime? reviewedAt;
 
-  bool get isApproved => verificationStatus == 'approved';
-  bool get isSubmitted => verificationStatus == 'submitted';
-  bool get needsMoreInfo => verificationStatus == 'needs_more_info';
-  bool get isRejected => verificationStatus == 'rejected';
+  bool get isApproved =>
+      verificationStatus == SellerVerificationStatus.approved;
+  bool get isSubmitted =>
+      verificationStatus == SellerVerificationStatus.submitted;
+  bool get needsMoreInfo =>
+      verificationStatus == SellerVerificationStatus.needsMoreInfo;
+  bool get isRejected =>
+      verificationStatus == SellerVerificationStatus.rejected;
+  bool get isSuspended =>
+      verificationStatus == SellerVerificationStatus.suspended;
 }
 
 @immutable

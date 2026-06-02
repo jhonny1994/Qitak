@@ -180,15 +180,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverPadding(
                 padding: qitakPageHorizontalPadding,
                 sliver: SliverToBoxAdapter(
-                  child: _DiscoverySection(
-                    title: context.l10n.discoveryFeaturedListingsTitle,
-                    child: _FeaturedListingCard(
-                      item: featured,
-                      isSaved: savedIds.contains(featured.id),
-                      onOpen: () => context.go('/listing/${featured.id}'),
-                      onToggleSave: () =>
-                          _toggleSave(context, ref, featured.id),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 6, bottom: 10),
+                    child: Text(
+                      context.l10n.discoveryFeaturedListingsTitle,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: qitakPageHorizontalPadding,
+                sliver: SliverToBoxAdapter(
+                  child: _ListingRow(
+                    item: featured,
+                    isSaved: savedIds.contains(featured.id),
+                    onOpen: () => context.push('/listing/${featured.id}'),
+                    onToggleSave: () => _toggleSave(context, ref, featured.id),
                   ),
                 ),
               ),
@@ -200,12 +210,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       padding: const EdgeInsets.only(top: 18, bottom: 10),
                       child: Text(
                         context.l10n.discoveryLatestListingsTitle,
-                        style:
-                            Theme.of(
-                              context,
-                            ).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
@@ -222,7 +229,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: _ListingRow(
                         item: item,
                         isSaved: savedIds.contains(item.id),
-                        onOpen: () => context.go('/listing/${item.id}'),
+                        onOpen: () => context.push('/listing/${item.id}'),
                         onToggleSave: () => _toggleSave(context, ref, item.id),
                       ),
                     );
@@ -354,75 +361,6 @@ class _HomeEmptyMarketplaceState extends StatelessWidget {
   }
 }
 
-class _DiscoverySection extends StatelessWidget {
-  const _DiscoverySection({
-    required this.title,
-    required this.child,
-  });
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 10),
-          child,
-        ],
-      ),
-    );
-  }
-}
-
-class _FeaturedListingCard extends StatelessWidget {
-  const _FeaturedListingCard({
-    required this.item,
-    required this.isSaved,
-    required this.onOpen,
-    required this.onToggleSave,
-  });
-
-  final MarketplaceListing item;
-  final bool isSaved;
-  final VoidCallback onOpen;
-  final VoidCallback onToggleSave;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(28),
-      onTap: onOpen,
-      child: QitakListingSurface(
-        title: item.localizedTitle(context.l10n),
-        price: item.localizedPrice(context.l10n),
-        subtitle: item.localizedLocation(context.l10n),
-        imageUrl: item.preferredImageUrl,
-        heroTag: qitakListingHeroTag(item.id),
-        actions: [
-          IconButton(
-            key: const Key('home-featured-save-button'),
-            onPressed: onToggleSave,
-            icon: Icon(
-              isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-            ),
-            tooltip: context.l10n.discoverySave,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _ListingRow extends StatelessWidget {
   const _ListingRow({
     required this.item,
@@ -438,63 +376,25 @@ class _ListingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QitakPanel(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(22),
-        onTap: onOpen,
-        child: Row(
-          children: [
-            QitakListingThumbnail(
-              imageUrl: item.preferredImageUrl,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.localizedTitle(context.l10n),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    item.localizedLocation(context.l10n),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  item.localizedPrice(context.l10n),
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                IconButton(
-                  key: Key('listing-row-save-${item.id}'),
-                  onPressed: onToggleSave,
-                  icon: Icon(
-                    isSaved
-                        ? Icons.bookmark_rounded
-                        : Icons.bookmark_border_rounded,
-                  ),
-                  tooltip: context.l10n.discoverySave,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+    return QitakMarketplaceListingRow(
+      title: item.localizedTitle(context.l10n),
+      meta: _listingRowMeta(context),
+      price: item.localizedPrice(context.l10n),
+      imageUrl: item.preferredImageUrl,
+      isSaved: isSaved,
+      onOpen: onOpen,
+      onToggleSave: onToggleSave,
+      saveButtonKey: Key('listing-row-save-${item.id}'),
+      saveTooltip: context.l10n.discoverySave,
     );
+  }
+
+  String _listingRowMeta(BuildContext context) {
+    final location = item.localizedLocation(context.l10n);
+    if (item.sellerName.isEmpty) {
+      return location;
+    }
+    return '$location • ${item.sellerName}';
   }
 }
 

@@ -7,6 +7,7 @@ import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -88,10 +89,11 @@ class ProfileScreen extends ConsumerWidget {
                             child: QitakQueueRow(
                               title: context.l10n.sellerStatusTitle,
                               meta: context.l10n.sellerStatusSubtitle,
-                              status: _sellerVerificationStatusLabel(
-                                context,
-                                item?.verificationStatus,
-                              ),
+                              status:
+                                  item?.verificationStatus.label(
+                                    context.l10n,
+                                  ) ??
+                                  context.l10n.sellerStatusNotStarted,
                               trailing: const Icon(Icons.chevron_right_rounded),
                             ),
                           ),
@@ -306,22 +308,5 @@ String _themeModeStatus(BuildContext context, ThemeMode mode) {
       return context.l10n.appearanceModeSystemTitle;
     case ThemeMode.dark:
       return context.l10n.appearanceModeDarkTitle;
-  }
-}
-
-String _sellerVerificationStatusLabel(BuildContext context, String? status) {
-  switch (status) {
-    case 'approved':
-      return context.l10n.sellerStatusApproved;
-    case 'submitted':
-      return context.l10n.sellerStatusSubmitted;
-    case 'needs_more_info':
-      return context.l10n.sellerStatusNeedsInfo;
-    case 'rejected':
-      return context.l10n.sellerStatusRejected;
-    case 'draft':
-    case 'not_started':
-    default:
-      return context.l10n.sellerStatusNotStarted;
   }
 }

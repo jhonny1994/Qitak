@@ -156,6 +156,7 @@
   "sellerStatusApproved": "Approuvé",
   "sellerStatusRejected": "Rejeté",
   "sellerStatusNeedsInfo": "Infos requises",
+  "sellerStatusSuspended": "Suspendu",
   "sellerStatusProfileDraftBody": "Vous n'avez pas encore soumis votre vérification vendeur.",
   "sellerStatusVerificationDraftBody": "Complétez les étapes restantes puis envoyez la demande pour revue.",
   "sellerStatusVerificationSubmittedBody": "Votre demande est en cours de revue. L'accès vendeur reste bloqué jusqu'à l'approbation.",

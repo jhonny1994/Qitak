@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerVerificationQueueScreen extends ConsumerWidget {
@@ -39,7 +40,7 @@ class SellerVerificationQueueScreen extends ConsumerWidget {
                     child: QitakQueueRow(
                       title: item.businessName,
                       meta: '${item.sellerType} • ${item.phone}',
-                      status: item.verificationStatus,
+                      status: item.verificationStatus.label(context.l10n),
                       trailing: const Icon(Icons.chevron_right_rounded),
                     ),
                   ),

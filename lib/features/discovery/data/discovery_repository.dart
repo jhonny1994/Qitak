@@ -91,10 +91,9 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
     final rowFuture = _client
         .from('listings')
         .select(
-          'id, seller_id, title, description, price, wilaya_id, '
+          'id, seller_id, seller_user_id, title, description, price, wilaya_id, '
           'commune_id, category_id, condition, quantity, exchange_enabled, exchange_description, '
           'brand, vehicle_fitment, seller_display_name, status, '
-          'sellers!inner(user_id, business_name, verification_status), '
           'listing_media(public_url, sort_order)',
         )
         .eq('id', listingId)
@@ -138,9 +137,9 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
     var builder = _client
         .from('listings')
         .select(
-          'id, seller_id, title, description, price, wilaya_id, '
+          'id, seller_id, seller_user_id, title, description, price, wilaya_id, '
           'commune_id, category_id, condition, quantity, exchange_enabled, exchange_description, status, '
-          'brand, vehicle_fitment, seller_display_name, sellers!inner(user_id, business_name, verification_status), '
+          'brand, vehicle_fitment, seller_display_name, '
           'listing_media(public_url, sort_order)',
         );
 
@@ -194,17 +193,22 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
     final year = (fitment?['year'] as num?)?.toInt();
     final mediaUrls = _extractMediaUrls(row['listing_media']);
     final primaryImageUrl = mediaUrls.isEmpty ? null : mediaUrls.first;
-    final wilayaCode = row['wilaya_id']?.toString();
-    final communeCode = row['commune_id']?.toString();
+    final wilayaCode = row['wilaya_id'] == null
+        ? null
+        : lookups.wilayaNames[row['wilaya_id'].toString()] ??
+              row['wilaya_id'].toString();
+    final communeCode = row['commune_id'] == null
+        ? null
+        : lookups.communeNames[row['commune_id'].toString()] ??
+              row['commune_id'].toString();
     final categoryId = row['category_id']?.toString();
-    final seller = _extractSeller(row['sellers']);
     final categorySlug = categoryId == null
         ? null
         : lookups.categorySlugs[categoryId];
 
     return MarketplaceListing(
       id: row['id'] as String,
-      sellerUserId: seller?['user_id'] as String? ?? '',
+      sellerUserId: row['seller_user_id'] as String? ?? '',
       title: (row['title'] as String?) ?? '',
       priceAmount: (row['price'] as num?)?.toInt() ?? 0,
       sellerLabelCode: _verifiedSellerCode(),
@@ -222,10 +226,7 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
       model: model,
       year: year,
       quantity: (row['quantity'] as int?) ?? 1,
-      sellerName:
-          (row['seller_display_name'] as String?) ??
-          (seller?['business_name'] as String?) ??
-          '',
+      sellerName: (row['seller_display_name'] as String?) ?? '',
       primaryImageUrl: primaryImageUrl,
       mediaUrls: mediaUrls,
       status: row['status'] as String? ?? 'active',
@@ -265,16 +266,6 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
   }
 
   Map<String, dynamic>? _extractPrimaryFitment(Object? raw) {
-    if (raw is List && raw.isNotEmpty && raw.first is Map<String, dynamic>) {
-      return raw.first as Map<String, dynamic>;
-    }
-    return null;
-  }
-
-  Map<String, dynamic>? _extractSeller(Object? raw) {
-    if (raw is Map<String, dynamic>) {
-      return raw;
-    }
     if (raw is List && raw.isNotEmpty && raw.first is Map<String, dynamic>) {
       return raw.first as Map<String, dynamic>;
     }

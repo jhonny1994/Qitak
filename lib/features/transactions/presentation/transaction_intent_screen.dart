@@ -75,6 +75,9 @@ class _TransactionIntentScreenState
                     eyebrow: context.l10n.transactionsTitle,
                     title: context.l10n.transactionStartTitle,
                     subtitle: context.l10n.transactionStartBody,
+                    leading: QitakRouteBackButton(
+                      fallbackPath: '/listing/${widget.listingId}',
+                    ),
                   ),
                   const SizedBox(height: 16),
                   QitakSignalStrip(

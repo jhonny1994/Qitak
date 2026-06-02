@@ -8,6 +8,7 @@ import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 // ignore: specify_nonobvious_property_types, reason: Riverpod family aliases are version-specific in this repo.
@@ -100,6 +101,7 @@ class _VerificationDetailScreenState
       eyebrow: context.l10n.adminVerificationsQueueTitle,
       title: context.l10n.adminVerificationDetailTitle,
       subtitle: context.l10n.adminVerificationDetailSubtitle,
+      leading: const QitakRouteBackButton(fallbackPath: '/admin/verifications'),
       children: application.when(
         data: (item) => item == null
             ? [
@@ -112,7 +114,7 @@ class _VerificationDetailScreenState
                 QitakSignalStrip(
                   label: context.l10n.adminVerificationApplicantLabel,
                   value: item.businessName,
-                  status: _statusLabel(context, item.verificationStatus),
+                  status: item.verificationStatus.label(context.l10n),
                 ),
                 const SizedBox(height: 16),
                 QitakPanel(
@@ -261,33 +263,44 @@ class _VerificationDetailScreenState
                         runSpacing: 8,
                         children: [
                           if (availableStatuses.isEmpty ||
-                              availableStatuses.contains('approved'))
+                              availableStatuses.contains(
+                                SellerVerificationStatus.approved.wireName,
+                              ))
                             FilledButton(
                               onPressed: _submitting
                                   ? null
-                                  : () => _updateStatus(status: 'approved'),
+                                  : () => _updateStatus(
+                                      status: SellerVerificationStatus.approved,
+                                    ),
                               child: Text(
                                 context.l10n.adminVerificationApproveAction,
                               ),
                             ),
                           if (availableStatuses.isEmpty ||
-                              availableStatuses.contains('needs_more_info'))
+                              availableStatuses.contains(
+                                SellerVerificationStatus.needsMoreInfo.wireName,
+                              ))
                             OutlinedButton(
                               onPressed: _submitting
                                   ? null
                                   : () => _updateStatus(
-                                      status: 'needs_more_info',
+                                      status: SellerVerificationStatus
+                                          .needsMoreInfo,
                                     ),
                               child: Text(
                                 context.l10n.adminVerificationNeedsInfoAction,
                               ),
                             ),
                           if (availableStatuses.isEmpty ||
-                              availableStatuses.contains('rejected'))
+                              availableStatuses.contains(
+                                SellerVerificationStatus.rejected.wireName,
+                              ))
                             OutlinedButton(
                               onPressed: _submitting
                                   ? null
-                                  : () => _updateStatus(status: 'rejected'),
+                                  : () => _updateStatus(
+                                      status: SellerVerificationStatus.rejected,
+                                    ),
                               child: Text(
                                 context.l10n.adminVerificationRejectAction,
                               ),
@@ -309,8 +322,9 @@ class _VerificationDetailScreenState
     );
   }
 
-  Future<void> _updateStatus({required String status}) async {
-    if ((status == 'needs_more_info' || status == 'rejected') &&
+  Future<void> _updateStatus({required SellerVerificationStatus status}) async {
+    if ((status == SellerVerificationStatus.needsMoreInfo ||
+            status == SellerVerificationStatus.rejected) &&
         (_reasonCode ?? '').isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.l10n.adminVerificationReasonRequired)),
@@ -350,21 +364,6 @@ Widget _detailRow(String label, String value) {
     padding: const EdgeInsets.only(bottom: 10),
     child: Text('$label: $value'),
   );
-}
-
-String _statusLabel(BuildContext context, String status) {
-  switch (status) {
-    case 'approved':
-      return context.l10n.sellerStatusApproved;
-    case 'needs_more_info':
-      return context.l10n.sellerStatusNeedsInfo;
-    case 'rejected':
-      return context.l10n.sellerStatusRejected;
-    case 'submitted':
-      return context.l10n.sellerStatusSubmitted;
-    default:
-      return context.l10n.sellerStatusNotStarted;
-  }
 }
 
 String _documentTypeLabel(

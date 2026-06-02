@@ -152,7 +152,7 @@ void main() {
             wilayaId: '16',
             communeId: '1601',
             bio: 'Existing application',
-            verificationStatus: 'needs_more_info',
+            verificationStatus: SellerVerificationStatus.needsMoreInfo,
             documents: <SellerDocument>[
               SellerDocument(
                 id: 'doc-1',
@@ -236,7 +236,7 @@ void main() {
             wilayaId: '16',
             communeId: '1601',
             bio: '',
-            verificationStatus: 'draft',
+            verificationStatus: SellerVerificationStatus.draft,
           );
         }),
         discoveryFilterTaxonomyProvider.overrideWith((ref) async {
@@ -305,7 +305,7 @@ void main() {
             wilayaId: '16',
             communeId: '1601',
             bio: '',
-            verificationStatus: 'draft',
+            verificationStatus: SellerVerificationStatus.draft,
           );
         }),
         discoveryFilterTaxonomyProvider.overrideWith((ref) async {
@@ -387,7 +387,7 @@ void main() {
             wilayaId: '16',
             communeId: '1601',
             bio: '',
-            verificationStatus: 'submitted',
+            verificationStatus: SellerVerificationStatus.submitted,
           );
         }),
         discoveryFilterTaxonomyProvider.overrideWith((ref) async {
@@ -457,7 +457,7 @@ class _NoopSellerRepository implements SellerApplicationRepository {
   @override
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   }) async {

@@ -26,7 +26,7 @@ abstract class SellerApplicationRepository {
 
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   });
@@ -119,8 +119,8 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
         .map(_mapRow)
         .where(
           (item) =>
-              item.verificationStatus == 'submitted' ||
-              item.verificationStatus == 'needs_more_info',
+              item.verificationStatus == SellerVerificationStatus.submitted ||
+              item.verificationStatus == SellerVerificationStatus.needsMoreInfo,
         )
         .toList(growable: false);
   }
@@ -144,7 +144,7 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
       'wilaya_id': draft.wilayaId,
       'commune_id': draft.communeId,
       'bio': draft.bio,
-      'verification_status': 'submitted',
+      'verification_status': SellerVerificationStatus.submitted.wireName,
       'review_reason_code': null,
       'review_note': null,
       'submitted_at': now,
@@ -164,7 +164,7 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
   @override
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   }) async {
@@ -175,7 +175,7 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
     }
     rows[index] = <String, dynamic>{
       ...rows[index],
-      'verification_status': status,
+      'verification_status': status.wireName,
       'review_reason_code': reasonCode,
       'review_note': note,
       'reviewed_at': DateTime.now().toIso8601String(),
@@ -254,7 +254,9 @@ class LocalSellerApplicationRepository implements SellerApplicationRepository {
       wilayaId: row['wilaya_id'].toString(),
       communeId: row['commune_id'].toString(),
       bio: row['bio'] as String? ?? '',
-      verificationStatus: row['verification_status'] as String? ?? 'draft',
+      verificationStatus: SellerVerificationStatus.fromWire(
+        row['verification_status'] as String?,
+      ),
       reviewReasonCode: row['review_reason_code'] as String?,
       reviewNote: row['review_note'] as String?,
       submittedAt: row['submitted_at'] == null
@@ -338,7 +340,10 @@ class SupabaseSellerApplicationRepository
           'id, user_id, seller_type, business_name, bio, wilaya_id, commune_id, '
           'verification_status, created_at, verified_at, review_reason_code, review_note',
         )
-        .inFilter('verification_status', ['submitted', 'needs_more_info']);
+        .inFilter('verification_status', <String>[
+          SellerVerificationStatus.submitted.wireName,
+          SellerVerificationStatus.needsMoreInfo.wireName,
+        ]);
     final data = rows as List<dynamic>;
     final result = <SellerApplication>[];
     for (final raw in data.whereType<Map<String, dynamic>>()) {
@@ -378,7 +383,7 @@ class SupabaseSellerApplicationRepository
             'policy_accepted_at': draft.policiesAccepted
                 ? DateTime.now().toIso8601String()
                 : null,
-            'verification_status': 'submitted',
+            'verification_status': SellerVerificationStatus.submitted.wireName,
           },
           onConflict: 'user_id',
         )
@@ -406,7 +411,7 @@ class SupabaseSellerApplicationRepository
   @override
   Future<SellerApplication> updateStatus({
     required String applicationId,
-    required String status,
+    required SellerVerificationStatus status,
     String? reasonCode,
     String? note,
   }) async {
@@ -414,7 +419,7 @@ class SupabaseSellerApplicationRepository
       'admin_review_seller_application',
       params: <String, dynamic>{
         'p_application_id': applicationId,
-        'p_status': status,
+        'p_status': status.wireName,
         'p_reason_code': reasonCode,
         'p_note': note,
       },
@@ -456,7 +461,9 @@ class SupabaseSellerApplicationRepository
       wilayaId: row['wilaya_id'].toString(),
       communeId: row['commune_id'].toString(),
       bio: row['bio'] as String? ?? '',
-      verificationStatus: row['verification_status'] as String? ?? 'draft',
+      verificationStatus: SellerVerificationStatus.fromWire(
+        row['verification_status'] as String?,
+      ),
       documents: documents,
       reviewReasonCode: row['review_reason_code'] as String?,
       reviewNote: row['review_note'] as String?,

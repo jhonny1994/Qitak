@@ -1434,6 +1434,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(
       "تابع تقدم المراجعة والوثائق المرسلة والخطوات التالية من شاشة مخصّصة للبائع.",
     ),
+    "sellerStatusSuspended": MessageLookupByLibrary.simpleMessage("موقوف"),
     "sellerStatusTitle": MessageLookupByLibrary.simpleMessage(
       "حالة توثيق البائع",
     ),

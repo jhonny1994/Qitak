@@ -174,9 +174,9 @@ class ProfileScreen extends ConsumerWidget {
                       onTap: () => context.go('$profileRoot/support'),
                       borderRadius: BorderRadius.circular(18),
                       child: QitakQueueRow(
-                        title: context.l10n.supportHelpTitle,
-                        meta: context.l10n.supportHelpSubtitle,
-                        status: context.l10n.supportHelpStatusGuide,
+                        title: context.l10n.supportCenterTitle,
+                        meta: context.l10n.supportCenterSubtitle,
+                        status: context.l10n.supportCenterEyebrow,
                         variant: QitakQueueRowVariant.value,
                       ),
                     ),

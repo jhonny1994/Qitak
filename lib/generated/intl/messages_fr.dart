@@ -92,9 +92,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Changer le mot de passe",
     ),
     "accountUtilitiesGuestSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Avant de vous connecter, vous pouvez encore régler la langue, l\'apparence et l\'aide.",
+      "Réglez la langue, l\'apparence et consultez les politiques du marché avant de vous connecter.",
     ),
-    "adminAccess": MessageLookupByLibrary.simpleMessage("Accès admin"),
     "adminAccessDenied": MessageLookupByLibrary.simpleMessage(
       "Ce compte n\'a pas d\'accès admin.",
     ),
@@ -512,7 +511,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "authChoiceEyebrow": MessageLookupByLibrary.simpleMessage("Départ"),
     "authChoiceTitle": MessageLookupByLibrary.simpleMessage(
-      "Se connecter ou parcourir d\'abord",
+      "Parcourir d\'abord, se connecter au moment utile",
     ),
     "authErrorCheckEmailConfirmation": MessageLookupByLibrary.simpleMessage(
       "Compte créé. Vérifiez votre e-mail et cliquez sur le lien de confirmation avant de vous connecter.",
@@ -776,9 +775,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullNameLabel": MessageLookupByLibrary.simpleMessage("Nom complet"),
     "fullNameValidationError": MessageLookupByLibrary.simpleMessage(
       "Entrez votre nom complet.",
-    ),
-    "googleComingSoon": MessageLookupByLibrary.simpleMessage(
-      "Connexion Google indisponible actuellement",
     ),
     "hidePassword": MessageLookupByLibrary.simpleMessage(
       "Masquer le mot de passe",
@@ -1128,7 +1124,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Explorez les annonces, comparez les options et comprenez la marketplace avant de créer un compte.",
     ),
     "onboardingBodyThree": MessageLookupByLibrary.simpleMessage(
-      "Enregistrez des annonces, contactez les vendeurs et lancez une demande lorsque vous êtes prêt.",
+      "Créez un compte pour enregistrer des annonces, contacter les vendeurs et entrer dans une vraie demande d\'achat.",
     ),
     "onboardingBodyTwo": MessageLookupByLibrary.simpleMessage(
       "Utilisez catégorie, wilaya, commune, marque, modèle et année pour atteindre la bonne pièce plus vite.",
@@ -1163,7 +1159,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Filtres précis",
     ),
     "onboardingPanelGuest": MessageLookupByLibrary.simpleMessage(
-      "Le compte vient après",
+      "Parcourir d\'abord",
     ),
     "onboardingPanelSearch": MessageLookupByLibrary.simpleMessage(
       "Flux centre sur la recherche",
@@ -1609,38 +1605,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Vos tickets",
     ),
     "supportCenterTitle": MessageLookupByLibrary.simpleMessage("Support"),
-    "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
-      "Utilisez les paramètres du compte pour l\'identité et la récupération du mot de passe pour l\'accès.",
-    ),
-    "supportHelpAccountTitle": MessageLookupByLibrary.simpleMessage(
-      "Aide du compte",
-    ),
     "supportHelpEyebrow": MessageLookupByLibrary.simpleMessage("Aide"),
-    "supportHelpNeedActionBody": MessageLookupByLibrary.simpleMessage(
-      "Qitak garde les prochaines etapes dans les bonnes surfaces produit plutot que de les cacher derriere un chat support.",
-    ),
-    "supportHelpNeedActionTitle": MessageLookupByLibrary.simpleMessage(
-      "Besoin de poursuivre une action ?",
-    ),
-    "supportHelpNotificationBody": MessageLookupByLibrary.simpleMessage(
-      "Suivez messages, décisions vendeur et changements d\'annonce depuis le centre de notifications.",
-    ),
-    "supportHelpNotificationTitle": MessageLookupByLibrary.simpleMessage(
-      "Notifications et mises à jour",
-    ),
-    "supportHelpSafetyBody": MessageLookupByLibrary.simpleMessage(
-      "Utilisez transaction, évaluation et litige pour garder chaque problème lié au bon deal.",
-    ),
-    "supportHelpSafetyTitle": MessageLookupByLibrary.simpleMessage(
-      "Confiance et sécurité",
-    ),
-    "supportHelpStatusAlerts": MessageLookupByLibrary.simpleMessage("Alertes"),
-    "supportHelpStatusGuide": MessageLookupByLibrary.simpleMessage("Guide"),
-    "supportHelpStatusTrust": MessageLookupByLibrary.simpleMessage("Confiance"),
-    "supportHelpSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Trouvez un guidage clair pour le compte, la confiance et les notifications.",
-    ),
-    "supportHelpTitle": MessageLookupByLibrary.simpleMessage("Aide et support"),
     "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
       "Accès au compte",
     ),

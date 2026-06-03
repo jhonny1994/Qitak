@@ -82,6 +82,11 @@ class _TransactionLifecycleScreenState
                             tx.state,
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _nextStepSummary(context, tx, userId),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                         ...switch (_buildActions(context, tx, userId)) {
                           [] => const <Widget>[],
                           final actions => <Widget>[
@@ -263,5 +268,46 @@ class _TransactionLifecycleScreenState
         ? context.l10n.transactionTransitionSuccess
         : context.l10n.transactionTransitionDenied;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  String _nextStepSummary(
+    BuildContext context,
+    TransactionRecord tx,
+    String userId,
+  ) {
+    final isBuyer = userId == tx.buyerUserId;
+    switch (tx.state) {
+      case TransactionState.pendingSellerResponse:
+        return isBuyer
+            ? context.l10n.transactionNextStepPendingBuyer
+            : context.l10n.transactionNextStepPendingSeller;
+      case TransactionState.sellerConfirmed:
+        if (tx.paymentMethod == null && isBuyer) {
+          return context.l10n.transactionNextStepBuyerSelectMethod;
+        }
+        if (tx.isCashPayment) {
+          return isBuyer
+              ? context.l10n.transactionNextStepBuyerCash
+              : context.l10n.transactionNextStepSellerCash;
+        }
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerUploadProof
+            : context.l10n.transactionNextStepSellerWaitForProof;
+      case TransactionState.paymentProofSubmitted:
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerAwaitReview
+            : context.l10n.transactionNextStepSellerReviewProof;
+      case TransactionState.paymentConfirmed:
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerConfirmReceipt
+            : context.l10n.transactionNextStepSellerAwaitReceipt;
+      case TransactionState.completed:
+        return context.l10n.transactionNextStepCompleted;
+      case TransactionState.cancelled:
+      case TransactionState.expired:
+      case TransactionState.disputeOpened:
+      case TransactionState.disputeResolved:
+        return context.l10n.transactionNextStepInactive;
+    }
   }
 }

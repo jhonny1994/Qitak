@@ -4804,6 +4804,146 @@ class S {
     );
   }
 
+  /// `الخطوة التالية`
+  String get transactionNextStepTitle {
+    return Intl.message(
+      'الخطوة التالية',
+      name: 'transactionNextStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يراجع البائع هذا الطلب.`
+  String get transactionNextStepPendingBuyer {
+    return Intl.message(
+      'انتظر حتى يراجع البائع هذا الطلب.',
+      name: 'transactionNextStepPendingBuyer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.`
+  String get transactionNextStepPendingSeller {
+    return Intl.message(
+      'راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.',
+      name: 'transactionNextStepPendingSeller',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.`
+  String get transactionNextStepBuyerSelectMethod {
+    return Intl.message(
+      'اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.',
+      name: 'transactionNextStepBuyerSelectMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.`
+  String get transactionNextStepBuyerUploadProof {
+    return Intl.message(
+      'أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.',
+      name: 'transactionNextStepBuyerUploadProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.`
+  String get transactionNextStepSellerWaitForProof {
+    return Intl.message(
+      'انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.',
+      name: 'transactionNextStepSellerWaitForProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.`
+  String get transactionNextStepBuyerCash {
+    return Intl.message(
+      'قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.',
+      name: 'transactionNextStepBuyerCash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.`
+  String get transactionNextStepSellerCash {
+    return Intl.message(
+      'قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.',
+      name: 'transactionNextStepSellerCash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يراجع البائع الإثبات المرفوع.`
+  String get transactionNextStepBuyerAwaitReview {
+    return Intl.message(
+      'انتظر حتى يراجع البائع الإثبات المرفوع.',
+      name: 'transactionNextStepBuyerAwaitReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع الإثبات المرفوع ثم أكده أو ارفضه.`
+  String get transactionNextStepSellerReviewProof {
+    return Intl.message(
+      'راجع الإثبات المرفوع ثم أكده أو ارفضه.',
+      name: 'transactionNextStepSellerReviewProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `بعد التسليم أكد الاستلام لإكمال هذه الصفقة.`
+  String get transactionNextStepBuyerConfirmReceipt {
+    return Intl.message(
+      'بعد التسليم أكد الاستلام لإكمال هذه الصفقة.',
+      name: 'transactionNextStepBuyerConfirmReceipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.`
+  String get transactionNextStepSellerAwaitReceipt {
+    return Intl.message(
+      'أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.',
+      name: 'transactionNextStepSellerAwaitReceipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الصفقة مكتملة.`
+  String get transactionNextStepCompleted {
+    return Intl.message(
+      'هذه الصفقة مكتملة.',
+      name: 'transactionNextStepCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الصفقة لم تعد نشطة.`
+  String get transactionNextStepInactive {
+    return Intl.message(
+      'هذه الصفقة لم تعد نشطة.',
+      name: 'transactionNextStepInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `الخط الزمني`
   String get transactionTimelineTitle {
     return Intl.message(

@@ -1709,6 +1709,52 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionMessageAction": MessageLookupByLibrary.simpleMessage(
       "Ouvrir les messages",
     ),
+    "transactionNextStepBuyerAwaitReview": MessageLookupByLibrary.simpleMessage(
+      "Attendez que le vendeur révise la preuve envoyée.",
+    ),
+    "transactionNextStepBuyerCash": MessageLookupByLibrary.simpleMessage(
+      "Rencontrez le vendeur en personne, vérifiez la pièce puis payez en cash au handoff.",
+    ),
+    "transactionNextStepBuyerConfirmReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "Après le handoff, confirmez la réception pour clôturer le deal.",
+        ),
+    "transactionNextStepBuyerSelectMethod":
+        MessageLookupByLibrary.simpleMessage(
+          "Choisissez CCP, BaridiMob ou cash pour continuer ce deal offline.",
+        ),
+    "transactionNextStepBuyerUploadProof": MessageLookupByLibrary.simpleMessage(
+      "Envoyez le paiement hors application puis chargez ici la preuve CCP ou BaridiMob.",
+    ),
+    "transactionNextStepCompleted": MessageLookupByLibrary.simpleMessage(
+      "Ce deal est terminé.",
+    ),
+    "transactionNextStepInactive": MessageLookupByLibrary.simpleMessage(
+      "Ce deal n\'est plus actif.",
+    ),
+    "transactionNextStepPendingBuyer": MessageLookupByLibrary.simpleMessage(
+      "Attendez que le vendeur révise cette demande.",
+    ),
+    "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
+      "Révisez cette demande puis acceptez-la, expirez-la ou laissez-la en attente.",
+    ),
+    "transactionNextStepSellerAwaitReceipt": MessageLookupByLibrary.simpleMessage(
+      "Terminez le handoff puis attendez la confirmation de réception de l\'acheteur.",
+    ),
+    "transactionNextStepSellerCash": MessageLookupByLibrary.simpleMessage(
+      "Rencontrez l\'acheteur, encaissez le cash puis confirmez la commande cash.",
+    ),
+    "transactionNextStepSellerReviewProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Révisez la preuve envoyée puis confirmez-la ou rejetez-la.",
+        ),
+    "transactionNextStepSellerWaitForProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Attendez que l\'acheteur envoie une preuve CCP ou BaridiMob.",
+        ),
+    "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Étape suivante",
+    ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Ouvrir un litige",
     ),

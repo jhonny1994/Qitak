@@ -308,6 +308,100 @@ void main() {
     );
   });
 
+  testWidgets('transaction detail shows cash handoff guidance for seller', (
+    tester,
+  ) async {
+    final repository = _FakeTransactionRepository(
+      TransactionRecord(
+        id: 'tx-cash',
+        listingId: 'listing-1',
+        buyerUserId: 'buyer-001',
+        sellerUserId: 'seller-001',
+        state: TransactionState.sellerConfirmed,
+        paymentMethod: TransactionPaymentMethod.cash,
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+    );
+
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: TransactionDetailScreen(transactionId: 'tx-cash')),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+      transactionRepositoryOverride: repository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionDetailScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Meet the buyer in person, collect cash, then confirm the cash order.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'transaction detail shows proof review guidance for seller after upload',
+    (tester) async {
+      final repository = _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-proof',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.paymentProofSubmitted,
+          paymentMethod: TransactionPaymentMethod.ccp,
+          paymentProofPath: 'proof.png',
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        ),
+      );
+
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(
+            body: TransactionDetailScreen(transactionId: 'tx-proof'),
+          ),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+        ],
+        transactionRepositoryOverride: repository,
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(TransactionDetailScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Review the uploaded proof and confirm or reject it.'),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('dispute screen renders success state after submit', (
     tester,
   ) async {

@@ -1571,6 +1571,44 @@ class MessageLookup extends MessageLookupByLibrary {
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
       "Chargement de votre compte et des données du marché.",
     ),
+    "supportCenterCreateAction": MessageLookupByLibrary.simpleMessage(
+      "Créer un ticket",
+    ),
+    "supportCenterEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Créez un ticket si vous avez besoin d\'aide pour l\'accès au compte, la vérification du paiement, le comportement du vendeur ou un problème technique.",
+    ),
+    "supportCenterEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "Aucun ticket de support",
+    ),
+    "supportCenterEyebrow": MessageLookupByLibrary.simpleMessage("Support"),
+    "supportCenterRoutingAccountBody": MessageLookupByLibrary.simpleMessage(
+      "Utilisez les paramètres du compte pour les mises à jour d\'identité, les changements de mot de passe et les contrôles de compte avant d\'ouvrir un ticket.",
+    ),
+    "supportCenterRoutingAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "Changements de compte et accès",
+    ),
+    "supportCenterRoutingDisputeBody": MessageLookupByLibrary.simpleMessage(
+      "Utilisez le litige lorsque le problème concerne un deal précis, la vérification d\'une preuve de paiement ou le résultat du handoff.",
+    ),
+    "supportCenterRoutingDisputeTitle": MessageLookupByLibrary.simpleMessage(
+      "Problèmes liés à un deal",
+    ),
+    "supportCenterRoutingScopeBody": MessageLookupByLibrary.simpleMessage(
+      "Ouvrez un ticket pour l\'accès au compte, les problèmes de plateforme ou les problèmes qui ne relèvent pas d\'un deal ou d\'un signalement d\'annonce.",
+    ),
+    "supportCenterRoutingScopeTitle": MessageLookupByLibrary.simpleMessage(
+      "Ce que le support traite ici",
+    ),
+    "supportCenterRoutingTitle": MessageLookupByLibrary.simpleMessage(
+      "Utilisez le bon parcours",
+    ),
+    "supportCenterSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Suivez les tickets de support authentifiés pour les problèmes de compte, de paiement et techniques.",
+    ),
+    "supportCenterTicketListTitle": MessageLookupByLibrary.simpleMessage(
+      "Vos tickets",
+    ),
+    "supportCenterTitle": MessageLookupByLibrary.simpleMessage("Support"),
     "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
       "Utilisez les paramètres du compte pour l\'identité et la récupération du mot de passe pour l\'accès.",
     ),
@@ -1603,6 +1641,48 @@ class MessageLookup extends MessageLookupByLibrary {
       "Trouvez un guidage clair pour le compte, la confiance et les notifications.",
     ),
     "supportHelpTitle": MessageLookupByLibrary.simpleMessage("Aide et support"),
+    "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
+      "Accès au compte",
+    ),
+    "supportReasonOther": MessageLookupByLibrary.simpleMessage("Autre"),
+    "supportReasonPaymentIssue": MessageLookupByLibrary.simpleMessage(
+      "Problème de paiement",
+    ),
+    "supportReasonSellerIssue": MessageLookupByLibrary.simpleMessage(
+      "Problème vendeur",
+    ),
+    "supportReasonTechnicalIssue": MessageLookupByLibrary.simpleMessage(
+      "Problème technique",
+    ),
+    "supportTicketCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Choisissez la raison la plus proche et décrivez clairement le problème pour permettre à l\'équipe d\'agir.",
+    ),
+    "supportTicketCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "Nouveau ticket de support",
+    ),
+    "supportTicketCreated": MessageLookupByLibrary.simpleMessage(
+      "Ticket de support envoyé.",
+    ),
+    "supportTicketDescriptionError": MessageLookupByLibrary.simpleMessage(
+      "Entrez au moins 20 caractères pour donner assez de contexte au support.",
+    ),
+    "supportTicketDescriptionHelper": MessageLookupByLibrary.simpleMessage(
+      "Incluez le deal, l\'annonce ou l\'écran concerné ainsi que la dernière action effectuée.",
+    ),
+    "supportTicketDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "Que s\'est-il passé ?",
+    ),
+    "supportTicketReasonError": MessageLookupByLibrary.simpleMessage(
+      "Sélectionnez une raison de support.",
+    ),
+    "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("Raison"),
+    "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("Ouvert"),
+    "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
+      "Résolu",
+    ),
+    "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
+      "Envoyer le ticket",
+    ),
     "termsValidationError": MessageLookupByLibrary.simpleMessage(
       "Vous devez accepter les conditions pour creer un compte.",
     ),

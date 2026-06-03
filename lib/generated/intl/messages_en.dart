@@ -1508,6 +1508,44 @@ class MessageLookup extends MessageLookupByLibrary {
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
       "Loading your account and marketplace data.",
     ),
+    "supportCenterCreateAction": MessageLookupByLibrary.simpleMessage(
+      "Create ticket",
+    ),
+    "supportCenterEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Create a ticket when you need help with account access, payment verification, seller conduct, or technical problems.",
+    ),
+    "supportCenterEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No support tickets yet",
+    ),
+    "supportCenterEyebrow": MessageLookupByLibrary.simpleMessage("Support"),
+    "supportCenterRoutingAccountBody": MessageLookupByLibrary.simpleMessage(
+      "Use account settings for identity updates, password changes, and account-level controls before opening a ticket.",
+    ),
+    "supportCenterRoutingAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "Account changes and access",
+    ),
+    "supportCenterRoutingDisputeBody": MessageLookupByLibrary.simpleMessage(
+      "Use the dispute flow when the issue belongs to a specific deal, payment proof review, or handoff outcome.",
+    ),
+    "supportCenterRoutingDisputeTitle": MessageLookupByLibrary.simpleMessage(
+      "Deal-specific problems",
+    ),
+    "supportCenterRoutingScopeBody": MessageLookupByLibrary.simpleMessage(
+      "Open a support ticket for account access, platform issues, or issues that do not fit a single deal or listing report.",
+    ),
+    "supportCenterRoutingScopeTitle": MessageLookupByLibrary.simpleMessage(
+      "What support handles here",
+    ),
+    "supportCenterRoutingTitle": MessageLookupByLibrary.simpleMessage(
+      "Use the right path",
+    ),
+    "supportCenterSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Track authenticated support tickets for account, payment, and technical issues.",
+    ),
+    "supportCenterTicketListTitle": MessageLookupByLibrary.simpleMessage(
+      "Your tickets",
+    ),
+    "supportCenterTitle": MessageLookupByLibrary.simpleMessage("Support"),
     "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
       "Use account settings for identity details and sign-in recovery for password access.",
     ),
@@ -1541,6 +1579,48 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "supportHelpTitle": MessageLookupByLibrary.simpleMessage(
       "Help and support",
+    ),
+    "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
+      "Account access",
+    ),
+    "supportReasonOther": MessageLookupByLibrary.simpleMessage("Other"),
+    "supportReasonPaymentIssue": MessageLookupByLibrary.simpleMessage(
+      "Payment issue",
+    ),
+    "supportReasonSellerIssue": MessageLookupByLibrary.simpleMessage(
+      "Seller issue",
+    ),
+    "supportReasonTechnicalIssue": MessageLookupByLibrary.simpleMessage(
+      "Technical issue",
+    ),
+    "supportTicketCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Choose the closest reason and describe the issue clearly so the team can act.",
+    ),
+    "supportTicketCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "New support ticket",
+    ),
+    "supportTicketCreated": MessageLookupByLibrary.simpleMessage(
+      "Support ticket submitted.",
+    ),
+    "supportTicketDescriptionError": MessageLookupByLibrary.simpleMessage(
+      "Enter at least 20 characters so support has enough context.",
+    ),
+    "supportTicketDescriptionHelper": MessageLookupByLibrary.simpleMessage(
+      "Include the deal, listing, or screen involved and the last action you completed.",
+    ),
+    "supportTicketDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "What happened?",
+    ),
+    "supportTicketReasonError": MessageLookupByLibrary.simpleMessage(
+      "Select a support reason.",
+    ),
+    "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("Reason"),
+    "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("Open"),
+    "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
+      "Resolved",
+    ),
+    "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
+      "Submit ticket",
     ),
     "termsValidationError": MessageLookupByLibrary.simpleMessage(
       "You must accept the terms to create an account.",

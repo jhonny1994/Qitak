@@ -31,7 +31,6 @@ import 'package:qitak_app/features/auth/presentation/seller_dashboard_screen.dar
 import 'package:qitak_app/features/auth/presentation/sign_in_screen.dart';
 import 'package:qitak_app/features/auth/presentation/sign_up_screen.dart';
 import 'package:qitak_app/features/auth/presentation/splash_screen.dart';
-import 'package:qitak_app/features/auth/presentation/support_help_screen.dart';
 import 'package:qitak_app/features/auth/presentation/unknown_route_screen.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/presentation/home_screen.dart';
@@ -47,6 +46,7 @@ import 'package:qitak_app/features/notifications/presentation/notification_prefe
 import 'package:qitak_app/features/ratings/presentation/rating_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.dart';
+import 'package:qitak_app/features/support/presentation/support_center_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_history_screen.dart';
@@ -237,13 +237,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/auth/support',
         pageBuilder: (context, state) => _buildTransitionPage(
           state: state,
-          child: _buildStandaloneUtilityShell(
-            title: context.l10n.supportHelpTitle,
-            fallbackPath: _authUtilityFallbackPath(
-              ref.read(authSessionProvider),
-              ref.read(appPreferencesProvider),
+          child: ProtectedRouteGuard(
+            requiredRoles: const [
+              AccountRole.buyer,
+              AccountRole.seller,
+              AccountRole.admin,
+              AccountRole.superAdmin,
+            ],
+            intent: PostAuthRedirectIntent.route('/auth/support'),
+            child: _buildStandaloneUtilityShell(
+              title: context.l10n.supportCenterTitle,
+              fallbackPath: _authUtilityFallbackPath(
+                ref.read(authSessionProvider),
+                ref.read(appPreferencesProvider),
+              ),
+              child: const SupportCenterScreen(),
             ),
-            child: const SupportHelpScreen(),
           ),
         ),
       ),
@@ -1159,9 +1168,9 @@ List<RouteBase> _buildProfileUtilityRoutes({
           requiredRoles: requiredRoles,
           intent: PostAuthRedirectIntent.route('$rootPath/support'),
           child: _buildBranchUtilityScreen(
-            title: context.l10n.supportHelpTitle,
+            title: context.l10n.supportCenterTitle,
             fallbackPath: rootPath,
-            child: const SupportHelpScreen(),
+            child: const SupportCenterScreen(),
           ),
         ),
       ),

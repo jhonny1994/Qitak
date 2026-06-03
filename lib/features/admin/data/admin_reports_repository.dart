@@ -175,6 +175,8 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
       return '-';
     }
     switch (entityType) {
+      case 'support':
+        return 'support ticket';
       case 'listing':
         final listing = await _client
             .from('listings')
@@ -202,6 +204,9 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
   }
 
   String _fallbackEntityPreview(String entityType, String entityId) {
+    if (entityType == 'support') {
+      return 'support ticket';
+    }
     if (entityType.isEmpty) {
       return entityId;
     }

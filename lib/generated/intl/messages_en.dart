@@ -1644,6 +1644,53 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionMessageAction": MessageLookupByLibrary.simpleMessage(
       "Open messages",
     ),
+    "transactionNextStepBuyerAwaitReview": MessageLookupByLibrary.simpleMessage(
+      "Wait for the seller to review the uploaded proof.",
+    ),
+    "transactionNextStepBuyerCash": MessageLookupByLibrary.simpleMessage(
+      "Meet the seller in person, inspect the item, and pay cash at handoff.",
+    ),
+    "transactionNextStepBuyerConfirmReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "After handoff, confirm receipt to complete this deal.",
+        ),
+    "transactionNextStepBuyerSelectMethod":
+        MessageLookupByLibrary.simpleMessage(
+          "Choose CCP, BaridiMob, or cash to continue this offline deal.",
+        ),
+    "transactionNextStepBuyerUploadProof": MessageLookupByLibrary.simpleMessage(
+      "Send the payment outside the app, then upload CCP or BaridiMob proof here.",
+    ),
+    "transactionNextStepCompleted": MessageLookupByLibrary.simpleMessage(
+      "This deal is complete.",
+    ),
+    "transactionNextStepInactive": MessageLookupByLibrary.simpleMessage(
+      "This deal is no longer active.",
+    ),
+    "transactionNextStepPendingBuyer": MessageLookupByLibrary.simpleMessage(
+      "Wait for the seller to review this request.",
+    ),
+    "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
+      "Review this request and accept, expire, or leave it pending.",
+    ),
+    "transactionNextStepSellerAwaitReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "Finish the handoff and wait for the buyer to confirm receipt.",
+        ),
+    "transactionNextStepSellerCash": MessageLookupByLibrary.simpleMessage(
+      "Meet the buyer in person, collect cash, then confirm the cash order.",
+    ),
+    "transactionNextStepSellerReviewProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Review the uploaded proof and confirm or reject it.",
+        ),
+    "transactionNextStepSellerWaitForProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Wait for the buyer to submit CCP or BaridiMob proof.",
+        ),
+    "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Next step",
+    ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Open dispute",
     ),

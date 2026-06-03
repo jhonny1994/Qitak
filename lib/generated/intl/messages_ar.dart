@@ -1625,6 +1625,53 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionMessageAction": MessageLookupByLibrary.simpleMessage(
       "فتح الرسائل",
     ),
+    "transactionNextStepBuyerAwaitReview": MessageLookupByLibrary.simpleMessage(
+      "انتظر حتى يراجع البائع الإثبات المرفوع.",
+    ),
+    "transactionNextStepBuyerCash": MessageLookupByLibrary.simpleMessage(
+      "قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.",
+    ),
+    "transactionNextStepBuyerConfirmReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "بعد التسليم أكد الاستلام لإكمال هذه الصفقة.",
+        ),
+    "transactionNextStepBuyerSelectMethod":
+        MessageLookupByLibrary.simpleMessage(
+          "اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.",
+        ),
+    "transactionNextStepBuyerUploadProof": MessageLookupByLibrary.simpleMessage(
+      "أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.",
+    ),
+    "transactionNextStepCompleted": MessageLookupByLibrary.simpleMessage(
+      "هذه الصفقة مكتملة.",
+    ),
+    "transactionNextStepInactive": MessageLookupByLibrary.simpleMessage(
+      "هذه الصفقة لم تعد نشطة.",
+    ),
+    "transactionNextStepPendingBuyer": MessageLookupByLibrary.simpleMessage(
+      "انتظر حتى يراجع البائع هذا الطلب.",
+    ),
+    "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
+      "راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.",
+    ),
+    "transactionNextStepSellerAwaitReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.",
+        ),
+    "transactionNextStepSellerCash": MessageLookupByLibrary.simpleMessage(
+      "قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.",
+    ),
+    "transactionNextStepSellerReviewProof":
+        MessageLookupByLibrary.simpleMessage(
+          "راجع الإثبات المرفوع ثم أكده أو ارفضه.",
+        ),
+    "transactionNextStepSellerWaitForProof":
+        MessageLookupByLibrary.simpleMessage(
+          "انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.",
+        ),
+    "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
+      "الخطوة التالية",
+    ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "فتح نزاع",
     ),

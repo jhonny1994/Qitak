@@ -268,6 +268,28 @@ class _TransactionDetailScreenState
                 ),
               ),
               const SizedBox(height: 18),
+              QitakPanel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.transactionNextStepTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    QitakSignalStrip(
+                      label: profile.id == record.buyerUserId
+                          ? context.l10n.transactionRoleBuyer
+                          : context.l10n.transactionRoleSeller,
+                      value: _nextStepMessage(context, record, profile.id),
+                      status: context.l10n.displayTransactionState(record.state),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
               Text(
                 context.l10n.transactionTimelineTitle,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -526,6 +548,47 @@ class _TransactionDetailScreenState
         return context.l10n.transactionPaymentMethodCash;
       default:
         return labelKey;
+    }
+  }
+
+  String _nextStepMessage(
+    BuildContext context,
+    TransactionRecord record,
+    String userId,
+  ) {
+    final isBuyer = userId == record.buyerUserId;
+    switch (record.state) {
+      case TransactionState.pendingSellerResponse:
+        return isBuyer
+            ? context.l10n.transactionNextStepPendingBuyer
+            : context.l10n.transactionNextStepPendingSeller;
+      case TransactionState.sellerConfirmed:
+        if (record.paymentMethod == null && isBuyer) {
+          return context.l10n.transactionNextStepBuyerSelectMethod;
+        }
+        if (record.isCashPayment) {
+          return isBuyer
+              ? context.l10n.transactionNextStepBuyerCash
+              : context.l10n.transactionNextStepSellerCash;
+        }
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerUploadProof
+            : context.l10n.transactionNextStepSellerWaitForProof;
+      case TransactionState.paymentProofSubmitted:
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerAwaitReview
+            : context.l10n.transactionNextStepSellerReviewProof;
+      case TransactionState.paymentConfirmed:
+        return isBuyer
+            ? context.l10n.transactionNextStepBuyerConfirmReceipt
+            : context.l10n.transactionNextStepSellerAwaitReceipt;
+      case TransactionState.completed:
+        return context.l10n.transactionNextStepCompleted;
+      case TransactionState.cancelled:
+      case TransactionState.expired:
+      case TransactionState.disputeOpened:
+      case TransactionState.disputeResolved:
+        return context.l10n.transactionNextStepInactive;
     }
   }
 }

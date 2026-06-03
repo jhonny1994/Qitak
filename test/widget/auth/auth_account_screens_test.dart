@@ -266,6 +266,7 @@ void main() {
     expect(find.text('Continue as guest'), findsNothing);
     expect(find.text('Admin access'), findsNothing);
     expect(find.text('Help and support'), findsNothing);
+    expect(find.text('Google sign-in is currently unavailable'), findsNothing);
     expect(find.byType(TextFormField), findsNWidgets(2));
   });
 
@@ -903,7 +904,7 @@ void main() {
   });
 
   testWidgets(
-    'guest account hub exposes buyer, seller, admin, and utility actions',
+    'guest account hub exposes user auth and utility actions only',
     (
       tester,
     ) async {
@@ -915,12 +916,6 @@ void main() {
               body: GuestAccountScreen(),
             ),
           ),
-          GoRoute(
-            path: '/auth/admin/sign-in',
-            builder: (context, state) => const Scaffold(
-              body: Text('admin-entry'),
-            ),
-          ),
         ],
       );
 
@@ -930,7 +925,7 @@ void main() {
 
       expect(find.text('Sign in'), findsOneWidget);
       expect(find.text('Create account'), findsOneWidget);
-      expect(find.text('Admin access'), findsOneWidget);
+      expect(find.text('Admin access'), findsNothing);
       expect(
         find.byKey(const Key('guest-account-language-button')),
         findsOneWidget,
@@ -939,21 +934,12 @@ void main() {
         find.byKey(const Key('guest-account-appearance-button')),
         findsOneWidget,
       );
-      expect(
-        find.byKey(const Key('guest-account-support-button')),
-        findsOneWidget,
-      );
+      expect(find.byKey(const Key('guest-account-support-button')), findsNothing);
       expect(
         find.byKey(const Key('guest-account-legal-button')),
         findsOneWidget,
       );
       expect(find.byIcon(Icons.chevron_right_rounded), findsNothing);
-
-      router.go('/');
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Admin access'));
-      await tester.pumpAndSettle();
-      expect(find.text('admin-entry'), findsOneWidget);
     },
   );
 

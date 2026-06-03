@@ -149,16 +149,6 @@ class S {
     return Intl.message('تسجيل الدخول', name: 'signIn', desc: '', args: []);
   }
 
-  /// `تسجيل Google غير متاح حالياً`
-  String get googleComingSoon {
-    return Intl.message(
-      'تسجيل Google غير متاح حالياً',
-      name: 'googleComingSoon',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `ليس لديك حساب؟ أنشئ حساباً`
   String get createAccountPrompt {
     return Intl.message(
@@ -864,10 +854,10 @@ class S {
     );
   }
 
-  /// `احفظ الإعلانات وراسل البائعين واطلب القطع عندما تصبح جاهزاً.`
+  /// `أنشئ حساباً لحفظ الإعلانات والتواصل مع البائعين والدخول في طلب شراء فعلي.`
   String get onboardingBodyThree {
     return Intl.message(
-      'احفظ الإعلانات وراسل البائعين واطلب القطع عندما تصبح جاهزاً.',
+      'أنشئ حساباً لحفظ الإعلانات والتواصل مع البائعين والدخول في طلب شراء فعلي.',
       name: 'onboardingBodyThree',
       desc: '',
       args: [],
@@ -884,10 +874,10 @@ class S {
     );
   }
 
-  /// `الحساب لاحقاً`
+  /// `تصفح أولاً`
   String get onboardingPanelGuest {
     return Intl.message(
-      'الحساب لاحقاً',
+      'تصفح أولاً',
       name: 'onboardingPanelGuest',
       desc: '',
       args: [],
@@ -1054,10 +1044,10 @@ class S {
     );
   }
 
-  /// `سجّل الدخول أو تصفح أولاً`
+  /// `تصفح أولاً وسجّل الدخول عند الحاجة`
   String get authChoiceTitle {
     return Intl.message(
-      'سجّل الدخول أو تصفح أولاً',
+      'تصفح أولاً وسجّل الدخول عند الحاجة',
       name: 'authChoiceTitle',
       desc: '',
       args: [],
@@ -1134,16 +1124,6 @@ class S {
     );
   }
 
-  /// `دخول الإدارة`
-  String get adminAccess {
-    return Intl.message(
-      'دخول الإدارة',
-      name: 'adminAccess',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `تسجيل دخول الإدارة`
   String get adminSignIn {
     return Intl.message(
@@ -1189,136 +1169,6 @@ class S {
     return Intl.message(
       'المساعدة',
       name: 'supportHelpEyebrow',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `المساعدة والدعم`
-  String get supportHelpTitle {
-    return Intl.message(
-      'المساعدة والدعم',
-      name: 'supportHelpTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.`
-  String get supportHelpSubtitle {
-    return Intl.message(
-      'اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.',
-      name: 'supportHelpSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `مساعدة الحساب`
-  String get supportHelpAccountTitle {
-    return Intl.message(
-      'مساعدة الحساب',
-      name: 'supportHelpAccountTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.`
-  String get supportHelpAccountBody {
-    return Intl.message(
-      'استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.',
-      name: 'supportHelpAccountBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `الثقة والأمان`
-  String get supportHelpSafetyTitle {
-    return Intl.message(
-      'الثقة والأمان',
-      name: 'supportHelpSafetyTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `استخدم شاشات المعاملة والتقييم والنزاع حتى تبقى مشاكل السوق مرتبطة بالصفقة الصحيحة.`
-  String get supportHelpSafetyBody {
-    return Intl.message(
-      'استخدم شاشات المعاملة والتقييم والنزاع حتى تبقى مشاكل السوق مرتبطة بالصفقة الصحيحة.',
-      name: 'supportHelpSafetyBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `الإشعارات والتحديثات`
-  String get supportHelpNotificationTitle {
-    return Intl.message(
-      'الإشعارات والتحديثات',
-      name: 'supportHelpNotificationTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تابع الرسائل وقرارات البائع وتغييرات الإعلانات من مركز الإشعارات.`
-  String get supportHelpNotificationBody {
-    return Intl.message(
-      'تابع الرسائل وقرارات البائع وتغييرات الإعلانات من مركز الإشعارات.',
-      name: 'supportHelpNotificationBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `دليل`
-  String get supportHelpStatusGuide {
-    return Intl.message(
-      'دليل',
-      name: 'supportHelpStatusGuide',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ثقة`
-  String get supportHelpStatusTrust {
-    return Intl.message(
-      'ثقة',
-      name: 'supportHelpStatusTrust',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تنبيهات`
-  String get supportHelpStatusAlerts {
-    return Intl.message(
-      'تنبيهات',
-      name: 'supportHelpStatusAlerts',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `هل تحتاج إلى متابعة شيء؟`
-  String get supportHelpNeedActionTitle {
-    return Intl.message(
-      'هل تحتاج إلى متابعة شيء؟',
-      name: 'supportHelpNeedActionTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `يحافظ Qitak على الخطوات التالية داخل الشاشات الصحيحة بدلاً من إخفائها خلف محادثة دعم عامة.`
-  String get supportHelpNeedActionBody {
-    return Intl.message(
-      'يحافظ Qitak على الخطوات التالية داخل الشاشات الصحيحة بدلاً من إخفائها خلف محادثة دعم عامة.',
-      name: 'supportHelpNeedActionBody',
       desc: '',
       args: [],
     );
@@ -1729,10 +1579,10 @@ class S {
     );
   }
 
-  /// `قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.`
+  /// `اضبط اللغة والمظهر وراجع سياسات السوق قبل تسجيل الدخول.`
   String get accountUtilitiesGuestSubtitle {
     return Intl.message(
-      'قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.',
+      'اضبط اللغة والمظهر وراجع سياسات السوق قبل تسجيل الدخول.',
       name: 'accountUtilitiesGuestSubtitle',
       desc: '',
       args: [],

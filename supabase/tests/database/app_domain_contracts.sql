@@ -1,7 +1,7 @@
 set search_path = public, extensions;
 
 begin;
-select plan(23);
+select plan(34);
 
 select has_table('public', 'app_domain_catalog', 'app_domain_catalog table exists');
 select has_table('public', 'app_domain_codes', 'app_domain_codes table exists');
@@ -74,6 +74,251 @@ select ok(
 );
 
 select ok(
+  exists (
+    select 1
+    from public.app_domain_codes
+    where domain_key = 'reported_entity_type'
+      and code = 'support'
+      and is_active = true
+  ),
+  'seeded reported_entity_type.support exists and is active'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.app_policy_options
+    where policy_type = 'support_reason_code'
+      and is_active = true
+  ),
+  'support_reason_code policy options exist'
+);
+
+do $$
+declare
+  v_support_user_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (id, email)
+  values (v_support_user_id, 'support_contract_test@example.com');
+
+  update public.profiles
+  set full_name = 'Support Contract User',
+      phone = '0551112233',
+      role = 'buyer'
+  where id = v_support_user_id;
+
+  perform set_config(
+    'request.jwt.claims',
+    json_build_object('sub', v_support_user_id)::text,
+    true
+  );
+end;
+$$;
+
+set local role authenticated;
+
+select lives_ok(
+  $sql$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values (
+      (select auth.uid()),
+      'support',
+      (select auth.uid()),
+      'payment_issue',
+      'Support contract ticket created from pgTAP.'
+    )
+  $sql$,
+  'authenticated users can create support-backed reports'
+);
+
+set local role postgres;
+
+do $$
+begin
+  insert into auth.users (id, email)
+  values
+    ('00000000-0000-0000-0000-000000000111', 'listing_report_buyer@example.com'),
+    ('00000000-0000-0000-0000-000000000222', 'listing_report_seller@example.com');
+
+  update public.profiles
+  set full_name = 'Listing Report Buyer',
+      phone = '0552223344',
+      role = 'buyer'
+  where id = '00000000-0000-0000-0000-000000000111';
+
+  update public.profiles
+  set full_name = 'Listing Report Seller',
+      phone = '0553334455',
+      role = 'seller'
+  where id = '00000000-0000-0000-0000-000000000222';
+
+  insert into public.listings (
+    id,
+    seller_user_id,
+    title,
+    description,
+    price
+  )
+  values (
+    '00000000-0000-0000-0000-000000000333',
+    '00000000-0000-0000-0000-000000000222',
+    'Support contract listing',
+    'Listing used to validate report insert protections.',
+    5000
+  );
+end;
+$$;
+
+select set_config(
+  'request.jwt.claims',
+  json_build_object('sub', '00000000-0000-0000-0000-000000000111')::text,
+  false
+);
+
+set local role authenticated;
+
+select ok(
+  exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'reports'
+      and policyname = 'Authenticated users can create supported reports'
+      and coalesce(with_check, '') like '%reported_entity_type = ''listing''%'
+      and coalesce(with_check, '') like '%p.role = ''buyer''%'
+      and coalesce(with_check, '') like '%seller_user_id <>%'
+  ),
+  'listing report branch remains enforced in the supported report insert policy'
+);
+
+set local role postgres;
+
+select throws_ok(
+  $sql$
+    do $$
+    begin
+      insert into public.reports (
+        reporter_id,
+        reported_entity_type,
+        reported_entity_id,
+        report_type,
+        description
+      ) values (
+        '00000000-0000-0000-0000-000000000111',
+        'listing',
+        '00000000-0000-0000-0000-000000000333',
+        'spam',
+        'Duplicate listing report should be blocked (first insert).'
+      );
+
+      insert into public.reports (
+        reporter_id,
+        reported_entity_type,
+        reported_entity_id,
+        report_type,
+        description
+      ) values (
+        '00000000-0000-0000-0000-000000000111',
+        'listing',
+        '00000000-0000-0000-0000-000000000333',
+        'spam',
+        'Duplicate listing report should be blocked (second insert).'
+      );
+    end;
+    $$
+  $sql$,
+  23505,
+  null,
+  'duplicate non-support reports remain blocked'
+);
+
+select set_config(
+  'request.jwt.claims',
+  json_build_object('sub', '00000000-0000-0000-0000-000000000111')::text,
+  false
+);
+
+set local role authenticated;
+
+select throws_ok(
+  $sql$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values (
+      auth.uid(),
+      'support',
+      gen_random_uuid(),
+      'payment_issue',
+      'Support report must anchor to the authenticated user.'
+    )
+  $sql$,
+  42501,
+  null,
+  'support-backed reports require reported_entity_id to equal auth.uid()'
+);
+
+select lives_ok(
+  $sql$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values
+      (auth.uid(), 'support', auth.uid(), 'payment_issue', 'First duplicate-safe support ticket.'),
+      (auth.uid(), 'support', auth.uid(), 'technical_issue', 'Second duplicate-safe support ticket.')
+  $sql$,
+  'support-backed reports allow multiple tickets from the same user'
+);
+
+set local role postgres;
+
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.reports'::regclass
+      and contype = 'c'
+      and pg_get_constraintdef(oid) like '%support%'
+  ),
+  'reports entity type constraint allows support'
+);
+
+select ok(
+  not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.reports'::regclass
+      and conname = 'reports_reporter_entity_unique'
+  ),
+  'reports no longer has blanket reporter/entity uniqueness constraint'
+);
+
+select ok(
+  exists (
+    select 1
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'reports'
+      and policyname = 'Authenticated users can create supported reports'
+  ),
+  'reports insert policy exists for supported authenticated report creation'
+);
+
+select ok(
   has_table_privilege('anon', 'public.app_domain_catalog', 'SELECT')
   and has_table_privilege('anon', 'public.app_domain_codes', 'SELECT')
   and has_table_privilege('anon', 'public.app_policy_options', 'SELECT'),
@@ -94,6 +339,11 @@ select ok(
 select ok(
   (select count(*) from public.get_app_policy_contracts('seller_verification_reason_code')) > 0,
   'get_app_policy_contracts returns seller verification reason rows'
+);
+
+select ok(
+  (select count(*) from public.get_app_policy_contracts('support_reason_code')) > 0,
+  'get_app_policy_contracts returns support reason rows'
 );
 
 select ok(

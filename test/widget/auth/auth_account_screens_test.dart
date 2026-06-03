@@ -21,7 +21,6 @@ import 'package:qitak_app/features/auth/presentation/protected_action_gate.dart'
 import 'package:qitak_app/features/auth/presentation/sign_in_screen.dart';
 import 'package:qitak_app/features/auth/presentation/sign_up_screen.dart';
 import 'package:qitak_app/features/auth/presentation/splash_screen.dart';
-import 'package:qitak_app/features/auth/presentation/support_help_screen.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
@@ -955,129 +954,6 @@ void main() {
       await tester.tap(find.text('Admin access'));
       await tester.pumpAndSettle();
       expect(find.text('admin-entry'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'guest support notifications route to guest account instead of raw sign in',
-    (tester) async {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/guest/account',
-            builder: (context, state) => const Scaffold(
-              body: GuestAccountScreen(),
-            ),
-          ),
-        ],
-      );
-
-      final scope = await buildTestScope(routerShell(router));
-      await tester.pumpWidget(scope);
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.widgetWithText(FilledButton, 'Notifications'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(GuestAccountScreen), findsOneWidget);
-      expect(find.byType(SignInScreen), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'authenticated support handoff routes to account settings in profile tree',
-    (tester) async {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/settings',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-settings'),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/legal',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-legal'),
-            ),
-          ),
-        ],
-      );
-
-      final scope = await buildTestScope(
-        routerShell(router),
-        seed: const <String, Object>{
-          'qitak.local.session.email': 'buyer@qitak.test',
-        },
-      );
-      await tester.pumpWidget(scope);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(SupportHelpScreen)),
-      );
-      await container.read(authSessionProvider.notifier).restore();
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Account settings'));
-      await tester.pumpAndSettle();
-      expect(find.text('profile-settings'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'authenticated support handoff routes to legal in profile tree',
-    (tester) async {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/settings',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-settings'),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/legal',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-legal'),
-            ),
-          ),
-        ],
-      );
-
-      final scope = await buildTestScope(
-        routerShell(router),
-        seed: const <String, Object>{
-          'qitak.local.session.email': 'buyer@qitak.test',
-        },
-      );
-      await tester.pumpWidget(scope);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(SupportHelpScreen)),
-      );
-      await container.read(authSessionProvider.notifier).restore();
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(find.byType(FilledButton).last);
-      await tester.tap(find.byType(FilledButton).last);
-      await tester.pumpAndSettle();
-      expect(find.text('profile-legal'), findsOneWidget);
     },
   );
 

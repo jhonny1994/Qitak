@@ -1324,6 +1324,301 @@ class S {
     );
   }
 
+  /// `الدعم`
+  String get supportCenterEyebrow {
+    return Intl.message(
+      'الدعم',
+      name: 'supportCenterEyebrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الدعم`
+  String get supportCenterTitle {
+    return Intl.message(
+      'الدعم',
+      name: 'supportCenterTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.`
+  String get supportCenterSubtitle {
+    return Intl.message(
+      'تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.',
+      name: 'supportCenterSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إنشاء تذكرة`
+  String get supportCenterCreateAction {
+    return Intl.message(
+      'إنشاء تذكرة',
+      name: 'supportCenterCreateAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `استخدم المسار الصحيح`
+  String get supportCenterRoutingTitle {
+    return Intl.message(
+      'استخدم المسار الصحيح',
+      name: 'supportCenterRoutingTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشاكل الصفقة المحددة`
+  String get supportCenterRoutingDisputeTitle {
+    return Intl.message(
+      'مشاكل الصفقة المحددة',
+      name: 'supportCenterRoutingDisputeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.`
+  String get supportCenterRoutingDisputeBody {
+    return Intl.message(
+      'استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.',
+      name: 'supportCenterRoutingDisputeBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تغييرات الحساب والوصول`
+  String get supportCenterRoutingAccountTitle {
+    return Intl.message(
+      'تغييرات الحساب والوصول',
+      name: 'supportCenterRoutingAccountTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.`
+  String get supportCenterRoutingAccountBody {
+    return Intl.message(
+      'استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.',
+      name: 'supportCenterRoutingAccountBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ما الذي يتعامل معه الدعم هنا`
+  String get supportCenterRoutingScopeTitle {
+    return Intl.message(
+      'ما الذي يتعامل معه الدعم هنا',
+      name: 'supportCenterRoutingScopeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.`
+  String get supportCenterRoutingScopeBody {
+    return Intl.message(
+      'افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.',
+      name: 'supportCenterRoutingScopeBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تذاكرك`
+  String get supportCenterTicketListTitle {
+    return Intl.message(
+      'تذاكرك',
+      name: 'supportCenterTicketListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد تذاكر دعم بعد`
+  String get supportCenterEmptyTitle {
+    return Intl.message(
+      'لا توجد تذاكر دعم بعد',
+      name: 'supportCenterEmptyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.`
+  String get supportCenterEmptyBody {
+    return Intl.message(
+      'أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.',
+      name: 'supportCenterEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تذكرة دعم جديدة`
+  String get supportTicketCreateTitle {
+    return Intl.message(
+      'تذكرة دعم جديدة',
+      name: 'supportTicketCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.`
+  String get supportTicketCreateSubtitle {
+    return Intl.message(
+      'اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.',
+      name: 'supportTicketCreateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `السبب`
+  String get supportTicketReasonLabel {
+    return Intl.message(
+      'السبب',
+      name: 'supportTicketReasonLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر سبب الدعم.`
+  String get supportTicketReasonError {
+    return Intl.message(
+      'اختر سبب الدعم.',
+      name: 'supportTicketReasonError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ماذا حدث؟`
+  String get supportTicketDescriptionLabel {
+    return Intl.message(
+      'ماذا حدث؟',
+      name: 'supportTicketDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.`
+  String get supportTicketDescriptionHelper {
+    return Intl.message(
+      'اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.',
+      name: 'supportTicketDescriptionHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.`
+  String get supportTicketDescriptionError {
+    return Intl.message(
+      'أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.',
+      name: 'supportTicketDescriptionError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إرسال التذكرة`
+  String get supportTicketSubmitAction {
+    return Intl.message(
+      'إرسال التذكرة',
+      name: 'supportTicketSubmitAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرسال تذكرة الدعم.`
+  String get supportTicketCreated {
+    return Intl.message(
+      'تم إرسال تذكرة الدعم.',
+      name: 'supportTicketCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مفتوحة`
+  String get supportTicketStatusOpen {
+    return Intl.message(
+      'مفتوحة',
+      name: 'supportTicketStatusOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم الحل`
+  String get supportTicketStatusResolved {
+    return Intl.message(
+      'تم الحل',
+      name: 'supportTicketStatusResolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الوصول إلى الحساب`
+  String get supportReasonAccountAccess {
+    return Intl.message(
+      'الوصول إلى الحساب',
+      name: 'supportReasonAccountAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة دفع`
+  String get supportReasonPaymentIssue {
+    return Intl.message(
+      'مشكلة دفع',
+      name: 'supportReasonPaymentIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة مع البائع`
+  String get supportReasonSellerIssue {
+    return Intl.message(
+      'مشكلة مع البائع',
+      name: 'supportReasonSellerIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة تقنية`
+  String get supportReasonTechnicalIssue {
+    return Intl.message(
+      'مشكلة تقنية',
+      name: 'supportReasonTechnicalIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أخرى`
+  String get supportReasonOther {
+    return Intl.message('أخرى', name: 'supportReasonOther', desc: '', args: []);
+  }
+
   /// `القانوني`
   String get legalInformationEyebrow {
     return Intl.message(

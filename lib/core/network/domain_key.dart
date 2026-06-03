@@ -29,4 +29,5 @@ abstract final class PolicyKey {
   static const String listingReportReasonCode = 'listing_report_reason_code';
   static const String buyerDisputeReasonCode = 'buyer_dispute_reason_code';
   static const String buyerPaymentMethod = 'buyer_payment_method';
+  static const String supportReasonCode = 'support_reason_code';
 }

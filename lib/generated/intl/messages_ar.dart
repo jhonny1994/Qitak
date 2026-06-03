@@ -1491,6 +1491,44 @@ class MessageLookup extends MessageLookupByLibrary {
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
       "جارٍ تحميل بيانات الحساب والسوق.",
     ),
+    "supportCenterCreateAction": MessageLookupByLibrary.simpleMessage(
+      "إنشاء تذكرة",
+    ),
+    "supportCenterEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.",
+    ),
+    "supportCenterEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تذاكر دعم بعد",
+    ),
+    "supportCenterEyebrow": MessageLookupByLibrary.simpleMessage("الدعم"),
+    "supportCenterRoutingAccountBody": MessageLookupByLibrary.simpleMessage(
+      "استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.",
+    ),
+    "supportCenterRoutingAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "تغييرات الحساب والوصول",
+    ),
+    "supportCenterRoutingDisputeBody": MessageLookupByLibrary.simpleMessage(
+      "استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.",
+    ),
+    "supportCenterRoutingDisputeTitle": MessageLookupByLibrary.simpleMessage(
+      "مشاكل الصفقة المحددة",
+    ),
+    "supportCenterRoutingScopeBody": MessageLookupByLibrary.simpleMessage(
+      "افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.",
+    ),
+    "supportCenterRoutingScopeTitle": MessageLookupByLibrary.simpleMessage(
+      "ما الذي يتعامل معه الدعم هنا",
+    ),
+    "supportCenterRoutingTitle": MessageLookupByLibrary.simpleMessage(
+      "استخدم المسار الصحيح",
+    ),
+    "supportCenterSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.",
+    ),
+    "supportCenterTicketListTitle": MessageLookupByLibrary.simpleMessage(
+      "تذاكرك",
+    ),
+    "supportCenterTitle": MessageLookupByLibrary.simpleMessage("الدعم"),
     "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
       "استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.",
     ),
@@ -1523,6 +1561,48 @@ class MessageLookup extends MessageLookupByLibrary {
       "اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.",
     ),
     "supportHelpTitle": MessageLookupByLibrary.simpleMessage("المساعدة والدعم"),
+    "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
+      "الوصول إلى الحساب",
+    ),
+    "supportReasonOther": MessageLookupByLibrary.simpleMessage("أخرى"),
+    "supportReasonPaymentIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة دفع",
+    ),
+    "supportReasonSellerIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة مع البائع",
+    ),
+    "supportReasonTechnicalIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة تقنية",
+    ),
+    "supportTicketCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.",
+    ),
+    "supportTicketCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "تذكرة دعم جديدة",
+    ),
+    "supportTicketCreated": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال تذكرة الدعم.",
+    ),
+    "supportTicketDescriptionError": MessageLookupByLibrary.simpleMessage(
+      "أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.",
+    ),
+    "supportTicketDescriptionHelper": MessageLookupByLibrary.simpleMessage(
+      "اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.",
+    ),
+    "supportTicketDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "ماذا حدث؟",
+    ),
+    "supportTicketReasonError": MessageLookupByLibrary.simpleMessage(
+      "اختر سبب الدعم.",
+    ),
+    "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("السبب"),
+    "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("مفتوحة"),
+    "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
+      "تم الحل",
+    ),
+    "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
+      "إرسال التذكرة",
+    ),
     "termsValidationError": MessageLookupByLibrary.simpleMessage(
       "يجب قبول الشروط لإنشاء الحساب.",
     ),

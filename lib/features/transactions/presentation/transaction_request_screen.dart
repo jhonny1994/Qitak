@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
-class TransactionIntentScreen extends ConsumerStatefulWidget {
-  const TransactionIntentScreen({
+class TransactionRequestScreen extends ConsumerStatefulWidget {
+  const TransactionRequestScreen({
     required this.listingId,
     super.key,
   });
@@ -15,12 +16,12 @@ class TransactionIntentScreen extends ConsumerStatefulWidget {
   final String listingId;
 
   @override
-  ConsumerState<TransactionIntentScreen> createState() =>
-      _TransactionIntentScreenState();
+  ConsumerState<TransactionRequestScreen> createState() =>
+      _TransactionRequestScreenState();
 }
 
-class _TransactionIntentScreenState
-    extends ConsumerState<TransactionIntentScreen> {
+class _TransactionRequestScreenState
+    extends ConsumerState<TransactionRequestScreen> {
   final TextEditingController _exchangeOfferController =
       TextEditingController();
   String _dealType = 'buy';
@@ -124,16 +125,16 @@ class _TransactionIntentScreenState
                     const SizedBox(height: 16),
                     QitakStateMessage(
                       title: context.l10n.transactionBlockedTitle,
-                      message: context.l10n.transactionOpenIntentExists,
+                      message: context.l10n.transactionOpenRequestExists,
                     ),
                   ],
                   const SizedBox(height: 20),
                   FilledButton(
-                    key: const Key('transaction-start-button'),
+                    key: const Key('transaction-request-button'),
                     onPressed: () async {
                       final ok = await ref
                           .read(transactionProvider.notifier)
-                          .createIntent(
+                          .createRequest(
                             listingId: widget.listingId,
                             buyerUserId: profile.id,
                             sellerUserId: item.sellerUserId,
@@ -146,11 +147,25 @@ class _TransactionIntentScreenState
                           );
                       if (!context.mounted) return;
                       final message = ok
-                          ? context.l10n.transactionIntentCreated
-                          : context.l10n.transactionOpenIntentExists;
+                          ? context.l10n.transactionRequestCreated
+                          : context.l10n.transactionOpenRequestExists;
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(message)));
+                      if (!ok) {
+                        return;
+                      }
+                      final created = ref
+                          .read(transactionProvider)
+                          .items
+                          .firstOrNull;
+                      if (created == null) {
+                        return;
+                      }
+                      final router = GoRouter.maybeOf(context);
+                      if (router != null) {
+                        router.go('/deals/${created.id}');
+                      }
                     },
                     child: Text(context.l10n.requestPartCta),
                   ),
@@ -184,4 +199,8 @@ class _TransactionIntentScreenState
       ),
     );
   }
+}
+
+extension _FirstOrNullTransactionX<T> on List<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

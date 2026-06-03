@@ -1,7 +1,7 @@
 set search_path = public, extensions;
 
 begin;
-select plan(21);
+select plan(23);
 
 select has_table('public', 'app_domain_catalog', 'app_domain_catalog table exists');
 select has_table('public', 'app_domain_codes', 'app_domain_codes table exists');
@@ -34,10 +34,32 @@ select ok(
     select 1
     from public.app_domain_codes
     where domain_key = 'deal_status'
-      and code = 'dispute_resolved'
+      and code = 'payment_proof_submitted'
       and is_active = true
   ),
-  'seeded deal_status.dispute_resolved exists and is active'
+  'seeded deal_status.payment_proof_submitted exists and is active'
+);
+
+select ok(
+  not exists (
+    select 1
+    from public.app_domain_codes
+    where domain_key = 'deal_status'
+      and code = 'intent_created'
+      and is_active = true
+  ),
+  'deprecated deal_status.intent_created is no longer active'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.app_policy_options
+    where policy_type = 'buyer_payment_method'
+      and code = 'baridimob'
+      and is_active = true
+  ),
+  'seeded buyer_payment_method.baridimob exists and is active'
 );
 
 select ok(

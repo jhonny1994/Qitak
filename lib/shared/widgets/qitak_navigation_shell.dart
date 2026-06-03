@@ -35,7 +35,7 @@ class QitakNavigationShell extends ConsumerWidget {
         ref.watch(unreadCountsProvider).asData?.value ??
         (messages: 0, notifications: 0);
     var sellerApproved = false;
-    if (role == AccountRole.seller) {
+    if (role.hasSellerCapabilities) {
       sellerApproved =
           ref
               .watch(currentSellerApplicationProvider)
@@ -78,7 +78,7 @@ class QitakNavigationShell extends ConsumerWidget {
           height: 72,
           destinations: items.map((item) => item.destination).toList(),
         ),
-        floatingActionButton: role == AccountRole.seller && sellerApproved
+        floatingActionButton: role.hasSellerCapabilities && sellerApproved
             ? FloatingActionButton(
                 onPressed: () => context.go('/seller/listings/new'),
                 tooltip: context.l10n.createListingCta,
@@ -195,7 +195,7 @@ class QitakNavigationShell extends ConsumerWidget {
               ),
             ),
             _ShellDestination(
-              path: '/seller/profile',
+              path: '/profile',
               branchIndex: 4,
               destination: NavigationDestination(
                 icon: const Icon(Icons.person_outline_rounded),
@@ -225,6 +225,15 @@ class QitakNavigationShell extends ConsumerWidget {
             ),
           ),
           _ShellDestination(
+            path: '/saved',
+            branchIndex: 2,
+            destination: NavigationDestination(
+              icon: const Icon(Icons.bookmark_border_rounded),
+              selectedIcon: const Icon(Icons.bookmark_rounded),
+              label: context.l10n.navSaved,
+            ),
+          ),
+          _ShellDestination(
             path: '/messages',
             branchIndex: 3,
             destination: NavigationDestination(
@@ -242,7 +251,7 @@ class QitakNavigationShell extends ConsumerWidget {
             ),
           ),
           _ShellDestination(
-            path: '/seller/profile',
+            path: '/profile',
             branchIndex: 4,
             destination: NavigationDestination(
               icon: _badgeIcon(

@@ -43,6 +43,38 @@ void main() {
     expect(find.text('Remove'), findsOneWidget);
   });
 
+  testWidgets(
+    'seller shortlist remains accessible from the shared saved flow',
+    (
+      tester,
+    ) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SavedListingsScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+          'qitak.saved.listings.seller-001': <String>['listing-1'],
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SavedListingsScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Saved listings'), findsOneWidget);
+      expect(find.text('Headlight assembly'), findsOneWidget);
+    },
+  );
+
   testWidgets('renders conversation inbox rows when messages exist', (
     tester,
   ) async {

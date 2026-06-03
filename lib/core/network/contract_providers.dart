@@ -118,3 +118,11 @@ final buyerDisputeReasonPolicyProvider = FutureProvider<List<AppPolicyOption>>((
       .read(appContractRepositoryProvider)
       .fetchPolicyOptions(PolicyKey.buyerDisputeReasonCode);
 });
+
+final buyerPaymentMethodPolicyProvider = FutureProvider<List<AppPolicyOption>>((
+  ref,
+) {
+  return ref
+      .read(appContractRepositoryProvider)
+      .fetchPolicyOptions(PolicyKey.buyerPaymentMethod);
+});

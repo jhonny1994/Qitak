@@ -58,9 +58,10 @@ class ListingDetailScreen extends ConsumerWidget {
           }
 
           final isOwner = session.profile?.id == item.sellerUserId;
-          final isBuyer = session.profile?.role == AccountRole.buyer;
+          final canActAsBuyer =
+              session.profile?.role.hasBuyerCapabilities ?? false;
           final canReportListing =
-              session.isAuthenticated && isBuyer && !isOwner;
+              session.isAuthenticated && canActAsBuyer && !isOwner;
           final hasReported =
               canReportListing &&
               (ref.watch(hasReportedListingProvider(item.id)).asData?.value ??
@@ -95,7 +96,10 @@ class ListingDetailScreen extends ConsumerWidget {
                       ),
                       PopupMenuButton<_ListingOverflowAction>(
                         tooltip: context.l10n.reportListingAction,
-                        enabled: session.isAuthenticated && isBuyer && !isOwner,
+                        enabled:
+                            session.isAuthenticated &&
+                            canActAsBuyer &&
+                            !isOwner,
                         onSelected: (value) async {
                           switch (value) {
                             case _ListingOverflowAction.report:
@@ -368,12 +372,12 @@ class ListingDetailScreen extends ConsumerWidget {
                                 onPressed: () => _handleProtectedNav(
                                   context,
                                   ref,
-                                  '/transactions/listing/${item.id}/new',
+                                  '/transactions/listing/${item.id}/request',
                                   PostAuthRedirectIntent.action(
-                                    'start-transaction',
+                                    'start-purchase-request',
                                     arguments: <String, String>{
                                       'route':
-                                          '/transactions/listing/${item.id}/new',
+                                          '/transactions/listing/${item.id}/request',
                                       'listingId': item.id,
                                     },
                                   ),
@@ -387,12 +391,12 @@ class ListingDetailScreen extends ConsumerWidget {
                                   onPressed: () => _handleProtectedNav(
                                     context,
                                     ref,
-                                    '/transactions/listing/${item.id}/new',
+                                    '/transactions/listing/${item.id}/request',
                                     PostAuthRedirectIntent.action(
-                                      'start-exchange',
+                                      'start-exchange-request',
                                       arguments: <String, String>{
                                         'route':
-                                            '/transactions/listing/${item.id}/new',
+                                            '/transactions/listing/${item.id}/request',
                                         'listingId': item.id,
                                       },
                                     ),
@@ -507,7 +511,7 @@ class ListingDetailScreen extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    unawaited(context.push('/messages/thread/$threadId'));
+    context.go('/messages/thread/$threadId');
   }
 
   Future<void> _showShareSheet(

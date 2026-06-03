@@ -97,30 +97,30 @@ class AuthEntryService {
     if (path.startsWith('/deals') ||
         path.startsWith('/transactions') ||
         path.startsWith('/ratings')) {
-      return role == AccountRole.buyer || role == AccountRole.seller;
+      return role.hasBuyerCapabilities;
     }
 
-    // Saved listings and buyer profile: buyer only
+    // Saved listings and shared buyer-account utilities: buyers and sellers
     if (path.startsWith('/saved') || path.startsWith('/profile')) {
-      return role == AccountRole.buyer;
+      return role.hasBuyerCapabilities;
     }
 
     // Seller onboarding: seller only, no approval required
     if (path.startsWith('/seller/onboarding')) {
-      return role == AccountRole.seller;
+      return role.hasSellerCapabilities;
     }
 
     // Seller profile: seller only, no approval required
-    if (path.startsWith('/seller/profile')) return role == AccountRole.seller;
+    if (path.startsWith('/seller/profile')) return role.hasSellerCapabilities;
 
     // Remaining seller routes: approved seller only
     if (path.startsWith('/seller')) {
-      return role == AccountRole.seller && isSellerApproved;
+      return role.hasSellerCapabilities && isSellerApproved;
     }
 
     // Admin routes: admin/super_admin only
     if (path.startsWith('/admin')) {
-      return role == AccountRole.admin || role == AccountRole.superAdmin;
+      return role.isAdminLike;
     }
 
     return false;

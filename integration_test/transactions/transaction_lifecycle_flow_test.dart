@@ -5,6 +5,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:qitak_app/app/app.dart';
 import 'package:qitak_app/app/router.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
 
 import '../../test/fixtures/seeded_discovery_repository.dart';
 import '../../test/test_bootstrap.dart';
@@ -12,7 +13,7 @@ import '../../test/test_bootstrap.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('buyer creates transaction intent from discovery listing', (
+  testWidgets('buyer creates purchase request from discovery listing', (
     tester,
   ) async {
     final app = await buildTestScope(
@@ -33,14 +34,16 @@ void main() {
     final container = ProviderScope.containerOf(
       tester.element(find.byType(QitakApp)),
     );
-    container.read(goRouterProvider).go('/transactions/listing/listing-1/new');
+    container
+        .read(goRouterProvider)
+        .go('/transactions/listing/listing-1/request');
     await tester.pumpAndSettle();
 
-    final startButton = find.byKey(const Key('transaction-start-button'));
+    final startButton = find.byKey(const Key('transaction-request-button'));
     await tester.ensureVisible(startButton);
     await tester.tap(startButton);
     await tester.pumpAndSettle();
 
-    expect(find.byType(SnackBar), findsWidgets);
+    expect(find.byType(TransactionDetailScreen), findsOneWidget);
   });
 }

@@ -112,6 +112,39 @@ void main() {
     expect(buttonWidget.onPressed, isNotNull);
   });
 
+  testWidgets('seller search results keep the direct save action', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SearchScreen(initialQuery: 'Headlight')),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await ProviderScope.containerOf(
+      tester.element(find.byType(SearchScreen)),
+    ).read(authSessionProvider.notifier).restore();
+    await settleDiscovery(tester);
+
+    final saveButton = find.byKey(const Key('search-result-save-listing-1'));
+    expect(saveButton, findsOneWidget);
+
+    final buttonWidget = tester.widget<IconButton>(saveButton);
+    expect(buttonWidget.onPressed, isNotNull);
+  });
+
   testWidgets('guest search results still expose protected save action', (
     tester,
   ) async {

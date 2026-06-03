@@ -17,6 +17,7 @@ import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
 
 import '../../test/fixtures/seeded_discovery_repository.dart';
 import '../../test/test_bootstrap.dart';
@@ -165,16 +166,15 @@ void main() {
       );
       container
           .read(goRouterProvider)
-          .go('/transactions/listing/listing-1/new');
+          .go('/transactions/listing/listing-1/request');
       await tester.pumpAndSettle();
 
-      final startButton = find.byKey(const Key('transaction-start-button'));
+      final startButton = find.byKey(const Key('transaction-request-button'));
       await tester.ensureVisible(startButton);
       await tester.tap(startButton);
       await tester.pumpAndSettle();
 
-      // After starting a transaction the app shows a confirmation snack.
-      expect(find.byType(SnackBar), findsWidgets);
+      expect(find.byType(TransactionDetailScreen), findsOneWidget);
     },
   );
 
@@ -202,7 +202,7 @@ void main() {
   // ─── full cross-role state transitions ────────────────────────────────────
 
   testWidgets(
-    'full flow: buyer creates transaction intent, seller confirms, buyer completes',
+    'full flow: buyer creates purchase request, seller confirms, cash payment completes',
     (tester) async {
       final scope = await buildTestScope(
         const QitakApp(),
@@ -229,12 +229,12 @@ void main() {
 
       final repository = container.read(transactionRepositoryProvider);
 
-      final record = await repository.createIntent(
+      final record = await repository.createRequest(
         listingId: 'listing-1',
         buyerUserId: 'buyer-001',
         sellerUserId: 'seller-001',
       );
-      // The local in-memory repo starts at pendingSellerResponse, not intentCreated.
+      // The local in-memory repo starts at pendingSellerResponse.
       expect(record.state, TransactionState.pendingSellerResponse);
 
       await repository.transition(
@@ -242,10 +242,15 @@ void main() {
         actorUserId: 'seller-001',
         nextState: TransactionState.sellerConfirmed,
       );
+      await repository.selectPaymentMethod(
+        transactionId: record.id,
+        actorUserId: 'buyer-001',
+        paymentMethod: TransactionPaymentMethod.cash,
+      );
 
       final updated = await repository.transition(
         transactionId: record.id,
-        actorUserId: 'buyer-001',
+        actorUserId: 'seller-001',
         nextState: TransactionState.completed,
       );
       expect(updated.state, TransactionState.completed);

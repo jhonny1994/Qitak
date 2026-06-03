@@ -127,7 +127,11 @@ void main() {
     );
     expect(
       service.canAccessRoleRoute(AccountRole.seller, '/profile'),
-      isFalse,
+      isTrue,
+    );
+    expect(
+      service.canAccessRoleRoute(AccountRole.seller, '/saved'),
+      isTrue,
     );
   });
 
@@ -148,7 +152,7 @@ void main() {
       expect(
         service.canAccessRoleRoute(
           AccountRole.seller,
-          '/seller/profile/appearance',
+          '/profile/appearance',
         ),
         isTrue,
       );
@@ -183,9 +187,9 @@ void main() {
       expect(
         service.resolvePostAuthDestination(
           profile: seller,
-          intent: PostAuthRedirectIntent.route('/seller/profile'),
+          intent: PostAuthRedirectIntent.route('/profile'),
         ),
-        '/seller/profile',
+        '/profile',
       );
     },
   );

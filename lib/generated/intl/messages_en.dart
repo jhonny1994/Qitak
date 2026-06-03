@@ -539,10 +539,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Create an account or sign in to continue this action.",
     ),
     "authGateBuyBody": MessageLookupByLibrary.simpleMessage(
-      "Use your account to continue into the purchase request flow for this listing.",
+      "Use your account to continue into the offline purchase flow for this listing.",
     ),
     "authGateBuyTitle": MessageLookupByLibrary.simpleMessage(
-      "Sign in to request this part",
+      "Sign in to start this purchase",
     ),
     "authGateEyebrow": MessageLookupByLibrary.simpleMessage("Account access"),
     "authGateMessageBody": MessageLookupByLibrary.simpleMessage(
@@ -958,7 +958,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No listing-anchored conversations yet. Start from a listing when you need to message a seller.",
     ),
     "messagesInboxSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Every conversation stays tied to a listing and an active marketplace intent.",
+      "Every conversation stays tied to a listing and an active purchase request.",
     ),
     "messagesInboxTitle": MessageLookupByLibrary.simpleMessage(
       "Listing conversations",
@@ -1216,7 +1216,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reportListingSuccess": MessageLookupByLibrary.simpleMessage(
       "Report submitted",
     ),
-    "requestPartCta": MessageLookupByLibrary.simpleMessage("Request part"),
+    "requestPartCta": MessageLookupByLibrary.simpleMessage("Send request"),
     "resetPassword": MessageLookupByLibrary.simpleMessage("Reset password"),
     "resetPasswordBody": MessageLookupByLibrary.simpleMessage(
       "Enter your email and we\'ll send you a reset link.",
@@ -1551,6 +1551,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "transactionComplete": MessageLookupByLibrary.simpleMessage("Complete"),
+    "transactionConfirmCashAction": MessageLookupByLibrary.simpleMessage(
+      "Confirm cash order",
+    ),
+    "transactionConfirmPaymentAction": MessageLookupByLibrary.simpleMessage(
+      "Confirm payment",
+    ),
+    "transactionConfirmReceiptAction": MessageLookupByLibrary.simpleMessage(
+      "Confirm receipt",
+    ),
     "transactionDecisionActive": MessageLookupByLibrary.simpleMessage("Active"),
     "transactionDecisionComplete": MessageLookupByLibrary.simpleMessage(
       "Completed",
@@ -1565,7 +1574,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Transaction not found",
     ),
     "transactionDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Track the current deal state, next actions, and linked trust steps.",
+      "Track payment method, proof, and completion steps for this deal.",
     ),
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Deal details",
@@ -1577,11 +1586,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionHistoryTitle": MessageLookupByLibrary.simpleMessage(
       "Transaction History",
     ),
-    "transactionIntentCreated": MessageLookupByLibrary.simpleMessage(
-      "Transaction intent created.",
-    ),
     "transactionLifecycleSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Review active requests, approvals, and completion states.",
+      "Review requests, payment proof, and completion states.",
     ),
     "transactionListingContextLabel": MessageLookupByLibrary.simpleMessage(
       "Listing",
@@ -1598,8 +1604,45 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Open dispute",
     ),
-    "transactionOpenIntentExists": MessageLookupByLibrary.simpleMessage(
-      "An open transaction intent already exists for this listing.",
+    "transactionOpenRequestExists": MessageLookupByLibrary.simpleMessage(
+      "An active deal already exists for this listing.",
+    ),
+    "transactionPaymentMethodBaridiMob": MessageLookupByLibrary.simpleMessage(
+      "BaridiMob",
+    ),
+    "transactionPaymentMethodCash": MessageLookupByLibrary.simpleMessage(
+      "Cash",
+    ),
+    "transactionPaymentMethodCcp": MessageLookupByLibrary.simpleMessage("CCP"),
+    "transactionPaymentMethodHelper": MessageLookupByLibrary.simpleMessage(
+      "Choose how this deal will be paid in Algeria.",
+    ),
+    "transactionPaymentMethodLabel": MessageLookupByLibrary.simpleMessage(
+      "Payment method",
+    ),
+    "transactionPaymentMethodPending": MessageLookupByLibrary.simpleMessage(
+      "Not selected yet",
+    ),
+    "transactionPaymentMethodSaved": MessageLookupByLibrary.simpleMessage(
+      "Payment method saved.",
+    ),
+    "transactionPaymentProofLabel": MessageLookupByLibrary.simpleMessage(
+      "Proof",
+    ),
+    "transactionPaymentProofPending": MessageLookupByLibrary.simpleMessage(
+      "No proof uploaded yet",
+    ),
+    "transactionPaymentProofRejected": MessageLookupByLibrary.simpleMessage(
+      "Payment proof rejected. Buyer must upload a new proof.",
+    ),
+    "transactionPaymentProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "Payment proof submitted.",
+    ),
+    "transactionPaymentProofUploaded": MessageLookupByLibrary.simpleMessage(
+      "Proof uploaded",
+    ),
+    "transactionPaymentTitle": MessageLookupByLibrary.simpleMessage(
+      "Offline payment",
     ),
     "transactionRateAction": MessageLookupByLibrary.simpleMessage(
       "Rate counterparty",
@@ -1607,16 +1650,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionRecordLabel": MessageLookupByLibrary.simpleMessage(
       "Transaction record",
     ),
+    "transactionRejectProofAction": MessageLookupByLibrary.simpleMessage(
+      "Reject proof",
+    ),
+    "transactionRequestCreated": MessageLookupByLibrary.simpleMessage(
+      "Purchase request created.",
+    ),
     "transactionRoleBuyer": MessageLookupByLibrary.simpleMessage("Buyer"),
     "transactionRoleSeller": MessageLookupByLibrary.simpleMessage("Seller"),
     "transactionSellerContextLabel": MessageLookupByLibrary.simpleMessage(
       "Seller context",
     ),
     "transactionStartBody": MessageLookupByLibrary.simpleMessage(
-      "Create a transaction intent with the seller for this listing.",
+      "Send a purchase request to the seller for this listing.",
     ),
     "transactionStartTitle": MessageLookupByLibrary.simpleMessage(
-      "Start transaction",
+      "Start purchase request",
     ),
     "transactionStateAccepted": MessageLookupByLibrary.simpleMessage(
       "Accepted",
@@ -1627,6 +1676,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionStateCompleted": MessageLookupByLibrary.simpleMessage(
       "Completed",
     ),
+    "transactionStatePaymentConfirmed": MessageLookupByLibrary.simpleMessage(
+      "Payment confirmed",
+    ),
+    "transactionStateProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "Proof submitted",
+    ),
     "transactionStateRejected": MessageLookupByLibrary.simpleMessage(
       "Rejected",
     ),
@@ -1634,10 +1689,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Requested",
     ),
     "transactionTimelineAccepted": MessageLookupByLibrary.simpleMessage(
-      "Seller confirmed",
+      "Seller accepted",
     ),
     "transactionTimelineAcceptedBody": MessageLookupByLibrary.simpleMessage(
-      "Both sides can now coordinate completion or raise a dispute if needed.",
+      "The seller accepted the request. The buyer must now choose an offline payment method.",
     ),
     "transactionTimelineCancelledBody": MessageLookupByLibrary.simpleMessage(
       "This transaction was cancelled before completion.",
@@ -1648,14 +1703,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionTimelineCompletedBody": MessageLookupByLibrary.simpleMessage(
       "This transaction has been completed and rating is now available.",
     ),
+    "transactionTimelinePayment": MessageLookupByLibrary.simpleMessage(
+      "Payment",
+    ),
+    "transactionTimelinePaymentConfirmedBody": MessageLookupByLibrary.simpleMessage(
+      "The seller confirmed payment. The buyer can confirm receipt after handoff.",
+    ),
+    "transactionTimelinePaymentPendingBody":
+        MessageLookupByLibrary.simpleMessage("Payment setup is still pending."),
+    "transactionTimelinePaymentSubmittedBody":
+        MessageLookupByLibrary.simpleMessage(
+          "The buyer submitted payment proof and the seller must review it.",
+        ),
     "transactionTimelineRejectedBody": MessageLookupByLibrary.simpleMessage(
       "This transaction was rejected by the seller.",
     ),
     "transactionTimelineRequested": MessageLookupByLibrary.simpleMessage(
-      "Intent created",
+      "Request sent",
     ),
     "transactionTimelineRequestedBody": MessageLookupByLibrary.simpleMessage(
-      "The buyer opened the transaction and it is waiting for seller review.",
+      "The buyer sent a purchase request and it is waiting for seller review.",
     ),
     "transactionTimelineTitle": MessageLookupByLibrary.simpleMessage(
       "Timeline",
@@ -1665,6 +1732,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionTransitionSuccess": MessageLookupByLibrary.simpleMessage(
       "Transaction state updated.",
+    ),
+    "transactionUploadProofAction": MessageLookupByLibrary.simpleMessage(
+      "Upload proof",
     ),
     "transactionsEmpty": MessageLookupByLibrary.simpleMessage(
       "No transactions yet.",

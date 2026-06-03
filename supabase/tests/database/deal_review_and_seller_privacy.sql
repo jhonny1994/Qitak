@@ -235,7 +235,7 @@ begin
     v_seller_user_id,
     s.id,
     'Deal contract listing',
-    'Listing used for create_deal_intent contract coverage',
+    'Listing used for create_deal_request contract coverage',
     2500,
     v_wilaya_id::text,
     v_commune_id,
@@ -277,7 +277,7 @@ select lives_ok(
         true
       );
 
-      perform public.create_deal_intent(
+      perform public.create_deal_request(
         (
           select listing_id
           from test_contract_ids
@@ -295,7 +295,7 @@ select lives_ok(
     end
     $inner$
   $$,
-  'create_deal_intent accepts the seller profile id used by the app contract'
+  'create_deal_request accepts the seller profile id used by the app contract'
 );
 
 select is(
@@ -352,14 +352,27 @@ select lives_ok(
     );
 
     perform public.transition_deal(v_deal_id, 'seller_confirmed');
-
     perform set_config(
       'request.jwt.claims',
       json_build_object('sub', v_buyer_id)::text,
       true
     );
 
+    perform public.select_deal_payment_method(v_deal_id, 'cash');
+
+    perform set_config(
+      'request.jwt.claims',
+      json_build_object('sub', v_seller_id)::text,
+      true
+    );
+
     perform public.transition_deal(v_deal_id, 'completed');
+
+    perform set_config(
+      'request.jwt.claims',
+      json_build_object('sub', v_buyer_id)::text,
+      true
+    );
 
     update public.listings
     set status = 'closed',

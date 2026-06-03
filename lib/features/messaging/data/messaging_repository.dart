@@ -586,36 +586,11 @@ class SupabaseMessagingRepository implements MessagingRepository {
     required String senderId,
     required String body,
   }) async {
-    final thread = await _client
-        .from('conversations')
-        .select('listing_id, buyer_id, seller_id')
-        .eq('id', threadId)
-        .single();
     await _client.from('messages').insert(<String, dynamic>{
       'conversation_id': threadId,
       'sender_id': senderId,
       'content': body,
     });
-    await _client
-        .from('conversations')
-        .update(<String, dynamic>{
-          'last_message_at': DateTime.now().toUtc().toIso8601String(),
-        })
-        .eq('id', threadId);
-    final recipientId = senderId == (thread['buyer_id'] as String? ?? '')
-        ? (thread['seller_id'] as String? ?? '')
-        : (thread['buyer_id'] as String? ?? '');
-    if (recipientId.isNotEmpty) {
-      await _client.from('notifications').insert(<String, dynamic>{
-        'user_id': recipientId,
-        'type': 'message_received',
-        'data': <String, dynamic>{
-          'conversation_id': threadId,
-          'listing_id': thread['listing_id'],
-          'deep_link': '/messages/thread/$threadId',
-        },
-      });
-    }
   }
 
   ConversationMessage _messageFromRow(Map<String, dynamic> row) {

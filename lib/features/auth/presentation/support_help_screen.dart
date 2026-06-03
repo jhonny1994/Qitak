@@ -17,7 +17,7 @@ class SupportHelpScreen extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final profile = session.profile;
     final accountRoot = switch (profile?.role) {
-      AccountRole.seller => '/seller/profile',
+      AccountRole.seller => '/profile',
       AccountRole.admin || AccountRole.superAdmin => '/admin/profile',
       AccountRole.buyer => '/profile',
       _ => '/guest/account',

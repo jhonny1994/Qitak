@@ -952,7 +952,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد محادثات مرتبطة بإعلانات بعد. ابدأ من الإعلان عندما تحتاج مراسلة البائع.",
     ),
     "messagesInboxSubtitle": MessageLookupByLibrary.simpleMessage(
-      "كل محادثة تبقى مرتبطة بإعلان ونية تعامل نشطة.",
+      "كل محادثة تبقى مرتبطة بإعلان وطلب شراء نشط.",
     ),
     "messagesInboxTitle": MessageLookupByLibrary.simpleMessage(
       "محادثات الإعلانات",
@@ -1198,7 +1198,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reportListingSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إرسال البلاغ",
     ),
-    "requestPartCta": MessageLookupByLibrary.simpleMessage("طلب القطعة"),
+    "requestPartCta": MessageLookupByLibrary.simpleMessage("إرسال الطلب"),
     "resetPassword": MessageLookupByLibrary.simpleMessage(
       "إعادة تعيين كلمة المرور",
     ),
@@ -1532,6 +1532,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "transactionComplete": MessageLookupByLibrary.simpleMessage("إكمال"),
+    "transactionConfirmCashAction": MessageLookupByLibrary.simpleMessage(
+      "تأكيد الطلب النقدي",
+    ),
+    "transactionConfirmPaymentAction": MessageLookupByLibrary.simpleMessage(
+      "تأكيد الدفع",
+    ),
+    "transactionConfirmReceiptAction": MessageLookupByLibrary.simpleMessage(
+      "تأكيد الاستلام",
+    ),
     "transactionDecisionActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "transactionDecisionComplete": MessageLookupByLibrary.simpleMessage(
       "مكتملة",
@@ -1546,7 +1555,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "المعاملة غير موجودة",
     ),
     "transactionDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "تابع الحالة الحالية والخطوات التالية وروابط الثقة المرتبطة بها.",
+      "تابع طريقة الدفع والإثبات وخطوات إكمال هذه الصفقة.",
     ),
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل الصفقة",
@@ -1558,11 +1567,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionHistoryTitle": MessageLookupByLibrary.simpleMessage(
       "سجل المعاملات",
     ),
-    "transactionIntentCreated": MessageLookupByLibrary.simpleMessage(
-      "تم إنشاء طلب المعاملة.",
-    ),
     "transactionLifecycleSubtitle": MessageLookupByLibrary.simpleMessage(
-      "راجع الطلبات النشطة وحالات القبول والإكمال.",
+      "راجع الطلبات وإثباتات الدفع وحالات الإكمال.",
     ),
     "transactionListingContextLabel": MessageLookupByLibrary.simpleMessage(
       "الإعلان",
@@ -1579,8 +1585,45 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "فتح نزاع",
     ),
-    "transactionOpenIntentExists": MessageLookupByLibrary.simpleMessage(
-      "يوجد طلب معاملة مفتوح بالفعل لهذا الإعلان.",
+    "transactionOpenRequestExists": MessageLookupByLibrary.simpleMessage(
+      "توجد معاملة نشطة لهذا الإعلان بالفعل.",
+    ),
+    "transactionPaymentMethodBaridiMob": MessageLookupByLibrary.simpleMessage(
+      "BaridiMob",
+    ),
+    "transactionPaymentMethodCash": MessageLookupByLibrary.simpleMessage(
+      "نقداً",
+    ),
+    "transactionPaymentMethodCcp": MessageLookupByLibrary.simpleMessage("CCP"),
+    "transactionPaymentMethodHelper": MessageLookupByLibrary.simpleMessage(
+      "اختر طريقة الدفع لهذه الصفقة في الجزائر.",
+    ),
+    "transactionPaymentMethodLabel": MessageLookupByLibrary.simpleMessage(
+      "طريقة الدفع",
+    ),
+    "transactionPaymentMethodPending": MessageLookupByLibrary.simpleMessage(
+      "لم يتم الاختيار بعد",
+    ),
+    "transactionPaymentMethodSaved": MessageLookupByLibrary.simpleMessage(
+      "تم حفظ طريقة الدفع.",
+    ),
+    "transactionPaymentProofLabel": MessageLookupByLibrary.simpleMessage(
+      "الإثبات",
+    ),
+    "transactionPaymentProofPending": MessageLookupByLibrary.simpleMessage(
+      "لم يتم رفع أي إثبات بعد",
+    ),
+    "transactionPaymentProofRejected": MessageLookupByLibrary.simpleMessage(
+      "تم رفض إثبات الدفع. يجب على المشتري رفع إثبات جديد.",
+    ),
+    "transactionPaymentProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال إثبات الدفع.",
+    ),
+    "transactionPaymentProofUploaded": MessageLookupByLibrary.simpleMessage(
+      "تم رفع الإثبات",
+    ),
+    "transactionPaymentTitle": MessageLookupByLibrary.simpleMessage(
+      "الدفع خارج المنصة",
     ),
     "transactionRateAction": MessageLookupByLibrary.simpleMessage(
       "تقييم الطرف المقابل",
@@ -1588,29 +1631,43 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionRecordLabel": MessageLookupByLibrary.simpleMessage(
       "سجل المعاملة",
     ),
+    "transactionRejectProofAction": MessageLookupByLibrary.simpleMessage(
+      "رفض الإثبات",
+    ),
+    "transactionRequestCreated": MessageLookupByLibrary.simpleMessage(
+      "تم إنشاء طلب الشراء.",
+    ),
     "transactionRoleBuyer": MessageLookupByLibrary.simpleMessage("مشتري"),
     "transactionRoleSeller": MessageLookupByLibrary.simpleMessage("بائع"),
     "transactionSellerContextLabel": MessageLookupByLibrary.simpleMessage(
       "سياق البائع",
     ),
     "transactionStartBody": MessageLookupByLibrary.simpleMessage(
-      "أنشئ طلب معاملة مع البائع لهذا الإعلان.",
+      "أرسل طلب شراء إلى البائع لهذا الإعلان.",
     ),
-    "transactionStartTitle": MessageLookupByLibrary.simpleMessage("بدء معاملة"),
+    "transactionStartTitle": MessageLookupByLibrary.simpleMessage(
+      "بدء طلب شراء",
+    ),
     "transactionStateAccepted": MessageLookupByLibrary.simpleMessage(
       "تم القبول",
     ),
     "transactionStateCancelled": MessageLookupByLibrary.simpleMessage("ملغاة"),
     "transactionStateCompleted": MessageLookupByLibrary.simpleMessage("مكتملة"),
+    "transactionStatePaymentConfirmed": MessageLookupByLibrary.simpleMessage(
+      "تم تأكيد الدفع",
+    ),
+    "transactionStateProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال الإثبات",
+    ),
     "transactionStateRejected": MessageLookupByLibrary.simpleMessage("مرفوضة"),
     "transactionStateRequested": MessageLookupByLibrary.simpleMessage(
       "طلب مفتوح",
     ),
     "transactionTimelineAccepted": MessageLookupByLibrary.simpleMessage(
-      "أكد البائع",
+      "وافق البائع",
     ),
     "transactionTimelineAcceptedBody": MessageLookupByLibrary.simpleMessage(
-      "يمكن للطرفين الآن تنسيق الإكمال أو فتح نزاع عند الحاجة.",
+      "وافق البائع على الطلب ويجب على المشتري الآن اختيار طريقة الدفع خارج المنصة.",
     ),
     "transactionTimelineCancelledBody": MessageLookupByLibrary.simpleMessage(
       "تم إلغاء هذه المعاملة قبل الإكمال.",
@@ -1621,14 +1678,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionTimelineCompletedBody": MessageLookupByLibrary.simpleMessage(
       "اكتملت هذه المعاملة وأصبح التقييم متاحاً الآن.",
     ),
+    "transactionTimelinePayment": MessageLookupByLibrary.simpleMessage("الدفع"),
+    "transactionTimelinePaymentConfirmedBody":
+        MessageLookupByLibrary.simpleMessage(
+          "أكد البائع الدفع ويمكن للمشتري تأكيد الاستلام بعد التسليم.",
+        ),
+    "transactionTimelinePaymentPendingBody":
+        MessageLookupByLibrary.simpleMessage("إعداد الدفع ما زال معلقاً."),
+    "transactionTimelinePaymentSubmittedBody":
+        MessageLookupByLibrary.simpleMessage(
+          "أرسل المشتري إثبات الدفع ويجب على البائع مراجعته.",
+        ),
     "transactionTimelineRejectedBody": MessageLookupByLibrary.simpleMessage(
       "تم رفض هذه المعاملة من البائع.",
     ),
     "transactionTimelineRequested": MessageLookupByLibrary.simpleMessage(
-      "تم إنشاء الطلب",
+      "تم إرسال الطلب",
     ),
     "transactionTimelineRequestedBody": MessageLookupByLibrary.simpleMessage(
-      "بدأ المشتري المعاملة وهي بانتظار مراجعة البائع.",
+      "أرسل المشتري طلب الشراء وهو الآن بانتظار مراجعة البائع.",
     ),
     "transactionTimelineTitle": MessageLookupByLibrary.simpleMessage(
       "الخط الزمني",
@@ -1638,6 +1706,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionTransitionSuccess": MessageLookupByLibrary.simpleMessage(
       "تم تحديث حالة المعاملة.",
+    ),
+    "transactionUploadProofAction": MessageLookupByLibrary.simpleMessage(
+      "رفع الإثبات",
     ),
     "transactionsEmpty": MessageLookupByLibrary.simpleMessage(
       "لا توجد معاملات بعد.",

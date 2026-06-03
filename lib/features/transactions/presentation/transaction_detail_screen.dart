@@ -5,8 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
+import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
@@ -44,6 +47,7 @@ class _TransactionDetailScreenState
     final directRecord = ref.watch(
       transactionDetailProvider(widget.transactionId),
     );
+    final paymentMethodOptions = ref.watch(buyerPaymentMethodPolicyProvider);
     if (profile == null) {
       return Padding(
         padding: qitakPagePadding,
@@ -67,6 +71,8 @@ class _TransactionDetailScreenState
       AsyncData(:final value) => value,
       _ => null,
     };
+    final paymentOptions =
+        paymentMethodOptions.asData?.value ?? const <AppPolicyOption>[];
     if (record == null) {
       return Padding(
         padding: qitakPagePadding,
@@ -122,12 +128,144 @@ class _TransactionDetailScreenState
                         ? context.l10n.discoveryDealTypeBuyOrExchange
                         : context.l10n.discoveryDealTypeBuy,
                   ),
+                  if (record.paymentMethod != null)
+                    QitakChip(
+                      label: _paymentMethodLabel(
+                        context,
+                        record.paymentMethod!,
+                      ),
+                    ),
                   QitakChip(
                     label: record.buyerUserId == profile.id
                         ? context.l10n.transactionRoleBuyer
                         : context.l10n.transactionRoleSeller,
                   ),
                 ],
+              ),
+              const SizedBox(height: 18),
+              QitakPanel(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.transactionPaymentTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    QitakDetailRow(
+                      label: context.l10n.transactionPaymentMethodLabel,
+                      value: record.paymentMethod == null
+                          ? context.l10n.transactionPaymentMethodPending
+                          : _paymentMethodLabel(context, record.paymentMethod!),
+                    ),
+                    QitakDetailRow(
+                      label: context.l10n.transactionPaymentProofLabel,
+                      value: record.paymentProofPath == null
+                          ? context.l10n.transactionPaymentProofPending
+                          : context.l10n.transactionPaymentProofUploaded,
+                    ),
+                    if (record.state == TransactionState.sellerConfirmed &&
+                        profile.id == record.buyerUserId) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        context.l10n.transactionPaymentMethodHelper,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          for (final option in paymentOptions)
+                            QitakChip(
+                              label: _paymentMethodPolicyLabel(
+                                context,
+                                option.labelKey,
+                              ),
+                              selected:
+                                  record.paymentMethod?.value == option.code,
+                              onTap: () => _selectPaymentMethod(
+                                transactionId: record.id,
+                                actorUserId: profile.id,
+                                code: option.code,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                    if (record.state == TransactionState.sellerConfirmed &&
+                        profile.id == record.buyerUserId &&
+                        record.requiresPaymentProof) ...[
+                      const SizedBox(height: 12),
+                      FilledButton.tonal(
+                        onPressed: () => _submitPaymentProof(
+                          transactionId: record.id,
+                          actorUserId: profile.id,
+                        ),
+                        child: Text(context.l10n.transactionUploadProofAction),
+                      ),
+                    ],
+                    if (record.state ==
+                            TransactionState.paymentProofSubmitted &&
+                        profile.id == record.sellerUserId) ...[
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton(
+                            onPressed: () => _transition(
+                              userId: profile.id,
+                              transactionId: record.id,
+                              nextState: TransactionState.paymentConfirmed,
+                            ),
+                            child: Text(
+                              context.l10n.transactionConfirmPaymentAction,
+                            ),
+                          ),
+                          OutlinedButton(
+                            onPressed: () => _rejectPaymentProof(
+                              userId: profile.id,
+                              transactionId: record.id,
+                            ),
+                            child: Text(
+                              context.l10n.transactionRejectProofAction,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    if (record.state == TransactionState.paymentConfirmed &&
+                        profile.id == record.buyerUserId) ...[
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => _transition(
+                          userId: profile.id,
+                          transactionId: record.id,
+                          nextState: TransactionState.completed,
+                        ),
+                        child: Text(
+                          context.l10n.transactionConfirmReceiptAction,
+                        ),
+                      ),
+                    ],
+                    if (record.state == TransactionState.sellerConfirmed &&
+                        record.isCashPayment &&
+                        profile.id == record.sellerUserId) ...[
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => _transition(
+                          userId: profile.id,
+                          transactionId: record.id,
+                          nextState: TransactionState.completed,
+                        ),
+                        child: Text(context.l10n.transactionConfirmCashAction),
+                      ),
+                    ],
+                  ],
+                ),
               ),
               const SizedBox(height: 18),
               Text(
@@ -155,7 +293,7 @@ class _TransactionDetailScreenState
                       record.buyerUserId == profile.id)
                     FilledButton(
                       onPressed: () => context.push(
-                        '/transactions/listing/${record.listingId}/new',
+                        '/transactions/listing/${record.listingId}/request',
                       ),
                       child: Text(context.l10n.retryAction),
                     ),
@@ -171,11 +309,13 @@ class _TransactionDetailScreenState
                       if (!context.mounted) {
                         return;
                       }
-                      unawaited(context.push('/messages/thread/$threadId'));
+                      context.go('/messages/thread/$threadId');
                     },
                     child: Text(context.l10n.transactionMessageAction),
                   ),
                   if (record.state == TransactionState.sellerConfirmed ||
+                      record.state == TransactionState.paymentProofSubmitted ||
+                      record.state == TransactionState.paymentConfirmed ||
                       record.state == TransactionState.completed)
                     OutlinedButton(
                       onPressed: () =>
@@ -201,14 +341,23 @@ class _TransactionDetailScreenState
     final requested = QitakTimelineBlock(
       title: context.l10n.transactionTimelineRequested,
       subtitle: context.l10n.transactionTimelineRequestedBody,
-      isCurrent:
-          record.state == TransactionState.intentCreated ||
-          record.state == TransactionState.pendingSellerResponse,
+      isCurrent: record.state == TransactionState.pendingSellerResponse,
     );
     final accepted = QitakTimelineBlock(
       title: context.l10n.transactionTimelineAccepted,
       subtitle: context.l10n.transactionTimelineAcceptedBody,
       isCurrent: record.state == TransactionState.sellerConfirmed,
+    );
+    final payment = QitakTimelineBlock(
+      title: context.l10n.transactionTimelinePayment,
+      subtitle: record.state == TransactionState.paymentProofSubmitted
+          ? context.l10n.transactionTimelinePaymentSubmittedBody
+          : record.state == TransactionState.paymentConfirmed
+          ? context.l10n.transactionTimelinePaymentConfirmedBody
+          : context.l10n.transactionTimelinePaymentPendingBody,
+      isCurrent:
+          record.state == TransactionState.paymentProofSubmitted ||
+          record.state == TransactionState.paymentConfirmed,
     );
     final completed = QitakTimelineBlock(
       title: context.l10n.transactionTimelineCompleted,
@@ -222,7 +371,7 @@ class _TransactionDetailScreenState
           : context.l10n.transactionTimelineCompletedBody,
       isCurrent: record.state == TransactionState.completed,
     );
-    return [requested, accepted, completed];
+    return [requested, accepted, payment, completed];
   }
 
   bool _canCancelTransaction(TransactionRecord record, String userId) {
@@ -232,7 +381,31 @@ class _TransactionDetailScreenState
       return false;
     }
     return record.state == TransactionState.pendingSellerResponse ||
-        record.state == TransactionState.sellerConfirmed;
+        record.state == TransactionState.sellerConfirmed ||
+        record.state == TransactionState.paymentProofSubmitted;
+  }
+
+  Future<void> _transition({
+    required String userId,
+    required String transactionId,
+    required TransactionState nextState,
+  }) async {
+    final ok = await ref
+        .read(transactionProvider.notifier)
+        .transition(
+          transactionId: transactionId,
+          actorUserId: userId,
+          nextState: nextState,
+        );
+    if (!mounted) {
+      return;
+    }
+    final text = ok
+        ? context.l10n.transactionTransitionSuccess
+        : context.l10n.transactionTransitionDenied;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text)),
+    );
   }
 
   Future<void> _confirmCancelTransaction({
@@ -253,21 +426,106 @@ class _TransactionDetailScreenState
       return;
     }
 
+    await _transition(
+      userId: userId,
+      transactionId: transactionId,
+      nextState: TransactionState.cancelled,
+    );
+  }
+
+  Future<void> _selectPaymentMethod({
+    required String transactionId,
+    required String actorUserId,
+    required String code,
+  }) async {
+    final method = TransactionPaymentMethodX.fromValue(code);
+    if (method == null) {
+      return;
+    }
     final ok = await ref
         .read(transactionProvider.notifier)
-        .transition(
+        .selectPaymentMethod(
           transactionId: transactionId,
-          actorUserId: userId,
-          nextState: TransactionState.cancelled,
+          actorUserId: actorUserId,
+          paymentMethod: method,
         );
     if (!mounted) {
       return;
     }
     final text = ok
-        ? context.l10n.transactionTransitionSuccess
+        ? context.l10n.transactionPaymentMethodSaved
         : context.l10n.transactionTransitionDenied;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<void> _submitPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+  }) async {
+    final picker = ref.read(listingMediaPickerProvider);
+    final picked = await picker.pickImages(maxImages: 1);
+    if (picked.isEmpty) {
+      return;
+    }
+    final ok = await ref
+        .read(transactionProvider.notifier)
+        .submitPaymentProof(
+          transactionId: transactionId,
+          actorUserId: actorUserId,
+          proof: picked.first,
+        );
+    if (!mounted) {
+      return;
+    }
+    final text = ok
+        ? context.l10n.transactionPaymentProofSubmitted
+        : context.l10n.transactionTransitionDenied;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<void> _rejectPaymentProof({
+    required String userId,
+    required String transactionId,
+  }) async {
+    final ok = await ref
+        .read(transactionProvider.notifier)
+        .rejectPaymentProof(
+          transactionId: transactionId,
+          actorUserId: userId,
+        );
+    if (!mounted) {
+      return;
+    }
+    final text = ok
+        ? context.l10n.transactionPaymentProofRejected
+        : context.l10n.transactionTransitionDenied;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  String _paymentMethodLabel(
+    BuildContext context,
+    TransactionPaymentMethod method,
+  ) {
+    switch (method) {
+      case TransactionPaymentMethod.ccp:
+        return context.l10n.transactionPaymentMethodCcp;
+      case TransactionPaymentMethod.baridiMob:
+        return context.l10n.transactionPaymentMethodBaridiMob;
+      case TransactionPaymentMethod.cash:
+        return context.l10n.transactionPaymentMethodCash;
+    }
+  }
+
+  String _paymentMethodPolicyLabel(BuildContext context, String labelKey) {
+    switch (labelKey) {
+      case 'transactionPaymentMethodCcp':
+        return context.l10n.transactionPaymentMethodCcp;
+      case 'transactionPaymentMethodBaridiMob':
+        return context.l10n.transactionPaymentMethodBaridiMob;
+      case 'transactionPaymentMethodCash':
+        return context.l10n.transactionPaymentMethodCash;
+      default:
+        return labelKey;
+    }
   }
 }

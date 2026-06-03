@@ -6,11 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
+import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
-import 'package:qitak_app/features/transactions/presentation/transaction_intent_screen.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_request_screen.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/generated/l10n.dart';
 
@@ -37,7 +38,7 @@ class _FakeTransactionRepository implements TransactionRepository {
   }) async => true;
 
   @override
-  Future<TransactionRecord> createIntent({
+  Future<TransactionRecord> createRequest({
     required String listingId,
     required String buyerUserId,
     required String sellerUserId,
@@ -56,6 +57,46 @@ class _FakeTransactionRepository implements TransactionRepository {
   Future<List<TransactionRecord>> listForUser(String userId) async => [record];
 
   @override
+  Future<TransactionRecord> rejectPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+  }) async {
+    return record = record.copyWith(
+      state: TransactionState.sellerConfirmed,
+      updatedAt: DateTime(2026, 1, 2),
+      clearPaymentProofPath: true,
+      clearPaymentProofSubmittedAt: true,
+      clearPaymentConfirmedAt: true,
+    );
+  }
+
+  @override
+  Future<TransactionRecord> selectPaymentMethod({
+    required String transactionId,
+    required String actorUserId,
+    required TransactionPaymentMethod paymentMethod,
+  }) async {
+    return record = record.copyWith(
+      paymentMethod: paymentMethod,
+      updatedAt: DateTime(2026, 1, 2),
+    );
+  }
+
+  @override
+  Future<TransactionRecord> submitPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+    required ListingMediaSelection proof,
+  }) async {
+    return record = record.copyWith(
+      state: TransactionState.paymentProofSubmitted,
+      paymentProofPath: proof.fileName,
+      paymentProofSubmittedAt: DateTime(2026, 1, 2),
+      updatedAt: DateTime(2026, 1, 2),
+    );
+  }
+
+  @override
   Future<TransactionRecord> transition({
     required String transactionId,
     required String actorUserId,
@@ -68,19 +109,18 @@ class _FakeTransactionRepository implements TransactionRepository {
         nextState: nextState,
       ),
     );
-    return record = TransactionRecord(
-      id: record.id,
-      listingId: record.listingId,
-      buyerUserId: record.buyerUserId,
-      sellerUserId: record.sellerUserId,
+    return record = record.copyWith(
       state: nextState,
-      createdAt: record.createdAt,
       updatedAt: DateTime(2026, 1, 2),
-      dealType: record.dealType,
-      exchangeOffer: record.exchangeOffer,
-      expiresAt: record.expiresAt,
-      confirmedAt: record.confirmedAt,
-      completedAt: record.completedAt,
+      confirmedAt: nextState == TransactionState.sellerConfirmed
+          ? DateTime(2026, 1, 2)
+          : record.confirmedAt,
+      paymentConfirmedAt: nextState == TransactionState.paymentConfirmed
+          ? DateTime(2026, 1, 2)
+          : record.paymentConfirmedAt,
+      completedAt: nextState == TransactionState.completed
+          ? DateTime(2026, 1, 2)
+          : record.completedAt,
       cancelledAt: nextState == TransactionState.cancelled
           ? DateTime(2026, 1, 2)
           : record.cancelledAt,
@@ -142,7 +182,7 @@ void main() {
     await container.read(authSessionProvider.notifier).restore();
     await container
         .read(transactionProvider.notifier)
-        .createIntent(
+        .createRequest(
           listingId: 'listing-1',
           buyerUserId: 'buyer-001',
           sellerUserId: 'seller-001',
@@ -355,7 +395,7 @@ void main() {
           ),
         ),
         GoRoute(
-          path: '/transactions/listing/:listingId/new',
+          path: '/transactions/listing/:listingId/request',
           builder: (context, state) => Scaffold(
             body: Text('retry-${state.pathParameters['listingId']}'),
           ),
@@ -409,11 +449,11 @@ void main() {
     expect(retryButton, findsOneWidget);
   });
 
-  testWidgets('transaction intent uses request part CTA label', (tester) async {
+  testWidgets('transaction request uses request CTA label', (tester) async {
     final scope = await buildTestScope(
       const TestMaterialShell(
         child: Scaffold(
-          body: TransactionIntentScreen(listingId: 'listing-1'),
+          body: TransactionRequestScreen(listingId: 'listing-1'),
         ),
       ),
       seed: const <String, Object>{
@@ -428,11 +468,11 @@ void main() {
 
     await tester.pumpWidget(scope);
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(TransactionIntentScreen)),
+      tester.element(find.byType(TransactionRequestScreen)),
     );
     await container.read(authSessionProvider.notifier).restore();
     await tester.pumpAndSettle();
 
-    expect(find.widgetWithText(FilledButton, 'Request part'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Send request'), findsOneWidget);
   });
 }

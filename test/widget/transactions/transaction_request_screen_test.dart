@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
-import 'package:qitak_app/features/transactions/presentation/transaction_intent_screen.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_request_screen.dart';
 
 import '../../fixtures/seeded_discovery_repository.dart';
 import '../../test_bootstrap.dart';
 
 void main() {
-  testWidgets('creates transaction intent', (
+  testWidgets('creates purchase request', (
     tester,
   ) async {
     final scope = await buildTestScope(
       const TestMaterialShell(
         child: Scaffold(
-          body: TransactionIntentScreen(
+          body: TransactionRequestScreen(
             listingId: 'listing-1',
           ),
         ),
@@ -32,14 +32,14 @@ void main() {
 
     await tester.pumpWidget(scope);
     final container = ProviderScope.containerOf(
-      tester.element(find.byType(TransactionIntentScreen)),
+      tester.element(find.byType(TransactionRequestScreen)),
     );
     await container.read(authSessionProvider.notifier).restore();
     await tester.pumpAndSettle();
 
-    final button = find.byKey(const Key('transaction-start-button'));
+    final button = find.byKey(const Key('transaction-request-button'));
     await tester.tap(button);
     await tester.pumpAndSettle();
-    expect(find.text('Transaction intent created.'), findsOneWidget);
+    expect(find.text('Purchase request created.'), findsOneWidget);
   });
 }

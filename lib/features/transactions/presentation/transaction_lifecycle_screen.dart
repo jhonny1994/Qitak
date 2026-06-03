@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
@@ -67,23 +68,29 @@ class _TransactionLifecycleScreenState
             for (final tx in state.items)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: QitakPanel(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      QitakSignalStrip(
-                        label: context.l10n.transactionRecordLabel,
-                        value: context.l10n.transactionReferenceLabel(tx.id),
-                        status: context.l10n.displayTransactionState(tx.state),
-                      ),
-                      ...switch (_buildActions(context, tx, userId)) {
-                        [] => const <Widget>[],
-                        final actions => <Widget>[
-                          const SizedBox(height: 12),
-                          Wrap(spacing: 8, runSpacing: 8, children: actions),
-                        ],
-                      },
-                    ],
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(24),
+                  onTap: () => context.push('/deals/${tx.id}'),
+                  child: QitakPanel(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        QitakSignalStrip(
+                          label: context.l10n.transactionRecordLabel,
+                          value: context.l10n.transactionReferenceLabel(tx.id),
+                          status: context.l10n.displayTransactionState(
+                            tx.state,
+                          ),
+                        ),
+                        ...switch (_buildActions(context, tx, userId)) {
+                          [] => const <Widget>[],
+                          final actions => <Widget>[
+                            const SizedBox(height: 12),
+                            Wrap(spacing: 8, runSpacing: 8, children: actions),
+                          ],
+                        },
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -118,7 +125,6 @@ class _TransactionLifecycleScreenState
     String userId,
   ) {
     switch (tx.state) {
-      case TransactionState.intentCreated:
       case TransactionState.pendingSellerResponse:
         return [
           if (userId == tx.sellerUserId)
@@ -150,14 +156,15 @@ class _TransactionLifecycleScreenState
         ];
       case TransactionState.sellerConfirmed:
         return [
-          OutlinedButton(
-            onPressed: () => _transition(
-              transactionId: tx.id,
-              userId: userId,
-              nextState: TransactionState.completed,
+          if (tx.isCashPayment && userId == tx.sellerUserId)
+            OutlinedButton(
+              onPressed: () => _transition(
+                transactionId: tx.id,
+                userId: userId,
+                nextState: TransactionState.completed,
+              ),
+              child: Text(context.l10n.transactionComplete),
             ),
-            child: Text(context.l10n.transactionComplete),
-          ),
           OutlinedButton(
             onPressed: () => _confirmCancelTransaction(
               transactionId: tx.id,
@@ -165,6 +172,46 @@ class _TransactionLifecycleScreenState
             ),
             child: Text(context.l10n.transactionCancel),
           ),
+        ];
+      case TransactionState.paymentProofSubmitted:
+        return [
+          if (userId == tx.sellerUserId)
+            OutlinedButton(
+              onPressed: () => _transition(
+                transactionId: tx.id,
+                userId: userId,
+                nextState: TransactionState.paymentConfirmed,
+              ),
+              child: Text(context.l10n.transactionConfirmPaymentAction),
+            ),
+          if (userId == tx.sellerUserId)
+            OutlinedButton(
+              onPressed: () => _rejectPaymentProof(
+                transactionId: tx.id,
+                userId: userId,
+              ),
+              child: Text(context.l10n.transactionRejectProofAction),
+            ),
+          if (userId == tx.buyerUserId)
+            OutlinedButton(
+              onPressed: () => _confirmCancelTransaction(
+                transactionId: tx.id,
+                userId: userId,
+              ),
+              child: Text(context.l10n.transactionCancel),
+            ),
+        ];
+      case TransactionState.paymentConfirmed:
+        return [
+          if (userId == tx.buyerUserId)
+            OutlinedButton(
+              onPressed: () => _transition(
+                transactionId: tx.id,
+                userId: userId,
+                nextState: TransactionState.completed,
+              ),
+              child: Text(context.l10n.transactionConfirmReceiptAction),
+            ),
         ];
       case TransactionState.disputeOpened:
         return const <Widget>[];
@@ -197,5 +244,24 @@ class _TransactionLifecycleScreenState
         nextState: TransactionState.cancelled,
       );
     }
+  }
+
+  Future<void> _rejectPaymentProof({
+    required String transactionId,
+    required String userId,
+  }) async {
+    final ok = await ref
+        .read(transactionProvider.notifier)
+        .rejectPaymentProof(
+          transactionId: transactionId,
+          actorUserId: userId,
+        );
+    if (!mounted) {
+      return;
+    }
+    final text = ok
+        ? context.l10n.transactionTransitionSuccess
+        : context.l10n.transactionTransitionDenied;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }

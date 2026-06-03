@@ -82,7 +82,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           data: (value) => value,
           orElse: () => const <String>{},
         );
-    final canSave = session.profile?.role == AccountRole.buyer;
+    final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
     final canShowSave = canSave || !session.isAuthenticated;
 
     return ListView(
@@ -289,7 +289,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Future<void> _toggleSave(String listingId) async {
     final session = ref.read(authSessionProvider);
-    if (session.profile?.role == AccountRole.buyer) {
+    if (session.profile?.role.hasBuyerCapabilities ?? false) {
       await ref.read(savedListingIdsProvider.notifier).toggle(listingId);
       return;
     }

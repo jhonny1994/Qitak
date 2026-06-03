@@ -996,7 +996,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aucune conversation liee a une annonce. Demarrez depuis une annonce pour contacter un vendeur.",
     ),
     "messagesInboxSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Chaque conversation reste liee a une annonce et a une intention de transaction claire.",
+      "Chaque conversation reste liee a une annonce et a une demande d\'achat claire.",
     ),
     "messagesInboxTitle": MessageLookupByLibrary.simpleMessage(
       "Conversations d\'annonces",
@@ -1262,7 +1262,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "reportListingSuccess": MessageLookupByLibrary.simpleMessage(
       "Signalement envoyé",
     ),
-    "requestPartCta": MessageLookupByLibrary.simpleMessage("Demander la pièce"),
+    "requestPartCta": MessageLookupByLibrary.simpleMessage(
+      "Envoyer la demande",
+    ),
     "resetPassword": MessageLookupByLibrary.simpleMessage(
       "Réinitialiser le mot de passe",
     ),
@@ -1610,6 +1612,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionCancel": MessageLookupByLibrary.simpleMessage("Annuler"),
     "transactionComplete": MessageLookupByLibrary.simpleMessage("Finaliser"),
+    "transactionConfirmCashAction": MessageLookupByLibrary.simpleMessage(
+      "Confirmer la commande en cash",
+    ),
+    "transactionConfirmPaymentAction": MessageLookupByLibrary.simpleMessage(
+      "Confirmer le paiement",
+    ),
+    "transactionConfirmReceiptAction": MessageLookupByLibrary.simpleMessage(
+      "Confirmer la réception",
+    ),
     "transactionDecisionActive": MessageLookupByLibrary.simpleMessage("Active"),
     "transactionDecisionComplete": MessageLookupByLibrary.simpleMessage(
       "Finalisee",
@@ -1624,7 +1635,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Transaction introuvable",
     ),
     "transactionDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Suivez l\'état actuel, les prochaines actions et les étapes de confiance liées.",
+      "Suivez le mode de paiement, la preuve et les étapes de finalisation de cette transaction.",
     ),
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Details de la transaction",
@@ -1638,11 +1649,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionHistoryTitle": MessageLookupByLibrary.simpleMessage(
       "Historique des transactions",
     ),
-    "transactionIntentCreated": MessageLookupByLibrary.simpleMessage(
-      "Intention de transaction créée.",
-    ),
     "transactionLifecycleSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Revoyez demandes actives, validations et clôtures.",
+      "Revoyez les demandes, les preuves de paiement et les états de clôture.",
     ),
     "transactionListingContextLabel": MessageLookupByLibrary.simpleMessage(
       "Annonce",
@@ -1659,8 +1667,45 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Ouvrir un litige",
     ),
-    "transactionOpenIntentExists": MessageLookupByLibrary.simpleMessage(
-      "Une intention ouverte existe déjà pour cette annonce.",
+    "transactionOpenRequestExists": MessageLookupByLibrary.simpleMessage(
+      "Une transaction active existe déjà pour cette annonce.",
+    ),
+    "transactionPaymentMethodBaridiMob": MessageLookupByLibrary.simpleMessage(
+      "BaridiMob",
+    ),
+    "transactionPaymentMethodCash": MessageLookupByLibrary.simpleMessage(
+      "Espèces",
+    ),
+    "transactionPaymentMethodCcp": MessageLookupByLibrary.simpleMessage("CCP"),
+    "transactionPaymentMethodHelper": MessageLookupByLibrary.simpleMessage(
+      "Choisissez comment cette transaction sera payée en Algérie.",
+    ),
+    "transactionPaymentMethodLabel": MessageLookupByLibrary.simpleMessage(
+      "Mode de paiement",
+    ),
+    "transactionPaymentMethodPending": MessageLookupByLibrary.simpleMessage(
+      "Pas encore sélectionné",
+    ),
+    "transactionPaymentMethodSaved": MessageLookupByLibrary.simpleMessage(
+      "Mode de paiement enregistré.",
+    ),
+    "transactionPaymentProofLabel": MessageLookupByLibrary.simpleMessage(
+      "Preuve",
+    ),
+    "transactionPaymentProofPending": MessageLookupByLibrary.simpleMessage(
+      "Aucune preuve envoyée",
+    ),
+    "transactionPaymentProofRejected": MessageLookupByLibrary.simpleMessage(
+      "Preuve refusée. L\'acheteur doit envoyer une nouvelle preuve.",
+    ),
+    "transactionPaymentProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "Preuve de paiement envoyée.",
+    ),
+    "transactionPaymentProofUploaded": MessageLookupByLibrary.simpleMessage(
+      "Preuve envoyée",
+    ),
+    "transactionPaymentTitle": MessageLookupByLibrary.simpleMessage(
+      "Paiement hors plateforme",
     ),
     "transactionRateAction": MessageLookupByLibrary.simpleMessage(
       "Evaluer l\'autre partie",
@@ -1668,16 +1713,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionRecordLabel": MessageLookupByLibrary.simpleMessage(
       "Enregistrement transaction",
     ),
+    "transactionRejectProofAction": MessageLookupByLibrary.simpleMessage(
+      "Refuser la preuve",
+    ),
+    "transactionRequestCreated": MessageLookupByLibrary.simpleMessage(
+      "Demande d\'achat créée.",
+    ),
     "transactionRoleBuyer": MessageLookupByLibrary.simpleMessage("Acheteur"),
     "transactionRoleSeller": MessageLookupByLibrary.simpleMessage("Vendeur"),
     "transactionSellerContextLabel": MessageLookupByLibrary.simpleMessage(
       "Contexte vendeur",
     ),
     "transactionStartBody": MessageLookupByLibrary.simpleMessage(
-      "Créez une intention de transaction avec le vendeur pour cette annonce.",
+      "Envoyez une demande d\'achat au vendeur pour cette annonce.",
     ),
     "transactionStartTitle": MessageLookupByLibrary.simpleMessage(
-      "Demarrer une transaction",
+      "Demarrer une demande d\'achat",
     ),
     "transactionStateAccepted": MessageLookupByLibrary.simpleMessage(
       "Acceptée",
@@ -1688,15 +1739,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionStateCompleted": MessageLookupByLibrary.simpleMessage(
       "Terminée",
     ),
+    "transactionStatePaymentConfirmed": MessageLookupByLibrary.simpleMessage(
+      "Paiement confirmé",
+    ),
+    "transactionStateProofSubmitted": MessageLookupByLibrary.simpleMessage(
+      "Preuve envoyée",
+    ),
     "transactionStateRejected": MessageLookupByLibrary.simpleMessage("Refusée"),
     "transactionStateRequested": MessageLookupByLibrary.simpleMessage(
       "Demande ouverte",
     ),
     "transactionTimelineAccepted": MessageLookupByLibrary.simpleMessage(
-      "Vendeur confirmé",
+      "Vendeur accepté",
     ),
     "transactionTimelineAcceptedBody": MessageLookupByLibrary.simpleMessage(
-      "Les deux parties peuvent maintenant coordonner la finalisation ou ouvrir un litige.",
+      "Le vendeur a accepté la demande. L\'acheteur doit maintenant choisir un mode de paiement hors plateforme.",
     ),
     "transactionTimelineCancelledBody": MessageLookupByLibrary.simpleMessage(
       "Cette transaction a été annulée avant finalisation.",
@@ -1707,14 +1764,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionTimelineCompletedBody": MessageLookupByLibrary.simpleMessage(
       "Cette transaction est finalisee et l\'evaluation est maintenant disponible.",
     ),
+    "transactionTimelinePayment": MessageLookupByLibrary.simpleMessage(
+      "Paiement",
+    ),
+    "transactionTimelinePaymentConfirmedBody": MessageLookupByLibrary.simpleMessage(
+      "Le vendeur a confirmé le paiement. L\'acheteur peut confirmer la réception après la remise.",
+    ),
+    "transactionTimelinePaymentPendingBody":
+        MessageLookupByLibrary.simpleMessage(
+          "La configuration du paiement est encore en attente.",
+        ),
+    "transactionTimelinePaymentSubmittedBody": MessageLookupByLibrary.simpleMessage(
+      "L\'acheteur a envoyé une preuve de paiement et le vendeur doit la vérifier.",
+    ),
     "transactionTimelineRejectedBody": MessageLookupByLibrary.simpleMessage(
       "Cette transaction a été rejetée par le vendeur.",
     ),
     "transactionTimelineRequested": MessageLookupByLibrary.simpleMessage(
-      "Intention creee",
+      "Demande envoyée",
     ),
     "transactionTimelineRequestedBody": MessageLookupByLibrary.simpleMessage(
-      "L\'acheteur a ouvert la transaction et elle attend la revue du vendeur.",
+      "L\'acheteur a envoyé la demande d\'achat et elle attend la revue du vendeur.",
     ),
     "transactionTimelineTitle": MessageLookupByLibrary.simpleMessage(
       "Chronologie",
@@ -1724,6 +1794,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionTransitionSuccess": MessageLookupByLibrary.simpleMessage(
       "État de transaction mis à jour.",
+    ),
+    "transactionUploadProofAction": MessageLookupByLibrary.simpleMessage(
+      "Téléverser la preuve",
     ),
     "transactionsEmpty": MessageLookupByLibrary.simpleMessage(
       "Aucune transaction pour le moment.",

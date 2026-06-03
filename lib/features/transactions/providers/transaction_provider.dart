@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 
@@ -33,7 +34,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
     state = state.copyWith(items: items);
   }
 
-  Future<bool> createIntent({
+  Future<bool> createRequest({
     required String listingId,
     required String buyerUserId,
     required String sellerUserId,
@@ -43,7 +44,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
     try {
       final record = await ref
           .read(transactionRepositoryProvider)
-          .createIntent(
+          .createRequest(
             listingId: listingId,
             buyerUserId: buyerUserId,
             sellerUserId: sellerUserId,
@@ -74,6 +75,76 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
             transactionId: transactionId,
             actorUserId: actorUserId,
             nextState: nextState,
+          );
+      final next = state.items
+          .map((item) => item.id == updated.id ? updated : item)
+          .toList();
+      state = state.copyWith(items: next);
+      return true;
+    } on Object catch (error) {
+      state = state.copyWith(lastError: error.toString());
+      return false;
+    }
+  }
+
+  Future<bool> selectPaymentMethod({
+    required String transactionId,
+    required String actorUserId,
+    required TransactionPaymentMethod paymentMethod,
+  }) async {
+    try {
+      final updated = await ref
+          .read(transactionRepositoryProvider)
+          .selectPaymentMethod(
+            transactionId: transactionId,
+            actorUserId: actorUserId,
+            paymentMethod: paymentMethod,
+          );
+      final next = state.items
+          .map((item) => item.id == updated.id ? updated : item)
+          .toList();
+      state = state.copyWith(items: next);
+      return true;
+    } on Object catch (error) {
+      state = state.copyWith(lastError: error.toString());
+      return false;
+    }
+  }
+
+  Future<bool> submitPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+    required ListingMediaSelection proof,
+  }) async {
+    try {
+      final updated = await ref
+          .read(transactionRepositoryProvider)
+          .submitPaymentProof(
+            transactionId: transactionId,
+            actorUserId: actorUserId,
+            proof: proof,
+          );
+      final next = state.items
+          .map((item) => item.id == updated.id ? updated : item)
+          .toList();
+      state = state.copyWith(items: next);
+      return true;
+    } on Object catch (error) {
+      state = state.copyWith(lastError: error.toString());
+      return false;
+    }
+  }
+
+  Future<bool> rejectPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+  }) async {
+    try {
+      final updated = await ref
+          .read(transactionRepositoryProvider)
+          .rejectPaymentProof(
+            transactionId: transactionId,
+            actorUserId: actorUserId,
           );
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)

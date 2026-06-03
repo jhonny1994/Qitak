@@ -78,7 +78,8 @@ class ProtectedActionGateSheet extends StatelessWidget {
         return context.l10n.discoverySave;
       case 'message-seller':
         return context.l10n.discoveryMessageSeller;
-      case 'start-transaction':
+      case 'start-purchase-request':
+      case 'start-exchange-request':
         return context.l10n.listingRequestToBuyAction;
       default:
         return context.l10n.authGateEyebrow;
@@ -91,7 +92,8 @@ class ProtectedActionGateSheet extends StatelessWidget {
         return context.l10n.authGateSaveTitle;
       case 'message-seller':
         return context.l10n.authGateMessageTitle;
-      case 'start-transaction':
+      case 'start-purchase-request':
+      case 'start-exchange-request':
         return context.l10n.authGateBuyTitle;
       default:
         return context.l10n.authGateTitle;
@@ -104,7 +106,8 @@ class ProtectedActionGateSheet extends StatelessWidget {
         return context.l10n.authGateSaveBody;
       case 'message-seller':
         return context.l10n.authGateMessageBody;
-      case 'start-transaction':
+      case 'start-purchase-request':
+      case 'start-exchange-request':
         return context.l10n.authGateBuyBody;
       default:
         return context.l10n.authGateBody;

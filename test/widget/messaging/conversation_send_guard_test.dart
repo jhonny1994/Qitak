@@ -105,6 +105,39 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets(
+    'disposing a conversation screen before reconnect timer fires does not throw',
+    (
+      tester,
+    ) async {
+      final repository = _RealtimeErrorMessagingRepository();
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: ConversationScreen(threadId: 'thread-1')),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'buyer@qitak.test',
+        },
+        messagingRepositoryOverride: repository,
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(ConversationScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      repository.emitRealtimeError();
+      await tester.pump();
+
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(seconds: 4));
+
+      expect(tester.takeException(), isNull);
+    },
+  );
 }
 
 class _RecordingMessagingRepository implements MessagingRepository {
@@ -193,3 +226,27 @@ class _RecordingMessagingRepository implements MessagingRepository {
     await _pendingSend!.future;
   }
 }
+
+class _RealtimeErrorMessagingRepository extends _RecordingMessagingRepository {
+  VoidCallback? _onError;
+
+  @override
+  bool get isLocal => false;
+
+  void emitRealtimeError() {
+    _onError?.call();
+  }
+
+  @override
+  RealtimeChannel subscribeToThreadMessages({
+    required String threadId,
+    required void Function(ConversationMessage message) onMessage,
+    required void Function() onSubscribed,
+    required void Function(Object error) onError,
+  }) {
+    _onError = () => onError(StateError('realtime error'));
+    return _StubRealtimeChannel();
+  }
+}
+
+class _StubRealtimeChannel extends Fake implements RealtimeChannel {}

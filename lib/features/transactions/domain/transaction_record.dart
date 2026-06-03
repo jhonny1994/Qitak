@@ -1,7 +1,8 @@
 enum TransactionState {
-  intentCreated,
   pendingSellerResponse,
   sellerConfirmed,
+  paymentProofSubmitted,
+  paymentConfirmed,
   expired,
   cancelled,
   completed,
@@ -9,15 +10,49 @@ enum TransactionState {
   disputeResolved,
 }
 
+enum TransactionPaymentMethod {
+  ccp,
+  baridiMob,
+  cash,
+}
+
+extension TransactionPaymentMethodX on TransactionPaymentMethod {
+  String get value {
+    switch (this) {
+      case TransactionPaymentMethod.ccp:
+        return TransactionPaymentCatalog.ccp;
+      case TransactionPaymentMethod.baridiMob:
+        return TransactionPaymentCatalog.baridiMob;
+      case TransactionPaymentMethod.cash:
+        return TransactionPaymentCatalog.cash;
+    }
+  }
+
+  static TransactionPaymentMethod? fromValue(String? raw) {
+    switch (raw) {
+      case TransactionPaymentCatalog.ccp:
+        return TransactionPaymentMethod.ccp;
+      case TransactionPaymentCatalog.baridiMob:
+        return TransactionPaymentMethod.baridiMob;
+      case TransactionPaymentCatalog.cash:
+        return TransactionPaymentMethod.cash;
+      default:
+        return null;
+    }
+  }
+}
+
 extension TransactionStateX on TransactionState {
   String get value {
     switch (this) {
-      case TransactionState.intentCreated:
-        return TransactionStateCatalog.intentCreated;
       case TransactionState.pendingSellerResponse:
         return TransactionStateCatalog.pendingSellerResponse;
       case TransactionState.sellerConfirmed:
         return TransactionStateCatalog.sellerConfirmed;
+      case TransactionState.paymentProofSubmitted:
+        return TransactionStateCatalog.paymentProofSubmitted;
+      case TransactionState.paymentConfirmed:
+        return TransactionStateCatalog.paymentConfirmed;
       case TransactionState.expired:
         return TransactionStateCatalog.expired;
       case TransactionState.cancelled:
@@ -39,12 +74,14 @@ extension TransactionStateX on TransactionState {
 
   static TransactionState fromValue(String raw) {
     switch (raw) {
-      case TransactionStateCatalog.intentCreated:
-        return TransactionState.intentCreated;
       case TransactionStateCatalog.pendingSellerResponse:
         return TransactionState.pendingSellerResponse;
       case TransactionStateCatalog.sellerConfirmed:
         return TransactionState.sellerConfirmed;
+      case TransactionStateCatalog.paymentProofSubmitted:
+        return TransactionState.paymentProofSubmitted;
+      case TransactionStateCatalog.paymentConfirmed:
+        return TransactionState.paymentConfirmed;
       case TransactionStateCatalog.expired:
         return TransactionState.expired;
       case TransactionStateCatalog.cancelled:
@@ -56,16 +93,17 @@ extension TransactionStateX on TransactionState {
       case TransactionStateCatalog.disputeResolved:
         return TransactionState.disputeResolved;
       default:
-        return TransactionState.intentCreated;
+        return TransactionState.pendingSellerResponse;
     }
   }
 }
 
 /// Canonical deal status codes expected from backend contract surfaces.
 abstract final class TransactionStateCatalog {
-  static const String intentCreated = 'intent_created';
   static const String pendingSellerResponse = 'pending_seller_response';
   static const String sellerConfirmed = 'seller_confirmed';
+  static const String paymentProofSubmitted = 'payment_proof_submitted';
+  static const String paymentConfirmed = 'payment_confirmed';
   static const String expired = 'expired';
   static const String cancelled = 'cancelled';
   static const String completed = 'completed';
@@ -73,15 +111,22 @@ abstract final class TransactionStateCatalog {
   static const String disputeResolved = 'dispute_resolved';
 
   static const Set<String> knownCodes = <String>{
-    intentCreated,
     pendingSellerResponse,
     sellerConfirmed,
+    paymentProofSubmitted,
+    paymentConfirmed,
     expired,
     cancelled,
     completed,
     disputeOpened,
     disputeResolved,
   };
+}
+
+abstract final class TransactionPaymentCatalog {
+  static const String ccp = 'ccp';
+  static const String baridiMob = 'baridimob';
+  static const String cash = 'cash';
 }
 
 class TransactionRecord {
@@ -93,8 +138,12 @@ class TransactionRecord {
     required this.state,
     this.dealType = 'buy',
     this.exchangeOffer,
+    this.paymentMethod,
+    this.paymentProofPath,
     this.expiresAt,
     this.confirmedAt,
+    this.paymentProofSubmittedAt,
+    this.paymentConfirmedAt,
     this.completedAt,
     this.cancelledAt,
     this.createdAt,
@@ -108,12 +157,74 @@ class TransactionRecord {
   final TransactionState state;
   final String dealType;
   final String? exchangeOffer;
+  final TransactionPaymentMethod? paymentMethod;
+  final String? paymentProofPath;
   final DateTime? expiresAt;
   final DateTime? confirmedAt;
+  final DateTime? paymentProofSubmittedAt;
+  final DateTime? paymentConfirmedAt;
   final DateTime? completedAt;
   final DateTime? cancelledAt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   bool get isExchange => dealType == 'exchange';
+
+  bool get requiresPaymentProof =>
+      paymentMethod == TransactionPaymentMethod.ccp ||
+      paymentMethod == TransactionPaymentMethod.baridiMob;
+
+  bool get isCashPayment => paymentMethod == TransactionPaymentMethod.cash;
+
+  TransactionRecord copyWith({
+    String? id,
+    String? listingId,
+    String? buyerUserId,
+    String? sellerUserId,
+    TransactionState? state,
+    String? dealType,
+    String? exchangeOffer,
+    TransactionPaymentMethod? paymentMethod,
+    bool clearPaymentMethod = false,
+    String? paymentProofPath,
+    bool clearPaymentProofPath = false,
+    DateTime? expiresAt,
+    DateTime? confirmedAt,
+    DateTime? paymentProofSubmittedAt,
+    bool clearPaymentProofSubmittedAt = false,
+    DateTime? paymentConfirmedAt,
+    bool clearPaymentConfirmedAt = false,
+    DateTime? completedAt,
+    DateTime? cancelledAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return TransactionRecord(
+      id: id ?? this.id,
+      listingId: listingId ?? this.listingId,
+      buyerUserId: buyerUserId ?? this.buyerUserId,
+      sellerUserId: sellerUserId ?? this.sellerUserId,
+      state: state ?? this.state,
+      dealType: dealType ?? this.dealType,
+      exchangeOffer: exchangeOffer ?? this.exchangeOffer,
+      paymentMethod: clearPaymentMethod
+          ? null
+          : paymentMethod ?? this.paymentMethod,
+      paymentProofPath: clearPaymentProofPath
+          ? null
+          : paymentProofPath ?? this.paymentProofPath,
+      expiresAt: expiresAt ?? this.expiresAt,
+      confirmedAt: confirmedAt ?? this.confirmedAt,
+      paymentProofSubmittedAt: clearPaymentProofSubmittedAt
+          ? null
+          : paymentProofSubmittedAt ?? this.paymentProofSubmittedAt,
+      paymentConfirmedAt: clearPaymentConfirmedAt
+          ? null
+          : paymentConfirmedAt ?? this.paymentConfirmedAt,
+      completedAt: completedAt ?? this.completedAt,
+      cancelledAt: cancelledAt ?? this.cancelledAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

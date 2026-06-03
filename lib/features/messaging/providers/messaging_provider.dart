@@ -74,10 +74,15 @@ final messagingProvider = NotifierProvider<MessagingNotifier, MessagingState>(
 class ConversationThreadsNotifier
     extends AsyncNotifier<List<ConversationThreadSummary>> {
   Timer? _reconnectTimer;
+  bool _disposed = false;
 
   @override
   Future<List<ConversationThreadSummary>> build() async {
-    ref.onDispose(() => _reconnectTimer?.cancel());
+    _disposed = false;
+    ref.onDispose(() {
+      _disposed = true;
+      _reconnectTimer?.cancel();
+    });
 
     final userId = ref.watch(authSessionProvider).profile?.id;
     if (userId == null) {
@@ -89,6 +94,9 @@ class ConversationThreadsNotifier
       userId: userId,
       onChange: () async {
         final refreshed = await repository.listThreadsForUser(userId);
+        if (_disposed) {
+          return;
+        }
         state = AsyncData(refreshed);
       },
       onError: (_) => _scheduleReconnect(),
@@ -107,10 +115,18 @@ class ConversationThreadsNotifier
 
   void _scheduleReconnect() {
     _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(const Duration(seconds: 3), ref.invalidateSelf);
+    _reconnectTimer = Timer(const Duration(seconds: 3), () {
+      if (_disposed) {
+        return;
+      }
+      ref.invalidateSelf();
+    });
   }
 
   Future<void> _refreshUnreadCounts() async {
+    if (_disposed) {
+      return;
+    }
     await ref.read(unreadCountsProvider.notifier).refresh();
   }
 }
@@ -129,10 +145,15 @@ class ConversationMessagesNotifier
 
   final String threadId;
   Timer? _reconnectTimer;
+  bool _disposed = false;
 
   @override
   Future<List<ConversationMessage>> build() async {
-    ref.onDispose(() => _reconnectTimer?.cancel());
+    _disposed = false;
+    ref.onDispose(() {
+      _disposed = true;
+      _reconnectTimer?.cancel();
+    });
 
     final userId = ref.watch(authSessionProvider).profile?.id;
     if (userId == null) {
@@ -144,6 +165,9 @@ class ConversationMessagesNotifier
       threadId: threadId,
       userId: userId,
     );
+    if (_disposed) {
+      return initial;
+    }
     var catchUpCursor = initial.isEmpty
         ? DateTime.now().toUtc()
         : initial.last.createdAt.toUtc();
@@ -152,6 +176,9 @@ class ConversationMessagesNotifier
       final channel = repository.subscribeToThreadMessages(
         threadId: threadId,
         onMessage: (message) {
+          if (_disposed) {
+            return;
+          }
           final current = state.asData?.value ?? const <ConversationMessage>[];
           if (current.any((item) => item.id == message.id)) {
             return;
@@ -168,7 +195,7 @@ class ConversationMessagesNotifier
             userId: userId,
             after: catchUpCursor,
           );
-          if (catchUp.isEmpty) {
+          if (_disposed || catchUp.isEmpty) {
             return;
           }
           final current = state.asData?.value ?? initial;
@@ -201,22 +228,36 @@ class ConversationMessagesNotifier
   }
 
   Future<void> _handleIncomingMessage(String threadId, String userId) async {
+    if (_disposed) {
+      return;
+    }
     await ref
         .read(messagingRepositoryProvider)
         .markThreadMessagesRead(
           threadId: threadId,
           userId: userId,
         );
+    if (_disposed) {
+      return;
+    }
     ref.invalidate(conversationThreadsProvider);
     await _refreshUnreadCounts();
   }
 
   void _scheduleReconnect() {
     _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(const Duration(seconds: 3), ref.invalidateSelf);
+    _reconnectTimer = Timer(const Duration(seconds: 3), () {
+      if (_disposed) {
+        return;
+      }
+      ref.invalidateSelf();
+    });
   }
 
   Future<void> _refreshUnreadCounts() async {
+    if (_disposed) {
+      return;
+    }
     await ref.read(unreadCountsProvider.notifier).refresh();
   }
 }

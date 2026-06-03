@@ -40,11 +40,14 @@ extension AppRoleL10nX on S {
 
   String displayTransactionState(TransactionState state) {
     switch (state) {
-      case TransactionState.intentCreated:
       case TransactionState.pendingSellerResponse:
         return transactionStateRequested;
       case TransactionState.sellerConfirmed:
         return transactionStateAccepted;
+      case TransactionState.paymentProofSubmitted:
+        return transactionStateProofSubmitted;
+      case TransactionState.paymentConfirmed:
+        return transactionStatePaymentConfirmed;
       case TransactionState.completed:
         return transactionStateCompleted;
       case TransactionState.expired:

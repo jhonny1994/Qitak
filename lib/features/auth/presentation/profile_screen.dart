@@ -290,7 +290,7 @@ String _displayName(String fullName, String email) {
 String _profileRootForRole(AccountRole role) {
   switch (role) {
     case AccountRole.seller:
-      return '/seller/profile';
+      return '/profile';
     case AccountRole.admin:
     case AccountRole.superAdmin:
       return '/admin/profile';

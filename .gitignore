@@ -49,6 +49,7 @@ supabase/.branches/
 
 # ── Internal tooling (AI agents, specs, dev scripts) ─────────────────────────
 docs/coder/
+docs/superpowers/
 .agents
 .specify
 AGENTS.md

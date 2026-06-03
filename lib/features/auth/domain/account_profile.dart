@@ -28,6 +28,23 @@ abstract class AccountProfile with _$AccountProfile {
 }
 
 extension AccountRoleX on AccountRole {
+  bool get hasBuyerCapabilities {
+    switch (this) {
+      case AccountRole.buyer:
+      case AccountRole.seller:
+        return true;
+      case AccountRole.anonymous:
+      case AccountRole.admin:
+      case AccountRole.superAdmin:
+        return false;
+    }
+  }
+
+  bool get hasSellerCapabilities => this == AccountRole.seller;
+
+  bool get isAdminLike =>
+      this == AccountRole.admin || this == AccountRole.superAdmin;
+
   String get route {
     switch (this) {
       case AccountRole.seller:

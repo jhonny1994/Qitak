@@ -50,8 +50,8 @@ import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_history_screen.dart';
-import 'package:qitak_app/features/transactions/presentation/transaction_intent_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_lifecycle_screen.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_request_screen.dart';
 import 'package:qitak_app/shared/widgets/app_entry_shell.dart';
 import 'package:qitak_app/shared/widgets/qitak_navigation_shell.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -500,7 +500,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (context, state) => _buildTransitionPage(
                   state: state,
                   child: ProtectedRouteGuard(
-                    requiredRoles: const [AccountRole.buyer],
+                    requiredRoles: const [
+                      AccountRole.buyer,
+                      AccountRole.seller,
+                    ],
                     intent: PostAuthRedirectIntent.route('/saved'),
                     child: const SavedListingsScreen(),
                   ),
@@ -610,7 +613,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               ),
               _buildProfileRoute(
                 rootPath: '/profile',
-                requiredRoles: const [AccountRole.buyer],
+                requiredRoles: const [
+                  AccountRole.buyer,
+                  AccountRole.seller,
+                ],
               ),
               _buildProfileRoute(
                 rootPath: '/seller/profile',
@@ -817,16 +823,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/transactions/listing/:id/new',
+        path: '/transactions/listing/:id/request',
         pageBuilder: (context, state) => _buildTransitionPage(
           state: state,
           child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.buyer],
+            requiredRoles: const [AccountRole.buyer, AccountRole.seller],
             intent: PostAuthRedirectIntent.route(
-              '/transactions/listing/${state.pathParameters['id'] ?? ''}/new',
+              '/transactions/listing/${state.pathParameters['id'] ?? ''}/request',
             ),
             child: AppEntryShell(
-              child: TransactionIntentScreen(
+              child: TransactionRequestScreen(
                 listingId: state.pathParameters['id'] ?? '',
               ),
             ),
@@ -925,7 +931,7 @@ String _authUtilityFallbackPath(
   if (profile != null) {
     switch (profile.role) {
       case AccountRole.seller:
-        return '/seller/profile';
+        return '/profile';
       case AccountRole.admin:
       case AccountRole.superAdmin:
         return '/admin/profile';
@@ -947,7 +953,7 @@ String _sellerApplicationFallbackPath(AuthSessionState session) {
   if (profile == null) {
     return '/guest/account';
   }
-  return profile.role == AccountRole.seller ? '/seller/profile' : '/profile';
+  return '/profile';
 }
 
 String _publicAccountFallbackPath(GoRouterState state) {

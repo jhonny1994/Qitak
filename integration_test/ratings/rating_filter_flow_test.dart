@@ -29,7 +29,7 @@ void main() {
       tester.element(find.byType(QitakApp)),
     );
     final repository = container.read(transactionRepositoryProvider);
-    final record = await repository.createIntent(
+    final record = await repository.createRequest(
       listingId: 'listing-1',
       buyerUserId: 'buyer-001',
       sellerUserId: 'seller-001',
@@ -39,9 +39,14 @@ void main() {
       actorUserId: 'seller-001',
       nextState: TransactionState.sellerConfirmed,
     );
-    await repository.transition(
+    await repository.selectPaymentMethod(
       transactionId: record.id,
       actorUserId: 'buyer-001',
+      paymentMethod: TransactionPaymentMethod.cash,
+    );
+    await repository.transition(
+      transactionId: record.id,
+      actorUserId: 'seller-001',
       nextState: TransactionState.completed,
     );
     container.read(goRouterProvider).go('/ratings/transaction/${record.id}');

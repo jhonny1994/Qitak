@@ -2869,10 +2869,10 @@ class S {
     );
   }
 
-  /// `كل محادثة تبقى مرتبطة بإعلان ونية تعامل نشطة.`
+  /// `كل محادثة تبقى مرتبطة بإعلان وطلب شراء نشط.`
   String get messagesInboxSubtitle {
     return Intl.message(
-      'كل محادثة تبقى مرتبطة بإعلان ونية تعامل نشطة.',
+      'كل محادثة تبقى مرتبطة بإعلان وطلب شراء نشط.',
       name: 'messagesInboxSubtitle',
       desc: '',
       args: [],
@@ -4074,30 +4074,30 @@ class S {
     );
   }
 
-  /// `بدء معاملة`
+  /// `بدء طلب شراء`
   String get transactionStartTitle {
     return Intl.message(
-      'بدء معاملة',
+      'بدء طلب شراء',
       name: 'transactionStartTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `أنشئ طلب معاملة مع البائع لهذا الإعلان.`
+  /// `أرسل طلب شراء إلى البائع لهذا الإعلان.`
   String get transactionStartBody {
     return Intl.message(
-      'أنشئ طلب معاملة مع البائع لهذا الإعلان.',
+      'أرسل طلب شراء إلى البائع لهذا الإعلان.',
       name: 'transactionStartBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `طلب القطعة`
+  /// `إرسال الطلب`
   String get requestPartCta {
     return Intl.message(
-      'طلب القطعة',
+      'إرسال الطلب',
       name: 'requestPartCta',
       desc: '',
       args: [],
@@ -4154,21 +4154,21 @@ class S {
     );
   }
 
-  /// `تم إنشاء طلب المعاملة.`
-  String get transactionIntentCreated {
+  /// `تم إنشاء طلب الشراء.`
+  String get transactionRequestCreated {
     return Intl.message(
-      'تم إنشاء طلب المعاملة.',
-      name: 'transactionIntentCreated',
+      'تم إنشاء طلب الشراء.',
+      name: 'transactionRequestCreated',
       desc: '',
       args: [],
     );
   }
 
-  /// `يوجد طلب معاملة مفتوح بالفعل لهذا الإعلان.`
-  String get transactionOpenIntentExists {
+  /// `توجد معاملة نشطة لهذا الإعلان بالفعل.`
+  String get transactionOpenRequestExists {
     return Intl.message(
-      'يوجد طلب معاملة مفتوح بالفعل لهذا الإعلان.',
-      name: 'transactionOpenIntentExists',
+      'توجد معاملة نشطة لهذا الإعلان بالفعل.',
+      name: 'transactionOpenRequestExists',
       desc: '',
       args: [],
     );
@@ -4214,10 +4214,10 @@ class S {
     );
   }
 
-  /// `راجع الطلبات النشطة وحالات القبول والإكمال.`
+  /// `راجع الطلبات وإثباتات الدفع وحالات الإكمال.`
   String get transactionLifecycleSubtitle {
     return Intl.message(
-      'راجع الطلبات النشطة وحالات القبول والإكمال.',
+      'راجع الطلبات وإثباتات الدفع وحالات الإكمال.',
       name: 'transactionLifecycleSubtitle',
       desc: '',
       args: [],
@@ -4249,6 +4249,26 @@ class S {
     return Intl.message(
       'تم القبول',
       name: 'transactionStateAccepted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرسال الإثبات`
+  String get transactionStateProofSubmitted {
+    return Intl.message(
+      'تم إرسال الإثبات',
+      name: 'transactionStateProofSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم تأكيد الدفع`
+  String get transactionStatePaymentConfirmed {
+    return Intl.message(
+      'تم تأكيد الدفع',
+      name: 'transactionStatePaymentConfirmed',
       desc: '',
       args: [],
     );
@@ -4294,6 +4314,46 @@ class S {
     return Intl.message(
       'إكمال',
       name: 'transactionComplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تأكيد الدفع`
+  String get transactionConfirmPaymentAction {
+    return Intl.message(
+      'تأكيد الدفع',
+      name: 'transactionConfirmPaymentAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `رفض الإثبات`
+  String get transactionRejectProofAction {
+    return Intl.message(
+      'رفض الإثبات',
+      name: 'transactionRejectProofAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تأكيد الاستلام`
+  String get transactionConfirmReceiptAction {
+    return Intl.message(
+      'تأكيد الاستلام',
+      name: 'transactionConfirmReceiptAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تأكيد الطلب النقدي`
+  String get transactionConfirmCashAction {
+    return Intl.message(
+      'تأكيد الطلب النقدي',
+      name: 'transactionConfirmCashAction',
       desc: '',
       args: [],
     );
@@ -4399,10 +4459,10 @@ class S {
     );
   }
 
-  /// `تابع الحالة الحالية والخطوات التالية وروابط الثقة المرتبطة بها.`
+  /// `تابع طريقة الدفع والإثبات وخطوات إكمال هذه الصفقة.`
   String get transactionDetailSubtitle {
     return Intl.message(
-      'تابع الحالة الحالية والخطوات التالية وروابط الثقة المرتبطة بها.',
+      'تابع طريقة الدفع والإثبات وخطوات إكمال هذه الصفقة.',
       name: 'transactionDetailSubtitle',
       desc: '',
       args: [],
@@ -4459,6 +4519,146 @@ class S {
     );
   }
 
+  /// `الدفع خارج المنصة`
+  String get transactionPaymentTitle {
+    return Intl.message(
+      'الدفع خارج المنصة',
+      name: 'transactionPaymentTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `طريقة الدفع`
+  String get transactionPaymentMethodLabel {
+    return Intl.message(
+      'طريقة الدفع',
+      name: 'transactionPaymentMethodLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لم يتم الاختيار بعد`
+  String get transactionPaymentMethodPending {
+    return Intl.message(
+      'لم يتم الاختيار بعد',
+      name: 'transactionPaymentMethodPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر طريقة الدفع لهذه الصفقة في الجزائر.`
+  String get transactionPaymentMethodHelper {
+    return Intl.message(
+      'اختر طريقة الدفع لهذه الصفقة في الجزائر.',
+      name: 'transactionPaymentMethodHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم حفظ طريقة الدفع.`
+  String get transactionPaymentMethodSaved {
+    return Intl.message(
+      'تم حفظ طريقة الدفع.',
+      name: 'transactionPaymentMethodSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CCP`
+  String get transactionPaymentMethodCcp {
+    return Intl.message(
+      'CCP',
+      name: 'transactionPaymentMethodCcp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BaridiMob`
+  String get transactionPaymentMethodBaridiMob {
+    return Intl.message(
+      'BaridiMob',
+      name: 'transactionPaymentMethodBaridiMob',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `نقداً`
+  String get transactionPaymentMethodCash {
+    return Intl.message(
+      'نقداً',
+      name: 'transactionPaymentMethodCash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإثبات`
+  String get transactionPaymentProofLabel {
+    return Intl.message(
+      'الإثبات',
+      name: 'transactionPaymentProofLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لم يتم رفع أي إثبات بعد`
+  String get transactionPaymentProofPending {
+    return Intl.message(
+      'لم يتم رفع أي إثبات بعد',
+      name: 'transactionPaymentProofPending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم رفع الإثبات`
+  String get transactionPaymentProofUploaded {
+    return Intl.message(
+      'تم رفع الإثبات',
+      name: 'transactionPaymentProofUploaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `رفع الإثبات`
+  String get transactionUploadProofAction {
+    return Intl.message(
+      'رفع الإثبات',
+      name: 'transactionUploadProofAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرسال إثبات الدفع.`
+  String get transactionPaymentProofSubmitted {
+    return Intl.message(
+      'تم إرسال إثبات الدفع.',
+      name: 'transactionPaymentProofSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم رفض إثبات الدفع. يجب على المشتري رفع إثبات جديد.`
+  String get transactionPaymentProofRejected {
+    return Intl.message(
+      'تم رفض إثبات الدفع. يجب على المشتري رفع إثبات جديد.',
+      name: 'transactionPaymentProofRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `الخط الزمني`
   String get transactionTimelineTitle {
     return Intl.message(
@@ -4499,41 +4699,81 @@ class S {
     );
   }
 
-  /// `تم إنشاء الطلب`
+  /// `تم إرسال الطلب`
   String get transactionTimelineRequested {
     return Intl.message(
-      'تم إنشاء الطلب',
+      'تم إرسال الطلب',
       name: 'transactionTimelineRequested',
       desc: '',
       args: [],
     );
   }
 
-  /// `بدأ المشتري المعاملة وهي بانتظار مراجعة البائع.`
+  /// `أرسل المشتري طلب الشراء وهو الآن بانتظار مراجعة البائع.`
   String get transactionTimelineRequestedBody {
     return Intl.message(
-      'بدأ المشتري المعاملة وهي بانتظار مراجعة البائع.',
+      'أرسل المشتري طلب الشراء وهو الآن بانتظار مراجعة البائع.',
       name: 'transactionTimelineRequestedBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `أكد البائع`
+  /// `وافق البائع`
   String get transactionTimelineAccepted {
     return Intl.message(
-      'أكد البائع',
+      'وافق البائع',
       name: 'transactionTimelineAccepted',
       desc: '',
       args: [],
     );
   }
 
-  /// `يمكن للطرفين الآن تنسيق الإكمال أو فتح نزاع عند الحاجة.`
+  /// `وافق البائع على الطلب ويجب على المشتري الآن اختيار طريقة الدفع خارج المنصة.`
   String get transactionTimelineAcceptedBody {
     return Intl.message(
-      'يمكن للطرفين الآن تنسيق الإكمال أو فتح نزاع عند الحاجة.',
+      'وافق البائع على الطلب ويجب على المشتري الآن اختيار طريقة الدفع خارج المنصة.',
       name: 'transactionTimelineAcceptedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الدفع`
+  String get transactionTimelinePayment {
+    return Intl.message(
+      'الدفع',
+      name: 'transactionTimelinePayment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إعداد الدفع ما زال معلقاً.`
+  String get transactionTimelinePaymentPendingBody {
+    return Intl.message(
+      'إعداد الدفع ما زال معلقاً.',
+      name: 'transactionTimelinePaymentPendingBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أرسل المشتري إثبات الدفع ويجب على البائع مراجعته.`
+  String get transactionTimelinePaymentSubmittedBody {
+    return Intl.message(
+      'أرسل المشتري إثبات الدفع ويجب على البائع مراجعته.',
+      name: 'transactionTimelinePaymentSubmittedBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أكد البائع الدفع ويمكن للمشتري تأكيد الاستلام بعد التسليم.`
+  String get transactionTimelinePaymentConfirmedBody {
+    return Intl.message(
+      'أكد البائع الدفع ويمكن للمشتري تأكيد الاستلام بعد التسليم.',
+      name: 'transactionTimelinePaymentConfirmedBody',
       desc: '',
       args: [],
     );

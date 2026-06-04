@@ -23,7 +23,7 @@ void main() {
   });
 
   test(
-    'support tickets appear in the local admin queue and resolve out of it',
+    'support close decisions keep shared dismissed status',
     () async {
       final supportRepository = LocalSupportRepository(buyerProfile);
       const adminRepository = LocalAdminReportsRepository();
@@ -48,13 +48,62 @@ void main() {
 
       await adminRepository.resolveReport(
         reportId: ticket.id,
-        decision: 'dismiss',
-        reasonCode: 'insufficient_evidence',
+        decision: 'close',
+        reasonCode: 'duplicate_ticket',
       );
 
       expect(await adminRepository.listOpenReports(), isEmpty);
       final tickets = await supportRepository.listTickets();
       expect(tickets.single.status, 'dismissed');
+    },
+  );
+
+  test(
+    'support resolve decisions keep shared actioned status',
+    () async {
+      final supportRepository = LocalSupportRepository(buyerProfile);
+      const adminRepository = LocalAdminReportsRepository();
+
+      final ticket = await supportRepository.createTicket(
+        reason: 'technical_issue',
+        description:
+            'Buyer needs platform help after a technical problem blocked checkout.',
+      );
+
+      await adminRepository.resolveReport(
+        reportId: ticket.id,
+        decision: 'resolve',
+        reasonCode: 'verified_and_resolved',
+      );
+
+      final tickets = await supportRepository.listTickets();
+      expect(tickets.single.status, 'actioned');
+    },
+  );
+
+  test(
+    'unknown local report decisions fail fast',
+    () async {
+      final supportRepository = LocalSupportRepository(buyerProfile);
+      const adminRepository = LocalAdminReportsRepository();
+
+      final ticket = await supportRepository.createTicket(
+        reason: 'technical_issue',
+        description:
+            'Buyer needs platform help after a technical problem blocked checkout.',
+      );
+
+      await expectLater(
+        adminRepository.resolveReport(
+          reportId: ticket.id,
+          decision: 'escalate_to_mars',
+          reasonCode: 'verified_and_resolved',
+        ),
+        throwsArgumentError,
+      );
+
+      final tickets = await supportRepository.listTickets();
+      expect(tickets.single.status, 'open');
     },
   );
 

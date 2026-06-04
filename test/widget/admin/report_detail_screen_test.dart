@@ -6,11 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
+import 'package:qitak_app/features/admin/data/local_admin_report_store.dart';
+import 'package:qitak_app/features/admin/presentation/report_detail_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../test_bootstrap.dart';
 
 void main() {
+  setUp(LocalAdminReportStore.resetForTest);
+
   Map<String, Object> contractSeed() {
     final now = DateTime.now().millisecondsSinceEpoch;
     return <String, Object>{
@@ -68,6 +72,60 @@ void main() {
       'contract_cache_support_report_resolution_reason_code_ts': now,
     };
   }
+
+  const moderationDecisionOptions = <AppPolicyOption>[
+    AppPolicyOption(
+      policyType: 'report_resolution_decision',
+      code: 'warn_seller',
+      labelKey: 'adminReportDecisionWarnSeller',
+      active: true,
+      sortOrder: 10,
+    ),
+    AppPolicyOption(
+      policyType: 'report_resolution_decision',
+      code: 'dismiss',
+      labelKey: 'adminReportDecisionDismiss',
+      active: true,
+      sortOrder: 20,
+    ),
+  ];
+
+  const moderationReasonOptions = <AppPolicyOption>[
+    AppPolicyOption(
+      policyType: 'report_resolution_reason_code',
+      code: 'policy_violation',
+      labelKey: 'adminReportReasonPolicyViolation',
+      active: true,
+      sortOrder: 10,
+    ),
+  ];
+
+  const supportDecisionOptions = <AppPolicyOption>[
+    AppPolicyOption(
+      policyType: 'support_report_resolution_decision',
+      code: 'resolve',
+      labelKey: 'adminSupportDecisionResolve',
+      active: true,
+      sortOrder: 10,
+    ),
+    AppPolicyOption(
+      policyType: 'support_report_resolution_decision',
+      code: 'close',
+      labelKey: 'adminSupportDecisionClose',
+      active: true,
+      sortOrder: 20,
+    ),
+  ];
+
+  const supportReasonOptions = <AppPolicyOption>[
+    AppPolicyOption(
+      policyType: 'support_report_resolution_reason_code',
+      code: 'verified_and_resolved',
+      labelKey: 'adminSupportReasonVerifiedAndResolved',
+      active: true,
+      sortOrder: 10,
+    ),
+  ];
 
   testWidgets(
     'support report detail contracts expose support resolution policy keys',
@@ -146,4 +204,150 @@ void main() {
       );
     },
   );
+
+  testWidgets('support reports show support decisions only', (tester) async {
+    final initialReport = LocalAdminReportStore.createSupportTicket(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      reason: 'payment_issue',
+      description:
+          'Buyer uploaded a BaridiMob proof and still needs support review.',
+    );
+    final scope = await buildTestScope(
+      TestMaterialShell(
+        child: Scaffold(
+          body: ReportDetailScreen(reportId: initialReport.id),
+        ),
+      ),
+      overrides: <Object>[
+        reportResolutionDecisionPolicyProvider.overrideWith((ref) async {
+          return moderationDecisionOptions;
+        }),
+        reportResolutionReasonPolicyProvider.overrideWith((ref) async {
+          return moderationReasonOptions;
+        }),
+        supportReportResolutionDecisionPolicyProvider.overrideWith((ref) async {
+          return supportDecisionOptions;
+        }),
+        supportReportResolutionReasonPolicyProvider.overrideWith((ref) async {
+          return supportReasonOptions;
+        }),
+      ],
+    );
+    LocalAdminReportStore.createSupportTicket(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      reason: 'payment_issue',
+      description:
+          'Buyer uploaded a BaridiMob proof and still needs support review.',
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('report-detail-decision-field')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Resolve'), findsWidgets);
+    expect(find.text('Close'), findsOneWidget);
+    expect(find.text('Warn seller'), findsNothing);
+  });
+
+  testWidgets('listing reports keep moderation decisions only', (tester) async {
+    final initialReport = LocalAdminReportStore.createListingReport(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      listingId: 'listing-1',
+      listingTitle: 'Brake pads',
+      reason: 'spam',
+      description: 'Listing contains repeated spam content and fake images.',
+    );
+    final scope = await buildTestScope(
+      TestMaterialShell(
+        child: Scaffold(
+          body: ReportDetailScreen(reportId: initialReport.id),
+        ),
+      ),
+      overrides: <Object>[
+        reportResolutionDecisionPolicyProvider.overrideWith((ref) async {
+          return moderationDecisionOptions;
+        }),
+        reportResolutionReasonPolicyProvider.overrideWith((ref) async {
+          return moderationReasonOptions;
+        }),
+        supportReportResolutionDecisionPolicyProvider.overrideWith((ref) async {
+          return supportDecisionOptions;
+        }),
+        supportReportResolutionReasonPolicyProvider.overrideWith((ref) async {
+          return supportReasonOptions;
+        }),
+      ],
+    );
+    LocalAdminReportStore.createListingReport(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      listingId: 'listing-1',
+      listingTitle: 'Brake pads',
+      reason: 'spam',
+      description: 'Listing contains repeated spam content and fake images.',
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('report-detail-decision-field')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Warn seller'), findsOneWidget);
+    expect(find.text('Resolve'), findsNothing);
+  });
+
+  testWidgets('support reports show contract failure state', (tester) async {
+    final initialReport = LocalAdminReportStore.createSupportTicket(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      reason: 'payment_issue',
+      description:
+          'Buyer uploaded a BaridiMob proof and still needs support review.',
+    );
+    final scope = await buildTestScope(
+      TestMaterialShell(
+        child: Scaffold(
+          body: ReportDetailScreen(reportId: initialReport.id),
+        ),
+      ),
+      overrides: <Object>[
+        supportReportResolutionDecisionPolicyProvider.overrideWith((ref) async {
+          throw StateError('broken support decision contract');
+        }),
+        supportReportResolutionReasonPolicyProvider.overrideWith((ref) async {
+          throw StateError('broken support reason contract');
+        }),
+      ],
+    );
+    LocalAdminReportStore.createSupportTicket(
+      reporterUserId: 'buyer-1',
+      reporterName: 'Buyer One',
+      reason: 'payment_issue',
+      description:
+          'Buyer uploaded a BaridiMob proof and still needs support review.',
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Resolution options unavailable'), findsOneWidget);
+    expect(
+      find.text(
+        'Decision policies could not be loaded. Refresh contracts and try again before resolving this report.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('report-detail-decision-field')), findsNothing);
+
+    final applyButton = tester.widget<FilledButton>(
+      find.byKey(const Key('report-detail-apply-button')),
+    );
+    expect(applyButton.onPressed, isNull);
+  });
 }

@@ -168,56 +168,63 @@ class ConversationMessagesNotifier
     if (_disposed) {
       return initial;
     }
+
+    if (repository.isLocal) {
+      await repository.markThreadMessagesRead(
+        threadId: threadId,
+        userId: userId,
+      );
+      unawaited(_refreshUnreadCounts());
+      return initial;
+    }
+
     var catchUpCursor = initial.isEmpty
         ? DateTime.now().toUtc()
         : initial.last.createdAt.toUtc();
+    final channel = repository.subscribeToThreadMessages(
+      threadId: threadId,
+      onMessage: (message) {
+        if (_disposed) {
+          return;
+        }
+        final current = state.asData?.value ?? const <ConversationMessage>[];
+        if (current.any((item) => item.id == message.id)) {
+          return;
+        }
+        final next = [...current, message]
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        catchUpCursor = next.last.createdAt.toUtc();
+        state = AsyncData(next);
+        unawaited(_handleIncomingMessage(threadId, userId));
+      },
+      onSubscribed: () async {
+        final catchUp = await repository.listMessagesAfter(
+          threadId: threadId,
+          userId: userId,
+          after: catchUpCursor,
+        );
+        if (_disposed || catchUp.isEmpty) {
+          return;
+        }
+        final current = state.asData?.value ?? initial;
+        final merged = <ConversationMessage>[...current];
+        for (final message in catchUp) {
+          if (merged.any((item) => item.id == message.id)) {
+            continue;
+          }
+          merged.add(message);
+        }
+        merged.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        catchUpCursor = merged.last.createdAt.toUtc();
+        state = AsyncData(merged);
+        await _handleIncomingMessage(threadId, userId);
+      },
+      onError: (_) => _scheduleReconnect(),
+    );
 
-    if (!repository.isLocal) {
-      final channel = repository.subscribeToThreadMessages(
-        threadId: threadId,
-        onMessage: (message) {
-          if (_disposed) {
-            return;
-          }
-          final current = state.asData?.value ?? const <ConversationMessage>[];
-          if (current.any((item) => item.id == message.id)) {
-            return;
-          }
-          final next = [...current, message]
-            ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
-          catchUpCursor = next.last.createdAt.toUtc();
-          state = AsyncData(next);
-          unawaited(_handleIncomingMessage(threadId, userId));
-        },
-        onSubscribed: () async {
-          final catchUp = await repository.listMessagesAfter(
-            threadId: threadId,
-            userId: userId,
-            after: catchUpCursor,
-          );
-          if (_disposed || catchUp.isEmpty) {
-            return;
-          }
-          final current = state.asData?.value ?? initial;
-          final merged = <ConversationMessage>[...current];
-          for (final message in catchUp) {
-            if (merged.any((item) => item.id == message.id)) {
-              continue;
-            }
-            merged.add(message);
-          }
-          merged.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-          catchUpCursor = merged.last.createdAt.toUtc();
-          state = AsyncData(merged);
-          await _handleIncomingMessage(threadId, userId);
-        },
-        onError: (_) => _scheduleReconnect(),
-      );
-
-      ref.onDispose(() {
-        unawaited(repository.removeChannel(channel));
-      });
-    }
+    ref.onDispose(() {
+      unawaited(repository.removeChannel(channel));
+    });
 
     await repository.markThreadMessagesRead(
       threadId: threadId,

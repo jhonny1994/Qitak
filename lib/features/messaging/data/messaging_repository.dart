@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/constants/app_constants.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
@@ -64,10 +62,7 @@ abstract class MessagingRepository {
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
     required void Function(Object error) onError,
-  }) {
-    final _ = (threadId, onMessage, onSubscribed, onError);
-    throw UnsupportedError('Realtime messaging is unavailable.');
-  }
+  });
 
   Future<void> removeChannel(RealtimeChannel channel) async {
     final _ = channel;
@@ -211,7 +206,7 @@ class LocalMessagingRepository implements MessagingRepository {
     required void Function(Object error) onError,
   }) {
     final _ = (threadId, onMessage, onSubscribed, onError);
-    throw UnsupportedError('Realtime messaging is unavailable for local mode.');
+    return const _NoopRealtimeChannel();
   }
 
   @override
@@ -237,6 +232,13 @@ class LocalMessagingRepository implements MessagingRepository {
       'createdAt': DateTime.now().toIso8601String(),
     });
   }
+}
+
+class _NoopRealtimeChannel implements RealtimeChannel {
+  const _NoopRealtimeChannel();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => null;
 }
 
 class SupabaseMessagingRepository implements MessagingRepository {

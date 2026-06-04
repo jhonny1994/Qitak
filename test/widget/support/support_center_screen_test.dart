@@ -146,7 +146,7 @@ void main() {
     expect(find.byKey(const Key('support-description-field')), findsOneWidget);
   });
 
-  testWidgets('resolved support tickets show a closed status label', (
+  testWidgets('closed support tickets show a closed status label', (
     tester,
   ) async {
     final repository = LocalSupportRepository(buyerProfile);
@@ -171,8 +171,8 @@ void main() {
     );
     await const LocalAdminReportsRepository().resolveReport(
       reportId: ticket.id,
-      decision: 'dismiss',
-      reasonCode: 'insufficient_evidence',
+      decision: 'close',
+      reasonCode: 'duplicate_ticket',
     );
 
     await tester.pumpWidget(scope);
@@ -183,6 +183,47 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Closed'), findsOneWidget);
+    expect(find.text('Open'), findsNothing);
+  });
+
+  testWidgets('resolved support tickets show a resolved status label', (
+    tester,
+  ) async {
+    final repository = LocalSupportRepository(buyerProfile);
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SupportCenterScreen()),
+      ),
+      seed: <String, Object>{
+        ...contractSeed(),
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: <Object>[
+        supportRepositoryProvider.overrideWithValue(repository),
+        supportReasonOptionsProvider.overrideWith((ref) async {
+          return supportReasonOptions;
+        }),
+      ],
+    );
+    final ticket = await repository.createTicket(
+      reason: 'technical_issue',
+      description:
+          'Technical issue that support resolved after verifying logs.',
+    );
+    await const LocalAdminReportsRepository().resolveReport(
+      reportId: ticket.id,
+      decision: 'resolve',
+      reasonCode: 'verified_and_resolved',
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SupportCenterScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Resolved'), findsOneWidget);
     expect(find.text('Open'), findsNothing);
   });
 }

@@ -349,6 +349,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminReportReporterLabel": MessageLookupByLibrary.simpleMessage(
       "Auteur du signalement",
     ),
+    "adminReportResolutionOptionsUnavailableBody":
+        MessageLookupByLibrary.simpleMessage(
+          "Impossible de charger les politiques de décision. Actualisez les contrats puis réessayez avant de traiter ce signalement.",
+        ),
+    "adminReportResolutionOptionsUnavailableTitle":
+        MessageLookupByLibrary.simpleMessage(
+          "Options de résolution indisponibles",
+        ),
     "adminReportsQueueEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Aucun signalement ouvert pour le moment.",
     ),
@@ -368,6 +376,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "Connexion reservee aux utilisateurs admin.",
     ),
+    "adminSupportDecisionClose": MessageLookupByLibrary.simpleMessage("Clore"),
+    "adminSupportDecisionResolve": MessageLookupByLibrary.simpleMessage(
+      "Résoudre",
+    ),
+    "adminSupportReasonDuplicateTicket": MessageLookupByLibrary.simpleMessage(
+      "Ticket en doublon",
+    ),
+    "adminSupportReasonOutOfScope": MessageLookupByLibrary.simpleMessage(
+      "Hors périmètre",
+    ),
+    "adminSupportReasonUserGuided": MessageLookupByLibrary.simpleMessage(
+      "Utilisateur guidé",
+    ),
+    "adminSupportReasonVerifiedAndResolved":
+        MessageLookupByLibrary.simpleMessage("Vérifié et résolu"),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage(
       "Rétrograder",
     ),

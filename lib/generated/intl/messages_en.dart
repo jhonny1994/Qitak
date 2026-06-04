@@ -351,6 +351,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminReportReporterLabel": MessageLookupByLibrary.simpleMessage(
       "Reporter",
     ),
+    "adminReportResolutionOptionsUnavailableBody":
+        MessageLookupByLibrary.simpleMessage(
+          "Decision policies could not be loaded. Refresh contracts and try again before resolving this report.",
+        ),
+    "adminReportResolutionOptionsUnavailableTitle":
+        MessageLookupByLibrary.simpleMessage("Resolution options unavailable"),
     "adminReportsQueueEmptyBody": MessageLookupByLibrary.simpleMessage(
       "No user reports are open right now.",
     ),
@@ -370,6 +376,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "Restricted sign-in for admin users only.",
     ),
+    "adminSupportDecisionClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "adminSupportDecisionResolve": MessageLookupByLibrary.simpleMessage(
+      "Resolve",
+    ),
+    "adminSupportReasonDuplicateTicket": MessageLookupByLibrary.simpleMessage(
+      "Duplicate ticket",
+    ),
+    "adminSupportReasonOutOfScope": MessageLookupByLibrary.simpleMessage(
+      "Out of scope",
+    ),
+    "adminSupportReasonUserGuided": MessageLookupByLibrary.simpleMessage(
+      "User guided",
+    ),
+    "adminSupportReasonVerifiedAndResolved":
+        MessageLookupByLibrary.simpleMessage("Verified and resolved"),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage("Demote"),
     "adminTeamInviteAction": MessageLookupByLibrary.simpleMessage(
       "Invite admin",

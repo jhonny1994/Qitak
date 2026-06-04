@@ -96,8 +96,18 @@ class LocalAdminReportStore {
       return;
     }
     final current = _reports[index];
+    final nextStatus = switch (decision) {
+      'dismiss' || 'close' => 'dismissed',
+      'resolve' || 'warn_seller' || 'remove_listing' || 'suspend_seller' =>
+        'actioned',
+      _ => throw ArgumentError.value(
+        decision,
+        'decision',
+        'Unsupported local report decision.',
+      ),
+    };
     _reports[index] = current.copyWith(
-      status: decision == 'dismiss' ? 'dismissed' : 'actioned',
+      status: nextStatus,
     );
   }
 

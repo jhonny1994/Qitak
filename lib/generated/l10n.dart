@@ -5789,6 +5789,26 @@ class S {
     );
   }
 
+  /// `خيارات الحسم غير متاحة`
+  String get adminReportResolutionOptionsUnavailableTitle {
+    return Intl.message(
+      'خيارات الحسم غير متاحة',
+      name: 'adminReportResolutionOptionsUnavailableTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.`
+  String get adminReportResolutionOptionsUnavailableBody {
+    return Intl.message(
+      'تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.',
+      name: 'adminReportResolutionOptionsUnavailableBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `تطبيق القرار`
   String get adminReportApplyDecisionAction {
     return Intl.message(
@@ -5804,6 +5824,26 @@ class S {
     return Intl.message(
       'تم حفظ قرار البلاغ.',
       name: 'adminReportDecisionSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `حل`
+  String get adminSupportDecisionResolve {
+    return Intl.message(
+      'حل',
+      name: 'adminSupportDecisionResolve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إغلاق`
+  String get adminSupportDecisionClose {
+    return Intl.message(
+      'إغلاق',
+      name: 'adminSupportDecisionClose',
       desc: '',
       args: [],
     );
@@ -5884,6 +5924,46 @@ class S {
     return Intl.message(
       'سجل الجهة المرتبطة',
       name: 'adminReportEntityHistoryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم التحقق والحل`
+  String get adminSupportReasonVerifiedAndResolved {
+    return Intl.message(
+      'تم التحقق والحل',
+      name: 'adminSupportReasonVerifiedAndResolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرشاد المستخدم`
+  String get adminSupportReasonUserGuided {
+    return Intl.message(
+      'تم إرشاد المستخدم',
+      name: 'adminSupportReasonUserGuided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تذكرة مكررة`
+  String get adminSupportReasonDuplicateTicket {
+    return Intl.message(
+      'تذكرة مكررة',
+      name: 'adminSupportReasonDuplicateTicket',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `خارج النطاق`
+  String get adminSupportReasonOutOfScope {
+    return Intl.message(
+      'خارج النطاق',
+      name: 'adminSupportReasonOutOfScope',
       desc: '',
       args: [],
     );

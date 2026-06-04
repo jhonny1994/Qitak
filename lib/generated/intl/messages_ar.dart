@@ -349,6 +349,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminReportReporterLabel": MessageLookupByLibrary.simpleMessage(
       "مقدم البلاغ",
     ),
+    "adminReportResolutionOptionsUnavailableBody":
+        MessageLookupByLibrary.simpleMessage(
+          "تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.",
+        ),
+    "adminReportResolutionOptionsUnavailableTitle":
+        MessageLookupByLibrary.simpleMessage("خيارات الحسم غير متاحة"),
     "adminReportsQueueEmptyBody": MessageLookupByLibrary.simpleMessage(
       "لا توجد بلاغات مفتوحة حالياً.",
     ),
@@ -368,6 +374,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل دخول مخصّص لمستخدمي الإدارة فقط.",
     ),
+    "adminSupportDecisionClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "adminSupportDecisionResolve": MessageLookupByLibrary.simpleMessage("حل"),
+    "adminSupportReasonDuplicateTicket": MessageLookupByLibrary.simpleMessage(
+      "تذكرة مكررة",
+    ),
+    "adminSupportReasonOutOfScope": MessageLookupByLibrary.simpleMessage(
+      "خارج النطاق",
+    ),
+    "adminSupportReasonUserGuided": MessageLookupByLibrary.simpleMessage(
+      "تم إرشاد المستخدم",
+    ),
+    "adminSupportReasonVerifiedAndResolved":
+        MessageLookupByLibrary.simpleMessage("تم التحقق والحل"),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage(
       "خفض الصلاحية",
     ),

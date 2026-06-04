@@ -324,7 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Detail du signalement indisponible",
     ),
     "adminReportDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Inspectez le signalement, l\'entité liée et l\'historique avant décision.",
+      "Inspectez le signalement ou ticket support, l\'entité liée et l\'historique avant décision.",
     ),
     "adminReportDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Détail du signalement",
@@ -353,7 +353,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Aucun signalement ouvert pour le moment.",
     ),
     "adminReportsQueueSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Centralisez les signalements annonces, vendeurs et messages.",
+      "Centralisez les signalements annonces, vendeurs, messages et tickets support.",
     ),
     "adminReportsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "File des signalements",
@@ -1641,9 +1641,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sélectionnez une raison de support.",
     ),
     "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("Raison"),
+    "supportTicketStatusClosed": MessageLookupByLibrary.simpleMessage(
+      "Clôturé",
+    ),
     "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("Ouvert"),
     "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
       "Résolu",
+    ),
+    "supportTicketStatusUnderReview": MessageLookupByLibrary.simpleMessage(
+      "En cours de revue",
     ),
     "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
       "Envoyer le ticket",

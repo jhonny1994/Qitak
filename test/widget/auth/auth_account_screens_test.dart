@@ -934,7 +934,10 @@ void main() {
         find.byKey(const Key('guest-account-appearance-button')),
         findsOneWidget,
       );
-      expect(find.byKey(const Key('guest-account-support-button')), findsNothing);
+      expect(
+        find.byKey(const Key('guest-account-support-button')),
+        findsNothing,
+      );
       expect(
         find.byKey(const Key('guest-account-legal-button')),
         findsOneWidget,

@@ -284,7 +284,9 @@ class _TransactionDetailScreenState
                           ? context.l10n.transactionRoleBuyer
                           : context.l10n.transactionRoleSeller,
                       value: _nextStepMessage(context, record, profile.id),
-                      status: context.l10n.displayTransactionState(record.state),
+                      status: context.l10n.displayTransactionState(
+                        record.state,
+                      ),
                     ),
                   ],
                 ),

@@ -1414,11 +1414,31 @@ class S {
     );
   }
 
+  /// `قيد المراجعة`
+  String get supportTicketStatusUnderReview {
+    return Intl.message(
+      'قيد المراجعة',
+      name: 'supportTicketStatusUnderReview',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `تم الحل`
   String get supportTicketStatusResolved {
     return Intl.message(
       'تم الحل',
       name: 'supportTicketStatusResolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مغلقة`
+  String get supportTicketStatusClosed {
+    return Intl.message(
+      'مغلقة',
+      name: 'supportTicketStatusClosed',
       desc: '',
       args: [],
     );
@@ -5709,10 +5729,10 @@ class S {
     );
   }
 
-  /// `تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.`
+  /// `تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.`
   String get adminReportsQueueSubtitle {
     return Intl.message(
-      'تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.',
+      'تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.',
       name: 'adminReportsQueueSubtitle',
       desc: '',
       args: [],
@@ -5739,10 +5759,10 @@ class S {
     );
   }
 
-  /// `افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.`
+  /// `افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.`
   String get adminReportDetailSubtitle {
     return Intl.message(
-      'افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.',
+      'افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.',
       name: 'adminReportDetailSubtitle',
       desc: '',
       args: [],

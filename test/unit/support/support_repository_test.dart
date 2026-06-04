@@ -15,20 +15,23 @@ void main() {
 
   setUp(LocalSupportRepository.resetForTest);
 
-  test('creates authenticated support tickets as open support reports', () async {
-    final repo = LocalSupportRepository(seedProfile);
+  test(
+    'creates authenticated support tickets as open support reports',
+    () async {
+      final repo = LocalSupportRepository(seedProfile);
 
-    final ticket = await repo.createTicket(
-      reason: 'payment_issue',
-      description:
-          'Buyer submitted CCP proof but seller still cannot confirm.',
-    );
+      final ticket = await repo.createTicket(
+        reason: 'payment_issue',
+        description:
+            'Buyer submitted CCP proof but seller still cannot confirm.',
+      );
 
-    expect(ticket.userId, seedProfile.id);
-    expect(ticket.reason, 'payment_issue');
-    expect(ticket.description, contains('CCP proof'));
-    expect(ticket.status, 'open');
-  });
+      expect(ticket.userId, seedProfile.id);
+      expect(ticket.reason, 'payment_issue');
+      expect(ticket.description, contains('CCP proof'));
+      expect(ticket.status, 'open');
+    },
+  );
 
   test('lists only support tickets for the requested reporter', () async {
     const otherProfile = AccountProfile(

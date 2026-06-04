@@ -5,6 +5,7 @@ import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/network/supabase_error_classifier.dart';
+import 'package:qitak_app/features/admin/data/local_admin_report_store.dart';
 import 'package:qitak_app/features/admin/domain/admin_report.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -228,19 +229,18 @@ class SupabaseAdminReportsRepository implements AdminReportsRepository {
 class LocalAdminReportsRepository implements AdminReportsRepository {
   const LocalAdminReportsRepository();
 
+  static void resetForTest() {
+    LocalAdminReportStore.resetForTest();
+  }
+
   @override
   Future<AdminReport?> fetchReport(String reportId) async {
-    for (final item in await listOpenReports()) {
-      if (item.id == reportId) {
-        return item;
-      }
-    }
-    return null;
+    return LocalAdminReportStore.fetchReport(reportId);
   }
 
   @override
   Future<List<AdminReport>> listOpenReports() async {
-    return const <AdminReport>[];
+    return LocalAdminReportStore.listOpenReports();
   }
 
   @override
@@ -249,7 +249,12 @@ class LocalAdminReportsRepository implements AdminReportsRepository {
     required String decision,
     required String reasonCode,
     String? note,
-  }) async {}
+  }) async {
+    LocalAdminReportStore.resolveReport(
+      reportId: reportId,
+      decision: decision,
+    );
+  }
 }
 
 final FutureProvider<List<AdminReport>> adminReportsProvider =

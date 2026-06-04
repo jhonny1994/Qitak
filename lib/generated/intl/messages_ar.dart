@@ -324,7 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تفاصيل البلاغ غير متاحة",
     ),
     "adminReportDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.",
+      "افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.",
     ),
     "adminReportDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل مراجعة البلاغ",
@@ -353,7 +353,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "لا توجد بلاغات مفتوحة حالياً.",
     ),
     "adminReportsQueueSubtitle": MessageLookupByLibrary.simpleMessage(
-      "تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.",
+      "تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.",
     ),
     "adminReportsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "طابور البلاغات",
@@ -1559,9 +1559,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "اختر سبب الدعم.",
     ),
     "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("السبب"),
+    "supportTicketStatusClosed": MessageLookupByLibrary.simpleMessage("مغلقة"),
     "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("مفتوحة"),
     "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
       "تم الحل",
+    ),
+    "supportTicketStatusUnderReview": MessageLookupByLibrary.simpleMessage(
+      "قيد المراجعة",
     ),
     "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
       "إرسال التذكرة",

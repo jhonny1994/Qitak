@@ -127,7 +127,9 @@ final buyerPaymentMethodPolicyProvider = FutureProvider<List<AppPolicyOption>>((
       .fetchPolicyOptions(PolicyKey.buyerPaymentMethod);
 });
 
-final supportReasonPolicyProvider = FutureProvider<List<AppPolicyOption>>((ref) {
+final supportReasonPolicyProvider = FutureProvider<List<AppPolicyOption>>((
+  ref,
+) {
   return ref
       .read(appContractRepositoryProvider)
       .fetchPolicyOptions(PolicyKey.supportReasonCode);

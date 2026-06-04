@@ -326,7 +326,9 @@ void main() {
 
     final scope = await buildTestScope(
       const TestMaterialShell(
-        child: Scaffold(body: TransactionDetailScreen(transactionId: 'tx-cash')),
+        child: Scaffold(
+          body: TransactionDetailScreen(transactionId: 'tx-cash'),
+        ),
       ),
       seed: const <String, Object>{
         'qitak.local.session.email': 'seller@qitak.test',

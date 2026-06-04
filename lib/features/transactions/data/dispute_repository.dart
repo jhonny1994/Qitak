@@ -272,9 +272,15 @@ class SupabaseDisputeRepository implements DisputeRepository {
 class LocalDisputeRepository implements DisputeRepository {
   const LocalDisputeRepository();
 
+  static final List<TransactionDispute> _disputes = <TransactionDispute>[];
+
+  static void resetForTest() {
+    _disputes.clear();
+  }
+
   @override
   Future<TransactionDispute?> fetchById(String disputeId) async {
-    for (final item in await listOpenDisputes()) {
+    for (final item in _disputes) {
       if (item.id == disputeId) {
         return item;
       }
@@ -284,7 +290,10 @@ class LocalDisputeRepository implements DisputeRepository {
 
   @override
   Future<List<TransactionDispute>> listOpenDisputes() async {
-    return const <TransactionDispute>[];
+    return _disputes
+        .where((item) => item.status == 'open' || item.status == 'under_review')
+        .toList(growable: false)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   @override
@@ -295,15 +304,28 @@ class LocalDisputeRepository implements DisputeRepository {
     required String description,
     List<ListingMediaSelection> evidence = const <ListingMediaSelection>[],
   }) async {
-    return TransactionDispute(
-      id: 'dispute-$transactionId',
+    final dispute = TransactionDispute(
+      id: 'dispute-${_disputes.length + 1}',
       transactionId: transactionId,
       createdByUserId: createdByUserId,
       reason: reason,
       description: description,
       status: 'open',
       createdAt: DateTime.now(),
+      evidence: [
+        for (var index = 0; index < evidence.length; index++)
+          DisputeEvidenceItem(
+            id: 'evidence-${_disputes.length + 1}-$index',
+            storagePath:
+                '$createdByUserId/dispute-${_disputes.length + 1}/${evidence[index].fileName}',
+            previewUrl: evidence[index].toDataUri(),
+          ),
+      ],
     );
+    _disputes
+      ..removeWhere((item) => item.id == dispute.id)
+      ..insert(0, dispute);
+    return dispute;
   }
 
   @override
@@ -313,7 +335,33 @@ class LocalDisputeRepository implements DisputeRepository {
     required String reasonCode,
     required String outcomeAction,
     String? note,
-  }) async {}
+  }) async {
+    final index = _disputes.indexWhere((item) => item.id == disputeId);
+    if (index == -1) {
+      return;
+    }
+    final current = _disputes[index];
+    final nextStatus = switch (decision) {
+      'buyer' => 'resolved_buyer',
+      'seller' => 'resolved_seller',
+      'dismiss' => 'dismissed',
+      _ => current.status,
+    };
+    _disputes[index] = TransactionDispute(
+      id: current.id,
+      transactionId: current.transactionId,
+      createdByUserId: current.createdByUserId,
+      reason: current.reason,
+      description: current.description,
+      status: nextStatus,
+      createdAt: current.createdAt,
+      buyerName: current.buyerName,
+      sellerName: current.sellerName,
+      listingTitle: current.listingTitle,
+      conversationId: current.conversationId,
+      evidence: current.evidence,
+    );
+  }
 }
 
 final FutureProvider<List<TransactionDispute>> adminDisputesProvider =

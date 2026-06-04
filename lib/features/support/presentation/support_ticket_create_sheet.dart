@@ -50,7 +50,8 @@ class _SupportTicketCreateSheetState
     final optionsAsync = ref.watch(supportReasonOptionsProvider);
     final reasonOptions =
         optionsAsync.asData?.value ?? const <AppPolicyOption>[];
-    final selectedReason = reasonOptions.any(
+    final selectedReason =
+        reasonOptions.any(
           (option) => option.code == _selectedReason,
         )
         ? _selectedReason
@@ -110,7 +111,8 @@ class _SupportTicketCreateSheetState
                     key: const Key('support-description-field'),
                     controller: _descriptionController,
                     maxLines: 5,
-                    validator: (value) => value == null || value.trim().length < 20
+                    validator: (value) =>
+                        value == null || value.trim().length < 20
                         ? context.l10n.supportTicketDescriptionError
                         : null,
                   ),
@@ -118,7 +120,9 @@ class _SupportTicketCreateSheetState
                 const SizedBox(height: 18),
                 FilledButton(
                   key: const Key('support-submit-ticket-button'),
-                  onPressed: _submitting || reasonOptions.isEmpty ? null : _submit,
+                  onPressed: _submitting || reasonOptions.isEmpty
+                      ? null
+                      : _submit,
                   child: _submitting
                       ? const SizedBox.square(
                           dimension: 18,
@@ -128,7 +132,9 @@ class _SupportTicketCreateSheetState
                 ),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: _submitting ? null : () => Navigator.of(context).pop(),
+                  onPressed: _submitting
+                      ? null
+                      : () => Navigator.of(context).pop(),
                   child: Text(context.l10n.cancel),
                 ),
               ],
@@ -148,14 +154,17 @@ class _SupportTicketCreateSheetState
         ref.read(supportReasonOptionsProvider).asData?.value ??
         const <AppPolicyOption>[];
     final selectedReason =
-        _selectedReason ?? (reasonOptions.isNotEmpty ? reasonOptions.first.code : null);
+        _selectedReason ??
+        (reasonOptions.isNotEmpty ? reasonOptions.first.code : null);
     if (selectedReason == null || selectedReason.isEmpty) {
       return;
     }
 
     setState(() => _submitting = true);
     try {
-      await ref.read(supportRepositoryProvider).createTicket(
+      await ref
+          .read(supportRepositoryProvider)
+          .createTicket(
             reason: selectedReason,
             description: _descriptionController.text.trim(),
           );
@@ -194,6 +203,11 @@ String supportReasonLabel(BuildContext context, String labelKey) {
 
 String supportTicketStatusLabel(BuildContext context, String status) {
   switch (status) {
+    case 'under_review':
+      return context.l10n.supportTicketStatusUnderReview;
+    case 'dismissed':
+      return context.l10n.supportTicketStatusClosed;
+    case 'actioned':
     case 'resolved':
       return context.l10n.supportTicketStatusResolved;
     case 'open':

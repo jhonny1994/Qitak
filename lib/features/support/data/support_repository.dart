@@ -3,6 +3,8 @@ import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/network/supabase_error_classifier.dart';
+import 'package:qitak_app/features/admin/data/local_admin_report_store.dart';
+import 'package:qitak_app/features/admin/domain/admin_report.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/support/domain/support_ticket.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -31,10 +33,8 @@ class LocalSupportRepository implements SupportRepository {
 
   final AccountProfile _profile;
 
-  static final List<SupportTicket> _tickets = <SupportTicket>[];
-
   static void resetForTest() {
-    _tickets.clear();
+    LocalAdminReportStore.resetForTest();
   }
 
   @override
@@ -42,26 +42,32 @@ class LocalSupportRepository implements SupportRepository {
     required String reason,
     required String description,
   }) async {
-    final now = DateTime.now();
-    final ticket = SupportTicket(
-      id: 'support-${_tickets.length + 1}',
-      userId: _profile.id,
+    final report = LocalAdminReportStore.createSupportTicket(
+      reporterUserId: _profile.id,
+      reporterName: _profile.fullName,
       reason: reason,
       description: description,
-      status: 'open',
-      createdAt: now,
     );
-    _tickets
-      ..removeWhere((item) => item.id == ticket.id)
-      ..insert(0, ticket);
-    return ticket;
+    return _mapLocalReport(report);
   }
 
   @override
   Future<List<SupportTicket>> listTickets() async {
-    return _tickets
-        .where((ticket) => ticket.userId == _profile.id)
-        .toList(growable: false);
+    return LocalAdminReportStore.listReportsForUser(
+      reporterUserId: _profile.id,
+      entityType: 'support',
+    ).map(_mapLocalReport).toList(growable: false);
+  }
+
+  SupportTicket _mapLocalReport(AdminReport report) {
+    return SupportTicket(
+      id: report.id,
+      userId: report.reporterUserId,
+      reason: report.reason,
+      description: report.description,
+      status: report.status,
+      createdAt: report.createdAt,
+    );
   }
 }
 

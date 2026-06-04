@@ -69,8 +69,8 @@ class SupportCenterScreen extends ConsumerWidget {
                     Text(
                       context.l10n.supportCenterRoutingTitle,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     InkWell(
@@ -84,7 +84,8 @@ class SupportCenterScreen extends ConsumerWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: () => context.go(_profileSettingsPath(profile.role)),
+                      onTap: () =>
+                          context.go(_profileSettingsPath(profile.role)),
                       borderRadius: BorderRadius.circular(18),
                       child: QitakQueueRow(
                         title: context.l10n.supportCenterRoutingAccountTitle,
@@ -115,9 +116,7 @@ class SupportCenterScreen extends ConsumerWidget {
                           children: [
                             Text(
                               context.l10n.supportCenterTicketListTitle,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
+                              style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 12),
@@ -157,7 +156,10 @@ class SupportCenterScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _openCreateTicketSheet(BuildContext context, WidgetRef ref) async {
+  Future<void> _openCreateTicketSheet(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final created = await showSupportTicketCreateSheet(context);
     if (created != true || !context.mounted) {
       return;

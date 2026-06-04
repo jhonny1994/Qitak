@@ -328,7 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Report detail unavailable",
     ),
     "adminReportDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Inspect the report, related entity, and the action trail before deciding.",
+      "Inspect the report or support ticket, related entity, and action trail before deciding.",
     ),
     "adminReportDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Report review detail",
@@ -355,7 +355,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "No user reports are open right now.",
     ),
     "adminReportsQueueSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Track reported listings, sellers, and message abuse from one review surface.",
+      "Track listing, seller, message, and support tickets from one review surface.",
     ),
     "adminReportsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "Reports queue",
@@ -1578,9 +1578,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Select a support reason.",
     ),
     "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("Reason"),
+    "supportTicketStatusClosed": MessageLookupByLibrary.simpleMessage("Closed"),
     "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("Open"),
     "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
       "Resolved",
+    ),
+    "supportTicketStatusUnderReview": MessageLookupByLibrary.simpleMessage(
+      "Under review",
     ),
     "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
       "Submit ticket",

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/support/data/support_repository.dart';
@@ -69,12 +70,6 @@ void main() {
     'authenticated support screen shows ticket list and create action',
     (tester) async {
       final repository = LocalSupportRepository(buyerProfile);
-      await repository.createTicket(
-        reason: 'payment_issue',
-        description:
-            'Buyer submitted CCP proof but the seller still cannot verify the transfer.',
-      );
-
       final scope = await buildTestScope(
         const TestMaterialShell(
           child: Scaffold(body: SupportCenterScreen()),
@@ -89,6 +84,11 @@ void main() {
             return supportReasonOptions;
           }),
         ],
+      );
+      await repository.createTicket(
+        reason: 'payment_issue',
+        description:
+            'Buyer submitted CCP proof but the seller still cannot verify the transfer.',
       );
 
       await tester.pumpWidget(scope);
@@ -107,7 +107,9 @@ void main() {
     },
   );
 
-  testWidgets('support ticket sheet opens with required fields', (tester) async {
+  testWidgets('support ticket sheet opens with required fields', (
+    tester,
+  ) async {
     final repository = LocalSupportRepository(buyerProfile);
     final scope = await buildTestScope(
       TestMaterialShell(
@@ -142,5 +144,45 @@ void main() {
     expect(find.text('New support ticket'), findsOneWidget);
     expect(find.byKey(const Key('support-reason-field')), findsOneWidget);
     expect(find.byKey(const Key('support-description-field')), findsOneWidget);
+  });
+
+  testWidgets('resolved support tickets show a closed status label', (
+    tester,
+  ) async {
+    final repository = LocalSupportRepository(buyerProfile);
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SupportCenterScreen()),
+      ),
+      seed: <String, Object>{
+        ...contractSeed(),
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: <Object>[
+        supportRepositoryProvider.overrideWithValue(repository),
+        supportReasonOptionsProvider.overrideWith((ref) async {
+          return supportReasonOptions;
+        }),
+      ],
+    );
+    final ticket = await repository.createTicket(
+      reason: 'payment_issue',
+      description: 'Initial support ticket that will be dismissed by admin.',
+    );
+    await const LocalAdminReportsRepository().resolveReport(
+      reportId: ticket.id,
+      decision: 'dismiss',
+      reasonCode: 'insufficient_evidence',
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SupportCenterScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Closed'), findsOneWidget);
+    expect(find.text('Open'), findsNothing);
   });
 }

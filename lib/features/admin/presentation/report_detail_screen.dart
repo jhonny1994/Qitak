@@ -6,6 +6,7 @@ import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
+import 'package:qitak_app/features/admin/presentation/report_reason_label.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 final reportDecisionPolicyOptionsProvider =
@@ -99,7 +100,8 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        '${context.l10n.disputeReasonLabel}: ${item.reason}',
+                        '${context.l10n.disputeReasonLabel}: '
+                        '${adminReportReasonLabel(context, item)}',
                       ),
                       const SizedBox(height: 10),
                       Text(item.description.isEmpty ? '-' : item.description),

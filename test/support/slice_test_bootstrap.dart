@@ -11,6 +11,7 @@ import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/notifications/data/notification_repository.dart';
 import 'package:qitak_app/features/ratings/data/rating_repository.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/generated/l10n.dart';
@@ -28,6 +29,9 @@ Future<ProviderScope> buildSliceTestScope(
   LocalTransactionRepository.resetForTest();
   LocalRatingRepository.resetForTest();
   LocalMessagingRepository.resetForTest();
+  LocalAdminReportsRepository.resetForTest();
+  LocalDisputeRepository.resetForTest();
+  LocalSupportRepository.resetForTest();
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),

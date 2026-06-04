@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
+import 'package:qitak_app/features/admin/presentation/report_reason_label.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class ReportsQueueScreen extends ConsumerWidget {
@@ -31,7 +32,7 @@ class ReportsQueueScreen extends ConsumerWidget {
                     onTap: () => context.go('/admin/reports/${item.id}'),
                     borderRadius: BorderRadius.circular(18),
                     child: QitakQueueRow(
-                      title: item.reason,
+                      title: adminReportReasonLabel(context, item),
                       meta:
                           '${item.reporterName.isEmpty ? item.reporterUserId : item.reporterName}\n${item.entityPreview}',
                       status: item.status,

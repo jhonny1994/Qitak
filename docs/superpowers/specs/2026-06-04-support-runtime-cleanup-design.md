@@ -50,17 +50,22 @@ The required change is not storage. The required change is resolution semantics.
 
 Support tickets need their own admin decision and reason policies instead of reusing moderation-only policies.
 
-Recommended support resolution shape:
+Persisted report status should stay on the existing shared `reports.status` contract.
 
-- decisions:
-  - `resolve`
-  - `close`
-- ticket statuses:
-  - `open`
-  - `resolved`
-  - `closed`
+That means this cleanup does not introduce support-specific stored statuses such as `resolved` or `closed`.
 
-This is intentionally small. It removes the current semantic mismatch without inventing a customer-service workflow that does not exist elsewhere in the app.
+Instead:
+
+- support tickets continue to start as `open`
+- support tickets continue to end in the existing shared report terminal states
+- support-facing semantics come from support-specific resolution actions, reasons, and UI labels
+
+User-facing support labels can map shared terminal states like this:
+
+- `actioned` -> `Resolved`
+- `dismissed` -> `Closed`
+
+This is intentionally small. It removes the current semantic mismatch without inventing a new report-state model or a customer-service workflow that does not exist elsewhere in the app.
 
 ### 2. Report admin UI becomes entity-type aware
 
@@ -86,7 +91,7 @@ Only add schema or contract changes if the current report resolution surface can
 
 - support decision values
 - support reason codes
-- support final status
+- the existing shared terminal report states required for support
 
 The preferred migration is:
 
@@ -94,7 +99,15 @@ The preferred migration is:
 - wire app providers to those catalogs
 - update admin UI and repository mapping
 
-Only extend report row fields if current persisted fields are insufficient.
+The existing generic resolution fields should remain the first choice:
+
+- `resolution_action`
+- `resolution_reason_code`
+- `resolution_note`
+- `resolved_by`
+- `resolved_at`
+
+Only extend report row fields if those persisted fields are insufficient.
 
 ### 4. Conversation oversight becomes a proper contract
 
@@ -102,7 +115,7 @@ Only extend report row fields if current persisted fields are insufficient.
 
 It should become one of these:
 
-- an abstract repository contract with concrete local and Supabase implementations
+- an abstract repository contract with the existing concrete Supabase implementation
 - or a sealed pattern already used elsewhere in the repo, if one exists and fits cleanly
 
 The important requirement is that no production repository surface should ship explicit `UnimplementedError` for public methods.
@@ -120,9 +133,8 @@ The exact mechanism should follow existing repository patterns in the repo. The 
 
 Examples of acceptable outcomes:
 
-- empty stream
-- no-op subscription object
 - guarded caller path that never invokes unavailable realtime
+- inert realtime fallback that remains compatible with the current `RealtimeChannel`-based interface
 
 The implementation should choose the option that matches the current repository interface with the least extra abstraction.
 
@@ -137,7 +149,7 @@ Expected additions:
 Expected non-change:
 
 - support ticket creation remains on the current support reason policy
-- report storage remains the same unless existing resolution columns prove insufficient
+- report storage and shared persisted `report_status` remain the same unless existing resolution columns prove insufficient
 
 ## Testing Strategy
 
@@ -146,9 +158,10 @@ Use TDD for every behavior change.
 Required failing tests first:
 
 1. admin support ticket resolution uses support decisions and reasons, not moderation ones
-2. moderation report resolution still behaves exactly as before
-3. conversation oversight repository no longer exposes throwable unfinished public methods
-4. messaging realtime fallback in unsupported contexts does not throw and degrades safely
+2. support UI maps shared persisted report terminal states to support-facing labels correctly
+3. moderation report resolution still behaves exactly as before
+4. conversation oversight repository no longer exposes throwable unfinished public methods
+5. messaging realtime fallback in unsupported contexts does not throw and degrades safely
 
 Required verification after implementation:
 
@@ -179,7 +192,8 @@ Mitigation:
 
 ## Acceptance Criteria
 
-- Support tickets no longer display or persist moderation-only resolution semantics.
+- Support tickets no longer display moderation-only resolution semantics.
+- Support tickets continue to use the shared persisted report status contract.
 - Listing and message moderation keep their current behavior.
 - No public production repository method in the touched surfaces throws `UnimplementedError`.
 - Messaging realtime fallback in unsupported contexts is safe and non-throwing.

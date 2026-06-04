@@ -57,7 +57,7 @@ abstract class MessagingRepository {
     return const <RealtimeChannel>[];
   }
 
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
@@ -199,14 +199,14 @@ class LocalMessagingRepository implements MessagingRepository {
   }
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
     required void Function(Object error) onError,
   }) {
     final _ = (threadId, onMessage, onSubscribed, onError);
-    return const _NoopRealtimeChannel();
+    return null;
   }
 
   @override
@@ -232,13 +232,6 @@ class LocalMessagingRepository implements MessagingRepository {
       'createdAt': DateTime.now().toIso8601String(),
     });
   }
-}
-
-class _NoopRealtimeChannel implements RealtimeChannel {
-  const _NoopRealtimeChannel();
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => null;
 }
 
 class SupabaseMessagingRepository implements MessagingRepository {
@@ -538,7 +531,7 @@ class SupabaseMessagingRepository implements MessagingRepository {
   }
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,

@@ -118,7 +118,7 @@ class _ThrowingLocalRealtimeMessagingRepository
   bool subscribeCalled = false;
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,

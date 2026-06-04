@@ -1,7 +1,7 @@
 set search_path = public, extensions;
 
 begin;
-select plan(34);
+select plan(44);
 
 select has_table('public', 'app_domain_catalog', 'app_domain_catalog table exists');
 select has_table('public', 'app_domain_codes', 'app_domain_codes table exists');
@@ -143,8 +143,15 @@ do $$
 begin
   insert into auth.users (id, email)
   values
+    ('00000000-0000-0000-0000-000000000000', 'admin_contract_test@example.com'),
     ('00000000-0000-0000-0000-000000000111', 'listing_report_buyer@example.com'),
     ('00000000-0000-0000-0000-000000000222', 'listing_report_seller@example.com');
+
+  update public.profiles
+  set full_name = 'Admin Contract User',
+      phone = '0550000000',
+      role = 'admin'
+  where id = '00000000-0000-0000-0000-000000000000';
 
   update public.profiles
   set full_name = 'Listing Report Buyer',
@@ -172,6 +179,60 @@ begin
     'Listing used to validate report insert protections.',
     5000
   );
+
+  insert into public.reports (
+    id,
+    reporter_id,
+    reported_entity_type,
+    reported_entity_id,
+    report_type,
+    description,
+    status
+  )
+  values
+    (
+      '10000000-0000-0000-0000-000000000001',
+      (
+        select id
+        from auth.users
+        where email = 'support_contract_test@example.com'
+      ),
+      'support',
+      (
+        select id
+        from auth.users
+        where email = 'support_contract_test@example.com'
+      ),
+      'payment_issue',
+      'Support report used to verify resolve -> actioned.',
+      'open'
+    ),
+    (
+      '10000000-0000-0000-0000-000000000002',
+      (
+        select id
+        from auth.users
+        where email = 'support_contract_test@example.com'
+      ),
+      'support',
+      (
+        select id
+        from auth.users
+        where email = 'support_contract_test@example.com'
+      ),
+      'technical_issue',
+      'Support report used to verify close -> dismissed.',
+      'open'
+    ),
+    (
+      '10000000-0000-0000-0000-000000000003',
+      '00000000-0000-0000-0000-000000000111',
+      'listing',
+      '00000000-0000-0000-0000-000000000333',
+      'spam',
+      'Listing report used to verify moderation resolution validation.',
+      'open'
+    );
 end;
 $$;
 
@@ -284,6 +345,115 @@ select lives_ok(
   'support-backed reports allow multiple tickets from the same user'
 );
 
+select set_config(
+  'request.jwt.claims',
+  json_build_object('sub', '00000000-0000-0000-0000-000000000000')::text,
+  false
+);
+
+select lives_ok(
+  $sql$
+    select public.admin_resolve_report(
+      '10000000-0000-0000-0000-000000000001',
+      'resolve',
+      'verified_and_resolved',
+      'Support issue confirmed and resolved.'
+    )
+  $sql$,
+  'support report accepts resolve through admin_resolve_report'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.reports
+    where id = '10000000-0000-0000-0000-000000000001'
+      and status = 'actioned'
+      and resolution_action = 'resolve'
+      and resolution_reason_code = 'verified_and_resolved'
+      and resolved_by = '00000000-0000-0000-0000-000000000000'
+  ),
+  'support resolve persists actioned status and support resolution metadata'
+);
+
+select lives_ok(
+  $sql$
+    select public.admin_resolve_report(
+      '10000000-0000-0000-0000-000000000002',
+      'close',
+      'out_of_scope',
+      'Support request closed as out of scope.'
+    )
+  $sql$,
+  'support report accepts close through admin_resolve_report'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.reports
+    where id = '10000000-0000-0000-0000-000000000002'
+      and status = 'dismissed'
+      and resolution_action = 'close'
+      and resolution_reason_code = 'out_of_scope'
+      and resolved_by = '00000000-0000-0000-0000-000000000000'
+  ),
+  'support close persists dismissed status and support resolution metadata'
+);
+
+select throws_ok(
+  $sql$
+    select public.admin_resolve_report(
+      '10000000-0000-0000-0000-000000000003',
+      'resolve',
+      'verified_and_resolved',
+      null
+    )
+  $sql$,
+  null,
+  'invalid report decision',
+  'non-support reports reject resolve as a support-only decision'
+);
+
+select throws_ok(
+  $sql$
+    select public.admin_resolve_report(
+      '10000000-0000-0000-0000-000000000003',
+      'close',
+      'out_of_scope',
+      null
+    )
+  $sql$,
+  null,
+  'invalid report decision',
+  'non-support reports reject close as a support-only decision'
+);
+
+select lives_ok(
+  $sql$
+    select public.admin_resolve_report(
+      '10000000-0000-0000-0000-000000000003',
+      'dismiss',
+      'spam',
+      'Moderation report dismissed after review.'
+    )
+  $sql$,
+  'moderation branch still accepts dismiss through admin_resolve_report'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.reports
+    where id = '10000000-0000-0000-0000-000000000003'
+      and status = 'dismissed'
+      and resolution_action = 'dismiss'
+      and resolution_reason_code = 'spam'
+      and resolved_by = '00000000-0000-0000-0000-000000000000'
+  ),
+  'moderation dismiss persists dismissed status and moderation metadata'
+);
+
 set local role postgres;
 
 select ok(
@@ -344,6 +514,27 @@ select ok(
 select ok(
   (select count(*) from public.get_app_policy_contracts('support_reason_code')) > 0,
   'get_app_policy_contracts returns support reason rows'
+);
+
+select ok(
+  (
+    select array_agg(code order by sort_order, code)
+    from public.get_app_policy_contracts('support_report_resolution_decision')
+  ) = array['resolve', 'close']::text[],
+  'support report resolution decisions remain contract-driven'
+);
+
+select ok(
+  (
+    select array_agg(code order by sort_order, code)
+    from public.get_app_policy_contracts('support_report_resolution_reason_code')
+  ) = array[
+    'verified_and_resolved',
+    'user_guided',
+    'duplicate_ticket',
+    'out_of_scope'
+  ]::text[],
+  'support report resolution reasons remain contract-driven'
 );
 
 select ok(

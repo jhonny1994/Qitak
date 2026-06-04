@@ -206,17 +206,15 @@ void main() {
   );
 
   testWidgets('support reports show support decisions only', (tester) async {
-    final initialReport = LocalAdminReportStore.createSupportTicket(
-      reporterUserId: 'buyer-1',
-      reporterName: 'Buyer One',
-      reason: 'payment_issue',
-      description:
-          'Buyer uploaded a BaridiMob proof and still needs support review.',
-    );
+    String? reportId;
     final scope = await buildTestScope(
       TestMaterialShell(
         child: Scaffold(
-          body: ReportDetailScreen(reportId: initialReport.id),
+          body: Builder(
+            builder: (context) => reportId == null
+                ? const SizedBox.shrink()
+                : ReportDetailScreen(reportId: reportId),
+          ),
         ),
       ),
       overrides: <Object>[
@@ -234,13 +232,13 @@ void main() {
         }),
       ],
     );
-    LocalAdminReportStore.createSupportTicket(
+    reportId = LocalAdminReportStore.createSupportTicket(
       reporterUserId: 'buyer-1',
       reporterName: 'Buyer One',
       reason: 'payment_issue',
       description:
           'Buyer uploaded a BaridiMob proof and still needs support review.',
-    );
+    ).id;
 
     await tester.pumpWidget(scope);
     await tester.pumpAndSettle();
@@ -254,18 +252,15 @@ void main() {
   });
 
   testWidgets('listing reports keep moderation decisions only', (tester) async {
-    final initialReport = LocalAdminReportStore.createListingReport(
-      reporterUserId: 'buyer-1',
-      reporterName: 'Buyer One',
-      listingId: 'listing-1',
-      listingTitle: 'Brake pads',
-      reason: 'spam',
-      description: 'Listing contains repeated spam content and fake images.',
-    );
+    String? reportId;
     final scope = await buildTestScope(
       TestMaterialShell(
         child: Scaffold(
-          body: ReportDetailScreen(reportId: initialReport.id),
+          body: Builder(
+            builder: (context) => reportId == null
+                ? const SizedBox.shrink()
+                : ReportDetailScreen(reportId: reportId),
+          ),
         ),
       ),
       overrides: <Object>[
@@ -283,14 +278,14 @@ void main() {
         }),
       ],
     );
-    LocalAdminReportStore.createListingReport(
+    reportId = LocalAdminReportStore.createListingReport(
       reporterUserId: 'buyer-1',
       reporterName: 'Buyer One',
       listingId: 'listing-1',
       listingTitle: 'Brake pads',
       reason: 'spam',
       description: 'Listing contains repeated spam content and fake images.',
-    );
+    ).id;
 
     await tester.pumpWidget(scope);
     await tester.pumpAndSettle();
@@ -303,17 +298,15 @@ void main() {
   });
 
   testWidgets('support reports show contract failure state', (tester) async {
-    final initialReport = LocalAdminReportStore.createSupportTicket(
-      reporterUserId: 'buyer-1',
-      reporterName: 'Buyer One',
-      reason: 'payment_issue',
-      description:
-          'Buyer uploaded a BaridiMob proof and still needs support review.',
-    );
+    String? reportId;
     final scope = await buildTestScope(
       TestMaterialShell(
         child: Scaffold(
-          body: ReportDetailScreen(reportId: initialReport.id),
+          body: Builder(
+            builder: (context) => reportId == null
+                ? const SizedBox.shrink()
+                : ReportDetailScreen(reportId: reportId),
+          ),
         ),
       ),
       overrides: <Object>[
@@ -325,13 +318,13 @@ void main() {
         }),
       ],
     );
-    LocalAdminReportStore.createSupportTicket(
+    reportId = LocalAdminReportStore.createSupportTicket(
       reporterUserId: 'buyer-1',
       reporterName: 'Buyer One',
       reason: 'payment_issue',
       description:
           'Buyer uploaded a BaridiMob proof and still needs support review.',
-    );
+    ).id;
 
     await tester.pumpWidget(scope);
     await tester.pumpAndSettle();

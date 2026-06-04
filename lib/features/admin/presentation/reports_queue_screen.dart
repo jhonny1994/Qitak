@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/admin/presentation/report_reason_label.dart';
@@ -14,6 +16,9 @@ class ReportsQueueScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reports = ref.watch(adminReportsProvider);
+    final supportReasonOptions =
+        ref.watch(supportReasonPolicyProvider).asData?.value ??
+        const <AppPolicyOption>[];
     return reports.when(
       data: (items) => AdminSurfaceScaffold(
         eyebrow: context.l10n.adminDashboardEyebrow,
@@ -32,7 +37,11 @@ class ReportsQueueScreen extends ConsumerWidget {
                     onTap: () => context.go('/admin/reports/${item.id}'),
                     borderRadius: BorderRadius.circular(18),
                     child: QitakQueueRow(
-                      title: adminReportReasonLabel(context, item),
+                      title: adminReportReasonLabel(
+                        context,
+                        item,
+                        supportReasonOptions: supportReasonOptions,
+                      ),
                       meta:
                           '${item.reporterName.isEmpty ? item.reporterUserId : item.reporterName}\n${item.entityPreview}',
                       status: item.status,

@@ -223,7 +223,9 @@ class ConversationMessagesNotifier
     );
 
     ref.onDispose(() {
-      unawaited(repository.removeChannel(channel));
+      if (channel != null) {
+        unawaited(repository.removeChannel(channel));
+      }
     });
 
     await repository.markThreadMessagesRead(

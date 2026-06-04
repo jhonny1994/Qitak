@@ -1,21 +1,21 @@
 import 'package:flutter/widgets.dart';
-import 'package:qitak_app/core/l10n/l10n.dart';
-import 'package:qitak_app/features/admin/domain/admin_report.dart';
 
-String adminReportReasonLabel(BuildContext context, AdminReport report) {
+import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/features/admin/domain/admin_report.dart';
+import 'package:qitak_app/features/support/presentation/support_reason_label.dart';
+
+String adminReportReasonLabel(
+  BuildContext context,
+  AdminReport report, {
+  List<AppPolicyOption> supportReasonOptions = const <AppPolicyOption>[],
+}) {
   if (report.entityType == 'support') {
-    switch (report.reason) {
-      case 'account_access':
-        return context.l10n.supportReasonAccountAccess;
-      case 'payment_issue':
-        return context.l10n.supportReasonPaymentIssue;
-      case 'seller_issue':
-        return context.l10n.supportReasonSellerIssue;
-      case 'technical_issue':
-        return context.l10n.supportReasonTechnicalIssue;
-      case 'other':
-        return context.l10n.supportReasonOther;
-    }
+    return supportReasonLabelForCode(
+      context,
+      report.reason,
+      supportReasonOptions,
+    );
   }
 
   if (report.entityType == 'listing') {

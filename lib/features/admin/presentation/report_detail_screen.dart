@@ -71,6 +71,9 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
               ? supportReportResolutionReasonPolicyProvider
               : reportReasonPolicyOptionsProvider,
         );
+        final supportReasonOptions =
+            ref.watch(supportReasonPolicyProvider).asData?.value ??
+            const <AppPolicyOption>[];
         final availableDecisionOptions =
             decisionOptions.asData?.value ?? const <AppPolicyOption>[];
         final availableReasonOptions =
@@ -126,7 +129,7 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
                   const SizedBox(height: 10),
                   Text(
                     '${context.l10n.disputeReasonLabel}: '
-                    '${adminReportReasonLabel(context, item)}',
+                    '${adminReportReasonLabel(context, item, supportReasonOptions: supportReasonOptions)}',
                   ),
                   const SizedBox(height: 10),
                   Text(item.description.isEmpty ? '-' : item.description),

@@ -73,15 +73,22 @@ begin
   end if;
 
   if v_entity_type = 'support' then
-    if p_decision not in ('resolve', 'close') then
+    if not exists (
+      select 1
+      from public.app_policy_options
+      where policy_type = 'support_report_resolution_decision'
+        and code = p_decision
+        and is_active
+    ) then
       raise exception 'invalid support report decision';
     end if;
 
-    if p_reason_code not in (
-      'verified_and_resolved',
-      'user_guided',
-      'duplicate_ticket',
-      'out_of_scope'
+    if not exists (
+      select 1
+      from public.app_policy_options
+      where policy_type = 'support_report_resolution_reason_code'
+        and code = p_reason_code
+        and is_active
     ) then
       raise exception 'invalid support report reason code';
     end if;
@@ -91,19 +98,22 @@ begin
       else 'actioned'
     end;
   else
-    if p_decision not in (
-      'dismiss',
-      'warn_seller',
-      'remove_listing',
-      'suspend_seller'
+    if not exists (
+      select 1
+      from public.app_policy_options
+      where policy_type = 'report_resolution_decision'
+        and code = p_decision
+        and is_active
     ) then
       raise exception 'invalid report decision';
     end if;
 
-    if p_reason_code not in (
-      'spam',
-      'policy_violation',
-      'insufficient_evidence'
+    if not exists (
+      select 1
+      from public.app_policy_options
+      where policy_type = 'report_resolution_reason_code'
+        and code = p_reason_code
+        and is_active
     ) then
       raise exception 'invalid report reason code';
     end if;

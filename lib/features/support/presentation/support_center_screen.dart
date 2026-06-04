@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/support/domain/support_ticket.dart';
+import 'package:qitak_app/features/support/presentation/support_reason_label.dart';
 import 'package:qitak_app/features/support/presentation/support_ticket_create_sheet.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 import 'package:qitak_app/shared/widgets/qitak_error_state.dart';
@@ -25,6 +27,9 @@ class SupportCenterScreen extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final profile = session.profile;
     final ticketsAsync = ref.watch(supportTicketsProvider);
+    final supportReasonOptions =
+        ref.watch(supportReasonOptionsProvider).asData?.value ??
+        const <AppPolicyOption>[];
 
     if (profile == null) {
       return QitakStateMessage(
@@ -122,9 +127,10 @@ class SupportCenterScreen extends ConsumerWidget {
                             const SizedBox(height: 12),
                             for (final ticket in tickets)
                               QitakQueueRow(
-                                title: supportReasonLabel(
+                                title: supportReasonLabelForCode(
                                   context,
-                                  _labelKeyForReason(ticket.reason),
+                                  ticket.reason,
+                                  supportReasonOptions,
                                 ),
                                 meta: ticket.description,
                                 status: supportTicketStatusLabel(
@@ -204,21 +210,5 @@ String _dealGuidanceStatus(BuildContext context, AccountRole role) {
     case AccountRole.buyer:
     case AccountRole.anonymous:
       return context.l10n.disputeTitle;
-  }
-}
-
-String _labelKeyForReason(String reason) {
-  switch (reason) {
-    case 'account_access':
-      return 'supportReasonAccountAccess';
-    case 'payment_issue':
-      return 'supportReasonPaymentIssue';
-    case 'seller_issue':
-      return 'supportReasonSellerIssue';
-    case 'technical_issue':
-      return 'supportReasonTechnicalIssue';
-    case 'other':
-    default:
-      return 'supportReasonOther';
   }
 }

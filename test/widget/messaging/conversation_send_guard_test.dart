@@ -200,7 +200,7 @@ class _RecordingMessagingRepository implements MessagingRepository {
   }) => const <RealtimeChannel>[];
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
@@ -238,7 +238,7 @@ class _RealtimeErrorMessagingRepository extends _RecordingMessagingRepository {
   }
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,

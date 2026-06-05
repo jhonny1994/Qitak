@@ -82,6 +82,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           data: (value) => value,
           orElse: () => const <String>{},
         );
+    final hasActiveFilters = filters.hasActiveSelections;
     final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
     final canShowSave = canSave || !session.isAuthenticated;
 
@@ -140,7 +141,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        if (searchQuery.isEmpty)
+        if (searchQuery.isEmpty && !hasActiveFilters)
           searchHistory.when(
             data: (items) => _SearchHistorySection(
               items: items,

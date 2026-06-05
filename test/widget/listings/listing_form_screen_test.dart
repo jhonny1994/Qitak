@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/features/listings/data/listing_repository.dart';
+import 'package:qitak_app/features/listings/data/seller_listings_repository.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
 import 'package:qitak_app/features/listings/presentation/listing_form_screen.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
@@ -53,6 +56,51 @@ class _FakeListingMediaPicker implements ListingMediaPicker {
   }) async => result;
 }
 
+class _FailingListingRepository implements ListingRepository {
+  const _FailingListingRepository(this.error);
+
+  final AppException error;
+
+  @override
+  bool get isLocal => true;
+
+  @override
+  Future<bool> hasUserReportedListing(String listingId) async => false;
+
+  @override
+  Future<void> reportListing(String listingId, String reason) async {}
+
+  @override
+  Future<ListingSubmissionResult> submitListing({
+    required ListingDraft draft,
+    required ListingWorkflowAction action,
+  }) async {
+    throw error;
+  }
+}
+
+class _StaticSellerListingsRepository implements SellerListingsRepository {
+  const _StaticSellerListingsRepository(this.item);
+
+  final SellerManagedListing item;
+
+  @override
+  Future<void> applyAction({
+    required String listingId,
+    required String action,
+  }) async {}
+
+  @override
+  Future<SellerManagedListing?> fetchById(String listingId) async {
+    return listingId == item.id ? item : null;
+  }
+
+  @override
+  Future<List<SellerManagedListing>> listForSeller(String sellerUserId) async {
+    return [item];
+  }
+}
+
 void main() {
   const approvedApplication = SellerApplication(
     id: 'seller-app-seller-001',
@@ -65,6 +113,18 @@ void main() {
     communeId: '1001',
     bio: 'Verified seller profile',
     verificationStatus: SellerVerificationStatus.approved,
+  );
+  const needsInfoApplication = SellerApplication(
+    id: 'seller-app-seller-001',
+    userId: 'seller-001',
+    sellerType: 'business',
+    businessName: 'Samir Auto Parts',
+    phone: '+213555000222',
+    email: 'seller@qitak.test',
+    wilayaId: '1',
+    communeId: '1001',
+    bio: 'Verification update required',
+    verificationStatus: SellerVerificationStatus.needsMoreInfo,
   );
 
   Finder fieldKey(String prefix) => find.byWidgetPredicate(
@@ -303,4 +363,125 @@ void main() {
 
     expect(find.text('headlight.png'), findsNothing);
   });
+
+  testWidgets(
+    'seller listing form shows real verification state instead of waiting fallback',
+    (tester) async {
+      final scope = await buildSliceTestScope(
+        const SliceTestMaterialShell(
+          child: Scaffold(body: ListingFormScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          discoveryFilterTaxonomyProvider.overrideWith(
+            (ref) => Future.value(testDiscoveryFilterTaxonomy),
+          ),
+          currentSellerApplicationProvider.overrideWith(
+            (ref) async => needsInfoApplication,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Needs info'), findsOneWidget);
+      expect(
+        find.text('More information is required before approval.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Seller tools stay locked until verification is approved.'),
+        findsNothing,
+      );
+      expect(find.text('Update application'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'submit failure shows localized feedback and keeps form visible',
+    (
+      tester,
+    ) async {
+      final scope = await buildSliceTestScope(
+        const SliceTestMaterialShell(
+          child: Scaffold(body: ListingFormScreen(listingId: 'listing-1')),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          listingRepositoryProvider.overrideWithValue(
+            const _FailingListingRepository(
+              AppException(
+                'error_network_unavailable',
+                code: AppErrorCode.networkUnavailable,
+              ),
+            ),
+          ),
+          sellerListingsRepositoryProvider.overrideWithValue(
+            const _StaticSellerListingsRepository(
+              SellerManagedListing(
+                id: 'listing-1',
+                title: 'Headlight assembly',
+                status: 'draft',
+                price: 18500,
+                categoryId: 'lighting',
+                condition: 'like_new',
+                primaryImageUrl: 'https://example.com/headlight.png',
+                media: [
+                  SellerManagedListingMedia(
+                    storagePath: 'seller-001/listing-1/0_headlight.png',
+                    publicUrl: 'https://example.com/headlight.png',
+                    mimeType: 'image/png',
+                    sortOrder: 0,
+                  ),
+                  SellerManagedListingMedia(
+                    storagePath: 'seller-001/listing-1/1_headlight_alt.png',
+                    publicUrl: 'https://example.com/headlight-alt.png',
+                    mimeType: 'image/png',
+                    sortOrder: 1,
+                  ),
+                ],
+                wilayaId: '1',
+                communeId: '1001',
+                brand: 'Audi',
+                model: 'TT Coupe',
+                year: 2018,
+                quantity: 2,
+                description: 'Clear lens and working mounts.',
+              ),
+            ),
+          ),
+          discoveryFilterTaxonomyProvider.overrideWith(
+            (ref) => Future.value(testDiscoveryFilterTaxonomy),
+          ),
+          currentSellerApplicationProvider.overrideWith(
+            (ref) async => approvedApplication,
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      await tester.ensureVisible(
+        find.byKey(const Key('listing-submit-button')),
+      );
+      await tester.tap(find.byKey(const Key('listing-submit-button')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(
+        find.text('Network unavailable. Check your connection and try again.'),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('listing-submit-button')), findsOneWidget);
+    },
+  );
 }

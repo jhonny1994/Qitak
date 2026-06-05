@@ -60,6 +60,7 @@ class ListingDetailScreen extends ConsumerWidget {
           final isOwner = session.profile?.id == item.sellerUserId;
           final canActAsBuyer =
               session.profile?.role.hasBuyerCapabilities ?? false;
+          final canShowSave = canActAsBuyer || !session.isAuthenticated;
           final canReportListing =
               session.isAuthenticated && canActAsBuyer && !isOwner;
           final hasReported =
@@ -124,48 +125,52 @@ class ListingDetailScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      IconButton.filledTonal(
-                        onPressed: session.isAuthenticated
-                            ? () {
-                                final isOnline =
-                                    ref.read(isOnlineProvider).asData?.value ??
-                                    true;
-                                if (!isOnline) {
-                                  ScaffoldMessenger.of(context)
-                                    ..clearSnackBars()
-                                    ..showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          context.l10n.offlineBannerLabel,
+                      if (canShowSave)
+                        IconButton.filledTonal(
+                          onPressed: session.isAuthenticated
+                              ? () {
+                                  final isOnline =
+                                      ref
+                                          .read(isOnlineProvider)
+                                          .asData
+                                          ?.value ??
+                                      true;
+                                  if (!isOnline) {
+                                    ScaffoldMessenger.of(context)
+                                      ..clearSnackBars()
+                                      ..showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            context.l10n.offlineBannerLabel,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  return;
+                                      );
+                                    return;
+                                  }
+                                  unawaited(
+                                    ref
+                                        .read(savedListingIdsProvider.notifier)
+                                        .toggle(item.id),
+                                  );
                                 }
-                                unawaited(
-                                  ref
-                                      .read(savedListingIdsProvider.notifier)
-                                      .toggle(item.id),
-                                );
-                              }
-                            : () => showProtectedActionGate(
-                                context,
-                                ref,
-                                intent: PostAuthRedirectIntent.action(
-                                  'save-listing',
-                                  arguments: <String, String>{
-                                    'route': '/listing/${item.id}',
-                                    'listingId': item.id,
-                                  },
+                              : () => showProtectedActionGate(
+                                  context,
+                                  ref,
+                                  intent: PostAuthRedirectIntent.action(
+                                    'save-listing',
+                                    arguments: <String, String>{
+                                      'route': '/listing/${item.id}',
+                                      'listingId': item.id,
+                                    },
+                                  ),
                                 ),
-                              ),
-                        icon: Icon(
-                          isSaved
-                              ? Icons.bookmark_rounded
-                              : Icons.bookmark_border_rounded,
+                          icon: Icon(
+                            isSaved
+                                ? Icons.bookmark_rounded
+                                : Icons.bookmark_border_rounded,
+                          ),
+                          tooltip: context.l10n.discoverySave,
                         ),
-                        tooltip: context.l10n.discoverySave,
-                      ),
                       const SizedBox(width: 8),
                     ],
             ),
@@ -319,10 +324,11 @@ class ListingDetailScreen extends ConsumerWidget {
                                 ),
                           ),
                           const SizedBox(height: 16),
-                          QitakDetailRow(
-                            label: context.l10n.listingSellerSectionTitle,
-                            value: detail.sellerName,
-                          ),
+                          if (detail.sellerName.isNotEmpty)
+                            QitakDetailRow(
+                              label: context.l10n.listingSellerSectionTitle,
+                              value: detail.sellerName,
+                            ),
                           QitakDetailRow(
                             label: context.l10n.listingLocationLabel,
                             value: detail.displayLocation,
@@ -520,8 +526,8 @@ class ListingDetailScreen extends ConsumerWidget {
   ) async {
     final baseUrl = AppRuntimeConfig.deepLinkBaseUrl.trim();
     final link = baseUrl.isEmpty
-        ? '/listings/${item.id}'
-        : '$baseUrl/listings/${item.id}';
+        ? '/listing/${item.id}'
+        : '$baseUrl/listing/${item.id}';
     await SharePlus.instance.share(
       ShareParams(
         text: context.l10n.shareListingText(
@@ -594,9 +600,7 @@ class _ListingDetailViewData {
       displayLocation: displayLocation,
       vehicleLabel: vehicleLabel,
       quantity: item.quantity,
-      sellerName: item.sellerName.isEmpty
-          ? item.localizedSellerLabel(context.l10n)
-          : item.sellerName,
+      sellerName: item.sellerName.isEmpty ? '' : item.sellerName,
     );
   }
 

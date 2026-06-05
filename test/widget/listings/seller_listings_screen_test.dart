@@ -6,11 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
+import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/features/listings/data/seller_listings_repository.dart';
 import 'package:qitak_app/features/listings/presentation/listing_detail_screen.dart';
 import 'package:qitak_app/features/listings/presentation/seller_listings_screen.dart';
 import 'package:qitak_app/generated/l10n.dart';
 
+import '../../fixtures/discovery_filter_taxonomy_fixture.dart';
 import '../../fixtures/seeded_discovery_repository.dart';
 import '../../test_bootstrap.dart';
 
@@ -189,6 +191,63 @@ void main() {
     expect(find.text('Headlight assembly'), findsOneWidget);
     expect(find.text('Foreign alternator'), findsNothing);
   });
+
+  testWidgets(
+    'seller inventory renders human-readable location and condition copy',
+    (
+      tester,
+    ) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SellerListingsScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          discoveryFilterTaxonomyProvider.overrideWith(
+            (ref) => Future.value(testDiscoveryFilterTaxonomy),
+          ),
+          sellerListingsRepositoryProvider.overrideWithValue(
+            _FakeSellerListingsRepository([
+              const SellerManagedListing(
+                id: 'listing-owned',
+                title: 'Headlight assembly',
+                status: 'draft',
+                price: 18500,
+                categoryId: 'lighting',
+                condition: 'like_new',
+                primaryImageUrl: null,
+                brand: 'Audi',
+                model: 'TT Coupe',
+                year: 2018,
+                communeId: '1001',
+                wilayaId: '1',
+              ),
+            ]),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SellerListingsScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.textContaining('Drafts'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('1001 | 1'), findsNothing);
+      expect(find.textContaining('Adrar'), findsWidgets);
+      expect(find.text('Like new'), findsOneWidget);
+      expect(
+        find.text('Draft listings stay private until you submit them for review.'),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('draft deletion waits for confirmation before applying action', (
     tester,

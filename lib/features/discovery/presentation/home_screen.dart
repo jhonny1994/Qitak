@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
+import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/protected_action_gate.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
@@ -39,6 +40,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           data: (value) => value,
           orElse: () => const <String>{},
         );
+    final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
+    final canShowSave = canSave || !session.isAuthenticated;
     final brandWordmark = context.l10n.brandWordmark;
 
     return QitakPullToRefresh(
@@ -124,7 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       key: const Key('home-search-field'),
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
-                      onSubmitted: (_) => _submitSearch(context),
+                      onSubmitted: (_) => _submitSearch(),
                       decoration: InputDecoration(
                         hintText: context.l10n.discoverySearchHint,
                         prefixIcon: const Icon(Icons.search_rounded),
@@ -135,7 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       width: double.infinity,
                       child: FilledButton.tonalIcon(
                         key: const Key('home-filter-button'),
-                        onPressed: () => showDiscoveryFilterSheet(context),
+                        onPressed: _openFilters,
                         icon: const Icon(Icons.tune_rounded),
                         label: Text(context.l10n.discoveryFilterButton),
                       ),
@@ -145,7 +148,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       width: double.infinity,
                       child: FilledButton.icon(
                         key: const Key('home-search-button'),
-                        onPressed: () => _submitSearch(context),
+                        onPressed: _submitSearch,
                         icon: const Icon(Icons.search_rounded),
                         label: Text(context.l10n.discoverySearchButton),
                       ),
@@ -198,7 +201,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     item: featured,
                     isSaved: savedIds.contains(featured.id),
                     onOpen: () => context.push('/listing/${featured.id}'),
-                    onToggleSave: () => _toggleSave(context, ref, featured.id),
+                    onToggleSave: canShowSave
+                        ? () => _toggleSave(context, ref, featured.id)
+                        : null,
                   ),
                 ),
               ),
@@ -230,7 +235,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         item: item,
                         isSaved: savedIds.contains(item.id),
                         onOpen: () => context.push('/listing/${item.id}'),
-                        onToggleSave: () => _toggleSave(context, ref, item.id),
+                        onToggleSave: canShowSave
+                            ? () => _toggleSave(context, ref, item.id)
+                            : null,
                       ),
                     );
                   }, childCount: latest.length),
@@ -265,12 +272,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _submitSearch(BuildContext context) {
+  void _submitSearch() {
     final trimmed = _searchController.text.trim();
     final query = trimmed.isEmpty
         ? '/search/results'
         : '/search/results?q=${Uri.encodeComponent(trimmed)}';
-    context.go(query);
+    final router = GoRouter.maybeOf(context);
+    if (router == null) {
+      return;
+    }
+    router.go(query);
+  }
+
+  Future<void> _openFilters() async {
+    final applied = await showDiscoveryFilterSheet(context);
+    if (!mounted || applied != true) {
+      return;
+    }
+    _submitSearch();
   }
 
   Future<void> _toggleSave(
@@ -279,6 +298,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     String listingId,
   ) async {
     final session = ref.read(authSessionProvider);
+    final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
     if (!session.isAuthenticated) {
       await _handleAction(
         context,
@@ -291,6 +311,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         ),
       );
+      return;
+    }
+    if (!canSave) {
       return;
     }
     await ref.read(savedListingIdsProvider.notifier).toggle(listingId);
@@ -366,13 +389,13 @@ class _ListingRow extends StatelessWidget {
     required this.item,
     required this.isSaved,
     required this.onOpen,
-    required this.onToggleSave,
+    this.onToggleSave,
   });
 
   final MarketplaceListing item;
   final bool isSaved;
   final VoidCallback onOpen;
-  final VoidCallback onToggleSave;
+  final VoidCallback? onToggleSave;
 
   @override
   Widget build(BuildContext context) {

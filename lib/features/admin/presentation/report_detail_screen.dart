@@ -179,10 +179,12 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
                     const SizedBox(height: 12),
                   ] else if (showResolutionUnavailable) ...[
                     QitakStateMessage(
-                      title:
-                          context.l10n.adminReportResolutionOptionsUnavailableTitle,
-                      message:
-                          context.l10n.adminReportResolutionOptionsUnavailableBody,
+                      title: context
+                          .l10n
+                          .adminReportResolutionOptionsUnavailableTitle,
+                      message: context
+                          .l10n
+                          .adminReportResolutionOptionsUnavailableBody,
                       icon: Icons.warning_amber_rounded,
                     ),
                     const SizedBox(height: 12),

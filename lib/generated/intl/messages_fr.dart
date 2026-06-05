@@ -960,8 +960,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "Partager l\'annonce",
     ),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("Statut"),
+    "listingSubmitFailureBody": MessageLookupByLibrary.simpleMessage(
+      "Impossible d\'enregistrer l\'annonce pour le moment. Réessayez.",
+    ),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "Envoyer pour révision",
+    ),
+    "listingSubmitValidationError": MessageLookupByLibrary.simpleMessage(
+      "Vérifiez les détails de l\'annonce puis réessayez.",
     ),
     "listingSubmittedForReviewSuccess": MessageLookupByLibrary.simpleMessage(
       "L\'annonce a été envoyée pour révision.",
@@ -1375,6 +1381,24 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerListingSubmittedLabel": m4,
     "sellerListingUpdatedLabel": m5,
+    "sellerListingsActiveEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucune annonce active pour le moment.",
+    ),
+    "sellerListingsActiveStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les annonces actives sont visibles par les acheteurs et prêtes pour les messages ou les demandes d\'achat.",
+    ),
+    "sellerListingsClosedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucune annonce clôturée pour le moment.",
+    ),
+    "sellerListingsClosedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les annonces clôturées ne sont plus visibles par les acheteurs.",
+    ),
+    "sellerListingsDraftEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucun brouillon pour le moment.",
+    ),
+    "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les brouillons restent privés jusqu\'à leur envoi pour révision.",
+    ),
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
       "Vous n\'avez pas encore d\'annonces vendeur.",
     ),
@@ -1384,8 +1408,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingsEyebrow": MessageLookupByLibrary.simpleMessage(
       "Inventaire vendeur",
     ),
+    "sellerListingsPausedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucune annonce en pause pour le moment.",
+    ),
+    "sellerListingsPausedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les annonces en pause sont masquées aux acheteurs jusqu\'à leur reprise.",
+    ),
     "sellerListingsPreviewAction": MessageLookupByLibrary.simpleMessage(
       "Aperçu",
+    ),
+    "sellerListingsRejectedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucune annonce refusée pour le moment.",
+    ),
+    "sellerListingsRejectedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les annonces refusées doivent être corrigées avant un nouvel envoi.",
     ),
     "sellerListingsStatusActive": MessageLookupByLibrary.simpleMessage("Actif"),
     "sellerListingsStatusClosed": MessageLookupByLibrary.simpleMessage(
@@ -1404,9 +1440,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "En révision",
     ),
     "sellerListingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Revoyez les pièces actives liées à votre compte vendeur.",
+      "Gérez les annonces liées à votre compte vendeur, y compris les brouillons, l\'inventaire en ligne et le suivi de révision.",
     ),
     "sellerListingsTitle": MessageLookupByLibrary.simpleMessage("Mes annonces"),
+    "sellerListingsUnderReviewEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Vous n\'avez aucune annonce en révision pour le moment.",
+    ),
+    "sellerListingsUnderReviewStateBody": MessageLookupByLibrary.simpleMessage(
+      "Les annonces en révision restent masquées jusqu\'à leur approbation.",
+    ),
     "sellerOnboardingAccountIdentityNote": MessageLookupByLibrary.simpleMessage(
       "Le nom et le numéro de téléphone du compte sont utilisés automatiquement pour la vérification vendeur.",
     ),
@@ -1531,6 +1573,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerStatusReviewFeedbackTitle": MessageLookupByLibrary.simpleMessage(
       "Dernier retour de revue",
+    ),
+    "sellerStatusReviewStatusAction": MessageLookupByLibrary.simpleMessage(
+      "Voir le statut",
     ),
     "sellerStatusSubmitted": MessageLookupByLibrary.simpleMessage("Soumis"),
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(

@@ -42,6 +42,45 @@ final disputeRepositoryProvider = Provider<DisputeRepository>((ref) {
   return SupabaseDisputeRepository(client, contracts);
 });
 
+class DisputeSubmissionCoordinator {
+  const DisputeSubmissionCoordinator();
+
+  Future<T> execute<T>({
+    required List<ListingMediaSelection> evidence,
+    required Future<String> Function() createDraft,
+    required Future<String> Function(
+      String disputeId,
+      int index,
+      ListingMediaSelection item,
+    )
+    uploadEvidence,
+    required Future<void> Function(String disputeId, String storagePath)
+    persistEvidence,
+    required Future<T> Function(String disputeId) finish,
+    required Future<void> Function(String disputeId, List<String> uploadedPaths)
+    rollback,
+  }) async {
+    final disputeId = await createDraft();
+    final uploadedPaths = <String>[];
+    try {
+      for (var index = 0; index < evidence.length; index++) {
+        final item = evidence[index];
+        final storagePath = await uploadEvidence(disputeId, index, item);
+        uploadedPaths.add(storagePath);
+        await persistEvidence(disputeId, storagePath);
+      }
+      return await finish(disputeId);
+    } on Object {
+      try {
+        await rollback(disputeId, uploadedPaths);
+      } on Object {
+        // Preserve the original submission failure; rollback is best effort.
+      }
+      rethrow;
+    }
+  }
+}
+
 class SupabaseDisputeRepository implements DisputeRepository {
   const SupabaseDisputeRepository(this._client, this._contracts);
 
@@ -162,42 +201,60 @@ class SupabaseDisputeRepository implements DisputeRepository {
     required String description,
     List<ListingMediaSelection> evidence = const <ListingMediaSelection>[],
   }) async {
-    late final Map<String, dynamic> row;
+    late Map<String, dynamic> row;
     try {
-      row = await _client
-          .from('disputes')
-          .insert(<String, dynamic>{
-            'deal_id': transactionId,
-            'filed_by': createdByUserId,
-            'dispute_type': reason,
-            'description': description,
-            'status': 'open',
-          })
-          .select()
-          .single();
+      return await const DisputeSubmissionCoordinator().execute<TransactionDispute>(
+        evidence: evidence,
+        createDraft: () async {
+          row = await _client
+              .from('disputes')
+              .insert(<String, dynamic>{
+                'deal_id': transactionId,
+                'filed_by': createdByUserId,
+                'dispute_type': reason,
+                'description': description,
+                'status': 'open',
+              })
+              .select()
+              .single();
+          return row['id'] as String;
+        },
+        uploadEvidence: (disputeId, index, item) async {
+          final storagePath =
+              '$createdByUserId/$disputeId/${index}_${_sanitizeFileName(item.fileName)}';
+          await _client.storage
+              .from(_bucket)
+              .uploadBinary(
+                storagePath,
+                item.bytes,
+                fileOptions: FileOptions(contentType: item.mimeType),
+              );
+          return storagePath;
+        },
+        persistEvidence: (disputeId, storagePath) {
+          return _client.from('dispute_evidence').insert(<String, dynamic>{
+            'dispute_id': disputeId,
+            'uploaded_by': createdByUserId,
+            'storage_path': storagePath,
+          });
+        },
+        finish: (disputeId) async => await fetchById(disputeId) ?? _mapRow(row),
+        rollback: (disputeId, uploadedPaths) async {
+          if (uploadedPaths.isNotEmpty) {
+            await _client
+                .from('dispute_evidence')
+                .delete()
+                .eq('dispute_id', disputeId);
+            await _client.storage.from(_bucket).remove(uploadedPaths);
+          }
+          await _client.from('disputes').delete().eq('id', disputeId);
+        },
+      );
     } on PostgrestException catch (error) {
       throw AppException.fromCode(classifyPostgrestException(error));
+    } on StorageException catch (_) {
+      throw AppException.fromCode(AppErrorCode.networkUnavailable);
     }
-
-    final disputeId = row['id'] as String;
-    for (var index = 0; index < evidence.length; index++) {
-      final item = evidence[index];
-      final storagePath =
-          '$createdByUserId/$disputeId/${index}_${_sanitizeFileName(item.fileName)}';
-      await _client.storage
-          .from(_bucket)
-          .uploadBinary(
-            storagePath,
-            item.bytes,
-            fileOptions: FileOptions(contentType: item.mimeType),
-          );
-      await _client.from('dispute_evidence').insert(<String, dynamic>{
-        'dispute_id': disputeId,
-        'uploaded_by': createdByUserId,
-        'storage_path': storagePath,
-      });
-    }
-    return await fetchById(disputeId) ?? _mapRow(row);
   }
 
   @override

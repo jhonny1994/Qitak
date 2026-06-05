@@ -137,4 +137,66 @@ void main() {
       expect(completed.state, TransactionState.completed);
     },
   );
+
+  test(
+    'ratings require a real completed transaction with matching participants',
+    () async {
+      final repo = LocalTransactionRepository();
+      final tx = await repo.createRequest(
+        listingId: 'listing-5',
+        buyerUserId: 'buyer-5',
+        sellerUserId: 'seller-5',
+      );
+
+      expect(
+        await repo.canSubmitRating(
+          transactionId: 'missing',
+          fromUserId: 'buyer-5',
+          toUserId: 'seller-5',
+        ),
+        isFalse,
+      );
+      expect(
+        await repo.canSubmitRating(
+          transactionId: tx.id,
+          fromUserId: 'buyer-5',
+          toUserId: 'seller-5',
+        ),
+        isFalse,
+      );
+
+      await repo.transition(
+        transactionId: tx.id,
+        actorUserId: 'seller-5',
+        nextState: TransactionState.sellerConfirmed,
+      );
+      await repo.selectPaymentMethod(
+        transactionId: tx.id,
+        actorUserId: 'buyer-5',
+        paymentMethod: TransactionPaymentMethod.cash,
+      );
+      await repo.transition(
+        transactionId: tx.id,
+        actorUserId: 'seller-5',
+        nextState: TransactionState.completed,
+      );
+
+      expect(
+        await repo.canSubmitRating(
+          transactionId: tx.id,
+          fromUserId: 'buyer-5',
+          toUserId: 'seller-5',
+        ),
+        isTrue,
+      );
+      expect(
+        await repo.canSubmitRating(
+          transactionId: tx.id,
+          fromUserId: 'admin-5',
+          toUserId: 'seller-5',
+        ),
+        isFalse,
+      );
+    },
+  );
 }

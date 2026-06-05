@@ -7,6 +7,7 @@ import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_copy.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 import 'package:qitak_app/shared/widgets/qitak_error_state.dart';
 
@@ -137,7 +138,8 @@ class TransactionHistoryScreen extends ConsumerWidget {
                           QitakSignalStrip(
                             label: item.partnerName,
                             value: item.listingTitle,
-                            status: context.l10n.displayTransactionState(
+                            status: transactionStatusLabel(
+                              context,
                               item.transaction.state,
                             ),
                           ),
@@ -156,6 +158,20 @@ class TransactionHistoryScreen extends ConsumerWidget {
                             label: context.l10n.notificationsTitle,
                             value: _formatDate(item.transaction.updatedAt),
                           ),
+                          if (transactionDisputeGuidance(
+                                context,
+                                item.transaction.state,
+                              ) !=
+                              null) ...[
+                            const SizedBox(height: 12),
+                            Text(
+                              transactionDisputeGuidance(
+                                context,
+                                item.transaction.state,
+                              )!,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
                         ],
                       ),
                     ),

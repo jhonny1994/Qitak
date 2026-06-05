@@ -197,7 +197,7 @@ String _dealGuidancePath(AccountRole role) {
     case AccountRole.seller:
     case AccountRole.buyer:
     case AccountRole.anonymous:
-      return '/deals';
+      return '/transactions/history';
   }
 }
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
@@ -25,6 +27,8 @@ class _TransactionRequestScreenState
   final TextEditingController _exchangeOfferController =
       TextEditingController();
   String _dealType = 'buy';
+  AppErrorCode? _requestErrorCode;
+  String? _requestErrorMessage;
 
   @override
   void dispose() {
@@ -36,7 +40,6 @@ class _TransactionRequestScreenState
   Widget build(BuildContext context) {
     final profile = ref.watch(authSessionProvider).profile;
     final listing = ref.watch(discoveryListingProvider(widget.listingId));
-    final txState = ref.watch(transactionProvider);
 
     if (profile == null) {
       return Padding(
@@ -121,11 +124,12 @@ class _TransactionRequestScreenState
                       ),
                     ),
                   ],
-                  if (txState.lastError != null) ...[
+                  if (_requestErrorCode != null || _requestErrorMessage != null)
+                    ...[
                     const SizedBox(height: 16),
                     QitakStateMessage(
                       title: context.l10n.transactionBlockedTitle,
-                      message: context.l10n.transactionOpenRequestExists,
+                      message: _requestFailureMessage(context),
                     ),
                   ],
                   const SizedBox(height: 20),
@@ -146,9 +150,24 @@ class _TransactionRequestScreenState
                                 : null,
                           );
                       if (!context.mounted) return;
+                      if (ok) {
+                        if (_requestErrorCode != null ||
+                            _requestErrorMessage != null) {
+                          setState(() {
+                            _requestErrorCode = null;
+                            _requestErrorMessage = null;
+                          });
+                        }
+                      } else {
+                        final requestState = ref.read(transactionProvider);
+                        setState(() {
+                          _requestErrorCode = requestState.lastErrorCode;
+                          _requestErrorMessage = requestState.lastError;
+                        });
+                      }
                       final message = ok
                           ? context.l10n.transactionRequestCreated
-                          : context.l10n.transactionOpenRequestExists;
+                          : _requestFailureMessage(context);
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(message)));
@@ -198,6 +217,17 @@ class _TransactionRequestScreenState
         ),
       ),
     );
+  }
+
+  String _requestFailureMessage(BuildContext context) {
+    final code = _requestErrorCode;
+    if (code == AppErrorCode.conflict) {
+      return context.l10n.transactionOpenRequestExists;
+    }
+    if (code != null) {
+      return context.appErrorMessage(code);
+    }
+    return _requestErrorMessage ?? context.l10n.transactionTransitionDenied;
   }
 }
 

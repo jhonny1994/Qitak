@@ -922,8 +922,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingSellerSectionTitle": MessageLookupByLibrary.simpleMessage("Seller"),
     "listingShareAction": MessageLookupByLibrary.simpleMessage("Share listing"),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("Status"),
+    "listingSubmitFailureBody": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t save your listing right now. Try again.",
+    ),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "Submit for review",
+    ),
+    "listingSubmitValidationError": MessageLookupByLibrary.simpleMessage(
+      "Review the listing details and try again.",
     ),
     "listingSubmittedForReviewSuccess": MessageLookupByLibrary.simpleMessage(
       "Listing submitted for review.",
@@ -1311,8 +1317,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("Submit"),
     "sellerListingSubmittedLabel": m4,
     "sellerListingUpdatedLabel": m5,
+    "sellerListingsActiveEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any active listings right now.",
+    ),
+    "sellerListingsActiveStateBody": MessageLookupByLibrary.simpleMessage(
+      "Active listings are visible to buyers and ready for messages or purchase requests.",
+    ),
+    "sellerListingsClosedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any closed listings right now.",
+    ),
+    "sellerListingsClosedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Closed listings are no longer visible to buyers.",
+    ),
+    "sellerListingsDraftEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any draft listings right now.",
+    ),
+    "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
+      "Draft listings stay private until you submit them for review.",
+    ),
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "You do not have any seller listings yet.",
+      "You do not have any listings in your seller workspace yet.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "Seller listings could not be loaded right now.",
@@ -1320,8 +1344,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingsEyebrow": MessageLookupByLibrary.simpleMessage(
       "Seller inventory",
     ),
+    "sellerListingsPausedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any paused listings right now.",
+    ),
+    "sellerListingsPausedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Paused listings are hidden from buyers until you resume them.",
+    ),
     "sellerListingsPreviewAction": MessageLookupByLibrary.simpleMessage(
       "Preview",
+    ),
+    "sellerListingsRejectedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any rejected listings right now.",
+    ),
+    "sellerListingsRejectedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Rejected listings need updates before you resubmit them.",
     ),
     "sellerListingsStatusActive": MessageLookupByLibrary.simpleMessage(
       "Active",
@@ -1342,9 +1378,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Under review",
     ),
     "sellerListingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Review the live parts currently tied to your seller account.",
+      "Manage the listings tied to your seller account, including drafts, live inventory, and review status.",
     ),
     "sellerListingsTitle": MessageLookupByLibrary.simpleMessage("My listings"),
+    "sellerListingsUnderReviewEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any listings under review right now.",
+    ),
+    "sellerListingsUnderReviewStateBody": MessageLookupByLibrary.simpleMessage(
+      "Listings under review stay hidden until moderation approves them.",
+    ),
     "sellerOnboardingAccountIdentityNote": MessageLookupByLibrary.simpleMessage(
       "Your account name and phone are used automatically for seller verification.",
     ),
@@ -1467,6 +1509,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerStatusReviewFeedbackTitle": MessageLookupByLibrary.simpleMessage(
       "Latest review feedback",
+    ),
+    "sellerStatusReviewStatusAction": MessageLookupByLibrary.simpleMessage(
+      "Review status",
     ),
     "sellerStatusSubmitted": MessageLookupByLibrary.simpleMessage("Submitted"),
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(

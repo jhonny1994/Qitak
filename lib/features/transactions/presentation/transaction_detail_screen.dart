@@ -12,6 +12,7 @@ import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_copy.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -104,7 +105,7 @@ class _TransactionDetailScreenState
               QitakSignalStrip(
                 label: context.l10n.transactionRecordLabel,
                 value: context.l10n.transactionReferenceLabel(record.id),
-                status: context.l10n.displayTransactionState(record.state),
+                status: transactionStatusLabel(context, record.state),
               ),
               const SizedBox(height: 16),
               QitakListingSurface(
@@ -121,7 +122,7 @@ class _TransactionDetailScreenState
                   QitakChip(
                     label:
                         listing?.localizedCategory(context.l10n) ??
-                        context.l10n.displayTransactionState(record.state),
+                        transactionStatusLabel(context, record.state),
                   ),
                   QitakChip(
                     label: record.dealType == 'exchange'
@@ -284,9 +285,7 @@ class _TransactionDetailScreenState
                           ? context.l10n.transactionRoleBuyer
                           : context.l10n.transactionRoleSeller,
                       value: _nextStepMessage(context, record, profile.id),
-                      status: context.l10n.displayTransactionState(
-                        record.state,
-                      ),
+                      status: transactionStatusLabel(context, record.state),
                     ),
                   ],
                 ),
@@ -385,15 +384,11 @@ class _TransactionDetailScreenState
     );
     final completed = QitakTimelineBlock(
       title: context.l10n.transactionTimelineCompleted,
-      subtitle:
-          record.state == TransactionState.cancelled ||
-              record.state == TransactionState.expired
-          ? context.l10n.transactionTimelineCancelledBody
-          : record.state == TransactionState.disputeOpened ||
-                record.state == TransactionState.disputeResolved
-          ? context.l10n.transactionTimelineRejectedBody
-          : context.l10n.transactionTimelineCompletedBody,
-      isCurrent: record.state == TransactionState.completed,
+      subtitle: transactionTimelineFinalStepBody(context, record.state),
+      isCurrent:
+          record.state == TransactionState.completed ||
+          record.state == TransactionState.disputeOpened ||
+          record.state == TransactionState.disputeResolved,
     );
     return [requested, accepted, payment, completed];
   }

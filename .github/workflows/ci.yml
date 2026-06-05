@@ -44,11 +44,20 @@ jobs:
       - name: Start Supabase
         run: supabase start
 
-      - name: Reset DB
-        run: supabase db reset
+      - name: Reset Local DB
+        run: supabase db reset --local --yes
 
-      - name: Run DB Tests
-        run: supabase test db
+      - name: Run Local DB Tests
+        run: supabase test db --local supabase/tests/database
+
+      - name: Document DB proof scope
+        run: |
+          {
+            echo "### Supabase DB proof scope"
+            echo "- CI resets the local Supabase stack and runs pgTAP against local migrations only."
+            echo "- CI does not validate linked project parity."
+            echo "- Run \`supabase migration list --linked\` separately before sign-off."
+          } >> "$GITHUB_STEP_SUMMARY"
 
   android-release:
     if: startsWith(github.ref, 'refs/tags/v')

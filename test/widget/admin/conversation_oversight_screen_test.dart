@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/admin/data/conversation_oversight_repository.dart';
 import 'package:qitak_app/features/admin/domain/conversation_oversight_case.dart';
 import 'package:qitak_app/features/admin/presentation/conversation_oversight_screen.dart';
 import 'package:qitak_app/features/messaging/domain/conversation_message.dart';
-
-import '../../test_bootstrap.dart';
+import 'package:qitak_app/generated/l10n.dart';
 
 void main() {
   testWidgets(
     'conversation oversight screen uses the repository contract for loading and notes',
     (tester) async {
       final repository = _FakeConversationOversightRepository();
-      final scope = await buildTestScope(
-        const TestMaterialShell(
-          child: Scaffold(
+      await tester.pumpWidget(
+        _TestShell(
+          overrides: [
+            conversationOversightRepositoryProvider.overrideWithValue(
+              repository,
+            ),
+          ],
+          child: const Scaffold(
             body: ConversationOversightScreen(conversationId: 'thread-1'),
           ),
         ),
-        overrides: [
-          conversationOversightRepositoryProvider.overrideWithValue(repository),
-        ],
       );
-
-      await tester.pumpWidget(scope);
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -63,6 +66,95 @@ void main() {
       );
     },
   );
+
+  testWidgets(
+    'conversation oversight copies the real admin route path',
+    (tester) async {
+      String? copiedText;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        (call) async {
+          if (call.method == 'Clipboard.setData') {
+            copiedText = (call.arguments as Map<Object?, Object?>?)?['text']
+                as String?;
+          }
+          return null;
+        },
+      );
+      addTearDown(() {
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        );
+      });
+
+      final repository = _FakeConversationOversightRepository();
+      await tester.pumpWidget(
+        _TestShell(
+          overrides: [
+            conversationOversightRepositoryProvider.overrideWithValue(
+              repository,
+            ),
+          ],
+          child: const Scaffold(
+            body: ConversationOversightScreen(conversationId: 'thread-1'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('admin-purpose-note')),
+        'Investigating dispute timeline',
+      );
+      await tester.tap(find.byKey(const Key('admin-purpose-select')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Dispute review').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('admin-purpose-confirm')));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(
+        find.byKey(const Key('admin-conversation-copy-link')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('admin-conversation-copy-link')));
+      await tester.pumpAndSettle();
+
+      expect(copiedText, '/admin/conversations/thread-1');
+    },
+  );
+}
+
+class _TestShell extends StatelessWidget {
+  const _TestShell({
+    required this.child,
+    this.overrides = const <Object>[],
+  });
+
+  final Widget child;
+  final List<Object> overrides;
+
+  @override
+  Widget build(BuildContext context) {
+    return ProviderScope(
+      overrides: overrides.cast(),
+      child: MaterialApp(
+        locale: const Locale('en'),
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.dark,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        home: child,
+      ),
+    );
+  }
 }
 
 class _FakeConversationOversightRepository

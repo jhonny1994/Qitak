@@ -98,8 +98,10 @@ class LocalAdminReportStore {
     final current = _reports[index];
     final nextStatus = switch (decision) {
       'dismiss' || 'close' => 'dismissed',
-      'resolve' || 'warn_seller' || 'remove_listing' || 'suspend_seller' =>
-        'actioned',
+      'resolve' ||
+      'warn_seller' ||
+      'remove_listing' ||
+      'suspend_seller' => 'actioned',
       _ => throw ArgumentError.value(
         decision,
         'decision',

@@ -108,7 +108,6 @@ class ConversationThreadsNotifier
     });
 
     final threads = await repository.listThreadsForUser(userId);
-    await repository.markAllMessagesRead(userId);
     unawaited(_refreshUnreadCounts());
     return threads;
   }

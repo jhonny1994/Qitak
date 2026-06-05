@@ -8,7 +8,9 @@ String supportReasonLabelForCode(
   String reasonCode,
   List<AppPolicyOption> options,
 ) {
-  final match = options.where((option) => option.code == reasonCode).firstOrNull;
+  final match = options
+      .where((option) => option.code == reasonCode)
+      .firstOrNull;
   if (match == null) {
     return reasonCode;
   }

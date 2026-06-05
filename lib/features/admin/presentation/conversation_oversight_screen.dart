@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/data/conversation_oversight_repository.dart';
 import 'package:qitak_app/features/admin/domain/conversation_oversight_case.dart';
@@ -200,11 +202,12 @@ class _ConversationOversightScreenState
                           runSpacing: 8,
                           children: [
                             FilledButton.tonal(
+                              key: const Key('admin-conversation-copy-link'),
                               onPressed: () async {
                                 await Clipboard.setData(
                                   ClipboardData(
                                     text:
-                                        'conversation:${item.threadId}:message-link',
+                                        '/admin/conversations/${item.threadId}',
                                   ),
                                 );
                                 if (!context.mounted) {
@@ -297,6 +300,22 @@ class _ConversationOversightScreenState
           content: Text(context.l10n.adminConversationAttachNoteAction),
         ),
       );
+    } on AppException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(
+        SnackBar(content: Text(context.appExceptionMessage(error))),
+      );
+    } on Object catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.toString())));
     } finally {
       if (mounted) {
         setState(() => _savingNote = false);

@@ -1899,6 +1899,16 @@ class S {
     );
   }
 
+  /// `مراجعة الحالة`
+  String get sellerStatusReviewStatusAction {
+    return Intl.message(
+      'مراجعة الحالة',
+      name: 'sellerStatusReviewStatusAction',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `مخزون البائع`
   String get sellerListingsEyebrow {
     return Intl.message(
@@ -1919,21 +1929,141 @@ class S {
     );
   }
 
-  /// `راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.`
+  /// `أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.`
   String get sellerListingsSubtitle {
     return Intl.message(
-      'راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.',
+      'أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.',
       name: 'sellerListingsSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `لا توجد لديك إعلانات كبائع بعد.`
+  /// `لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.`
   String get sellerListingsEmptyBody {
     return Intl.message(
-      'لا توجد لديك إعلانات كبائع بعد.',
+      'لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.',
       name: 'sellerListingsEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.`
+  String get sellerListingsActiveStateBody {
+    return Intl.message(
+      'الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.',
+      name: 'sellerListingsActiveStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تبقى المسودات خاصة حتى ترسلها للمراجعة.`
+  String get sellerListingsDraftStateBody {
+    return Intl.message(
+      'تبقى المسودات خاصة حتى ترسلها للمراجعة.',
+      name: 'sellerListingsDraftStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.`
+  String get sellerListingsUnderReviewStateBody {
+    return Intl.message(
+      'تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.',
+      name: 'sellerListingsUnderReviewStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.`
+  String get sellerListingsPausedStateBody {
+    return Intl.message(
+      'الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.',
+      name: 'sellerListingsPausedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.`
+  String get sellerListingsRejectedStateBody {
+    return Intl.message(
+      'تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.',
+      name: 'sellerListingsRejectedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات المغلقة لم تعد ظاهرة للمشترين.`
+  String get sellerListingsClosedStateBody {
+    return Intl.message(
+      'الإعلانات المغلقة لم تعد ظاهرة للمشترين.',
+      name: 'sellerListingsClosedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات نشطة حالياً.`
+  String get sellerListingsActiveEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات نشطة حالياً.',
+      name: 'sellerListingsActiveEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك مسودات حالياً.`
+  String get sellerListingsDraftEmptyBody {
+    return Intl.message(
+      'لا توجد لديك مسودات حالياً.',
+      name: 'sellerListingsDraftEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات قيد المراجعة حالياً.`
+  String get sellerListingsUnderReviewEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات قيد المراجعة حالياً.',
+      name: 'sellerListingsUnderReviewEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات موقوفة حالياً.`
+  String get sellerListingsPausedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات موقوفة حالياً.',
+      name: 'sellerListingsPausedEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات مرفوضة حالياً.`
+  String get sellerListingsRejectedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات مرفوضة حالياً.',
+      name: 'sellerListingsRejectedEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات مغلقة حالياً.`
+  String get sellerListingsClosedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات مغلقة حالياً.',
+      name: 'sellerListingsClosedEmptyBody',
       desc: '',
       args: [],
     );
@@ -2924,6 +3054,26 @@ class S {
     return Intl.message(
       'إرسال للمراجعة',
       name: 'listingSubmitForReviewAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع تفاصيل الإعلان ثم حاول مرة أخرى.`
+  String get listingSubmitValidationError {
+    return Intl.message(
+      'راجع تفاصيل الإعلان ثم حاول مرة أخرى.',
+      name: 'listingSubmitValidationError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تعذر حفظ الإعلان الآن. حاول مرة أخرى.`
+  String get listingSubmitFailureBody {
+    return Intl.message(
+      'تعذر حفظ الإعلان الآن. حاول مرة أخرى.',
+      name: 'listingSubmitFailureBody',
       desc: '',
       args: [],
     );

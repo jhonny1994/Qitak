@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/data/admin_team_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
@@ -144,35 +146,56 @@ class _AdminTeamScreenState extends ConsumerState<AdminTeamScreen> {
     if (email.isEmpty) {
       return;
     }
-    await ref
-        .read(adminTeamRepositoryProvider)
-        .invite(
-          email: email,
-          role: _inviteRole,
-        );
-    ref.invalidate(adminTeamMembersProvider);
-    if (!mounted) {
-      return;
+    try {
+      await ref
+          .read(adminTeamRepositoryProvider)
+          .invite(
+            email: email,
+            role: _inviteRole,
+          );
+      ref.invalidate(adminTeamMembersProvider);
+      if (!mounted) {
+        return;
+      }
+      _inviteEmailController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.adminTeamInviteSuccess)),
+      );
+    } on AppException catch (error) {
+      _showMutationError(context, context.appExceptionMessage(error));
+    } on Object catch (error) {
+      _showMutationError(context, error.toString());
     }
-    _inviteEmailController.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.adminTeamInviteSuccess)),
-    );
   }
 
   Future<void> _apply(String userId, String action) async {
-    await ref
-        .read(adminTeamRepositoryProvider)
-        .updateMember(
-          userId: userId,
-          action: action,
-        );
-    ref.invalidate(adminTeamMembersProvider);
+    try {
+      await ref
+          .read(adminTeamRepositoryProvider)
+          .updateMember(
+            userId: userId,
+            action: action,
+          );
+      ref.invalidate(adminTeamMembersProvider);
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.adminTeamMemberUpdated)),
+      );
+    } on AppException catch (error) {
+      _showMutationError(context, context.appExceptionMessage(error));
+    } on Object catch (error) {
+      _showMutationError(context, error.toString());
+    }
+  }
+
+  void _showMutationError(BuildContext context, String message) {
     if (!mounted) {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.adminTeamMemberUpdated)),
+      SnackBar(content: Text(message)),
     );
   }
 

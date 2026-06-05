@@ -1,15 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/support/presentation/support_center_screen.dart';
 import 'package:qitak_app/features/support/presentation/support_ticket_create_sheet.dart';
+import 'package:qitak_app/generated/l10n.dart';
 
 import '../../test_bootstrap.dart';
 
@@ -225,5 +229,63 @@ void main() {
 
     expect(find.text('Resolved'), findsOneWidget);
     expect(find.text('Open'), findsNothing);
+  });
+
+  testWidgets('deal guidance routes buyers to transaction history', (
+    tester,
+  ) async {
+    final repository = LocalSupportRepository(buyerProfile);
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: SupportCenterScreen()),
+        ),
+        GoRoute(
+          path: '/transactions/history',
+          builder: (context, state) => const Scaffold(
+            body: Text('transaction-history-screen'),
+          ),
+        ),
+      ],
+    );
+    final scope = await buildTestScope(
+      MaterialApp.router(
+        locale: const Locale('en'),
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.dark,
+        routerConfig: router,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+      ),
+      seed: <String, Object>{
+        ...contractSeed(),
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: <Object>[
+        supportRepositoryProvider.overrideWithValue(repository),
+        supportReasonOptionsProvider.overrideWith((ref) async {
+          return supportReasonOptions;
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MaterialApp)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Deal-specific problems'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('transaction-history-screen'), findsOneWidget);
   });
 }

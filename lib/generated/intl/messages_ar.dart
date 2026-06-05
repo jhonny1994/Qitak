@@ -916,8 +916,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "مشاركة الإعلان",
     ),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("الحالة"),
+    "listingSubmitFailureBody": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ الإعلان الآن. حاول مرة أخرى.",
+    ),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "إرسال للمراجعة",
+    ),
+    "listingSubmitValidationError": MessageLookupByLibrary.simpleMessage(
+      "راجع تفاصيل الإعلان ثم حاول مرة أخرى.",
     ),
     "listingSubmittedForReviewSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إرسال الإعلان للمراجعة.",
@@ -1291,8 +1297,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("إرسال"),
     "sellerListingSubmittedLabel": m4,
     "sellerListingUpdatedLabel": m5,
+    "sellerListingsActiveEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات نشطة حالياً.",
+    ),
+    "sellerListingsActiveStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.",
+    ),
+    "sellerListingsClosedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات مغلقة حالياً.",
+    ),
+    "sellerListingsClosedStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات المغلقة لم تعد ظاهرة للمشترين.",
+    ),
+    "sellerListingsDraftEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك مسودات حالياً.",
+    ),
+    "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
+      "تبقى المسودات خاصة حتى ترسلها للمراجعة.",
+    ),
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "لا توجد لديك إعلانات كبائع بعد.",
+      "لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل إعلانات البائع حالياً.",
@@ -1300,8 +1324,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingsEyebrow": MessageLookupByLibrary.simpleMessage(
       "مخزون البائع",
     ),
+    "sellerListingsPausedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات موقوفة حالياً.",
+    ),
+    "sellerListingsPausedStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.",
+    ),
     "sellerListingsPreviewAction": MessageLookupByLibrary.simpleMessage(
       "معاينة",
+    ),
+    "sellerListingsRejectedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات مرفوضة حالياً.",
+    ),
+    "sellerListingsRejectedStateBody": MessageLookupByLibrary.simpleMessage(
+      "تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.",
     ),
     "sellerListingsStatusActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "sellerListingsStatusClosed": MessageLookupByLibrary.simpleMessage("مغلقة"),
@@ -1318,9 +1354,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "قيد المراجعة",
     ),
     "sellerListingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.",
+      "أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.",
     ),
     "sellerListingsTitle": MessageLookupByLibrary.simpleMessage("إعلاناتي"),
+    "sellerListingsUnderReviewEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات قيد المراجعة حالياً.",
+    ),
+    "sellerListingsUnderReviewStateBody": MessageLookupByLibrary.simpleMessage(
+      "تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.",
+    ),
     "sellerOnboardingAccountIdentityNote": MessageLookupByLibrary.simpleMessage(
       "يتم استخدام اسم الحساب ورقم الهاتف تلقائياً في توثيق البائع.",
     ),
@@ -1440,6 +1482,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerStatusReviewFeedbackTitle": MessageLookupByLibrary.simpleMessage(
       "آخر ملاحظات المراجعة",
+    ),
+    "sellerStatusReviewStatusAction": MessageLookupByLibrary.simpleMessage(
+      "مراجعة الحالة",
     ),
     "sellerStatusSubmitted": MessageLookupByLibrary.simpleMessage(
       "قيد المراجعة",

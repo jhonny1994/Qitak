@@ -29,6 +29,7 @@ Future<ProviderScope> buildTestScope(
   List<Object> overrides = const <Object>[],
   AuthRepository? authRepositoryOverride,
   MessagingRepository? messagingRepositoryOverride,
+  NotificationRepository? notificationRepositoryOverride,
   TransactionRepository? transactionRepositoryOverride,
   SellerApplicationRepository? sellerApplicationRepositoryOverride,
   ListingModerationRepository? listingModerationRepositoryOverride,
@@ -64,7 +65,7 @@ Future<ProviderScope> buildTestScope(
         messagingRepositoryOverride ?? LocalMessagingRepository(),
       ),
       notificationRepositoryProvider.overrideWithValue(
-        const LocalNotificationRepository(),
+        notificationRepositoryOverride ?? const LocalNotificationRepository(),
       ),
       adminReportsRepositoryProvider.overrideWithValue(
         const LocalAdminReportsRepository(),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -129,16 +130,19 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
             ),
           ),
           const SizedBox(height: 18),
-          QitakPanel(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.history_rounded),
-              title: Text(context.l10n.transactionHistoryTitle),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => context.go('/transactions/history'),
+          if (profile.role.hasBuyerCapabilities) ...[
+            QitakPanel(
+              child: ListTile(
+                key: const Key('account-settings-transaction-history'),
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.history_rounded),
+                title: Text(context.l10n.transactionHistoryTitle),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () => context.go('/transactions/history'),
+              ),
             ),
-          ),
-          const SizedBox(height: 18),
+            const SizedBox(height: 18),
+          ],
           QitakPanel(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

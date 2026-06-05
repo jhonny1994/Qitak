@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +16,7 @@ import 'package:qitak_app/features/admin/presentation/reports_queue_screen.dart'
 import 'package:qitak_app/features/admin/presentation/seller_verification_queue_screen.dart';
 import 'package:qitak_app/features/admin/presentation/verification_detail_screen.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
+import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/account_settings_screen.dart';
@@ -44,6 +47,7 @@ import 'package:qitak_app/features/messaging/presentation/conversation_screen.da
 import 'package:qitak_app/features/notifications/presentation/notification_center_screen.dart';
 import 'package:qitak_app/features/notifications/presentation/notification_preferences_screen.dart';
 import 'package:qitak_app/features/ratings/presentation/rating_screen.dart';
+import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.dart';
 import 'package:qitak_app/features/support/presentation/support_center_screen.dart';
@@ -66,8 +70,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/',
     refreshListenable: refreshListenable,
     observers: [SentryNavigatorObserver()],
-    redirect: (context, state) {
+    redirect: (context, state) async {
       final preferences = ref.read(appPreferencesProvider);
+      final session = ref.read(authSessionProvider);
       final path = state.uri.path;
       final isSplash = path == '/';
       final isIntro = path.startsWith('/intro');
@@ -76,6 +81,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           !isSplash &&
           !isIntro) {
         return '/intro/1';
+      }
+      final authSurfaceRedirect = await _authenticatedAuthSurfaceRedirect(
+        ref: ref,
+        session: session,
+        path: path,
+      );
+      if (authSurfaceRedirect != null) {
+        return authSurfaceRedirect;
       }
       return null;
     },
@@ -940,7 +953,7 @@ String _authUtilityFallbackPath(
   if (profile != null) {
     switch (profile.role) {
       case AccountRole.seller:
-        return '/profile';
+        return '/seller/profile';
       case AccountRole.admin:
       case AccountRole.superAdmin:
         return '/admin/profile';
@@ -955,6 +968,91 @@ String _authUtilityFallbackPath(
   }
 
   return '/guest/account';
+}
+
+Future<String?> _authenticatedAuthSurfaceRedirect({
+  required Ref ref,
+  required AuthSessionState session,
+  required String path,
+}) async {
+  final profile = session.profile;
+  if (profile == null) {
+    return null;
+  }
+
+  if (_isAuthEntryPath(path)) {
+    return _resolveAuthenticatedLandingPath(ref, profile);
+  }
+
+  final profileRoot = _profileRootPathForRole(profile.role);
+  if (profileRoot == null) {
+    return null;
+  }
+
+  switch (path) {
+    case '/auth/language':
+      return '$profileRoot/language';
+    case '/auth/appearance':
+      return '$profileRoot/appearance';
+    case '/auth/legal':
+      return '$profileRoot/legal';
+    case '/auth/support':
+      return '$profileRoot/support';
+    case '/auth/reset-password':
+      return '$profileRoot/settings';
+  }
+
+  return null;
+}
+
+bool _isAuthEntryPath(String path) {
+  switch (path) {
+    case '/auth/sign-in':
+    case '/auth/sign-up':
+    case '/auth/seller/sign-in':
+    case '/auth/seller/sign-up':
+    case '/auth/admin/sign-in':
+      return true;
+  }
+  return false;
+}
+
+Future<String> _resolveAuthenticatedLandingPath(
+  Ref ref,
+  AccountProfile profile,
+) async {
+  var isSellerApproved = false;
+  if (profile.role == AccountRole.seller) {
+    try {
+      isSellerApproved =
+          (await ref
+                  .read(sellerApplicationRepositoryProvider)
+                  .fetchCurrentForUser(profile.id))
+              ?.isApproved ==
+          true;
+    } on Object {
+      isSellerApproved = false;
+    }
+  }
+
+  return const AuthEntryService().resolveLandingRoute(
+    profile,
+    isSellerApproved: isSellerApproved,
+  );
+}
+
+String? _profileRootPathForRole(AccountRole role) {
+  switch (role) {
+    case AccountRole.buyer:
+      return '/profile';
+    case AccountRole.seller:
+      return '/seller/profile';
+    case AccountRole.admin:
+    case AccountRole.superAdmin:
+      return '/admin/profile';
+    case AccountRole.anonymous:
+      return null;
+  }
 }
 
 String _sellerApplicationFallbackPath(AuthSessionState session) {

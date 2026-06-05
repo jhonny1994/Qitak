@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/app_error_code.dart';
@@ -51,6 +52,12 @@ class AppContractRepository {
       <String, List<AppDomainCode>>{};
   static final Map<String, List<AppPolicyOption>> _policyCache =
       <String, List<AppPolicyOption>>{};
+
+  @visibleForTesting
+  static void clearCachesForTest() {
+    _domainCache.clear();
+    _policyCache.clear();
+  }
 
   Future<List<AppDomainCode>> fetchDomainContract(String domainKey) async {
     final cached = _domainCache[domainKey];

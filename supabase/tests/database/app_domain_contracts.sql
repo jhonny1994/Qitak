@@ -1,7 +1,7 @@
 set search_path = public, extensions;
 
 begin;
-select plan(44);
+select plan(45);
 
 select has_table('public', 'app_domain_catalog', 'app_domain_catalog table exists');
 select has_table('public', 'app_domain_codes', 'app_domain_codes table exists');
@@ -144,6 +144,7 @@ begin
   insert into auth.users (id, email)
   values
     ('00000000-0000-0000-0000-000000000000', 'admin_contract_test@example.com'),
+    ('00000000-0000-0000-0000-000000000010', 'existing_listing_report_buyer@example.com'),
     ('00000000-0000-0000-0000-000000000111', 'listing_report_buyer@example.com'),
     ('00000000-0000-0000-0000-000000000222', 'listing_report_seller@example.com');
 
@@ -152,6 +153,12 @@ begin
       phone = '0550000000',
       role = 'admin'
   where id = '00000000-0000-0000-0000-000000000000';
+
+  update public.profiles
+  set full_name = 'Existing Listing Report Buyer',
+      phone = '0551113344',
+      role = 'buyer'
+  where id = '00000000-0000-0000-0000-000000000010';
 
   update public.profiles
   set full_name = 'Listing Report Buyer',
@@ -170,14 +177,18 @@ begin
     seller_user_id,
     title,
     description,
-    price
+    price,
+    status,
+    is_available
   )
   values (
     '00000000-0000-0000-0000-000000000333',
     '00000000-0000-0000-0000-000000000222',
     'Support contract listing',
     'Listing used to validate report insert protections.',
-    5000
+    5000,
+    'active',
+    true
   );
 
   insert into public.reports (
@@ -226,7 +237,7 @@ begin
     ),
     (
       '10000000-0000-0000-0000-000000000003',
-      '00000000-0000-0000-0000-000000000111',
+      '00000000-0000-0000-0000-000000000010',
       'listing',
       '00000000-0000-0000-0000-000000000333',
       'spam',
@@ -244,59 +255,74 @@ select set_config(
 
 set local role authenticated;
 
-select ok(
-  exists (
-    select 1
-    from pg_policies
-    where schemaname = 'public'
-      and tablename = 'reports'
-      and policyname = 'Authenticated users can create supported reports'
-      and coalesce(with_check, '') like '%reported_entity_type = ''listing''%'
-      and coalesce(with_check, '') like '%p.role = ''buyer''%'
-      and coalesce(with_check, '') like '%seller_user_id <>%'
-  ),
-  'listing report branch remains enforced in the supported report insert policy'
+select lives_ok(
+  $sql$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values (
+      auth.uid(),
+      'listing',
+      '00000000-0000-0000-0000-000000000333',
+      'spam',
+      'Buyer listing report created through the production RLS path.'
+    )
+  $sql$,
+  'buyers can create listing-backed reports for another seller'
 );
-
-set local role postgres;
 
 select throws_ok(
   $sql$
-    do $$
-    begin
-      insert into public.reports (
-        reporter_id,
-        reported_entity_type,
-        reported_entity_id,
-        report_type,
-        description
-      ) values (
-        '00000000-0000-0000-0000-000000000111',
-        'listing',
-        '00000000-0000-0000-0000-000000000333',
-        'spam',
-        'Duplicate listing report should be blocked (first insert).'
-      );
-
-      insert into public.reports (
-        reporter_id,
-        reported_entity_type,
-        reported_entity_id,
-        report_type,
-        description
-      ) values (
-        '00000000-0000-0000-0000-000000000111',
-        'listing',
-        '00000000-0000-0000-0000-000000000333',
-        'spam',
-        'Duplicate listing report should be blocked (second insert).'
-      );
-    end;
-    $$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values (
+      auth.uid(),
+      'listing',
+      '00000000-0000-0000-0000-000000000333',
+      'spam',
+      'Duplicate listing report should be blocked.'
+    )
   $sql$,
   23505,
   null,
-  'duplicate non-support reports remain blocked'
+  'duplicate non-support reports remain blocked for client inserts'
+);
+
+select set_config(
+  'request.jwt.claims',
+  json_build_object('sub', '00000000-0000-0000-0000-000000000222')::text,
+  false
+);
+
+select throws_ok(
+  $sql$
+    insert into public.reports (
+      reporter_id,
+      reported_entity_type,
+      reported_entity_id,
+      report_type,
+      description
+    )
+    values (
+      auth.uid(),
+      'listing',
+      '00000000-0000-0000-0000-000000000333',
+      'spam',
+      'Sellers cannot report their own listings.'
+    )
+  $sql$,
+  42501,
+  null,
+  'sellers cannot create listing reports for their own listings'
 );
 
 select set_config(

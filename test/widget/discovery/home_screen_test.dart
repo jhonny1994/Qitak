@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
 import 'package:qitak_app/features/discovery/presentation/home_screen.dart';
+import 'package:qitak_app/features/discovery/presentation/search_screen.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/generated/l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
@@ -92,6 +94,23 @@ void main() {
       ],
       supportedLocales: S.delegate.supportedLocales,
       home: Scaffold(body: child),
+    );
+  }
+
+  Widget buildRouterShell(GoRouter router) {
+    return MaterialApp.router(
+      locale: const Locale('en'),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.dark,
+      routerConfig: router,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
     );
   }
 
@@ -245,6 +264,25 @@ void main() {
     expect(find.byKey(const Key('listing-row-save-listing-1')), findsOneWidget);
   });
 
+  testWidgets('admin home does not expose save affordance', (tester) async {
+    final scope = await buildSliceTestScope(
+      buildShell(const HomeScreen()),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'admin@qitak.test',
+      },
+      overrides: defaultOverrides(),
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(HomeScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await settleDiscovery(tester);
+
+    expect(find.byKey(const Key('listing-row-save-listing-1')), findsNothing);
+  });
+
   testWidgets('featured listing surfaces its primary image url', (
     tester,
   ) async {
@@ -320,6 +358,68 @@ void main() {
     expect(find.text('Category'), findsOneWidget);
     expect(find.text('Model'), findsOneWidget);
   });
+
+  testWidgets(
+    'applying filters from home routes into filtered search results',
+    (
+      tester,
+    ) async {
+      final router = GoRouter(
+        routes: [
+          GoRoute(
+            path: '/home',
+            builder: (context, state) => const Scaffold(body: HomeScreen()),
+          ),
+          GoRoute(
+            path: '/search/results',
+            builder: (context, state) => Scaffold(
+              body: SearchScreen(
+                initialQuery: state.uri.queryParameters['q'] ?? '',
+              ),
+            ),
+          ),
+        ],
+        initialLocation: '/home',
+      );
+
+      final scope = await buildSliceTestScope(
+        buildRouterShell(router),
+        seed: const <String, Object>{
+          'search_history': '["Headlight","Brake"]',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+          discoveryFilterTaxonomyProvider.overrideWith(
+            (ref) => Future.value(testDiscoveryFilterTaxonomy),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      await settleDiscovery(tester);
+
+      await tester.tap(find.byKey(const Key('home-filter-button')));
+      await tester.pumpAndSettle();
+      await tester.tap(filterField('filter-category-field'));
+      await tester.pumpAndSettle();
+      final brakingOption = find.textContaining('Brak');
+      expect(brakingOption, findsWidgets);
+      await tester.tap(brakingOption.last);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const Key('filter-apply-button')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('filter-apply-button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchScreen), findsOneWidget);
+      expect(find.text('Brake pad set'), findsOneWidget);
+      expect(find.text('Headlight assembly'), findsNothing);
+      expect(find.text('Recent searches'), findsNothing);
+      expect(find.textContaining('1 matches'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'filter sheet applies wilaya -> commune and make -> model -> year dependencies',

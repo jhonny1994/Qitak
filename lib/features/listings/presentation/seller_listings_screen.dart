@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
+import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/features/listings/data/seller_listings_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -22,6 +24,8 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(authSessionProvider);
+    final taxonomy = ref.watch(discoveryFilterTaxonomyProvider);
+    final taxonomyData = taxonomy.asData?.value;
     final statusContracts = ref.watch(listingStatusContractsProvider);
     final statusCatalog = statusContracts.asData?.value
         .map((entry) => (code: entry.code, labelKey: entry.labelKey))
@@ -106,15 +110,21 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                           price: context.l10n.priceWithDzd(item.price),
                           subtitle: [
                             item.fitmentSummary,
-                            item.locationSummary,
+                            _locationSummary(context, item, taxonomyData),
                             _listingMeta(context, item),
                           ].where((part) => part.isNotEmpty).join(' | '),
                           imageUrl: item.primaryImageUrl,
                           ratingLabel: _statusLabel(context, item.status),
                           badges: [
-                            QitakChip(label: item.condition),
+                            QitakChip(
+                              label: _conditionLabel(context, item.condition),
+                            ),
                             if ((item.rejectionReason ?? '').isNotEmpty)
-                              QitakChip(label: item.rejectionReason!),
+                              QitakChip(
+                                label: _humanizeInternalLabel(
+                                  item.rejectionReason!,
+                                ),
+                              ),
                           ],
                           actions: _buildActions(context, item),
                         ),
@@ -256,12 +266,60 @@ extension _SellerManagedListingPresentationX on SellerManagedListing {
     ];
     return parts.join(' | ');
   }
+}
 
-  String get locationSummary {
-    final commune = communeId?.trim().isNotEmpty == true ? communeId! : '-';
-    final wilaya = wilayaId?.trim().isNotEmpty == true ? wilayaId! : '-';
-    return '$commune | $wilaya';
+String _locationSummary(
+  BuildContext context,
+  SellerManagedListing item,
+  DiscoveryFilterTaxonomy? taxonomy,
+) {
+  if (taxonomy == null) {
+    return '';
   }
+  final wilaya = taxonomy.wilayas
+      .where((candidate) => candidate.id == item.wilayaId)
+      .cast<WilayaOption?>()
+      .firstOrNull;
+  final commune = wilaya?.communes
+      .where((candidate) => candidate.id == item.communeId)
+      .cast<CommuneOption?>()
+      .firstOrNull;
+  if (wilaya == null && commune == null) {
+    return '';
+  }
+  final parts = <String>[
+    if (commune != null) context.displayCommune(commune),
+    if (wilaya != null) context.displayWilaya(wilaya),
+  ];
+  return parts.join(', ');
+}
+
+String _conditionLabel(BuildContext context, String raw) {
+  switch (raw) {
+    case 'new':
+    case 'like_new':
+    case 'used':
+      return context.l10n.discoveryConditionLabel(raw);
+    default:
+      return _humanizeInternalLabel(raw);
+  }
+}
+
+String _humanizeInternalLabel(String raw) {
+  final normalized = raw.trim();
+  if (normalized.isEmpty) {
+    return raw;
+  }
+  if (!normalized.contains('_') && !normalized.contains('-')) {
+    return normalized;
+  }
+  return normalized
+      .split(RegExp('[_-]+'))
+      .where((part) => part.isNotEmpty)
+      .map(
+        (part) => '${part[0].toUpperCase()}${part.substring(1).toLowerCase()}',
+      )
+      .join(' ');
 }
 
 String _listingMeta(BuildContext context, SellerManagedListing item) {
@@ -357,35 +415,39 @@ String _statusLabel(BuildContext context, String status, [String? labelKey]) {
 String _statusBody(BuildContext context, String status) {
   switch (status) {
     case 'draft':
-      return context.l10n.listingSaveDraftAction;
+      return context.l10n.sellerListingsDraftStateBody;
     case 'pending_review':
-      return context.l10n.listingSubmittedForReviewSuccess;
+      return context.l10n.sellerListingsUnderReviewStateBody;
     case 'paused':
-      return context.l10n.sellerListingResumeAction;
+      return context.l10n.sellerListingsPausedStateBody;
     case 'rejected':
-      return context.l10n.adminModerationRejectSuccess;
+      return context.l10n.sellerListingsRejectedStateBody;
     case 'closed':
-      return context.l10n.sellerListingCloseAction;
+      return context.l10n.sellerListingsClosedStateBody;
     case 'active':
     default:
-      return context.l10n.sellerListingsSubtitle;
+      return context.l10n.sellerListingsActiveStateBody;
   }
 }
 
 String _emptyBody(BuildContext context, String status) {
   switch (status) {
     case 'draft':
-      return context.l10n.listingDraftSavedSuccess;
+      return context.l10n.sellerListingsDraftEmptyBody;
     case 'pending_review':
-      return context.l10n.listingSubmittedForReviewSuccess;
+      return context.l10n.sellerListingsUnderReviewEmptyBody;
     case 'paused':
-      return context.l10n.sellerListingResumeAction;
+      return context.l10n.sellerListingsPausedEmptyBody;
     case 'rejected':
-      return context.l10n.adminModerationRejectSuccess;
+      return context.l10n.sellerListingsRejectedEmptyBody;
     case 'closed':
-      return context.l10n.sellerListingsPreviewAction;
+      return context.l10n.sellerListingsClosedEmptyBody;
     case 'active':
     default:
-      return context.l10n.sellerListingsEmptyBody;
+      return context.l10n.sellerListingsActiveEmptyBody;
   }
+}
+
+extension _IterableFirstOrNullX<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

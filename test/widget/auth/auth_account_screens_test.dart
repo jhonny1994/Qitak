@@ -497,6 +497,142 @@ void main() {
     expect(container.read(appPreferencesProvider).guestBrowsingEnabled, isTrue);
   });
 
+  testWidgets('buyer sign in lands on buyer home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/sign-in',
+          builder: (context, state) => const Scaffold(body: SignInScreen()),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => const Scaffold(body: Text('buyer-home')),
+        ),
+      ],
+      initialLocation: '/auth/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'buyer@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('buyer-home'), findsOneWidget);
+  });
+
+  testWidgets('seller sign in lands on onboarding status when unapproved', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/seller/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.seller),
+          ),
+        ),
+        GoRoute(
+          path: '/seller/onboarding/status',
+          builder: (context, state) =>
+              const Scaffold(body: Text('seller-status')),
+        ),
+      ],
+      initialLocation: '/auth/seller/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'seller@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('seller-status'), findsOneWidget);
+  });
+
+  testWidgets('seller sign in lands on seller home when approved', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/seller/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.seller),
+          ),
+        ),
+        GoRoute(
+          path: '/seller/home',
+          builder: (context, state) =>
+              const Scaffold(body: Text('seller-home')),
+        ),
+      ],
+      initialLocation: '/auth/seller/sign-in',
+    );
+
+    final scope = await buildTestScope(
+      routerShell(router),
+      sellerApplicationRepositoryOverride:
+          const _ApprovedSellerApplicationRepository(),
+    );
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'seller@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('seller-home'), findsOneWidget);
+  });
+
+  testWidgets('admin sign in lands on admin home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/admin/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.admin),
+          ),
+        ),
+        GoRoute(
+          path: '/admin/home',
+          builder: (context, state) => const Scaffold(body: Text('admin-home')),
+        ),
+      ],
+      initialLocation: '/auth/admin/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'admin@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('admin-home'), findsOneWidget);
+  });
+
   testWidgets('seller sign up lands on seller onboarding status', (
     tester,
   ) async {
@@ -756,6 +892,41 @@ void main() {
       find.byKey(const Key('account-settings-delete-account')),
       findsOneWidget,
     );
+  });
+
+  testWidgets('buyer sign up lands on buyer home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: SignUpScreen()),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => const Scaffold(body: Text('buyer-home')),
+        ),
+      ],
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Buyer Ready');
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'buyer.ready@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(2), '+213555111444');
+    await tester.enterText(find.byType(TextFormField).at(3), 'password123');
+    await tester.enterText(find.byType(TextFormField).at(4), 'password123');
+    await tester.ensureVisible(find.byType(CheckboxListTile));
+    await tester.tap(find.byType(CheckboxListTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Create account').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('buyer-home'), findsOneWidget);
   });
 
   testWidgets(
@@ -1074,6 +1245,58 @@ class _ThrowingSellerApplicationRepository
   Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async {
     throw StateError('lookup failed');
   }
+}
+
+class _ApprovedSellerApplicationRepository
+    implements SellerApplicationRepository {
+  const _ApprovedSellerApplicationRepository();
+
+  @override
+  Future<SellerApplication?> fetchById(String applicationId) async =>
+      _approvedApplication;
+
+  @override
+  Future<SellerApplication?> fetchCurrentForUser(String userId) async =>
+      _approvedApplication;
+
+  @override
+  Future<List<SellerApplication>> listPendingApplications() async =>
+      const <SellerApplication>[];
+
+  @override
+  Future<SellerApplication> submitApplication({
+    required String userId,
+    required SellerApplicationDraft draft,
+  }) async {
+    return _approvedApplication;
+  }
+
+  @override
+  Future<SellerApplication> updateStatus({
+    required String applicationId,
+    required SellerVerificationStatus status,
+    String? reasonCode,
+    String? note,
+  }) async {
+    return _approvedApplication;
+  }
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async =>
+      const <AppPolicyOption>[];
+
+  static const SellerApplication _approvedApplication = SellerApplication(
+    id: 'seller-app-seller-001',
+    userId: 'seller-001',
+    sellerType: 'business',
+    businessName: 'Samir Auto Parts',
+    phone: '+213555000222',
+    email: 'seller@qitak.test',
+    wilayaId: '16',
+    communeId: '1601',
+    bio: 'Approved seller account.',
+    verificationStatus: SellerVerificationStatus.approved,
+  );
 }
 
 class _PendingConfirmationAuthRepository implements AuthRepository {

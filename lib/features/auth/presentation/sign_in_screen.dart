@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -52,19 +50,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(authSessionProvider);
-
-    if (session.isAuthenticated) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && session.profile != null) {
-          final profile = session.profile!;
-          if (_isAllowedRole(profile.role)) {
-            unawaited(_goToLanding(profile));
-          }
-        }
-      });
-    }
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       excludeFromSemantics: true,
@@ -271,13 +256,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _goToLanding(AccountProfile profile) async {
-    final route = await _resolveLandingRoute(profile);
-    if (mounted) {
-      context.go(route);
-    }
-  }
-
   Future<bool> _isSellerApproved(AccountProfile profile) async {
     if (profile.role != AccountRole.seller) {
       return false;
@@ -305,13 +283,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       profile: profile,
       intent: intent,
       isSellerApproved: isSellerApproved,
-    );
-  }
-
-  Future<String> _resolveLandingRoute(AccountProfile profile) async {
-    return const AuthEntryService().resolveLandingRoute(
-      profile,
-      isSellerApproved: await _isSellerApproved(profile),
     );
   }
 

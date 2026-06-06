@@ -46,7 +46,8 @@ void main() {
       find.byKey(const Key('search-results-filter-button')),
       findsOneWidget,
     );
-    expect(find.textContaining('1 matches'), findsOneWidget);
+    expect(find.textContaining('1 matches'), findsNothing);
+    expect(find.text('1 result found'), findsOneWidget);
   });
 
   testWidgets('applied structured filters affect results', (tester) async {
@@ -234,7 +235,7 @@ void main() {
       expect(find.text('Brake pad set'), findsOneWidget);
       expect(find.text('Headlight assembly'), findsNothing);
       expect(find.text('Recent searches'), findsNothing);
-      expect(find.textContaining('1 matches'), findsOneWidget);
+      expect(find.text('1 result found'), findsOneWidget);
     },
   );
 
@@ -261,11 +262,11 @@ void main() {
       'Brake',
     );
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.textContaining('1 matches'), findsNothing);
+    expect(find.text('1 result found'), findsNothing);
 
     await tester.pump(const Duration(milliseconds: 150));
     await settleDiscovery(tester);
-    expect(find.textContaining('1 matches'), findsOneWidget);
+    expect(find.text('1 result found'), findsOneWidget);
 
     final container = ProviderScope.containerOf(
       tester.element(find.byType(SearchScreen)),

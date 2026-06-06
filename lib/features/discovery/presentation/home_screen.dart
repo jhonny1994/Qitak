@@ -136,21 +136,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,
-                      child: FilledButton.tonalIcon(
-                        key: const Key('home-filter-button'),
-                        onPressed: _openFilters,
-                        icon: const Icon(Icons.tune_rounded),
-                        label: Text(context.l10n.discoveryFilterButton),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
                       child: FilledButton.icon(
                         key: const Key('home-search-button'),
                         onPressed: _submitSearch,
                         icon: const Icon(Icons.search_rounded),
                         label: Text(context.l10n.discoverySearchButton),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        key: const Key('home-filter-button'),
+                        onPressed: _openFilters,
+                        icon: const Icon(Icons.tune_rounded),
+                        label: Text(context.l10n.discoveryFilterButton),
                       ),
                     ),
                   ],

@@ -182,7 +182,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       const SizedBox(height: 14),
                     ],
                     Text(
-                      '${items.length} ${context.l10n.searchResultsSuffix}',
+                      _localizedResultSummary(context, items.length),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -312,6 +312,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
   }
+}
+
+String _localizedResultSummary(BuildContext context, int count) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  return switch (languageCode) {
+    'ar' => count == 1 ? 'تم العثور على نتيجة واحدة' : 'تم العثور على $count نتائج',
+    'fr' => count == 1 ? '1 resultat trouve' : '$count resultats trouves',
+    _ => count == 1 ? '1 result found' : '$count results found',
+  };
 }
 
 class _SearchResultRow extends StatelessWidget {

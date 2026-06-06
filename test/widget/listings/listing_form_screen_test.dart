@@ -185,6 +185,32 @@ void main() {
     );
   });
 
+  testWidgets('groups listing creation into staged sections', (tester) async {
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(body: ListingFormScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+        currentSellerApplicationProvider.overrideWith(
+          (ref) async => approvedApplication,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Basics'), findsOneWidget);
+    expect(find.text('Pricing'), findsOneWidget);
+    expect(find.text('Delivery'), findsOneWidget);
+  });
+
   testWidgets('submits a structured listing draft with media', (tester) async {
     final repository = _RecordingListingRepository();
     final scope = await buildSliceTestScope(

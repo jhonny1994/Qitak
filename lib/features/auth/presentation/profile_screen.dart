@@ -119,80 +119,91 @@ class ProfileScreen extends ConsumerWidget {
                   error: (_, _) => const SizedBox.shrink(),
                   loading: () => const SizedBox.shrink(),
                 ),
-              QitakPanel(
-                child: Column(
-                  children: [
-                    InkWell(
-                      key: const Key('profile-settings-button'),
-                      onTap: () => context.go('$profileRoot/settings'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.accountSettingsTitle,
-                        meta: context.l10n.accountSettingsSubtitle,
-                        status: context.l10n.accountRoleLabel(profile.role),
-                        variant: QitakQueueRowVariant.value,
-                      ),
+              _ProfileActionGroup(
+                title: context.l10n.accountSettingsEyebrow,
+                children: [
+                  InkWell(
+                    key: const Key('profile-settings-button'),
+                    onTap: () => context.go('$profileRoot/settings'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.accountSettingsTitle,
+                      meta: context.l10n.accountSettingsSubtitle,
+                      status: context.l10n.accountRoleLabel(profile.role),
+                      variant: QitakQueueRowVariant.value,
                     ),
-                    InkWell(
-                      key: const Key('profile-language-button'),
-                      onTap: () => context.go('$profileRoot/language'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.languageSelectionTitle,
-                        meta: context.l10n.languageSelectionSubtitle,
-                        status: context.languageDisplayName(profile.language),
-                        variant: QitakQueueRowVariant.value,
-                      ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _ProfileActionGroup(
+                title: 'Preferences',
+                children: [
+                  InkWell(
+                    key: const Key('profile-language-button'),
+                    onTap: () => context.go('$profileRoot/language'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.languageSelectionTitle,
+                      meta: context.l10n.languageSelectionSubtitle,
+                      status: context.languageDisplayName(profile.language),
+                      variant: QitakQueueRowVariant.value,
                     ),
-                    InkWell(
-                      key: const Key('profile-appearance-button'),
-                      onTap: () => context.go('$profileRoot/appearance'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.appearanceSettingsTitle,
-                        meta: context.l10n.appearanceSettingsSubtitle,
-                        status: _themeModeStatus(
-                          context,
-                          preferences.themeMode,
-                        ),
-                        variant: QitakQueueRowVariant.value,
+                  ),
+                  InkWell(
+                    key: const Key('profile-appearance-button'),
+                    onTap: () => context.go('$profileRoot/appearance'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.appearanceSettingsTitle,
+                      meta: context.l10n.appearanceSettingsSubtitle,
+                      status: _themeModeStatus(
+                        context,
+                        preferences.themeMode,
                       ),
+                      variant: QitakQueueRowVariant.value,
                     ),
-                    InkWell(
-                      key: const Key('profile-notifications-button'),
-                      onTap: () => context.go('$profileRoot/notifications'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.notificationPreferencesTitle,
-                        meta: context.l10n.notificationPreferencesSubtitle,
-                        status: context.l10n.notificationsEyebrow,
-                        variant: QitakQueueRowVariant.value,
-                      ),
+                  ),
+                  InkWell(
+                    key: const Key('profile-notifications-button'),
+                    onTap: () => context.go('$profileRoot/notifications'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.notificationPreferencesTitle,
+                      meta: context.l10n.notificationPreferencesSubtitle,
+                      status: context.l10n.notificationsEyebrow,
+                      variant: QitakQueueRowVariant.value,
                     ),
-                    InkWell(
-                      key: const Key('profile-support-button'),
-                      onTap: () => context.go('$profileRoot/support'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.supportCenterTitle,
-                        meta: context.l10n.supportCenterSubtitle,
-                        status: context.l10n.supportCenterEyebrow,
-                        variant: QitakQueueRowVariant.value,
-                      ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _ProfileActionGroup(
+                title: 'Help and legal',
+                children: [
+                  InkWell(
+                    key: const Key('profile-support-button'),
+                    onTap: () => context.go('$profileRoot/support'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.supportCenterTitle,
+                      meta: context.l10n.supportCenterSubtitle,
+                      status: context.l10n.supportCenterEyebrow,
+                      variant: QitakQueueRowVariant.value,
                     ),
-                    InkWell(
-                      key: const Key('profile-legal-button'),
-                      onTap: () => context.go('$profileRoot/legal'),
-                      borderRadius: BorderRadius.circular(18),
-                      child: QitakQueueRow(
-                        title: context.l10n.legalInformationTitle,
-                        meta: context.l10n.legalInformationSubtitle,
-                        status: context.l10n.legalInformationStatus,
-                        variant: QitakQueueRowVariant.value,
-                      ),
+                  ),
+                  InkWell(
+                    key: const Key('profile-legal-button'),
+                    onTap: () => context.go('$profileRoot/legal'),
+                    borderRadius: BorderRadius.circular(18),
+                    child: QitakQueueRow(
+                      title: context.l10n.legalInformationTitle,
+                      meta: context.l10n.legalInformationSubtitle,
+                      status: context.l10n.legalInformationStatus,
+                      variant: QitakQueueRowVariant.value,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               const SizedBox(height: 24),
@@ -262,6 +273,32 @@ class _ProfileLoadingState extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ProfileActionGroup extends StatelessWidget {
+  const _ProfileActionGroup({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return QitakPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          ...children,
+        ],
+      ),
     );
   }
 }

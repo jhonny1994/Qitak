@@ -90,9 +90,9 @@ class _AppearanceOption {
 List<_AppearanceOption> _appearanceOptions(BuildContext context) {
   return [
     _AppearanceOption(
-      mode: ThemeMode.dark,
-      title: context.l10n.appearanceModeDarkTitle,
-      subtitle: context.l10n.appearanceModeDarkSubtitle,
+      mode: ThemeMode.system,
+      title: context.l10n.appearanceModeSystemTitle,
+      subtitle: context.l10n.appearanceModeSystemSubtitle,
     ),
     _AppearanceOption(
       mode: ThemeMode.light,
@@ -100,9 +100,9 @@ List<_AppearanceOption> _appearanceOptions(BuildContext context) {
       subtitle: context.l10n.appearanceModeLightSubtitle,
     ),
     _AppearanceOption(
-      mode: ThemeMode.system,
-      title: context.l10n.appearanceModeSystemTitle,
-      subtitle: context.l10n.appearanceModeSystemSubtitle,
+      mode: ThemeMode.dark,
+      title: context.l10n.appearanceModeDarkTitle,
+      subtitle: context.l10n.appearanceModeDarkSubtitle,
     ),
   ];
 }

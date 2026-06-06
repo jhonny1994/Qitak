@@ -6,6 +6,7 @@ import 'package:qitak_app/features/notifications/data/notification_repository.da
 import 'package:qitak_app/features/notifications/domain/app_notification.dart';
 import 'package:qitak_app/features/notifications/presentation/notification_center_screen.dart';
 import 'package:qitak_app/generated/l10n.dart';
+import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 import '../../test_bootstrap.dart';
 
@@ -29,10 +30,10 @@ void main() {
           supportedLocales: S.delegate.supportedLocales,
           home: const Scaffold(body: NotificationCenterScreen()),
         ),
-      seed: const <String, Object>{
-        'qitak.local.session.email': 'buyer@qitak.test',
-      },
-      notificationRepositoryOverride: repository,
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'buyer@qitak.test',
+        },
+        notificationRepositoryOverride: repository,
       );
 
       await tester.pumpWidget(scope);
@@ -40,6 +41,7 @@ void main() {
 
       expect(find.text('Seller sent a new photo'), findsOneWidget);
       expect(find.text('Mark all read'), findsOneWidget);
+      expect(find.byType(QitakChip), findsNothing);
 
       await tester.tap(find.text('Mark all read'));
       await tester.pumpAndSettle();

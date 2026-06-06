@@ -16,6 +16,63 @@ const EdgeInsets qitakPageHorizontalPadding = EdgeInsets.symmetric(
 String qitakListingHeroTag(String listingId) =>
     'qitak-listing-media-$listingId';
 
+enum QitakSurfaceRole { section, object, raised }
+
+class QitakSurface extends StatelessWidget {
+  const QitakSurface({
+    required this.child,
+    required this.role,
+    super.key,
+    this.padding = const EdgeInsets.all(16),
+    Color? backgroundColor,
+    Color? borderColor,
+  }) : _backgroundColor = backgroundColor,
+       _borderColor = borderColor;
+
+  final Widget child;
+  final QitakSurfaceRole role;
+  final EdgeInsetsGeometry padding;
+  final Color? _backgroundColor;
+  final Color? _borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.qitakTokens;
+    final color =
+        _backgroundColor ??
+        switch (role) {
+          QitakSurfaceRole.section => tokens.section,
+          QitakSurfaceRole.object => tokens.object,
+          QitakSurfaceRole.raised => tokens.raised,
+        };
+    final border =
+        _borderColor ??
+        (role == QitakSurfaceRole.section ? Colors.transparent : tokens.stroke);
+    final shadow = role == QitakSurfaceRole.raised
+        ? <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 24,
+              offset: const Offset(0, 12),
+            ),
+          ]
+        : const <BoxShadow>[];
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(tokens.objectRadius),
+          border: Border.all(color: border),
+          boxShadow: shadow,
+        ),
+        child: Padding(padding: padding, child: child),
+      ),
+    );
+  }
+}
+
 class QitakPanel extends StatelessWidget {
   const QitakPanel({
     required this.child,
@@ -32,44 +89,12 @@ class QitakPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokens = context.qitakTokens;
-    final colorScheme = Theme.of(context).colorScheme;
-    final boxShadow = tokens.glow == Colors.transparent
-        ? const <BoxShadow>[]
-        : [
-            BoxShadow(
-              color: tokens.glow,
-              blurRadius: 24,
-              offset: const Offset(0, 12),
-            ),
-          ];
-    final decoration = BoxDecoration(
-      color: backgroundColor ?? tokens.panel,
-      borderRadius: BorderRadius.circular(tokens.panelRadius),
-      border: Border.all(color: borderColor ?? tokens.stroke),
-      boxShadow: boxShadow,
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color.alphaBlend(
-            colorScheme.onSurface.withValues(alpha: 0.02),
-            backgroundColor ?? tokens.panel,
-          ),
-          backgroundColor ?? tokens.panel,
-        ],
-      ),
-    );
-
-    return Material(
-      color: Colors.transparent,
-      child: Ink(
-        decoration: decoration,
-        child: Padding(
-          padding: padding ?? const EdgeInsets.all(16),
-          child: child,
-        ),
-      ),
+    return QitakSurface(
+      role: QitakSurfaceRole.object,
+      padding: padding ?? const EdgeInsets.all(16),
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      child: child,
     );
   }
 }

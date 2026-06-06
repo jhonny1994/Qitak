@@ -16,6 +16,65 @@ void main() {
     );
   }
 
+  testWidgets('light and dark themes expose adaptive surface roles', (
+    tester,
+  ) async {
+    for (final mode in <ThemeMode>[ThemeMode.light, ThemeMode.dark]) {
+      await tester.pumpWidget(
+        buildShell(
+          Builder(
+            builder: (context) {
+              final tokens = context.qitakTokens;
+              expect(tokens.page, isNot(tokens.object));
+              expect(tokens.object, isNot(tokens.raised));
+              expect(tokens.spacingMd, 16);
+              expect(tokens.objectRadius, lessThan(tokens.sheetRadius));
+              return const SizedBox.shrink();
+            },
+          ),
+          themeMode: mode,
+        ),
+      );
+    }
+  });
+
+  testWidgets('flat section and object card use different treatments', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildShell(
+        const Column(
+          children: [
+            QitakSurface(
+              key: Key('flat-surface'),
+              role: QitakSurfaceRole.section,
+              child: Text('Section'),
+            ),
+            QitakSurface(
+              key: Key('object-surface'),
+              role: QitakSurfaceRole.object,
+              child: Text('Object'),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final flat = tester.widget<Ink>(
+      find.descendant(
+        of: find.byKey(const Key('flat-surface')),
+        matching: find.byType(Ink),
+      ),
+    );
+    final object = tester.widget<Ink>(
+      find.descendant(
+        of: find.byKey(const Key('object-surface')),
+        matching: find.byType(Ink),
+      ),
+    );
+    expect(flat.decoration, isNot(equals(object.decoration)));
+  });
+
   testWidgets(
     'detail row, required form group, and dropdown error styling render',
     (

@@ -318,7 +318,7 @@ class AppTheme {
       panelMuted: surfaceMuted,
       panelStrong: surfaceStrong,
       stroke: Color(0xFFE8ECF1),
-      glow: Color(0x145B9A1E),
+      glow: Colors.transparent,
       success: Color(0xFF06D6A0),
       warning: Color(0xFFFFB627),
       info: Color(0xFF3B82F6),

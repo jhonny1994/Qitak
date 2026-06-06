@@ -215,6 +215,26 @@ void main() {
     expect(container.read(appPreferencesProvider).themeMode, ThemeMode.light);
   });
 
+  testWidgets('appearance preferences lists system before light and dark', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: AppearancePreferencesScreen()),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    final systemTop = tester.getTopLeft(find.text('System')).dy;
+    final lightTop = tester.getTopLeft(find.text('Light')).dy;
+    final darkTop = tester.getTopLeft(find.text('Dark')).dy;
+
+    expect(systemTop, lessThan(lightTop));
+    expect(lightTop, lessThan(darkTop));
+  });
+
   testWidgets(
     'profile screen omits seller-conversion signals for buyer accounts',
     (tester) async {
@@ -964,6 +984,10 @@ void main() {
       await container.read(authSessionProvider.notifier).restore();
       await tester.pumpAndSettle();
 
+      expect(find.text('Account'), findsOneWidget);
+      expect(find.text('Preferences'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Help and legal'), 200);
+      expect(find.text('Help and legal'), findsOneWidget);
       expect(find.byKey(const Key('profile-settings-button')), findsOneWidget);
       expect(find.byKey(const Key('profile-language-button')), findsOneWidget);
       expect(

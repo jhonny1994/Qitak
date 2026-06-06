@@ -115,11 +115,18 @@ class _SellerOnboardingScreenState
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 QitakPanel(
-                  child: QitakSectionHeader(
-                    eyebrow: context.l10n.profileRoleSeller,
-                    title: context.l10n.sellerOnboardingTitle,
-                    subtitle:
-                        '${context.l10n.sellerOnboardingBody} • ${_step + 1}/5',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      QitakSectionHeader(
+                        eyebrow: context.l10n.profileRoleSeller,
+                        title: context.l10n.sellerOnboardingTitle,
+                        subtitle:
+                            '${context.l10n.sellerOnboardingBody} • ${_step + 1}/5',
+                      ),
+                      const SizedBox(height: 16),
+                      _SellerVerificationPath(currentStep: _step),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -674,6 +681,59 @@ class _DocumentUploadField extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SellerVerificationPath extends StatelessWidget {
+  const _SellerVerificationPath({required this.currentStep});
+
+  final int currentStep;
+
+  static const List<String> _labels = <String>[
+    'Account type',
+    'Business profile',
+    'Documents',
+    'Policies',
+    'Review',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (var index = 0; index < _labels.length; index++)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: index == currentStep
+                  ? theme.colorScheme.primaryContainer
+                  : theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: index == currentStep
+                    ? theme.colorScheme.primary.withValues(alpha: 0.45)
+                    : theme.colorScheme.outlineVariant,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Text(
+                _labels[index],
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: index == currentStep
+                      ? theme.colorScheme.onPrimaryContainer
+                      : theme.colorScheme.onSurfaceVariant,
+                  fontWeight: index == currentStep
+                      ? FontWeight.w800
+                      : FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

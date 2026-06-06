@@ -155,7 +155,7 @@ class TransactionHistoryScreen extends ConsumerWidget {
                             value: item.partnerName,
                           ),
                           QitakDetailRow(
-                            label: context.l10n.notificationsTitle,
+                            label: 'Updated',
                             value: _formatDate(item.transaction.updatedAt),
                           ),
                           if (transactionDisputeGuidance(

@@ -124,8 +124,8 @@ class _TransactionRequestScreenState
                       ),
                     ),
                   ],
-                  if (_requestErrorCode != null || _requestErrorMessage != null)
-                    ...[
+                  if (_requestErrorCode != null ||
+                      _requestErrorMessage != null) ...[
                     const SizedBox(height: 16),
                     QitakStateMessage(
                       title: context.l10n.transactionBlockedTitle,

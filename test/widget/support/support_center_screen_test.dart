@@ -239,7 +239,8 @@ void main() {
       routes: [
         GoRoute(
           path: '/',
-          builder: (context, state) => const Scaffold(body: SupportCenterScreen()),
+          builder: (context, state) =>
+              const Scaffold(body: SupportCenterScreen()),
         ),
         GoRoute(
           path: '/transactions/history',

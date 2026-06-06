@@ -75,8 +75,8 @@ void main() {
         SystemChannels.platform,
         (call) async {
           if (call.method == 'Clipboard.setData') {
-            copiedText = (call.arguments as Map<Object?, Object?>?)?['text']
-                as String?;
+            copiedText =
+                (call.arguments as Map<Object?, Object?>?)?['text'] as String?;
           }
           return null;
         },

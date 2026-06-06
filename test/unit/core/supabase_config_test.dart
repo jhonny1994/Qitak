@@ -6,14 +6,14 @@ import 'package:qitak_app/core/network/supabase_client_provider.dart';
 void main() {
   group('AppSupabaseConfig.isConfigured', () {
     test('both fields empty → false', () {
-      const config = AppSupabaseConfig(url: '', anonKey: '');
+      const config = AppSupabaseConfig(url: '', publishableKey: '');
       expect(config.isConfigured, isFalse);
     });
 
     test('both fields set → true', () {
       const config = AppSupabaseConfig(
         url: 'https://abc.supabase.co',
-        anonKey: 'key',
+        publishableKey: 'key',
       );
       expect(config.isConfigured, isTrue);
     });
@@ -23,7 +23,7 @@ void main() {
     test('production URL is returned unchanged on any platform', () {
       const config = AppSupabaseConfig(
         url: 'https://xyz.supabase.co',
-        anonKey: 'key',
+        publishableKey: 'key',
       );
       expect(config.runtimeUrl, 'https://xyz.supabase.co');
     });
@@ -34,7 +34,7 @@ void main() {
 
       const config = AppSupabaseConfig(
         url: 'http://localhost:54321',
-        anonKey: 'key',
+        publishableKey: 'key',
       );
       expect(config.runtimeUrl, 'http://10.0.2.2:54321');
     });
@@ -45,7 +45,7 @@ void main() {
 
       const config = AppSupabaseConfig(
         url: 'http://localhost:54321',
-        anonKey: 'key',
+        publishableKey: 'key',
       );
       expect(config.runtimeUrl, 'http://localhost:54321');
     });
@@ -55,7 +55,7 @@ void main() {
     test('extracts subdomain from Supabase URL', () {
       const config = AppSupabaseConfig(
         url: 'https://abcdef.supabase.co',
-        anonKey: 'key',
+        publishableKey: 'key',
       );
       expect(config.persistSessionKey, 'sb-abcdef-auth-token');
     });
@@ -66,7 +66,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           appSupabaseConfigProvider.overrideWithValue(
-            const AppSupabaseConfig(url: '', anonKey: ''),
+            const AppSupabaseConfig(url: '', publishableKey: ''),
           ),
         ],
       );

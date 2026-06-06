@@ -489,7 +489,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "File de vérification vendeurs",
     ),
     "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
-      "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_ANON_KEY avant de lancer l\'application.",
+      "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_PUBLISHABLE_KEY avant de lancer l\'application.",
     ),
     "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
       "Configuration requise",

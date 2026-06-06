@@ -203,7 +203,9 @@ class SupabaseDisputeRepository implements DisputeRepository {
   }) async {
     late Map<String, dynamic> row;
     try {
-      return await const DisputeSubmissionCoordinator().execute<TransactionDispute>(
+      return await const DisputeSubmissionCoordinator().execute<
+        TransactionDispute
+      >(
         evidence: evidence,
         createDraft: () async {
           row = await _client

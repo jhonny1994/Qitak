@@ -475,7 +475,9 @@ class SupabaseTransactionRepository implements TransactionRepository {
           return _fromMap(updated);
         },
         rollbackUpload: () async {
-          await _client.storage.from(_proofBucket).remove(<String>[storagePath]);
+          await _client.storage.from(_proofBucket).remove(<String>[
+            storagePath,
+          ]);
         },
       );
     } on StorageException catch (_) {

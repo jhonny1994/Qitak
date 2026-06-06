@@ -7274,10 +7274,10 @@ class S {
     );
   }
 
-  /// `إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.`
+  /// `إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.`
   String get appConfigurationRequiredBody {
     return Intl.message(
-      'إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.',
+      'إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.',
       name: 'appConfigurationRequiredBody',
       desc: '',
       args: [],

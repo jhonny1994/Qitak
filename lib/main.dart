@@ -104,7 +104,7 @@ Future<void> main() async {
       );
       await Supabase.initialize(
         url: config.runtimeUrl,
-        anonKey: config.anonKey,
+        publishableKey: config.publishableKey,
         authOptions: FlutterAuthClientOptions(
           localStorage: SecureSessionLocalStorage(
             persistSessionKey: config.persistSessionKey,

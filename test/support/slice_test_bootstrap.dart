@@ -36,7 +36,7 @@ Future<ProviderScope> buildSliceTestScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
       appSupabaseConfigProvider.overrideWithValue(
-        const AppSupabaseConfig(url: '', anonKey: ''),
+        const AppSupabaseConfig(url: '', publishableKey: ''),
       ),
       authRepositoryProvider.overrideWithValue(
         LocalMemoryAuthRepository(prefs),

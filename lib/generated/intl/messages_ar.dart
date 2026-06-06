@@ -479,7 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "طابور توثيق البائعين",
     ),
     "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
-      "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
+      "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.",
     ),
     "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
       "الإعداد مطلوب",

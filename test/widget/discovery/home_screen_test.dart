@@ -152,6 +152,27 @@ void main() {
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
 
+  testWidgets('home hero prioritizes search before filter action', (
+    tester,
+  ) async {
+    final scope = await buildSliceTestScope(
+      buildShell(const HomeScreen()),
+      overrides: defaultOverrides(),
+    );
+
+    await tester.pumpWidget(scope);
+    await settleDiscovery(tester);
+
+    final searchTop = tester.getTopLeft(
+      find.byKey(const Key('home-search-button')),
+    ).dy;
+    final filterTop = tester.getTopLeft(
+      find.byKey(const Key('home-filter-button')),
+    ).dy;
+
+    expect(searchTop, lessThan(filterTop));
+  });
+
   testWidgets('renders loading skeletons before discovery data resolves', (
     tester,
   ) async {
@@ -417,7 +438,7 @@ void main() {
       expect(find.text('Brake pad set'), findsOneWidget);
       expect(find.text('Headlight assembly'), findsNothing);
       expect(find.text('Recent searches'), findsNothing);
-      expect(find.textContaining('1 matches'), findsOneWidget);
+      expect(find.text('1 result found'), findsOneWidget);
     },
   );
 

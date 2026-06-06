@@ -8,65 +8,105 @@ const _latinFontFamily = 'Inter';
 @immutable
 class QitakThemeTokens extends ThemeExtension<QitakThemeTokens> {
   const QitakThemeTokens({
-    required this.panel,
-    required this.panelMuted,
-    required this.panelStrong,
+    required this.page,
+    required this.section,
+    required this.object,
+    required this.raised,
     required this.stroke,
-    required this.glow,
+    required this.strokeStrong,
     required this.success,
     required this.warning,
     required this.info,
     required this.maxContentWidth,
     required this.screenPadding,
+    required this.spacingSm,
+    required this.spacingMd,
+    required this.spacingLg,
+    required this.objectRadius,
+    required this.fieldRadius,
+    required this.sheetRadius,
+    required this.panel,
+    required this.panelMuted,
+    required this.panelStrong,
+    required this.glow,
     required this.panelRadius,
     required this.chipRadius,
-    required this.fieldRadius,
   });
 
+  final Color page;
+  final Color section;
+  final Color object;
+  final Color raised;
   final Color panel;
   final Color panelMuted;
   final Color panelStrong;
   final Color stroke;
+  final Color strokeStrong;
   final Color glow;
   final Color success;
   final Color warning;
   final Color info;
   final double maxContentWidth;
   final double screenPadding;
+  final double spacingSm;
+  final double spacingMd;
+  final double spacingLg;
+  final double objectRadius;
+  final double sheetRadius;
   final double panelRadius;
   final double chipRadius;
   final double fieldRadius;
 
   @override
   QitakThemeTokens copyWith({
+    Color? page,
+    Color? section,
+    Color? object,
+    Color? raised,
     Color? panel,
     Color? panelMuted,
     Color? panelStrong,
     Color? stroke,
+    Color? strokeStrong,
     Color? glow,
     Color? success,
     Color? warning,
     Color? info,
     double? maxContentWidth,
     double? screenPadding,
+    double? spacingSm,
+    double? spacingMd,
+    double? spacingLg,
+    double? objectRadius,
+    double? sheetRadius,
     double? panelRadius,
     double? chipRadius,
     double? fieldRadius,
   }) {
     return QitakThemeTokens(
-      panel: panel ?? this.panel,
-      panelMuted: panelMuted ?? this.panelMuted,
-      panelStrong: panelStrong ?? this.panelStrong,
+      page: page ?? this.page,
+      section: section ?? this.section,
+      object: object ?? this.object,
+      raised: raised ?? this.raised,
       stroke: stroke ?? this.stroke,
-      glow: glow ?? this.glow,
+      strokeStrong: strokeStrong ?? this.strokeStrong,
       success: success ?? this.success,
       warning: warning ?? this.warning,
       info: info ?? this.info,
       maxContentWidth: maxContentWidth ?? this.maxContentWidth,
       screenPadding: screenPadding ?? this.screenPadding,
+      spacingSm: spacingSm ?? this.spacingSm,
+      spacingMd: spacingMd ?? this.spacingMd,
+      spacingLg: spacingLg ?? this.spacingLg,
+      objectRadius: objectRadius ?? this.objectRadius,
+      fieldRadius: fieldRadius ?? this.fieldRadius,
+      sheetRadius: sheetRadius ?? this.sheetRadius,
+      panel: panel ?? this.panel,
+      panelMuted: panelMuted ?? this.panelMuted,
+      panelStrong: panelStrong ?? this.panelStrong,
+      glow: glow ?? this.glow,
       panelRadius: panelRadius ?? this.panelRadius,
       chipRadius: chipRadius ?? this.chipRadius,
-      fieldRadius: fieldRadius ?? this.fieldRadius,
     );
   }
 
@@ -77,11 +117,13 @@ class QitakThemeTokens extends ThemeExtension<QitakThemeTokens> {
     }
 
     return QitakThemeTokens(
-      panel: Color.lerp(panel, other.panel, t) ?? panel,
-      panelMuted: Color.lerp(panelMuted, other.panelMuted, t) ?? panelMuted,
-      panelStrong: Color.lerp(panelStrong, other.panelStrong, t) ?? panelStrong,
+      page: Color.lerp(page, other.page, t) ?? page,
+      section: Color.lerp(section, other.section, t) ?? section,
+      object: Color.lerp(object, other.object, t) ?? object,
+      raised: Color.lerp(raised, other.raised, t) ?? raised,
       stroke: Color.lerp(stroke, other.stroke, t) ?? stroke,
-      glow: Color.lerp(glow, other.glow, t) ?? glow,
+      strokeStrong:
+          Color.lerp(strokeStrong, other.strokeStrong, t) ?? strokeStrong,
       success: Color.lerp(success, other.success, t) ?? success,
       warning: Color.lerp(warning, other.warning, t) ?? warning,
       info: Color.lerp(info, other.info, t) ?? info,
@@ -90,9 +132,19 @@ class QitakThemeTokens extends ThemeExtension<QitakThemeTokens> {
           maxContentWidth,
       screenPadding:
           lerpDouble(screenPadding, other.screenPadding, t) ?? screenPadding,
+      spacingSm: lerpDouble(spacingSm, other.spacingSm, t) ?? spacingSm,
+      spacingMd: lerpDouble(spacingMd, other.spacingMd, t) ?? spacingMd,
+      spacingLg: lerpDouble(spacingLg, other.spacingLg, t) ?? spacingLg,
+      objectRadius:
+          lerpDouble(objectRadius, other.objectRadius, t) ?? objectRadius,
+      fieldRadius: lerpDouble(fieldRadius, other.fieldRadius, t) ?? fieldRadius,
+      sheetRadius: lerpDouble(sheetRadius, other.sheetRadius, t) ?? sheetRadius,
+      panel: Color.lerp(panel, other.panel, t) ?? panel,
+      panelMuted: Color.lerp(panelMuted, other.panelMuted, t) ?? panelMuted,
+      panelStrong: Color.lerp(panelStrong, other.panelStrong, t) ?? panelStrong,
+      glow: Color.lerp(glow, other.glow, t) ?? glow,
       panelRadius: lerpDouble(panelRadius, other.panelRadius, t) ?? panelRadius,
       chipRadius: lerpDouble(chipRadius, other.chipRadius, t) ?? chipRadius,
-      fieldRadius: lerpDouble(fieldRadius, other.fieldRadius, t) ?? fieldRadius,
     );
   }
 }
@@ -104,10 +156,12 @@ extension QitakThemeX on BuildContext {
 
 class AppTheme {
   static ThemeData dark({Locale? locale}) {
-    const background = Color(0xFF0F1117);
-    const surface = Color(0xFF1A1D27);
-    const surfaceMuted = Color(0xFF1E2129);
-    const surfaceStrong = Color(0xFF22262F);
+    const page = Color(0xFF101216);
+    const section = Color(0xFF101216);
+    const object = Color(0xFF191C22);
+    const raised = Color(0xFF20242B);
+    const stroke = Color(0xFF2A2E36);
+    const strokeStrong = Color(0xFF414751);
     const primary = Color(0xFF7BBF2E);
     const secondary = Color(0xFFFFB347);
     const error = Color(0xFFF87171);
@@ -116,7 +170,7 @@ class AppTheme {
         ColorScheme.fromSeed(
           seedColor: primary,
           brightness: Brightness.dark,
-          surface: surface,
+          surface: object,
         ).copyWith(
           primary: primary,
           primaryContainer: const Color(0xFF1A2E0D),
@@ -124,24 +178,36 @@ class AppTheme {
           secondary: secondary,
           secondaryContainer: const Color(0xFF3D2800),
           onSecondaryContainer: const Color(0xFFFFE9C8),
-          surface: surface,
+          surface: object,
+          surfaceContainer: section,
+          surfaceContainerHighest: raised,
           error: error,
         );
 
     const tokens = QitakThemeTokens(
-      panel: surface,
-      panelMuted: surfaceMuted,
-      panelStrong: surfaceStrong,
-      stroke: Color(0xFF2A2E39),
-      glow: Colors.transparent,
+      page: page,
+      section: section,
+      object: object,
+      raised: raised,
+      stroke: stroke,
+      strokeStrong: strokeStrong,
       success: Color(0xFF34E4B4),
       warning: Color(0xFFFFCB57),
       info: Color(0xFF60A5FA),
       maxContentWidth: 760,
       screenPadding: 20,
-      panelRadius: 28,
+      spacingSm: 8,
+      spacingMd: 16,
+      spacingLg: 24,
+      objectRadius: 20,
+      fieldRadius: 16,
+      sheetRadius: 28,
+      panel: object,
+      panelMuted: section,
+      panelStrong: raised,
+      glow: Colors.transparent,
+      panelRadius: 20,
       chipRadius: 16,
-      fieldRadius: 18,
     );
 
     final textTheme = _textThemeForLocale(
@@ -153,13 +219,13 @@ class AppTheme {
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: background,
-      canvasColor: surface,
+      scaffoldBackgroundColor: tokens.page,
+      canvasColor: tokens.section,
       brightness: Brightness.dark,
       textTheme: textTheme,
       visualDensity: const VisualDensity(horizontal: -0.3, vertical: -0.3),
       appBarTheme: const AppBarTheme(
-        backgroundColor: background,
+        backgroundColor: page,
         foregroundColor: Color(0xFFECEEF3),
         iconTheme: IconThemeData(color: Color(0xFFECEEF3)),
         actionsIconTheme: IconThemeData(color: Color(0xFFECEEF3)),
@@ -169,29 +235,38 @@ class AppTheme {
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: surface,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: tokens.raised,
+        modalBackgroundColor: tokens.raised,
         surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(tokens.sheetRadius),
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
       ),
-      dialogTheme: const DialogThemeData(
-        backgroundColor: surface,
+      dialogTheme: DialogThemeData(
+        backgroundColor: tokens.raised,
         surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.sheetRadius),
+          side: BorderSide(color: tokens.stroke),
+        ),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: surface,
+        color: tokens.raised,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          side: const BorderSide(color: Color(0xFF2A2E39)),
+          side: BorderSide(color: tokens.stroke),
         ),
       ),
       menuTheme: MenuThemeData(
         style: MenuStyle(
-          backgroundColor: const WidgetStatePropertyAll(surface),
+          backgroundColor: const WidgetStatePropertyAll(raised),
           surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-          side: const WidgetStatePropertyAll(
-            BorderSide(color: Color(0xFF2A2E39)),
-          ),
+          side: WidgetStatePropertyAll(BorderSide(color: tokens.stroke)),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(tokens.fieldRadius),
@@ -200,28 +275,28 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: surface,
+        color: tokens.object,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.panelRadius),
-          side: const BorderSide(color: Color(0xFF2A2E39)),
+          borderRadius: BorderRadius.circular(tokens.objectRadius),
+          side: BorderSide(color: tokens.stroke),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: surfaceMuted,
+        fillColor: tokens.object,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          borderSide: const BorderSide(color: Color(0xFF2A2E39)),
+          borderSide: BorderSide(color: tokens.stroke),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          borderSide: const BorderSide(color: Color(0xFF2A2E39)),
+          borderSide: BorderSide(color: tokens.stroke),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
@@ -241,7 +316,7 @@ class AppTheme {
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(tokens.fieldRadius),
           ),
           textStyle: buttonLabelStyle.copyWith(fontWeight: FontWeight.w700),
         ),
@@ -263,9 +338,9 @@ class AppTheme {
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(tokens.fieldRadius),
           ),
-          side: const BorderSide(color: Color(0x263F5568)),
+          side: BorderSide(color: tokens.strokeStrong),
           textStyle: buttonLabelStyle,
         ),
       ),
@@ -273,15 +348,36 @@ class AppTheme {
         style: TextButton.styleFrom(textStyle: buttonLabelStyle),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: surfaceMuted,
-        side: const BorderSide(color: Color(0xFF2A2E39)),
+        backgroundColor: tokens.section,
+        side: BorderSide(color: tokens.stroke),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.chipRadius),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       ),
-      dividerTheme: const DividerThemeData(
-        color: Color(0xFF2A2E39),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: tokens.object,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: colorScheme.primaryContainer,
+        labelTextStyle: WidgetStatePropertyAll(buttonLabelStyle),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: tokens.page,
+        indicatorColor: colorScheme.primaryContainer,
+        selectedIconTheme: IconThemeData(color: colorScheme.onPrimaryContainer),
+        unselectedIconTheme: IconThemeData(
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: tokens.object,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurfaceVariant,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+      dividerTheme: DividerThemeData(
+        color: tokens.stroke,
         thickness: 1,
         space: 1,
       ),
@@ -291,10 +387,12 @@ class AppTheme {
   }
 
   static ThemeData light({Locale? locale}) {
-    const background = Color(0xFFFAFBFD);
-    const surface = Color(0xFFFFFFFF);
-    const surfaceMuted = Color(0xFFF3F5F8);
-    const surfaceStrong = Color(0xFFFFFFFF);
+    const page = Color(0xFFF6F5F1);
+    const section = Color(0xFFF6F5F1);
+    const object = Color(0xFFFFFFFF);
+    const raised = Color(0xFFFCFBF8);
+    const stroke = Color(0xFFE2E1DC);
+    const strokeStrong = Color(0xFFC7C6C0);
     const primary = Color(0xFF5B9A1E);
     const secondary = Color(0xFFF77F00);
     const error = Color(0xFFEF4444);
@@ -309,24 +407,36 @@ class AppTheme {
           secondary: secondary,
           secondaryContainer: const Color(0xFFFFF0DD),
           onSecondaryContainer: const Color(0xFF5A2F00),
-          surface: surface,
+          surface: object,
+          surfaceContainer: section,
+          surfaceContainerHighest: raised,
           error: error,
         );
 
     const tokens = QitakThemeTokens(
-      panel: surface,
-      panelMuted: surfaceMuted,
-      panelStrong: surfaceStrong,
-      stroke: Color(0xFFE8ECF1),
-      glow: Colors.transparent,
+      page: page,
+      section: section,
+      object: object,
+      raised: raised,
+      stroke: stroke,
+      strokeStrong: strokeStrong,
       success: Color(0xFF06D6A0),
       warning: Color(0xFFFFB627),
       info: Color(0xFF3B82F6),
       maxContentWidth: 760,
       screenPadding: 20,
-      panelRadius: 28,
+      spacingSm: 8,
+      spacingMd: 16,
+      spacingLg: 24,
+      objectRadius: 20,
+      fieldRadius: 16,
+      sheetRadius: 28,
+      panel: object,
+      panelMuted: section,
+      panelStrong: raised,
+      glow: Colors.transparent,
+      panelRadius: 20,
       chipRadius: 16,
-      fieldRadius: 18,
     );
 
     final textTheme = _textThemeForLocale(
@@ -337,41 +447,50 @@ class AppTheme {
     final buttonLabelStyle = _buttonTextStyle(textTheme);
     final base = dark(locale: locale).copyWith(
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: background,
-      canvasColor: surface,
+      scaffoldBackgroundColor: tokens.page,
+      canvasColor: tokens.section,
       brightness: Brightness.light,
       textTheme: textTheme,
       appBarTheme: const AppBarTheme(
-        backgroundColor: background,
+        backgroundColor: page,
         foregroundColor: Color(0xFF1A1C21),
         iconTheme: IconThemeData(color: Color(0xFF1A1C21)),
         actionsIconTheme: IconThemeData(color: Color(0xFF1A1C21)),
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: surface,
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: tokens.raised,
+        modalBackgroundColor: tokens.raised,
         surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(tokens.sheetRadius),
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
       ),
-      dialogTheme: const DialogThemeData(
-        backgroundColor: surface,
+      dialogTheme: DialogThemeData(
+        backgroundColor: tokens.raised,
         surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.sheetRadius),
+          side: BorderSide(color: tokens.stroke),
+        ),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: surface,
+        color: tokens.raised,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          side: const BorderSide(color: Color(0xFFE8ECF1)),
+          side: BorderSide(color: tokens.stroke),
         ),
       ),
       menuTheme: MenuThemeData(
         style: MenuStyle(
-          backgroundColor: const WidgetStatePropertyAll(surface),
+          backgroundColor: const WidgetStatePropertyAll(raised),
           surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-          side: const WidgetStatePropertyAll(
-            BorderSide(color: Color(0xFFE8ECF1)),
-          ),
+          side: WidgetStatePropertyAll(BorderSide(color: tokens.stroke)),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(tokens.fieldRadius),
@@ -380,28 +499,28 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: surface,
+        color: tokens.object,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(tokens.panelRadius),
-          side: const BorderSide(color: Color(0xFFE8ECF1)),
+          borderRadius: BorderRadius.circular(tokens.objectRadius),
+          side: BorderSide(color: tokens.stroke),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: surfaceMuted,
+        fillColor: tokens.object,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          borderSide: const BorderSide(color: Color(0xFFE8ECF1)),
+          borderSide: BorderSide(color: tokens.stroke),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
-          borderSide: const BorderSide(color: Color(0xFFE8ECF1)),
+          borderSide: BorderSide(color: tokens.stroke),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(tokens.fieldRadius),
@@ -416,17 +535,12 @@ class AppTheme {
           borderSide: const BorderSide(color: error, width: 1.2),
         ),
       ),
-      dividerTheme: const DividerThemeData(
-        color: Color(0xFFE8ECF1),
-        thickness: 1,
-        space: 1,
-      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(tokens.fieldRadius),
           ),
           textStyle: buttonLabelStyle.copyWith(fontWeight: FontWeight.w700),
         ),
@@ -448,14 +562,48 @@ class AppTheme {
           minimumSize: const Size(0, 52),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(tokens.fieldRadius),
           ),
-          side: const BorderSide(color: Color(0xFFE8ECF1)),
+          side: BorderSide(color: tokens.strokeStrong),
           textStyle: buttonLabelStyle,
         ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(textStyle: buttonLabelStyle),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: tokens.section,
+        side: BorderSide(color: tokens.stroke),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(tokens.chipRadius),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: tokens.object,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: colorScheme.primaryContainer,
+        labelTextStyle: WidgetStatePropertyAll(buttonLabelStyle),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: tokens.page,
+        indicatorColor: colorScheme.primaryContainer,
+        selectedIconTheme: IconThemeData(color: colorScheme.onPrimaryContainer),
+        unselectedIconTheme: IconThemeData(
+          color: colorScheme.onSurfaceVariant,
+        ),
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: tokens.object,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurfaceVariant,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+      dividerTheme: DividerThemeData(
+        color: tokens.stroke,
+        thickness: 1,
+        space: 1,
       ),
       extensions: const [tokens],
     );

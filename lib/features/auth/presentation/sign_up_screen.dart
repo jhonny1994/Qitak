@@ -10,7 +10,6 @@ import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
-import 'package:qitak_app/features/auth/presentation/auth_surface_switcher.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/auth/providers/redirect_intent_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -68,16 +67,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AuthSurfaceSwitcher(
-                onBuyerRole: () => context.go(
-                  _buildAuthRoute('/auth/sign-up'),
-                ),
-                onSellerRole: () => context.go(
-                  _buildAuthRoute('/auth/seller/sign-up'),
-                ),
-                isSellerRole: widget.variant == SignUpVariant.seller,
-              ),
-              const SizedBox(height: 14),
               QitakPanel(
                 child: QitakSectionHeader(
                   eyebrow: context.l10n.authGateEyebrow,
@@ -225,6 +214,34 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   child: Text(context.l10n.signInPrompt),
                 ),
               ),
+              if (widget.variant == SignUpVariant.buyer)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                    ),
+                    onPressed: () => context.go(
+                      _buildAuthRoute('/auth/seller/sign-up'),
+                    ),
+                    child: Text(context.l10n.sellerCreateAccountPrompt),
+                  ),
+                ),
+              if (widget.variant == SignUpVariant.seller)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                    ),
+                    onPressed: () => context.go(
+                      _buildAuthRoute('/auth/sign-up'),
+                    ),
+                    child: Text(context.l10n.backToUserAuth),
+                  ),
+                ),
             ],
           ),
         ),

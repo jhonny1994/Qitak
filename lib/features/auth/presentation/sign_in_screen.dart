@@ -10,7 +10,6 @@ import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
-import 'package:qitak_app/features/auth/presentation/auth_surface_switcher.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/auth/providers/redirect_intent_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -61,16 +60,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.variant != SignInVariant.admin) ...[
-                AuthSurfaceSwitcher(
-                  onBuyerRole: () =>
-                      context.go(_buildAuthRoute('/auth/sign-in')),
-                  onSellerRole: () =>
-                      context.go(_buildAuthRoute('/auth/seller/sign-in')),
-                  isSellerRole: widget.variant == SignInVariant.seller,
-                ),
-                const SizedBox(height: 14),
-              ],
               QitakPanel(
                 child: QitakSectionHeader(
                   eyebrow: context.l10n.authGateEyebrow,
@@ -191,6 +180,34 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           null;
                       context.go('/guest/account');
                     },
+                    child: Text(context.l10n.backToUserAuth),
+                  ),
+                ),
+              if (widget.variant == SignInVariant.buyer)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                    ),
+                    onPressed: () => context.go(
+                      _buildAuthRoute('/auth/seller/sign-in'),
+                    ),
+                    child: Text(context.l10n.sellerSignIn),
+                  ),
+                ),
+              if (widget.variant == SignInVariant.seller)
+                ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                    ),
+                    onPressed: () => context.go(
+                      _buildAuthRoute('/auth/sign-in'),
+                    ),
                     child: Text(context.l10n.backToUserAuth),
                   ),
                 ),

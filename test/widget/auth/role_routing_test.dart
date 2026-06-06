@@ -4,16 +4,34 @@ import 'package:qitak_app/features/admin/presentation/admin_queues_screen.dart';
 import 'package:qitak_app/features/admin/presentation/admin_team_screen.dart';
 import 'package:qitak_app/features/admin/presentation/reports_queue_screen.dart';
 import 'package:qitak_app/features/auth/presentation/admin_dashboard_screen.dart';
+import 'package:qitak_app/features/auth/presentation/auth_surface_switcher.dart';
 import 'package:qitak_app/features/auth/presentation/guest_account_screen.dart';
 import 'package:qitak_app/features/auth/presentation/language_selection_screen.dart';
 import 'package:qitak_app/features/auth/presentation/profile_screen.dart';
 import 'package:qitak_app/features/auth/presentation/seller_dashboard_screen.dart';
+import 'package:qitak_app/features/auth/presentation/sign_in_screen.dart';
 import 'package:qitak_app/features/discovery/presentation/search_screen.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
 
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('sign in prioritizes account action over role selection', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SignInScreen()),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.byType(AuthSurfaceSwitcher), findsNothing);
+  });
+
   testWidgets(
     'seller session currently lands on seller status screen until approved',
     (

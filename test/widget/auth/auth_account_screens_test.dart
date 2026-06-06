@@ -271,7 +271,7 @@ void main() {
   });
 
   testWidgets(
-    'shared sign in surface switches role and uses text link for mode',
+    'shared sign in surface uses secondary seller access link',
     (
       tester,
     ) async {
@@ -310,10 +310,11 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SignInScreen), findsOneWidget);
-      expect(find.text('Buyer'), findsOneWidget);
-      expect(find.text('Seller'), findsOneWidget);
+      expect(find.text('Buyer'), findsNothing);
+      expect(find.text('Seller'), findsNothing);
+      expect(find.text('Seller sign in'), findsOneWidget);
 
-      await tester.tap(find.text('Seller'));
+      await tester.tap(find.text('Seller sign in'));
       await tester.pumpAndSettle();
       expect(find.byType(SignInScreen), findsOneWidget);
       expect(
@@ -332,7 +333,7 @@ void main() {
   );
 
   testWidgets(
-    'shared sign up surface switches role and uses text link for mode',
+    'shared sign up surface uses secondary user auth link',
     (
       tester,
     ) async {
@@ -372,8 +373,11 @@ void main() {
 
       expect(find.byType(SignUpScreen), findsOneWidget);
       expect(find.text('Create seller account'), findsOneWidget);
+      expect(find.text('Buyer'), findsNothing);
+      expect(find.text('Seller'), findsNothing);
 
-      await tester.tap(find.text('Buyer'));
+      await tester.ensureVisible(find.text('Back to user auth'));
+      await tester.tap(find.text('Back to user auth'));
       await tester.pumpAndSettle();
       expect(find.byType(SignUpScreen), findsOneWidget);
       expect(find.text('Create account'), findsAtLeastNWidgets(1));

@@ -48,7 +48,7 @@ Future<ProviderScope> buildTestScope(
       appSupabaseConfigProvider.overrideWithValue(
         const AppSupabaseConfig(
           url: 'https://test-project.supabase.co',
-          anonKey: 'test-anon-key',
+          publishableKey: 'test-publishable-key',
         ),
       ),
       supabaseClientProvider.overrideWithValue(null),

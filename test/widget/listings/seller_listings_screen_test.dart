@@ -243,7 +243,9 @@ void main() {
       expect(find.textContaining('Adrar'), findsWidgets);
       expect(find.text('Like new'), findsOneWidget);
       expect(
-        find.text('Draft listings stay private until you submit them for review.'),
+        find.text(
+          'Draft listings stay private until you submit them for review.',
+        ),
         findsOneWidget,
       );
     },

@@ -766,7 +766,7 @@
   "appLinksPromptAction": "Ouvrir les paramètres",
   "appLinksPromptDismiss": "Pas maintenant",
   "appConfigurationRequiredTitle": "Configuration requise",
-  "appConfigurationRequiredBody": "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_ANON_KEY avant de lancer l'application.",
+  "appConfigurationRequiredBody": "La configuration runtime Supabase est manquante. Fournissez SUPABASE_URL et SUPABASE_PUBLISHABLE_KEY avant de lancer l'application.",
   "priceWithDzd": "{amount} DZD",
   "@priceWithDzd": {
     "placeholders": {

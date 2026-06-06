@@ -6,23 +6,28 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AppSupabaseConfig {
   const AppSupabaseConfig({
     required this.url,
-    required this.anonKey,
+    required this.publishableKey,
   });
 
   factory AppSupabaseConfig.fromEnvironment() {
     const envUrl = String.fromEnvironment('SUPABASE_URL');
-    const envAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-    if (envUrl.isNotEmpty && envAnonKey.isNotEmpty) {
-      return const AppSupabaseConfig(url: envUrl, anonKey: envAnonKey);
+    const envPublishableKey = String.fromEnvironment(
+      'SUPABASE_PUBLISHABLE_KEY',
+    );
+    if (envUrl.isNotEmpty && envPublishableKey.isNotEmpty) {
+      return const AppSupabaseConfig(
+        url: envUrl,
+        publishableKey: envPublishableKey,
+      );
     }
 
-    return const AppSupabaseConfig(url: '', anonKey: '');
+    return const AppSupabaseConfig(url: '', publishableKey: '');
   }
 
   final String url;
-  final String anonKey;
+  final String publishableKey;
 
-  bool get isConfigured => url.isNotEmpty && anonKey.isNotEmpty;
+  bool get isConfigured => url.isNotEmpty && publishableKey.isNotEmpty;
 
   String get runtimeUrl {
     if (!isConfigured || kIsWeb) {

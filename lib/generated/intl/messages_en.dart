@@ -485,7 +485,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Seller verification queue",
     ),
     "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
-      "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
+      "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY before launching the app.",
     ),
     "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
       "Configuration required",

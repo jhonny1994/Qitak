@@ -765,7 +765,7 @@
   "appLinksPromptAction": "فتح الإعدادات",
   "appLinksPromptDismiss": "ليس الآن",
   "appConfigurationRequiredTitle": "الإعداد مطلوب",
-  "appConfigurationRequiredBody": "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
+  "appConfigurationRequiredBody": "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.",
   "priceWithDzd": "{amount} د.ج",
   "@priceWithDzd": {
     "placeholders": {

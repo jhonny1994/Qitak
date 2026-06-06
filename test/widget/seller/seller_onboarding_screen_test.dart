@@ -12,6 +12,41 @@ import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('shows the full seller verification path up front', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SellerOnboardingScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryFilterTaxonomyProvider.overrideWith((ref) async {
+          return const DiscoveryFilterTaxonomy(
+            categories: <DiscoveryCategoryOption>[],
+            wilayas: <WilayaOption>[],
+            makes: <CarMakeOption>[],
+          );
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerOnboardingScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Account type'), findsOneWidget);
+    expect(find.text('Business profile'), findsOneWidget);
+    expect(find.text('Documents'), findsOneWidget);
+    expect(find.text('Policies'), findsOneWidget);
+    expect(find.text('Review'), findsOneWidget);
+  });
+
   testWidgets('moves from seller type to account-backed profile step', (
     tester,
   ) async {

@@ -581,7 +581,9 @@ void main() {
     );
   });
 
-  testWidgets('transaction history shows dispute guidance copy', (tester) async {
+  testWidgets('transaction history shows dispute guidance copy', (
+    tester,
+  ) async {
     final scope = await buildTestScope(
       const TestMaterialShell(
         child: Scaffold(body: TransactionHistoryScreen()),
@@ -617,6 +619,41 @@ void main() {
       find.text('This transaction was rejected by the seller.'),
       findsNothing,
     );
+  });
+
+  testWidgets('transaction history labels event time as updated', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: TransactionHistoryScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      transactionRepositoryOverride: _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-history-updated',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.pendingSellerResponse,
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026, 1, 3),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionHistoryScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Deal date'), findsNothing);
+    expect(find.text('Updated'), findsOneWidget);
+    expect(find.text('2026-01-03'), findsOneWidget);
   });
 
   testWidgets('expired transaction detail exposes try again action', (

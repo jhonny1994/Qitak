@@ -339,6 +339,12 @@ class ListingDetailScreen extends ConsumerWidget {
                   ],
                   const SizedBox(height: 18),
                   QitakPanel(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.18),
+                    borderColor: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.35),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -351,6 +357,19 @@ class ListingDetailScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.w700,
                               ),
                         ),
+                        if (!sellerOwnedPreview && !isOwner) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            context.l10n.transactionStartBody,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  height: 1.35,
+                                ),
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         Wrap(
                           spacing: 8,

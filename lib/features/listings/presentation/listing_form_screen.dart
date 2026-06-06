@@ -192,6 +192,12 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          const _ListingFormStageHeader(
+                            title: 'Basics',
+                            subtitle:
+                                'Identify the part, location, and compatible vehicle.',
+                          ),
+                          const SizedBox(height: 16),
                           QitakFormGroup(
                             label: context.l10n.listingTitleLabel,
                             child: TextFormField(
@@ -381,6 +387,12 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                                   ? context.l10n.listingYearRequired
                                   : null,
                             ),
+                          ),
+                          const SizedBox(height: 16),
+                          const _ListingFormStageHeader(
+                            title: 'Pricing',
+                            subtitle:
+                                'Set the price, available quantity, and item condition.',
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -634,6 +646,12 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
+                          const _ListingFormStageHeader(
+                            title: 'Delivery',
+                            subtitle:
+                                'Add exchange options and choose how to publish this listing.',
+                          ),
+                          const SizedBox(height: 16),
                           SwitchListTile(
                             key: const Key('listing-exchange-switch'),
                             contentPadding: EdgeInsets.zero,
@@ -1041,6 +1059,40 @@ class _ConditionSelector extends ConsumerWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _ListingFormStageHeader extends StatelessWidget {
+  const _ListingFormStageHeader({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            height: 1.35,
+          ),
+        ),
+      ],
     );
   }
 }

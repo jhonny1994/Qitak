@@ -34,17 +34,20 @@ class QitakPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.qitakTokens;
     final colorScheme = Theme.of(context).colorScheme;
+    final boxShadow = tokens.glow == Colors.transparent
+        ? const <BoxShadow>[]
+        : [
+            BoxShadow(
+              color: tokens.glow,
+              blurRadius: 24,
+              offset: const Offset(0, 12),
+            ),
+          ];
     final decoration = BoxDecoration(
       color: backgroundColor ?? tokens.panel,
       borderRadius: BorderRadius.circular(tokens.panelRadius),
       border: Border.all(color: borderColor ?? tokens.stroke),
-      boxShadow: [
-        BoxShadow(
-          color: tokens.glow,
-          blurRadius: 24,
-          offset: const Offset(0, 12),
-        ),
-      ],
+      boxShadow: boxShadow,
       gradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,

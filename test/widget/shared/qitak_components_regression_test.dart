@@ -4,11 +4,14 @@ import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 void main() {
-  Widget buildShell(Widget child) {
+  Widget buildShell(
+    Widget child, {
+    ThemeMode themeMode = ThemeMode.light,
+  }) {
     return MaterialApp(
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       home: Scaffold(body: child),
     );
   }
@@ -65,4 +68,23 @@ void main() {
       expect(border.borderSide.width, 1.5);
     },
   );
+
+  testWidgets('QitakPanel light mode uses subtle border and no glow', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildShell(
+        const Padding(
+          padding: EdgeInsets.all(24),
+          child: QitakPanel(child: SizedBox(height: 48)),
+        ),
+      ),
+    );
+
+    final ink = tester.widget<Ink>(find.byType(Ink).first);
+    final decoration = ink.decoration! as BoxDecoration;
+
+    expect(decoration.boxShadow, isEmpty);
+    expect(decoration.border, isNotNull);
+  });
 }

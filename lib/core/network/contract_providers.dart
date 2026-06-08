@@ -82,6 +82,20 @@ final reportResolutionReasonPolicyProvider =
           .fetchPolicyOptions(PolicyKey.reportResolutionReasonCode);
     });
 
+final supportReportResolutionDecisionPolicyProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) {
+      return ref
+          .read(appContractRepositoryProvider)
+          .fetchPolicyOptions(PolicyKey.supportReportResolutionDecision);
+    });
+
+final supportReportResolutionReasonPolicyProvider =
+    FutureProvider<List<AppPolicyOption>>((ref) {
+      return ref
+          .read(appContractRepositoryProvider)
+          .fetchPolicyOptions(PolicyKey.supportReportResolutionReasonCode);
+    });
+
 final disputeResolutionDecisionPolicyProvider =
     FutureProvider<List<AppPolicyOption>>((ref) {
       return ref
@@ -125,4 +139,12 @@ final buyerPaymentMethodPolicyProvider = FutureProvider<List<AppPolicyOption>>((
   return ref
       .read(appContractRepositoryProvider)
       .fetchPolicyOptions(PolicyKey.buyerPaymentMethod);
+});
+
+final supportReasonPolicyProvider = FutureProvider<List<AppPolicyOption>>((
+  ref,
+) {
+  return ref
+      .read(appContractRepositoryProvider)
+      .fetchPolicyOptions(PolicyKey.supportReasonCode);
 });

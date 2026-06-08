@@ -21,6 +21,10 @@ abstract final class PolicyKey {
   static const String reportResolutionDecision = 'report_resolution_decision';
   static const String reportResolutionReasonCode =
       'report_resolution_reason_code';
+  static const String supportReportResolutionDecision =
+      'support_report_resolution_decision';
+  static const String supportReportResolutionReasonCode =
+      'support_report_resolution_reason_code';
   static const String disputeResolutionDecision = 'dispute_resolution_decision';
   static const String disputeResolutionOutcomeAction =
       'dispute_resolution_outcome_action';
@@ -29,4 +33,5 @@ abstract final class PolicyKey {
   static const String listingReportReasonCode = 'listing_report_reason_code';
   static const String buyerDisputeReasonCode = 'buyer_dispute_reason_code';
   static const String buyerPaymentMethod = 'buyer_payment_method';
+  static const String supportReasonCode = 'support_reason_code';
 }

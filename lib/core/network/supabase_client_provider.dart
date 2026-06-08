@@ -1,49 +1,35 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/core/config/app_runtime_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AppSupabaseConfig {
   const AppSupabaseConfig({
     required this.url,
-    required this.anonKey,
+    required this.publishableKey,
   });
 
   factory AppSupabaseConfig.fromEnvironment() {
-    const envUrl = String.fromEnvironment('SUPABASE_URL');
-    const envAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
-    if (envUrl.isNotEmpty && envAnonKey.isNotEmpty) {
-      return const AppSupabaseConfig(url: envUrl, anonKey: envAnonKey);
+    const envUrl = String.fromEnvironment(AppRuntimeConfig.supabaseUrlEnvVar);
+    const envPublishableKey = String.fromEnvironment(
+      AppRuntimeConfig.supabasePublishableKeyEnvVar,
+    );
+    if (envUrl.isNotEmpty && envPublishableKey.isNotEmpty) {
+      return const AppSupabaseConfig(
+        url: envUrl,
+        publishableKey: envPublishableKey,
+      );
     }
 
-    return const AppSupabaseConfig(url: '', anonKey: '');
+    return const AppSupabaseConfig(url: '', publishableKey: '');
   }
 
   final String url;
-  final String anonKey;
+  final String publishableKey;
 
-  bool get isConfigured => url.isNotEmpty && anonKey.isNotEmpty;
+  bool get isConfigured => url.isNotEmpty && publishableKey.isNotEmpty;
 
-  String get runtimeUrl {
-    if (!isConfigured || kIsWeb) {
-      return url;
-    }
-
-    final parsed = Uri.tryParse(url);
-    if (parsed == null) {
-      return url;
-    }
-
-    final host = parsed.host.toLowerCase();
-    final shouldUseEmulatorLoopback =
-        defaultTargetPlatform == TargetPlatform.android &&
-        (host == '127.0.0.1' || host == 'localhost');
-    if (!shouldUseEmulatorLoopback) {
-      return url;
-    }
-
-    return parsed.replace(host: '10.0.2.2').toString();
-  }
+  String get runtimeUrl => AppRuntimeConfig.normalizeRuntimeUrl(url);
 
   String get persistSessionKey =>
       'sb-${Uri.parse(url).host.split('.').first}-auth-token';

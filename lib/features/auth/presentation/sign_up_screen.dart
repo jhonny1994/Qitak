@@ -10,7 +10,7 @@ import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
-import 'package:qitak_app/features/auth/presentation/auth_surface_switcher.dart';
+import 'package:qitak_app/features/auth/presentation/customer_auth_mode_switch.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/auth/providers/redirect_intent_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -23,12 +23,14 @@ class SignUpScreen extends ConsumerStatefulWidget {
     this.redirectArguments,
     this.redirectType = IntentTargetType.route,
     this.variant = SignUpVariant.buyer,
+    this.initialCustomerMode,
   });
 
   final String? redirectPath;
   final String? redirectArguments;
   final IntentTargetType redirectType;
   final SignUpVariant variant;
+  final SignUpVariant? initialCustomerMode;
 
   @override
   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
@@ -45,6 +47,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   bool _submitting = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  late SignUpVariant _variant;
+
+  @override
+  void initState() {
+    super.initState();
+    _variant = widget.initialCustomerMode ?? widget.variant;
+  }
+
+  @override
+  void didUpdateWidget(covariant SignUpScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.variant != widget.variant ||
+        oldWidget.initialCustomerMode != widget.initialCustomerMode) {
+      _variant = widget.initialCustomerMode ?? widget.variant;
+    }
+  }
 
   @override
   void dispose() {
@@ -68,23 +86,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              AuthSurfaceSwitcher(
-                onBuyerRole: () => context.go(
-                  _buildAuthRoute('/auth/sign-up'),
-                ),
-                onSellerRole: () => context.go(
-                  _buildAuthRoute('/auth/seller/sign-up'),
-                ),
-                isSellerRole: widget.variant == SignUpVariant.seller,
-              ),
-              const SizedBox(height: 14),
               QitakPanel(
                 child: QitakSectionHeader(
                   eyebrow: context.l10n.authGateEyebrow,
-                  title: widget.variant == SignUpVariant.seller
+                  title: _variant == SignUpVariant.seller
                       ? context.l10n.sellerCreateAccount
                       : context.l10n.createAccount,
-                  subtitle: widget.variant == SignUpVariant.seller
+                  subtitle: _variant == SignUpVariant.seller
                       ? context.l10n.sellerSignUpSubtitle
                       : context.l10n.signUpSubtitle,
                 ),
@@ -94,6 +102,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    CustomerAuthModeSwitch(
+                      isSellerSelected: _variant == SignUpVariant.seller,
+                      onSelected: _switchCustomerVariant,
+                    ),
+                    const SizedBox(height: 16),
                     QitakFormGroup(
                       label: context.l10n.fullNameLabel,
                       child: TextFormField(
@@ -217,7 +230,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                   onPressed: () => context.go(
                     _buildAuthRoute(
-                      widget.variant == SignUpVariant.seller
+                      _variant == SignUpVariant.seller
                           ? '/auth/seller/sign-in'
                           : '/auth/sign-in',
                     ),
@@ -253,7 +266,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             email: _emailController.text.trim(),
             phone: _phoneController.text.trim(),
             password: _passwordController.text,
-            variant: widget.variant,
+            variant: _variant,
             language: preferences.guestLanguage,
           );
       _passwordController.clear();
@@ -296,7 +309,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     EmailConfirmationRequiredException confirmation,
   ) {
     final signInRoute = _buildAuthRoute(
-      widget.variant == SignUpVariant.seller
+      _variant == SignUpVariant.seller
           ? '/auth/seller/sign-in'
           : '/auth/sign-in',
     );
@@ -320,6 +333,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ],
       ),
     );
+  }
+
+  void _switchCustomerVariant(bool isSeller) {
+    final nextVariant = isSeller ? SignUpVariant.seller : SignUpVariant.buyer;
+    if (_variant == nextVariant) {
+      return;
+    }
+    setState(() => _variant = nextVariant);
   }
 
   Future<bool> _isSellerApproved(AccountProfile profile) async {

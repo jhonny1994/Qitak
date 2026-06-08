@@ -82,6 +82,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           data: (value) => value,
           orElse: () => const <String>{},
         );
+    final hasActiveFilters = filters.hasActiveSelections;
     final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
     final canShowSave = canSave || !session.isAuthenticated;
 
@@ -140,7 +141,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ),
         const SizedBox(height: 18),
-        if (searchQuery.isEmpty)
+        if (searchQuery.isEmpty && !hasActiveFilters)
           searchHistory.when(
             data: (items) => _SearchHistorySection(
               items: items,
@@ -168,7 +169,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 }
 
                 return Column(
+                  key: const Key('marketplace-result-list'),
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (applied.isNotEmpty) ...[
                       Wrap(
@@ -181,7 +184,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       const SizedBox(height: 14),
                     ],
                     Text(
-                      '${items.length} ${context.l10n.searchResultsSuffix}',
+                      _localizedResultSummary(context, items.length),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -311,6 +314,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
   }
+}
+
+String _localizedResultSummary(BuildContext context, int count) {
+  final languageCode = Localizations.localeOf(context).languageCode;
+  return switch (languageCode) {
+    'ar' =>
+      count == 1 ? 'تم العثور على نتيجة واحدة' : 'تم العثور على $count نتائج',
+    'fr' => count == 1 ? '1 resultat trouve' : '$count resultats trouves',
+    _ => count == 1 ? '1 result found' : '$count results found',
+  };
 }
 
 class _SearchResultRow extends StatelessWidget {

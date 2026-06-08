@@ -28,6 +28,18 @@ class SearchFilterState {
   final String? dealType;
   final String sort;
 
+  bool get hasActiveSelections =>
+      categoryId != null ||
+      wilayaId != null ||
+      communeId != null ||
+      makeId != null ||
+      baseModel != null ||
+      year != null ||
+      priceMin != null ||
+      priceMax != null ||
+      condition != null ||
+      dealType != null;
+
   SearchFilterState copyWith({
     String? categoryId,
     String? wilayaId,

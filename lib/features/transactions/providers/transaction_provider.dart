@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
@@ -7,18 +9,25 @@ class TransactionStateView {
   const TransactionStateView({
     this.items = const <TransactionRecord>[],
     this.lastError,
+    this.lastErrorCode,
   });
 
   final List<TransactionRecord> items;
   final String? lastError;
+  final AppErrorCode? lastErrorCode;
 
   TransactionStateView copyWith({
     List<TransactionRecord>? items,
     String? lastError,
+    AppErrorCode? lastErrorCode,
+    bool clearLastError = false,
   }) {
     return TransactionStateView(
       items: items ?? this.items,
-      lastError: lastError,
+      lastError: clearLastError ? null : lastError ?? this.lastError,
+      lastErrorCode: clearLastError
+          ? null
+          : lastErrorCode ?? this.lastErrorCode,
     );
   }
 }
@@ -31,7 +40,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
     final items = await ref
         .read(transactionRepositoryProvider)
         .listForUser(userId);
-    state = state.copyWith(items: items);
+    state = state.copyWith(items: items, clearLastError: true);
   }
 
   Future<bool> createRequest({
@@ -51,10 +60,16 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
             dealType: dealType,
             exchangeOffer: exchangeOffer,
           );
-      state = state.copyWith(items: [record, ...state.items]);
+      state = state.copyWith(
+        items: [record, ...state.items],
+        clearLastError: true,
+      );
       return true;
     } on Object catch (error) {
-      state = state.copyWith(lastError: error.toString());
+      state = state.copyWith(
+        lastError: error.toString(),
+        lastErrorCode: _errorCode(error),
+      );
       return false;
     }
   }
@@ -79,10 +94,13 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)
           .toList();
-      state = state.copyWith(items: next);
+      state = state.copyWith(items: next, clearLastError: true);
       return true;
     } on Object catch (error) {
-      state = state.copyWith(lastError: error.toString());
+      state = state.copyWith(
+        lastError: error.toString(),
+        lastErrorCode: _errorCode(error),
+      );
       return false;
     }
   }
@@ -103,10 +121,13 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)
           .toList();
-      state = state.copyWith(items: next);
+      state = state.copyWith(items: next, clearLastError: true);
       return true;
     } on Object catch (error) {
-      state = state.copyWith(lastError: error.toString());
+      state = state.copyWith(
+        lastError: error.toString(),
+        lastErrorCode: _errorCode(error),
+      );
       return false;
     }
   }
@@ -127,10 +148,13 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)
           .toList();
-      state = state.copyWith(items: next);
+      state = state.copyWith(items: next, clearLastError: true);
       return true;
     } on Object catch (error) {
-      state = state.copyWith(lastError: error.toString());
+      state = state.copyWith(
+        lastError: error.toString(),
+        lastErrorCode: _errorCode(error),
+      );
       return false;
     }
   }
@@ -149,12 +173,22 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)
           .toList();
-      state = state.copyWith(items: next);
+      state = state.copyWith(items: next, clearLastError: true);
       return true;
     } on Object catch (error) {
-      state = state.copyWith(lastError: error.toString());
+      state = state.copyWith(
+        lastError: error.toString(),
+        lastErrorCode: _errorCode(error),
+      );
       return false;
     }
+  }
+
+  AppErrorCode? _errorCode(Object error) {
+    if (error is AppException) {
+      return error.code ?? appErrorCodeFromToken(error.message);
+    }
+    return appErrorCodeFromToken(error.toString());
   }
 }
 

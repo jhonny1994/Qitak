@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/data/admin_team_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
@@ -33,6 +35,7 @@ class _AdminTeamScreenState extends ConsumerState<AdminTeamScreen> {
       children: members.when(
         data: (items) => [
           QitakPanel(
+            key: const Key('admin-team-invite'),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -71,62 +74,28 @@ class _AdminTeamScreenState extends ConsumerState<AdminTeamScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          for (final item in items)
-            QitakPanel(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  QitakQueueRow(
-                    title: item.fullName,
-                    meta:
-                        '${item.email}${item.lastActiveAt == null ? '' : '\n${context.l10n.adminTeamLastActiveLabel}: ${item.lastActiveAt}'}',
-                    status:
-                        '${_roleLabel(context, item.role)} • ${item.isActive ? context.l10n.adminTeamStatusActive : context.l10n.adminTeamStatusSuspended}',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: OutlinedButton(
-                      onPressed: () => _showMemberDetail(context, item),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(context.l10n.sellerListingsPreviewAction),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.chevron_right_rounded),
-                        ],
-                      ),
+          QitakPanel(
+            key: const Key('admin-team-members'),
+            child: Column(
+              children: [
+                for (var index = 0; index < items.length; index++) ...[
+                  _AdminMemberCard(
+                    item: items[index],
+                    onPreview: () => _showMemberDetail(context, items[index]),
+                    onPrimaryAction: () => _apply(
+                      items[index].id,
+                      items[index].isActive ? 'suspend' : 'reactivate',
+                    ),
+                    onRoleAction: () => _apply(
+                      items[index].id,
+                      items[index].role == 'admin' ? 'promote' : 'demote',
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      if (item.isActive)
-                        OutlinedButton(
-                          onPressed: () => _apply(item.id, 'suspend'),
-                          child: Text(context.l10n.adminTeamSuspendAction),
-                        )
-                      else
-                        OutlinedButton(
-                          onPressed: () => _apply(item.id, 'reactivate'),
-                          child: Text(context.l10n.adminTeamReactivateAction),
-                        ),
-                      if (item.role == 'admin')
-                        FilledButton.tonal(
-                          onPressed: () => _apply(item.id, 'promote'),
-                          child: Text(context.l10n.adminTeamPromoteAction),
-                        )
-                      else
-                        FilledButton.tonal(
-                          onPressed: () => _apply(item.id, 'demote'),
-                          child: Text(context.l10n.adminTeamDemoteAction),
-                        ),
-                    ],
-                  ),
+                  if (index < items.length - 1) const SizedBox(height: 12),
                 ],
-              ),
+              ],
             ),
+          ),
         ],
         error: (error, stackTrace) => [
           QitakStateMessage(
@@ -144,35 +113,56 @@ class _AdminTeamScreenState extends ConsumerState<AdminTeamScreen> {
     if (email.isEmpty) {
       return;
     }
-    await ref
-        .read(adminTeamRepositoryProvider)
-        .invite(
-          email: email,
-          role: _inviteRole,
-        );
-    ref.invalidate(adminTeamMembersProvider);
-    if (!mounted) {
-      return;
+    try {
+      await ref
+          .read(adminTeamRepositoryProvider)
+          .invite(
+            email: email,
+            role: _inviteRole,
+          );
+      ref.invalidate(adminTeamMembersProvider);
+      if (!mounted) {
+        return;
+      }
+      _inviteEmailController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.adminTeamInviteSuccess)),
+      );
+    } on AppException catch (error) {
+      _showMutationError(context, context.appExceptionMessage(error));
+    } on Object catch (error) {
+      _showMutationError(context, error.toString());
     }
-    _inviteEmailController.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.adminTeamInviteSuccess)),
-    );
   }
 
   Future<void> _apply(String userId, String action) async {
-    await ref
-        .read(adminTeamRepositoryProvider)
-        .updateMember(
-          userId: userId,
-          action: action,
-        );
-    ref.invalidate(adminTeamMembersProvider);
+    try {
+      await ref
+          .read(adminTeamRepositoryProvider)
+          .updateMember(
+            userId: userId,
+            action: action,
+          );
+      ref.invalidate(adminTeamMembersProvider);
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.adminTeamMemberUpdated)),
+      );
+    } on AppException catch (error) {
+      _showMutationError(context, context.appExceptionMessage(error));
+    } on Object catch (error) {
+      _showMutationError(context, error.toString());
+    }
+  }
+
+  void _showMutationError(BuildContext context, String message) {
     if (!mounted) {
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(context.l10n.adminTeamMemberUpdated)),
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -233,5 +223,69 @@ String _roleLabel(BuildContext context, String role) {
     case 'admin':
     default:
       return context.l10n.profileRoleAdmin;
+  }
+}
+
+class _AdminMemberCard extends StatelessWidget {
+  const _AdminMemberCard({
+    required this.item,
+    required this.onPreview,
+    required this.onPrimaryAction,
+    required this.onRoleAction,
+  });
+
+  final AdminTeamMember item;
+  final VoidCallback onPreview;
+  final VoidCallback onPrimaryAction;
+  final VoidCallback onRoleAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return QitakSurface(
+      role: QitakSurfaceRole.object,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          QitakQueueRow(
+            title: item.fullName,
+            meta:
+                '${item.email}${item.lastActiveAt == null ? '' : '\n${context.l10n.adminTeamLastActiveLabel}: ${item.lastActiveAt}'}',
+            status:
+                '${_roleLabel(context, item.role)} • ${item.isActive ? context.l10n.adminTeamStatusActive : context.l10n.adminTeamStatusSuspended}',
+          ),
+          const SizedBox(height: 10),
+          FilledButton.tonal(
+            onPressed: onPreview,
+            child: Text(context.l10n.sellerListingsPreviewAction),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              KeyedSubtree(
+                key: const Key('admin-team-danger-actions'),
+                child: OutlinedButton(
+                  onPressed: onPrimaryAction,
+                  child: Text(
+                    item.isActive
+                        ? context.l10n.adminTeamSuspendAction
+                        : context.l10n.adminTeamReactivateAction,
+                  ),
+                ),
+              ),
+              FilledButton(
+                onPressed: onRoleAction,
+                child: Text(
+                  item.role == 'admin'
+                      ? context.l10n.adminTeamPromoteAction
+                      : context.l10n.adminTeamDemoteAction,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

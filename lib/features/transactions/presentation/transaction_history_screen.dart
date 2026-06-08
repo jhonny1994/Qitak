@@ -7,6 +7,7 @@ import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_copy.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 import 'package:qitak_app/shared/widgets/qitak_error_state.dart';
 
@@ -137,25 +138,45 @@ class TransactionHistoryScreen extends ConsumerWidget {
                           QitakSignalStrip(
                             label: item.partnerName,
                             value: item.listingTitle,
-                            status: context.l10n.displayTransactionState(
+                            status: transactionStatusLabel(
+                              context,
                               item.transaction.state,
                             ),
                           ),
                           const SizedBox(height: 12),
-                          QitakDetailRow(
-                            label: context.l10n.transactionRecordLabel,
-                            value: context.l10n.transactionReferenceLabel(
-                              item.transaction.id,
+                          QitakSurface(
+                            role: QitakSurfaceRole.section,
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                QitakDetailRow(
+                                  label: context.l10n.listingSellerSectionTitle,
+                                  value: item.partnerName,
+                                ),
+                                QitakDetailRow(
+                                  label: 'Updated',
+                                  value: _formatDate(
+                                    item.transaction.updatedAt,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          QitakDetailRow(
-                            label: context.l10n.listingSellerSectionTitle,
-                            value: item.partnerName,
-                          ),
-                          QitakDetailRow(
-                            label: context.l10n.notificationsTitle,
-                            value: _formatDate(item.transaction.updatedAt),
-                          ),
+                          if (transactionDisputeGuidance(
+                                context,
+                                item.transaction.state,
+                              ) !=
+                              null) ...[
+                            const SizedBox(height: 12),
+                            Text(
+                              transactionDisputeGuidance(
+                                context,
+                                item.transaction.state,
+                              )!,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ],
                         ],
                       ),
                     ),

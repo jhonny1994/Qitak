@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
+import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/features/listings/data/seller_listings_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -22,6 +24,8 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(authSessionProvider);
+    final taxonomy = ref.watch(discoveryFilterTaxonomyProvider);
+    final taxonomyData = taxonomy.asData?.value;
     final statusContracts = ref.watch(listingStatusContractsProvider);
     final statusCatalog = statusContracts.asData?.value
         .map((entry) => (code: entry.code, labelKey: entry.labelKey))
@@ -101,22 +105,127 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                     for (final item in filtered)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
-                        child: QitakListingSurface(
-                          title: item.title,
-                          price: context.l10n.priceWithDzd(item.price),
-                          subtitle: [
-                            item.fitmentSummary,
-                            item.locationSummary,
-                            _listingMeta(context, item),
-                          ].where((part) => part.isNotEmpty).join(' | '),
-                          imageUrl: item.primaryImageUrl,
-                          ratingLabel: _statusLabel(context, item.status),
-                          badges: [
-                            QitakChip(label: item.condition),
-                            if ((item.rejectionReason ?? '').isNotEmpty)
-                              QitakChip(label: item.rejectionReason!),
-                          ],
-                          actions: _buildActions(context, item),
+                        child: QitakPanel(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  QitakListingThumbnail(
+                                    imageUrl: item.primaryImageUrl,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          [
+                                                item.fitmentSummary,
+                                                _locationSummary(
+                                                  context,
+                                                  item,
+                                                  taxonomyData,
+                                                ),
+                                                _listingMeta(context, item),
+                                              ]
+                                              .where((part) => part.isNotEmpty)
+                                              .join(' | '),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: [
+                                            QitakChip(
+                                              label: _statusLabel(
+                                                context,
+                                                item.status,
+                                              ),
+                                            ),
+                                            QitakChip(
+                                              label: _conditionLabel(
+                                                context,
+                                                item.condition,
+                                              ),
+                                            ),
+                                            if ((item.rejectionReason ?? '')
+                                                .isNotEmpty)
+                                              QitakChip(
+                                                label: _humanizeInternalLabel(
+                                                  item.rejectionReason!,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    context.l10n.priceWithDzd(item.price),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: KeyedSubtree(
+                                      key: const Key(
+                                        'seller-listing-next-action',
+                                      ),
+                                      child: _buildPrimaryAction(context, item),
+                                    ),
+                                  ),
+                                  if (_hasOverflowActions(item)) ...[
+                                    const SizedBox(width: 12),
+                                    PopupMenuButton<
+                                      _SellerListingOverflowAction
+                                    >(
+                                      key: const Key(
+                                        'seller-listing-more-actions',
+                                      ),
+                                      onSelected: (value) =>
+                                          _handleOverflowAction(
+                                            context,
+                                            item,
+                                            value,
+                                          ),
+                                      itemBuilder: (context) =>
+                                          _buildOverflowItems(context, item),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                 ]),
@@ -136,78 +245,113 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
     );
   }
 
-  List<Widget> _buildActions(BuildContext context, SellerManagedListing item) {
+  Widget _buildPrimaryAction(BuildContext context, SellerManagedListing item) {
+    switch (item.status) {
+      case 'active':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'pause'),
+          child: Text(context.l10n.sellerListingPauseAction),
+        );
+      case 'draft':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resubmit'),
+          child: Text(context.l10n.sellerListingSubmitAction),
+        );
+      case 'pending_review':
+        return FilledButton.tonal(
+          onPressed: () => context.push('/seller/listings/${item.id}'),
+          child: Text(context.l10n.sellerListingsPreviewAction),
+        );
+      case 'paused':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resume'),
+          child: Text(context.l10n.sellerListingResumeAction),
+        );
+      case 'rejected':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resubmit'),
+          child: Text(context.l10n.sellerListingResubmitAction),
+        );
+      default:
+        return FilledButton.tonal(
+          onPressed: () => context.push('/seller/listings/${item.id}'),
+          child: Text(context.l10n.sellerListingsPreviewAction),
+        );
+    }
+  }
+
+  bool _hasOverflowActions(SellerManagedListing item) {
+    switch (item.status) {
+      case 'pending_review':
+      case 'closed':
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  List<PopupMenuEntry<_SellerListingOverflowAction>> _buildOverflowItems(
+    BuildContext context,
+    SellerManagedListing item,
+  ) {
     switch (item.status) {
       case 'active':
         return [
-          OutlinedButton(
-            onPressed: () => _applyAction(item.id, 'pause'),
-            child: Text(context.l10n.sellerListingPauseAction),
-          ),
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          FilledButton.tonal(
-            onPressed: () => _applyAction(item.id, 'close'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.close,
             child: Text(context.l10n.sellerListingCloseAction),
           ),
         ];
       case 'draft':
         return [
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          OutlinedButton(
-            onPressed: () => _confirmDeleteDraft(item.id),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.deleteDraft,
             child: Text(context.l10n.sellerListingDeleteAction),
-          ),
-          FilledButton(
-            onPressed: () => _applyAction(item.id, 'resubmit'),
-            child: Text(context.l10n.sellerListingSubmitAction),
-          ),
-        ];
-      case 'pending_review':
-        return [
-          FilledButton.tonal(
-            onPressed: () => context.push('/seller/listings/${item.id}'),
-            child: Text(context.l10n.sellerListingsPreviewAction),
           ),
         ];
       case 'paused':
         return [
-          OutlinedButton(
-            onPressed: () => _applyAction(item.id, 'resume'),
-            child: Text(context.l10n.sellerListingResumeAction),
-          ),
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          FilledButton.tonal(
-            onPressed: () => _applyAction(item.id, 'close'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.close,
             child: Text(context.l10n.sellerListingCloseAction),
           ),
         ];
       case 'rejected':
         return [
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
-          ),
-          FilledButton(
-            onPressed: () => _applyAction(item.id, 'resubmit'),
-            child: Text(context.l10n.sellerListingResubmitAction),
           ),
         ];
       default:
-        return [
-          FilledButton.tonal(
-            onPressed: () => context.push('/seller/listings/${item.id}'),
-            child: Text(context.l10n.sellerListingsPreviewAction),
-          ),
-        ];
+        return const [];
+    }
+  }
+
+  Future<void> _handleOverflowAction(
+    BuildContext context,
+    SellerManagedListing item,
+    _SellerListingOverflowAction action,
+  ) async {
+    switch (action) {
+      case _SellerListingOverflowAction.edit:
+        await context.push('/seller/listings/${item.id}/edit');
+      case _SellerListingOverflowAction.close:
+        await _applyAction(item.id, 'close');
+      case _SellerListingOverflowAction.deleteDraft:
+        await _confirmDeleteDraft(item.id);
     }
   }
 
@@ -256,12 +400,60 @@ extension _SellerManagedListingPresentationX on SellerManagedListing {
     ];
     return parts.join(' | ');
   }
+}
 
-  String get locationSummary {
-    final commune = communeId?.trim().isNotEmpty == true ? communeId! : '-';
-    final wilaya = wilayaId?.trim().isNotEmpty == true ? wilayaId! : '-';
-    return '$commune | $wilaya';
+String _locationSummary(
+  BuildContext context,
+  SellerManagedListing item,
+  DiscoveryFilterTaxonomy? taxonomy,
+) {
+  if (taxonomy == null) {
+    return '';
   }
+  final wilaya = taxonomy.wilayas
+      .where((candidate) => candidate.id == item.wilayaId)
+      .cast<WilayaOption?>()
+      .firstOrNull;
+  final commune = wilaya?.communes
+      .where((candidate) => candidate.id == item.communeId)
+      .cast<CommuneOption?>()
+      .firstOrNull;
+  if (wilaya == null && commune == null) {
+    return '';
+  }
+  final parts = <String>[
+    if (commune != null) context.displayCommune(commune),
+    if (wilaya != null) context.displayWilaya(wilaya),
+  ];
+  return parts.join(', ');
+}
+
+String _conditionLabel(BuildContext context, String raw) {
+  switch (raw) {
+    case 'new':
+    case 'like_new':
+    case 'used':
+      return context.l10n.discoveryConditionLabel(raw);
+    default:
+      return _humanizeInternalLabel(raw);
+  }
+}
+
+String _humanizeInternalLabel(String raw) {
+  final normalized = raw.trim();
+  if (normalized.isEmpty) {
+    return raw;
+  }
+  if (!normalized.contains('_') && !normalized.contains('-')) {
+    return normalized;
+  }
+  return normalized
+      .split(RegExp('[_-]+'))
+      .where((part) => part.isNotEmpty)
+      .map(
+        (part) => '${part[0].toUpperCase()}${part.substring(1).toLowerCase()}',
+      )
+      .join(' ');
 }
 
 String _listingMeta(BuildContext context, SellerManagedListing item) {
@@ -357,35 +549,41 @@ String _statusLabel(BuildContext context, String status, [String? labelKey]) {
 String _statusBody(BuildContext context, String status) {
   switch (status) {
     case 'draft':
-      return context.l10n.listingSaveDraftAction;
+      return context.l10n.sellerListingsDraftStateBody;
     case 'pending_review':
-      return context.l10n.listingSubmittedForReviewSuccess;
+      return context.l10n.sellerListingsUnderReviewStateBody;
     case 'paused':
-      return context.l10n.sellerListingResumeAction;
+      return context.l10n.sellerListingsPausedStateBody;
     case 'rejected':
-      return context.l10n.adminModerationRejectSuccess;
+      return context.l10n.sellerListingsRejectedStateBody;
     case 'closed':
-      return context.l10n.sellerListingCloseAction;
+      return context.l10n.sellerListingsClosedStateBody;
     case 'active':
     default:
-      return context.l10n.sellerListingsSubtitle;
+      return context.l10n.sellerListingsActiveStateBody;
   }
 }
 
 String _emptyBody(BuildContext context, String status) {
   switch (status) {
     case 'draft':
-      return context.l10n.listingDraftSavedSuccess;
+      return context.l10n.sellerListingsDraftEmptyBody;
     case 'pending_review':
-      return context.l10n.listingSubmittedForReviewSuccess;
+      return context.l10n.sellerListingsUnderReviewEmptyBody;
     case 'paused':
-      return context.l10n.sellerListingResumeAction;
+      return context.l10n.sellerListingsPausedEmptyBody;
     case 'rejected':
-      return context.l10n.adminModerationRejectSuccess;
+      return context.l10n.sellerListingsRejectedEmptyBody;
     case 'closed':
-      return context.l10n.sellerListingsPreviewAction;
+      return context.l10n.sellerListingsClosedEmptyBody;
     case 'active':
     default:
-      return context.l10n.sellerListingsEmptyBody;
+      return context.l10n.sellerListingsActiveEmptyBody;
   }
 }
+
+extension _IterableFirstOrNullX<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
+}
+
+enum _SellerListingOverflowAction { edit, close, deleteDraft }

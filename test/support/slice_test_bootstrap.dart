@@ -11,6 +11,7 @@ import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/notifications/data/notification_repository.dart';
 import 'package:qitak_app/features/ratings/data/rating_repository.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/generated/l10n.dart';
@@ -28,11 +29,14 @@ Future<ProviderScope> buildSliceTestScope(
   LocalTransactionRepository.resetForTest();
   LocalRatingRepository.resetForTest();
   LocalMessagingRepository.resetForTest();
+  LocalAdminReportsRepository.resetForTest();
+  LocalDisputeRepository.resetForTest();
+  LocalSupportRepository.resetForTest();
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
       appSupabaseConfigProvider.overrideWithValue(
-        const AppSupabaseConfig(url: '', anonKey: ''),
+        const AppSupabaseConfig(url: '', publishableKey: ''),
       ),
       authRepositoryProvider.overrideWithValue(
         LocalMemoryAuthRepository(prefs),
@@ -67,9 +71,14 @@ Future<ProviderScope> buildSliceTestScope(
 }
 
 class SliceTestMaterialShell extends StatelessWidget {
-  const SliceTestMaterialShell({required this.child, super.key});
+  const SliceTestMaterialShell({
+    required this.child,
+    super.key,
+    this.themeMode = ThemeMode.dark,
+  });
 
   final Widget child;
+  final ThemeMode themeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +86,7 @@ class SliceTestMaterialShell extends StatelessWidget {
       locale: const Locale('en'),
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

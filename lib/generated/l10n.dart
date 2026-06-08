@@ -149,16 +149,6 @@ class S {
     return Intl.message('تسجيل الدخول', name: 'signIn', desc: '', args: []);
   }
 
-  /// `تسجيل Google غير متاح حالياً`
-  String get googleComingSoon {
-    return Intl.message(
-      'تسجيل Google غير متاح حالياً',
-      name: 'googleComingSoon',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `ليس لديك حساب؟ أنشئ حساباً`
   String get createAccountPrompt {
     return Intl.message(
@@ -864,10 +854,10 @@ class S {
     );
   }
 
-  /// `احفظ الإعلانات وراسل البائعين واطلب القطع عندما تصبح جاهزاً.`
+  /// `أنشئ حساباً لحفظ الإعلانات والتواصل مع البائعين والدخول في طلب شراء فعلي.`
   String get onboardingBodyThree {
     return Intl.message(
-      'احفظ الإعلانات وراسل البائعين واطلب القطع عندما تصبح جاهزاً.',
+      'أنشئ حساباً لحفظ الإعلانات والتواصل مع البائعين والدخول في طلب شراء فعلي.',
       name: 'onboardingBodyThree',
       desc: '',
       args: [],
@@ -884,10 +874,10 @@ class S {
     );
   }
 
-  /// `الحساب لاحقاً`
+  /// `تصفح أولاً`
   String get onboardingPanelGuest {
     return Intl.message(
-      'الحساب لاحقاً',
+      'تصفح أولاً',
       name: 'onboardingPanelGuest',
       desc: '',
       args: [],
@@ -1054,10 +1044,10 @@ class S {
     );
   }
 
-  /// `سجّل الدخول أو تصفح أولاً`
+  /// `تصفح أولاً وسجّل الدخول عند الحاجة`
   String get authChoiceTitle {
     return Intl.message(
-      'سجّل الدخول أو تصفح أولاً',
+      'تصفح أولاً وسجّل الدخول عند الحاجة',
       name: 'authChoiceTitle',
       desc: '',
       args: [],
@@ -1134,16 +1124,6 @@ class S {
     );
   }
 
-  /// `دخول الإدارة`
-  String get adminAccess {
-    return Intl.message(
-      'دخول الإدارة',
-      name: 'adminAccess',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `تسجيل دخول الإدارة`
   String get adminSignIn {
     return Intl.message(
@@ -1194,134 +1174,319 @@ class S {
     );
   }
 
-  /// `المساعدة والدعم`
-  String get supportHelpTitle {
+  /// `الدعم`
+  String get supportCenterEyebrow {
     return Intl.message(
-      'المساعدة والدعم',
-      name: 'supportHelpTitle',
+      'الدعم',
+      name: 'supportCenterEyebrow',
       desc: '',
       args: [],
     );
   }
 
-  /// `اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.`
-  String get supportHelpSubtitle {
+  /// `الدعم`
+  String get supportCenterTitle {
     return Intl.message(
-      'اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.',
-      name: 'supportHelpSubtitle',
+      'الدعم',
+      name: 'supportCenterTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `مساعدة الحساب`
-  String get supportHelpAccountTitle {
+  /// `تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.`
+  String get supportCenterSubtitle {
     return Intl.message(
-      'مساعدة الحساب',
-      name: 'supportHelpAccountTitle',
+      'تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.',
+      name: 'supportCenterSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.`
-  String get supportHelpAccountBody {
+  /// `إنشاء تذكرة`
+  String get supportCenterCreateAction {
     return Intl.message(
-      'استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.',
-      name: 'supportHelpAccountBody',
+      'إنشاء تذكرة',
+      name: 'supportCenterCreateAction',
       desc: '',
       args: [],
     );
   }
 
-  /// `الثقة والأمان`
-  String get supportHelpSafetyTitle {
+  /// `استخدم المسار الصحيح`
+  String get supportCenterRoutingTitle {
     return Intl.message(
-      'الثقة والأمان',
-      name: 'supportHelpSafetyTitle',
+      'استخدم المسار الصحيح',
+      name: 'supportCenterRoutingTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `استخدم شاشات المعاملة والتقييم والنزاع حتى تبقى مشاكل السوق مرتبطة بالصفقة الصحيحة.`
-  String get supportHelpSafetyBody {
+  /// `مشاكل الصفقة المحددة`
+  String get supportCenterRoutingDisputeTitle {
     return Intl.message(
-      'استخدم شاشات المعاملة والتقييم والنزاع حتى تبقى مشاكل السوق مرتبطة بالصفقة الصحيحة.',
-      name: 'supportHelpSafetyBody',
+      'مشاكل الصفقة المحددة',
+      name: 'supportCenterRoutingDisputeTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `الإشعارات والتحديثات`
-  String get supportHelpNotificationTitle {
+  /// `استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.`
+  String get supportCenterRoutingDisputeBody {
     return Intl.message(
-      'الإشعارات والتحديثات',
-      name: 'supportHelpNotificationTitle',
+      'استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.',
+      name: 'supportCenterRoutingDisputeBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `تابع الرسائل وقرارات البائع وتغييرات الإعلانات من مركز الإشعارات.`
-  String get supportHelpNotificationBody {
+  /// `تغييرات الحساب والوصول`
+  String get supportCenterRoutingAccountTitle {
     return Intl.message(
-      'تابع الرسائل وقرارات البائع وتغييرات الإعلانات من مركز الإشعارات.',
-      name: 'supportHelpNotificationBody',
+      'تغييرات الحساب والوصول',
+      name: 'supportCenterRoutingAccountTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `دليل`
-  String get supportHelpStatusGuide {
+  /// `استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.`
+  String get supportCenterRoutingAccountBody {
     return Intl.message(
-      'دليل',
-      name: 'supportHelpStatusGuide',
+      'استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.',
+      name: 'supportCenterRoutingAccountBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `ثقة`
-  String get supportHelpStatusTrust {
+  /// `ما الذي يتعامل معه الدعم هنا`
+  String get supportCenterRoutingScopeTitle {
     return Intl.message(
-      'ثقة',
-      name: 'supportHelpStatusTrust',
+      'ما الذي يتعامل معه الدعم هنا',
+      name: 'supportCenterRoutingScopeTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `تنبيهات`
-  String get supportHelpStatusAlerts {
+  /// `افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.`
+  String get supportCenterRoutingScopeBody {
     return Intl.message(
-      'تنبيهات',
-      name: 'supportHelpStatusAlerts',
+      'افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.',
+      name: 'supportCenterRoutingScopeBody',
       desc: '',
       args: [],
     );
   }
 
-  /// `هل تحتاج إلى متابعة شيء؟`
-  String get supportHelpNeedActionTitle {
+  /// `تذاكرك`
+  String get supportCenterTicketListTitle {
     return Intl.message(
-      'هل تحتاج إلى متابعة شيء؟',
-      name: 'supportHelpNeedActionTitle',
+      'تذاكرك',
+      name: 'supportCenterTicketListTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `يحافظ Qitak على الخطوات التالية داخل الشاشات الصحيحة بدلاً من إخفائها خلف محادثة دعم عامة.`
-  String get supportHelpNeedActionBody {
+  /// `لا توجد تذاكر دعم بعد`
+  String get supportCenterEmptyTitle {
     return Intl.message(
-      'يحافظ Qitak على الخطوات التالية داخل الشاشات الصحيحة بدلاً من إخفائها خلف محادثة دعم عامة.',
-      name: 'supportHelpNeedActionBody',
+      'لا توجد تذاكر دعم بعد',
+      name: 'supportCenterEmptyTitle',
       desc: '',
       args: [],
     );
+  }
+
+  /// `أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.`
+  String get supportCenterEmptyBody {
+    return Intl.message(
+      'أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.',
+      name: 'supportCenterEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تذكرة دعم جديدة`
+  String get supportTicketCreateTitle {
+    return Intl.message(
+      'تذكرة دعم جديدة',
+      name: 'supportTicketCreateTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.`
+  String get supportTicketCreateSubtitle {
+    return Intl.message(
+      'اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.',
+      name: 'supportTicketCreateSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `السبب`
+  String get supportTicketReasonLabel {
+    return Intl.message(
+      'السبب',
+      name: 'supportTicketReasonLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر سبب الدعم.`
+  String get supportTicketReasonError {
+    return Intl.message(
+      'اختر سبب الدعم.',
+      name: 'supportTicketReasonError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ماذا حدث؟`
+  String get supportTicketDescriptionLabel {
+    return Intl.message(
+      'ماذا حدث؟',
+      name: 'supportTicketDescriptionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.`
+  String get supportTicketDescriptionHelper {
+    return Intl.message(
+      'اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.',
+      name: 'supportTicketDescriptionHelper',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.`
+  String get supportTicketDescriptionError {
+    return Intl.message(
+      'أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.',
+      name: 'supportTicketDescriptionError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إرسال التذكرة`
+  String get supportTicketSubmitAction {
+    return Intl.message(
+      'إرسال التذكرة',
+      name: 'supportTicketSubmitAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرسال تذكرة الدعم.`
+  String get supportTicketCreated {
+    return Intl.message(
+      'تم إرسال تذكرة الدعم.',
+      name: 'supportTicketCreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مفتوحة`
+  String get supportTicketStatusOpen {
+    return Intl.message(
+      'مفتوحة',
+      name: 'supportTicketStatusOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `قيد المراجعة`
+  String get supportTicketStatusUnderReview {
+    return Intl.message(
+      'قيد المراجعة',
+      name: 'supportTicketStatusUnderReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم الحل`
+  String get supportTicketStatusResolved {
+    return Intl.message(
+      'تم الحل',
+      name: 'supportTicketStatusResolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مغلقة`
+  String get supportTicketStatusClosed {
+    return Intl.message(
+      'مغلقة',
+      name: 'supportTicketStatusClosed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الوصول إلى الحساب`
+  String get supportReasonAccountAccess {
+    return Intl.message(
+      'الوصول إلى الحساب',
+      name: 'supportReasonAccountAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة دفع`
+  String get supportReasonPaymentIssue {
+    return Intl.message(
+      'مشكلة دفع',
+      name: 'supportReasonPaymentIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة مع البائع`
+  String get supportReasonSellerIssue {
+    return Intl.message(
+      'مشكلة مع البائع',
+      name: 'supportReasonSellerIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مشكلة تقنية`
+  String get supportReasonTechnicalIssue {
+    return Intl.message(
+      'مشكلة تقنية',
+      name: 'supportReasonTechnicalIssue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أخرى`
+  String get supportReasonOther {
+    return Intl.message('أخرى', name: 'supportReasonOther', desc: '', args: []);
   }
 
   /// `القانوني`
@@ -1434,10 +1599,10 @@ class S {
     );
   }
 
-  /// `قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.`
+  /// `اضبط اللغة والمظهر وراجع سياسات السوق قبل تسجيل الدخول.`
   String get accountUtilitiesGuestSubtitle {
     return Intl.message(
-      'قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.',
+      'اضبط اللغة والمظهر وراجع سياسات السوق قبل تسجيل الدخول.',
       name: 'accountUtilitiesGuestSubtitle',
       desc: '',
       args: [],
@@ -1734,6 +1899,16 @@ class S {
     );
   }
 
+  /// `مراجعة الحالة`
+  String get sellerStatusReviewStatusAction {
+    return Intl.message(
+      'مراجعة الحالة',
+      name: 'sellerStatusReviewStatusAction',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `مخزون البائع`
   String get sellerListingsEyebrow {
     return Intl.message(
@@ -1754,21 +1929,141 @@ class S {
     );
   }
 
-  /// `راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.`
+  /// `أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.`
   String get sellerListingsSubtitle {
     return Intl.message(
-      'راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.',
+      'أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.',
       name: 'sellerListingsSubtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `لا توجد لديك إعلانات كبائع بعد.`
+  /// `لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.`
   String get sellerListingsEmptyBody {
     return Intl.message(
-      'لا توجد لديك إعلانات كبائع بعد.',
+      'لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.',
       name: 'sellerListingsEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.`
+  String get sellerListingsActiveStateBody {
+    return Intl.message(
+      'الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.',
+      name: 'sellerListingsActiveStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تبقى المسودات خاصة حتى ترسلها للمراجعة.`
+  String get sellerListingsDraftStateBody {
+    return Intl.message(
+      'تبقى المسودات خاصة حتى ترسلها للمراجعة.',
+      name: 'sellerListingsDraftStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.`
+  String get sellerListingsUnderReviewStateBody {
+    return Intl.message(
+      'تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.',
+      name: 'sellerListingsUnderReviewStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.`
+  String get sellerListingsPausedStateBody {
+    return Intl.message(
+      'الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.',
+      name: 'sellerListingsPausedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.`
+  String get sellerListingsRejectedStateBody {
+    return Intl.message(
+      'تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.',
+      name: 'sellerListingsRejectedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الإعلانات المغلقة لم تعد ظاهرة للمشترين.`
+  String get sellerListingsClosedStateBody {
+    return Intl.message(
+      'الإعلانات المغلقة لم تعد ظاهرة للمشترين.',
+      name: 'sellerListingsClosedStateBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات نشطة حالياً.`
+  String get sellerListingsActiveEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات نشطة حالياً.',
+      name: 'sellerListingsActiveEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك مسودات حالياً.`
+  String get sellerListingsDraftEmptyBody {
+    return Intl.message(
+      'لا توجد لديك مسودات حالياً.',
+      name: 'sellerListingsDraftEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات قيد المراجعة حالياً.`
+  String get sellerListingsUnderReviewEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات قيد المراجعة حالياً.',
+      name: 'sellerListingsUnderReviewEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات موقوفة حالياً.`
+  String get sellerListingsPausedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات موقوفة حالياً.',
+      name: 'sellerListingsPausedEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات مرفوضة حالياً.`
+  String get sellerListingsRejectedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات مرفوضة حالياً.',
+      name: 'sellerListingsRejectedEmptyBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد لديك إعلانات مغلقة حالياً.`
+  String get sellerListingsClosedEmptyBody {
+    return Intl.message(
+      'لا توجد لديك إعلانات مغلقة حالياً.',
+      name: 'sellerListingsClosedEmptyBody',
       desc: '',
       args: [],
     );
@@ -2759,6 +3054,26 @@ class S {
     return Intl.message(
       'إرسال للمراجعة',
       name: 'listingSubmitForReviewAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع تفاصيل الإعلان ثم حاول مرة أخرى.`
+  String get listingSubmitValidationError {
+    return Intl.message(
+      'راجع تفاصيل الإعلان ثم حاول مرة أخرى.',
+      name: 'listingSubmitValidationError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تعذر حفظ الإعلان الآن. حاول مرة أخرى.`
+  String get listingSubmitFailureBody {
+    return Intl.message(
+      'تعذر حفظ الإعلان الآن. حاول مرة أخرى.',
+      name: 'listingSubmitFailureBody',
       desc: '',
       args: [],
     );
@@ -4659,6 +4974,146 @@ class S {
     );
   }
 
+  /// `الخطوة التالية`
+  String get transactionNextStepTitle {
+    return Intl.message(
+      'الخطوة التالية',
+      name: 'transactionNextStepTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يراجع البائع هذا الطلب.`
+  String get transactionNextStepPendingBuyer {
+    return Intl.message(
+      'انتظر حتى يراجع البائع هذا الطلب.',
+      name: 'transactionNextStepPendingBuyer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.`
+  String get transactionNextStepPendingSeller {
+    return Intl.message(
+      'راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.',
+      name: 'transactionNextStepPendingSeller',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.`
+  String get transactionNextStepBuyerSelectMethod {
+    return Intl.message(
+      'اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.',
+      name: 'transactionNextStepBuyerSelectMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.`
+  String get transactionNextStepBuyerUploadProof {
+    return Intl.message(
+      'أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.',
+      name: 'transactionNextStepBuyerUploadProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.`
+  String get transactionNextStepSellerWaitForProof {
+    return Intl.message(
+      'انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.',
+      name: 'transactionNextStepSellerWaitForProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.`
+  String get transactionNextStepBuyerCash {
+    return Intl.message(
+      'قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.',
+      name: 'transactionNextStepBuyerCash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.`
+  String get transactionNextStepSellerCash {
+    return Intl.message(
+      'قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.',
+      name: 'transactionNextStepSellerCash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `انتظر حتى يراجع البائع الإثبات المرفوع.`
+  String get transactionNextStepBuyerAwaitReview {
+    return Intl.message(
+      'انتظر حتى يراجع البائع الإثبات المرفوع.',
+      name: 'transactionNextStepBuyerAwaitReview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `راجع الإثبات المرفوع ثم أكده أو ارفضه.`
+  String get transactionNextStepSellerReviewProof {
+    return Intl.message(
+      'راجع الإثبات المرفوع ثم أكده أو ارفضه.',
+      name: 'transactionNextStepSellerReviewProof',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `بعد التسليم أكد الاستلام لإكمال هذه الصفقة.`
+  String get transactionNextStepBuyerConfirmReceipt {
+    return Intl.message(
+      'بعد التسليم أكد الاستلام لإكمال هذه الصفقة.',
+      name: 'transactionNextStepBuyerConfirmReceipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.`
+  String get transactionNextStepSellerAwaitReceipt {
+    return Intl.message(
+      'أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.',
+      name: 'transactionNextStepSellerAwaitReceipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الصفقة مكتملة.`
+  String get transactionNextStepCompleted {
+    return Intl.message(
+      'هذه الصفقة مكتملة.',
+      name: 'transactionNextStepCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الصفقة لم تعد نشطة.`
+  String get transactionNextStepInactive {
+    return Intl.message(
+      'هذه الصفقة لم تعد نشطة.',
+      name: 'transactionNextStepInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `الخط الزمني`
   String get transactionTimelineTitle {
     return Intl.message(
@@ -5424,10 +5879,10 @@ class S {
     );
   }
 
-  /// `تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.`
+  /// `تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.`
   String get adminReportsQueueSubtitle {
     return Intl.message(
-      'تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.',
+      'تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.',
       name: 'adminReportsQueueSubtitle',
       desc: '',
       args: [],
@@ -5454,10 +5909,10 @@ class S {
     );
   }
 
-  /// `افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.`
+  /// `افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.`
   String get adminReportDetailSubtitle {
     return Intl.message(
-      'افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.',
+      'افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.',
       name: 'adminReportDetailSubtitle',
       desc: '',
       args: [],
@@ -5484,6 +5939,26 @@ class S {
     );
   }
 
+  /// `خيارات الحسم غير متاحة`
+  String get adminReportResolutionOptionsUnavailableTitle {
+    return Intl.message(
+      'خيارات الحسم غير متاحة',
+      name: 'adminReportResolutionOptionsUnavailableTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.`
+  String get adminReportResolutionOptionsUnavailableBody {
+    return Intl.message(
+      'تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.',
+      name: 'adminReportResolutionOptionsUnavailableBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `تطبيق القرار`
   String get adminReportApplyDecisionAction {
     return Intl.message(
@@ -5499,6 +5974,26 @@ class S {
     return Intl.message(
       'تم حفظ قرار البلاغ.',
       name: 'adminReportDecisionSaved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `حل`
+  String get adminSupportDecisionResolve {
+    return Intl.message(
+      'حل',
+      name: 'adminSupportDecisionResolve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `إغلاق`
+  String get adminSupportDecisionClose {
+    return Intl.message(
+      'إغلاق',
+      name: 'adminSupportDecisionClose',
       desc: '',
       args: [],
     );
@@ -5579,6 +6074,46 @@ class S {
     return Intl.message(
       'سجل الجهة المرتبطة',
       name: 'adminReportEntityHistoryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم التحقق والحل`
+  String get adminSupportReasonVerifiedAndResolved {
+    return Intl.message(
+      'تم التحقق والحل',
+      name: 'adminSupportReasonVerifiedAndResolved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إرشاد المستخدم`
+  String get adminSupportReasonUserGuided {
+    return Intl.message(
+      'تم إرشاد المستخدم',
+      name: 'adminSupportReasonUserGuided',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تذكرة مكررة`
+  String get adminSupportReasonDuplicateTicket {
+    return Intl.message(
+      'تذكرة مكررة',
+      name: 'adminSupportReasonDuplicateTicket',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `خارج النطاق`
+  String get adminSupportReasonOutOfScope {
+    return Intl.message(
+      'خارج النطاق',
+      name: 'adminSupportReasonOutOfScope',
       desc: '',
       args: [],
     );
@@ -6739,10 +7274,10 @@ class S {
     );
   }
 
-  /// `إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.`
+  /// `إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.`
   String get appConfigurationRequiredBody {
     return Intl.message(
-      'إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.',
+      'إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.',
       name: 'appConfigurationRequiredBody',
       desc: '',
       args: [],

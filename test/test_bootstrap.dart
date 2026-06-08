@@ -14,6 +14,7 @@ import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/notifications/data/notification_repository.dart';
 import 'package:qitak_app/features/ratings/data/rating_repository.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/transactions/data/dispute_repository.dart';
 import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
 import 'package:qitak_app/generated/l10n.dart';
@@ -28,6 +29,7 @@ Future<ProviderScope> buildTestScope(
   List<Object> overrides = const <Object>[],
   AuthRepository? authRepositoryOverride,
   MessagingRepository? messagingRepositoryOverride,
+  NotificationRepository? notificationRepositoryOverride,
   TransactionRepository? transactionRepositoryOverride,
   SellerApplicationRepository? sellerApplicationRepositoryOverride,
   ListingModerationRepository? listingModerationRepositoryOverride,
@@ -37,13 +39,16 @@ Future<ProviderScope> buildTestScope(
   LocalTransactionRepository.resetForTest();
   LocalRatingRepository.resetForTest();
   LocalMessagingRepository.resetForTest();
+  LocalAdminReportsRepository.resetForTest();
+  LocalDisputeRepository.resetForTest();
+  LocalSupportRepository.resetForTest();
   return ProviderScope(
     overrides: [
       sharedPreferencesProvider.overrideWithValue(prefs),
       appSupabaseConfigProvider.overrideWithValue(
         const AppSupabaseConfig(
           url: 'https://test-project.supabase.co',
-          anonKey: 'test-anon-key',
+          publishableKey: 'test-publishable-key',
         ),
       ),
       supabaseClientProvider.overrideWithValue(null),
@@ -60,7 +65,7 @@ Future<ProviderScope> buildTestScope(
         messagingRepositoryOverride ?? LocalMessagingRepository(),
       ),
       notificationRepositoryProvider.overrideWithValue(
-        const LocalNotificationRepository(),
+        notificationRepositoryOverride ?? const LocalNotificationRepository(),
       ),
       adminReportsRepositoryProvider.overrideWithValue(
         const LocalAdminReportsRepository(),
@@ -91,17 +96,24 @@ Future<ProviderScope> buildTestScope(
 }
 
 class TestMaterialShell extends StatelessWidget {
-  const TestMaterialShell({required this.child, super.key});
+  const TestMaterialShell({
+    required this.child,
+    super.key,
+    this.themeMode = ThemeMode.dark,
+    this.locale = const Locale('en'),
+  });
 
   final Widget child;
+  final ThemeMode themeMode;
+  final Locale locale;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('en'),
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.dark,
+      locale: locale,
+      theme: AppTheme.light(locale: locale),
+      darkTheme: AppTheme.dark(locale: locale),
+      themeMode: themeMode,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

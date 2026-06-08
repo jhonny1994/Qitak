@@ -9,24 +9,18 @@ import 'package:qitak_app/features/admin/domain/conversation_oversight_case.dart
 import 'package:qitak_app/features/messaging/domain/conversation_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ConversationOversightRepository {
-  const ConversationOversightRepository();
-
+abstract class ConversationOversightRepository {
   Future<ConversationOversightCase> loadCase({
     required String threadId,
     required String purpose,
     String? note,
-  }) {
-    throw UnimplementedError();
-  }
+  });
 
   Future<void> attachNote({
     required String threadId,
     required String purpose,
     required String note,
-  }) {
-    throw UnimplementedError();
-  }
+  });
 }
 
 final conversationOversightRepositoryProvider =

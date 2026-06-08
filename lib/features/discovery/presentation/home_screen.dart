@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
+import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/protected_action_gate.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
@@ -39,8 +40,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           data: (value) => value,
           orElse: () => const <String>{},
         );
-    final brandWordmark = context.l10n.brandWordmark;
-
+    final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
+    final canShowSave = canSave || !session.isAuthenticated;
     return QitakPullToRefresh(
       onRefresh: () => ref.refresh(discoveryListingsProvider(0).future),
       slivers: [
@@ -48,107 +49,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: qitakPagePadding,
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              QitakPanel(
+              QitakSurface(
+                key: const Key('home-compact-search'),
+                role: QitakSurfaceRole.section,
+                padding: EdgeInsets.zero,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Stack(
-                      alignment: Alignment.center,
+                    Row(
                       children: [
-                        const SizedBox(height: 40, width: double.infinity),
-                        Center(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 10,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    key: const Key('home-brand-logo'),
-                                    'assets/brand/qitak-logo.png',
-                                    height: 44,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    brandWordmark,
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.labelLarge?.copyWith(
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 0.2,
-                                        ),
-                                  ),
-                                ],
-                              ),
+                        Expanded(
+                          child: TextField(
+                            key: const Key('home-search-field'),
+                            controller: _searchController,
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (_) => _submitSearch(),
+                            decoration: InputDecoration(
+                              hintText: context.l10n.discoverySearchHint,
+                              prefixIcon: const Icon(Icons.search_rounded),
                             ),
                           ),
                         ),
-                        const PositionedDirectional(
-                          start: 0,
-                          child: SizedBox(width: 48, height: 40),
-                        ),
-                        PositionedDirectional(
-                          end: 0,
-                          child: session.isAuthenticated
-                              ? IconButton.filledTonal(
-                                  onPressed: () => context.go('/notifications'),
-                                  icon: const Icon(
-                                    Icons.notifications_none_rounded,
-                                  ),
-                                  tooltip: context.l10n.notificationsTitle,
-                                )
-                              : const SizedBox(width: 48, height: 40),
+                        const SizedBox(width: 8),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: IconButton.filled(
+                                key: const Key('home-search-button'),
+                                onPressed: _submitSearch,
+                                icon: const Icon(Icons.search_rounded),
+                                tooltip: context.l10n.discoverySearchButton,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            SizedBox(
+                              width: 48,
+                              height: 48,
+                              child: IconButton.filledTonal(
+                                key: const Key('home-filter-button'),
+                                onPressed: _openFilters,
+                                icon: const Icon(Icons.tune_rounded),
+                                tooltip: context.l10n.discoveryFilterButton,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      context.l10n.discoverySearchHint,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      key: const Key('home-search-field'),
-                      controller: _searchController,
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (_) => _submitSearch(context),
-                      decoration: InputDecoration(
-                        hintText: context.l10n.discoverySearchHint,
-                        prefixIcon: const Icon(Icons.search_rounded),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.tonalIcon(
-                        key: const Key('home-filter-button'),
-                        onPressed: () => showDiscoveryFilterSheet(context),
-                        icon: const Icon(Icons.tune_rounded),
-                        label: Text(context.l10n.discoveryFilterButton),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        key: const Key('home-search-button'),
-                        onPressed: () => _submitSearch(context),
-                        icon: const Icon(Icons.search_rounded),
-                        label: Text(context.l10n.discoverySearchButton),
-                      ),
                     ),
                   ],
                 ),
@@ -181,6 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: qitakPageHorizontalPadding,
                 sliver: SliverToBoxAdapter(
                   child: Padding(
+                    key: const Key('home-marketplace-feed'),
                     padding: const EdgeInsets.only(top: 6, bottom: 10),
                     child: Text(
                       context.l10n.discoveryFeaturedListingsTitle,
@@ -198,7 +148,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     item: featured,
                     isSaved: savedIds.contains(featured.id),
                     onOpen: () => context.push('/listing/${featured.id}'),
-                    onToggleSave: () => _toggleSave(context, ref, featured.id),
+                    onToggleSave: canShowSave
+                        ? () => _toggleSave(context, ref, featured.id)
+                        : null,
                   ),
                 ),
               ),
@@ -230,7 +182,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         item: item,
                         isSaved: savedIds.contains(item.id),
                         onOpen: () => context.push('/listing/${item.id}'),
-                        onToggleSave: () => _toggleSave(context, ref, item.id),
+                        onToggleSave: canShowSave
+                            ? () => _toggleSave(context, ref, item.id)
+                            : null,
                       ),
                     );
                   }, childCount: latest.length),
@@ -265,12 +219,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  void _submitSearch(BuildContext context) {
+  void _submitSearch() {
     final trimmed = _searchController.text.trim();
     final query = trimmed.isEmpty
         ? '/search/results'
         : '/search/results?q=${Uri.encodeComponent(trimmed)}';
-    context.go(query);
+    final router = GoRouter.maybeOf(context);
+    if (router == null) {
+      return;
+    }
+    router.go(query);
+  }
+
+  Future<void> _openFilters() async {
+    final applied = await showDiscoveryFilterSheet(context);
+    if (!mounted || applied != true) {
+      return;
+    }
+    _submitSearch();
   }
 
   Future<void> _toggleSave(
@@ -279,6 +245,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     String listingId,
   ) async {
     final session = ref.read(authSessionProvider);
+    final canSave = session.profile?.role.hasBuyerCapabilities ?? false;
     if (!session.isAuthenticated) {
       await _handleAction(
         context,
@@ -291,6 +258,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         ),
       );
+      return;
+    }
+    if (!canSave) {
       return;
     }
     await ref.read(savedListingIdsProvider.notifier).toggle(listingId);
@@ -366,13 +336,13 @@ class _ListingRow extends StatelessWidget {
     required this.item,
     required this.isSaved,
     required this.onOpen,
-    required this.onToggleSave,
+    this.onToggleSave,
   });
 
   final MarketplaceListing item;
   final bool isSaved;
   final VoidCallback onOpen;
-  final VoidCallback onToggleSave;
+  final VoidCallback? onToggleSave;
 
   @override
   Widget build(BuildContext context) {

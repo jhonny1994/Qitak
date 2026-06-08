@@ -42,6 +42,45 @@ final disputeRepositoryProvider = Provider<DisputeRepository>((ref) {
   return SupabaseDisputeRepository(client, contracts);
 });
 
+class DisputeSubmissionCoordinator {
+  const DisputeSubmissionCoordinator();
+
+  Future<T> execute<T>({
+    required List<ListingMediaSelection> evidence,
+    required Future<String> Function() createDraft,
+    required Future<String> Function(
+      String disputeId,
+      int index,
+      ListingMediaSelection item,
+    )
+    uploadEvidence,
+    required Future<void> Function(String disputeId, String storagePath)
+    persistEvidence,
+    required Future<T> Function(String disputeId) finish,
+    required Future<void> Function(String disputeId, List<String> uploadedPaths)
+    rollback,
+  }) async {
+    final disputeId = await createDraft();
+    final uploadedPaths = <String>[];
+    try {
+      for (var index = 0; index < evidence.length; index++) {
+        final item = evidence[index];
+        final storagePath = await uploadEvidence(disputeId, index, item);
+        uploadedPaths.add(storagePath);
+        await persistEvidence(disputeId, storagePath);
+      }
+      return await finish(disputeId);
+    } on Object {
+      try {
+        await rollback(disputeId, uploadedPaths);
+      } on Object {
+        // Preserve the original submission failure; rollback is best effort.
+      }
+      rethrow;
+    }
+  }
+}
+
 class SupabaseDisputeRepository implements DisputeRepository {
   const SupabaseDisputeRepository(this._client, this._contracts);
 
@@ -162,42 +201,62 @@ class SupabaseDisputeRepository implements DisputeRepository {
     required String description,
     List<ListingMediaSelection> evidence = const <ListingMediaSelection>[],
   }) async {
-    late final Map<String, dynamic> row;
+    late Map<String, dynamic> row;
     try {
-      row = await _client
-          .from('disputes')
-          .insert(<String, dynamic>{
-            'deal_id': transactionId,
-            'filed_by': createdByUserId,
-            'dispute_type': reason,
-            'description': description,
-            'status': 'open',
-          })
-          .select()
-          .single();
+      return await const DisputeSubmissionCoordinator().execute<
+        TransactionDispute
+      >(
+        evidence: evidence,
+        createDraft: () async {
+          row = await _client
+              .from('disputes')
+              .insert(<String, dynamic>{
+                'deal_id': transactionId,
+                'filed_by': createdByUserId,
+                'dispute_type': reason,
+                'description': description,
+                'status': 'open',
+              })
+              .select()
+              .single();
+          return row['id'] as String;
+        },
+        uploadEvidence: (disputeId, index, item) async {
+          final storagePath =
+              '$createdByUserId/$disputeId/${index}_${_sanitizeFileName(item.fileName)}';
+          await _client.storage
+              .from(_bucket)
+              .uploadBinary(
+                storagePath,
+                item.bytes,
+                fileOptions: FileOptions(contentType: item.mimeType),
+              );
+          return storagePath;
+        },
+        persistEvidence: (disputeId, storagePath) {
+          return _client.from('dispute_evidence').insert(<String, dynamic>{
+            'dispute_id': disputeId,
+            'uploaded_by': createdByUserId,
+            'storage_path': storagePath,
+          });
+        },
+        finish: (disputeId) async => await fetchById(disputeId) ?? _mapRow(row),
+        rollback: (disputeId, uploadedPaths) async {
+          if (uploadedPaths.isNotEmpty) {
+            await _client
+                .from('dispute_evidence')
+                .delete()
+                .eq('dispute_id', disputeId);
+            await _client.storage.from(_bucket).remove(uploadedPaths);
+          }
+          await _client.from('disputes').delete().eq('id', disputeId);
+        },
+      );
     } on PostgrestException catch (error) {
       throw AppException.fromCode(classifyPostgrestException(error));
+    } on StorageException catch (_) {
+      throw AppException.fromCode(AppErrorCode.networkUnavailable);
     }
-
-    final disputeId = row['id'] as String;
-    for (var index = 0; index < evidence.length; index++) {
-      final item = evidence[index];
-      final storagePath =
-          '$createdByUserId/$disputeId/${index}_${_sanitizeFileName(item.fileName)}';
-      await _client.storage
-          .from(_bucket)
-          .uploadBinary(
-            storagePath,
-            item.bytes,
-            fileOptions: FileOptions(contentType: item.mimeType),
-          );
-      await _client.from('dispute_evidence').insert(<String, dynamic>{
-        'dispute_id': disputeId,
-        'uploaded_by': createdByUserId,
-        'storage_path': storagePath,
-      });
-    }
-    return await fetchById(disputeId) ?? _mapRow(row);
   }
 
   @override
@@ -272,9 +331,15 @@ class SupabaseDisputeRepository implements DisputeRepository {
 class LocalDisputeRepository implements DisputeRepository {
   const LocalDisputeRepository();
 
+  static final List<TransactionDispute> _disputes = <TransactionDispute>[];
+
+  static void resetForTest() {
+    _disputes.clear();
+  }
+
   @override
   Future<TransactionDispute?> fetchById(String disputeId) async {
-    for (final item in await listOpenDisputes()) {
+    for (final item in _disputes) {
       if (item.id == disputeId) {
         return item;
       }
@@ -284,7 +349,10 @@ class LocalDisputeRepository implements DisputeRepository {
 
   @override
   Future<List<TransactionDispute>> listOpenDisputes() async {
-    return const <TransactionDispute>[];
+    return _disputes
+        .where((item) => item.status == 'open' || item.status == 'under_review')
+        .toList(growable: false)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   @override
@@ -295,15 +363,28 @@ class LocalDisputeRepository implements DisputeRepository {
     required String description,
     List<ListingMediaSelection> evidence = const <ListingMediaSelection>[],
   }) async {
-    return TransactionDispute(
-      id: 'dispute-$transactionId',
+    final dispute = TransactionDispute(
+      id: 'dispute-${_disputes.length + 1}',
       transactionId: transactionId,
       createdByUserId: createdByUserId,
       reason: reason,
       description: description,
       status: 'open',
       createdAt: DateTime.now(),
+      evidence: [
+        for (var index = 0; index < evidence.length; index++)
+          DisputeEvidenceItem(
+            id: 'evidence-${_disputes.length + 1}-$index',
+            storagePath:
+                '$createdByUserId/dispute-${_disputes.length + 1}/${evidence[index].fileName}',
+            previewUrl: evidence[index].toDataUri(),
+          ),
+      ],
     );
+    _disputes
+      ..removeWhere((item) => item.id == dispute.id)
+      ..insert(0, dispute);
+    return dispute;
   }
 
   @override
@@ -313,7 +394,33 @@ class LocalDisputeRepository implements DisputeRepository {
     required String reasonCode,
     required String outcomeAction,
     String? note,
-  }) async {}
+  }) async {
+    final index = _disputes.indexWhere((item) => item.id == disputeId);
+    if (index == -1) {
+      return;
+    }
+    final current = _disputes[index];
+    final nextStatus = switch (decision) {
+      'buyer' => 'resolved_buyer',
+      'seller' => 'resolved_seller',
+      'dismiss' => 'dismissed',
+      _ => current.status,
+    };
+    _disputes[index] = TransactionDispute(
+      id: current.id,
+      transactionId: current.transactionId,
+      createdByUserId: current.createdByUserId,
+      reason: current.reason,
+      description: current.description,
+      status: nextStatus,
+      createdAt: current.createdAt,
+      buyerName: current.buyerName,
+      sellerName: current.sellerName,
+      listingTitle: current.listingTitle,
+      conversationId: current.conversationId,
+      evidence: current.evidence,
+    );
+  }
 }
 
 final FutureProvider<List<TransactionDispute>> adminDisputesProvider =

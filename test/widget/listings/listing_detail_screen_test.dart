@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';
 import 'package:qitak_app/features/discovery/domain/marketplace_listing.dart';
@@ -10,7 +11,46 @@ import '../../fixtures/listing_media_fixture.dart';
 import '../../fixtures/seeded_discovery_repository.dart';
 import '../../support/slice_test_bootstrap.dart';
 
+const _shareChannel = MethodChannel('dev.fluttercommunity.plus/share');
+
 void main() {
+  testWidgets('listing detail follows purchase decision order', (tester) async {
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(
+          body: ListingDetailScreen(listingId: 'listing-1'),
+        ),
+      ),
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('listing-detail-media')), findsOneWidget);
+    expect(find.byKey(const Key('listing-detail-price')), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('listing-detail-seller')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    final sellerTop = tester
+        .getTopLeft(
+          find.byKey(const Key('listing-detail-seller')),
+        )
+        .dy;
+    final descriptionTop = tester.getTopLeft(find.text('Description')).dy;
+
+    expect(sellerTop, lessThan(descriptionTop));
+  });
+
   testWidgets('renders production-style listing detail from discovery data', (
     tester,
   ) async {
@@ -93,6 +133,121 @@ void main() {
     expect(find.text('Sign in'), findsOneWidget);
     expect(find.text('Create account'), findsOneWidget);
   });
+
+  testWidgets('share action targets the registered public listing route', (
+    tester,
+  ) async {
+    String? sharedText;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(_shareChannel, (call) async {
+          if (call.method == 'share') {
+            final arguments = Map<Object?, Object?>.from(
+              call.arguments as Map<Object?, Object?>,
+            );
+            sharedText = arguments['text'] as String?;
+          }
+          return 'dev.fluttercommunity.plus/share/unavailable';
+        });
+    addTearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(_shareChannel, null);
+    });
+
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(
+          body: ListingDetailScreen(listingId: 'listing-1'),
+        ),
+      ),
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Share listing'));
+    await tester.pumpAndSettle();
+
+    expect(sharedText, 'Headlight assembly');
+  });
+
+  testWidgets('admin listing detail hides save actions', (tester) async {
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(
+          body: ListingDetailScreen(listingId: 'listing-1'),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'admin@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.byTooltip('Save listing'), findsNothing);
+  });
+
+  testWidgets(
+    'listing detail does not invent a verified seller label when seller name is missing',
+    (tester) async {
+      final scope = await buildSliceTestScope(
+        const SliceTestMaterialShell(
+          child: Scaffold(
+            body: ListingDetailScreen(listingId: 'listing-anon-seller'),
+          ),
+        ),
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            const FakeDiscoveryRepository(
+              listings: [
+                MarketplaceListing(
+                  id: 'listing-anon-seller',
+                  sellerUserId: 'seller-001',
+                  title: 'Radiator fan',
+                  priceAmount: 12000,
+                  sellerLabelCode: 'seller_label_verified',
+                  rating: 4.2,
+                  threadId: 'thread-1',
+                  transactionId: 'txn-1',
+                  categoryId: 'cooling-system',
+                  categoryCode: 'cooling-system',
+                  conditionCode: 'used',
+                  description: 'Clean fan module with tested connector.',
+                  wilayaCode: '16',
+                  communeCode: '1601',
+                  brand: 'Peugeot',
+                  model: '208',
+                  year: 2017,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Seller'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Verified seller'), findsNothing);
+      expect(find.text('Business seller'), findsNothing);
+    },
+  );
 
   testWidgets('shows unavailable state when listing cannot be resolved', (
     tester,

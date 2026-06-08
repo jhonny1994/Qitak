@@ -44,7 +44,11 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
     final matches = transactionState.items.where(
       (item) => item.id == widget.transactionId,
     );
-    final record = matches.isEmpty ? null : matches.first;
+    final hydratedRecord = matches.isEmpty ? null : matches.first;
+    final fallbackRecordAsync = hydratedRecord == null
+        ? ref.watch(transactionDetailProvider(widget.transactionId))
+        : null;
+    final record = hydratedRecord ?? fallbackRecordAsync?.value;
     final listingAsync = record == null
         ? null
         : ref.watch(discoveryListingProvider(record.listingId));
@@ -95,12 +99,6 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                     leading: const QitakRouteBackButton(fallbackPath: '/deals'),
                   ),
                   const SizedBox(height: 16),
-                  QitakSignalStrip(
-                    label: context.l10n.transactionRecordLabel,
-                    value: context.l10n.transactionReferenceLabel(record.id),
-                    status: context.l10n.displayTransactionState(record.state),
-                  ),
-                  const SizedBox(height: 16),
                   if (listing != null)
                     QitakListingSurface(
                       title: listing.localizedTitle(context.l10n),
@@ -121,6 +119,16 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                       meta: context.l10n.ratingListingContextPending,
                       status: counterpartyLabel,
                     ),
+                  const SizedBox(height: 16),
+                  QitakSurface(
+                    role: QitakSurfaceRole.section,
+                    padding: const EdgeInsets.all(14),
+                    child: QitakSignalStrip(
+                      label: counterpartyLabel,
+                      value: context.l10n.displayTransactionState(record.state),
+                      status: context.l10n.ratingContextSubtitle,
+                    ),
+                  ),
                 ],
               ),
             ),

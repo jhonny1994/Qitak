@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/data/auth_repository.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
@@ -21,7 +22,6 @@ import 'package:qitak_app/features/auth/presentation/protected_action_gate.dart'
 import 'package:qitak_app/features/auth/presentation/sign_in_screen.dart';
 import 'package:qitak_app/features/auth/presentation/sign_up_screen.dart';
 import 'package:qitak_app/features/auth/presentation/splash_screen.dart';
-import 'package:qitak_app/features/auth/presentation/support_help_screen.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
@@ -62,6 +62,52 @@ void main() {
       find.text('Password must be at least 8 characters.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('profile uses grouped rows without nested default panels', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        themeMode: ThemeMode.light,
+        child: Scaffold(body: ProfileScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(ProfileScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profile-identity-surface')), findsOneWidget);
+    expect(
+      find.byKey(const Key('profile-preferences-section')),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('profile-danger-section')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('profile-danger-section')), findsOneWidget);
+  });
+
+  testWidgets('sign in exposes one primary action', (tester) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SignInScreen()),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+
+    expect(find.widgetWithText(FilledButton, 'Sign in'), findsOneWidget);
   });
 
   testWidgets('account settings updates local session profile', (tester) async {
@@ -216,6 +262,26 @@ void main() {
     expect(container.read(appPreferencesProvider).themeMode, ThemeMode.light);
   });
 
+  testWidgets('appearance preferences lists system before light and dark', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: AppearancePreferencesScreen()),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    final systemTop = tester.getTopLeft(find.text('System')).dy;
+    final lightTop = tester.getTopLeft(find.text('Light')).dy;
+    final darkTop = tester.getTopLeft(find.text('Dark')).dy;
+
+    expect(systemTop, lessThan(lightTop));
+    expect(lightTop, lessThan(darkTop));
+  });
+
   testWidgets(
     'profile screen omits seller-conversion signals for buyer accounts',
     (tester) async {
@@ -267,11 +333,12 @@ void main() {
     expect(find.text('Continue as guest'), findsNothing);
     expect(find.text('Admin access'), findsNothing);
     expect(find.text('Help and support'), findsNothing);
+    expect(find.text('Google sign-in is currently unavailable'), findsNothing);
     expect(find.byType(TextFormField), findsNWidgets(2));
   });
 
   testWidgets(
-    'shared sign in surface switches role and uses text link for mode',
+    'shared sign in surface switches customer modes inline',
     (
       tester,
     ) async {
@@ -312,8 +379,9 @@ void main() {
       expect(find.byType(SignInScreen), findsOneWidget);
       expect(find.text('Buyer'), findsOneWidget);
       expect(find.text('Seller'), findsOneWidget);
+      expect(find.text('Seller sign in'), findsNothing);
 
-      await tester.tap(find.text('Seller'));
+      await tester.tap(find.byKey(const Key('customer-auth-mode-seller')));
       await tester.pumpAndSettle();
       expect(find.byType(SignInScreen), findsOneWidget);
       expect(
@@ -321,9 +389,6 @@ void main() {
         findsOneWidget,
       );
 
-      await tester.ensureVisible(
-        find.text('Need a seller account? Create one'),
-      );
       await tester.tap(find.text('Need a seller account? Create one'));
       await tester.pumpAndSettle();
       expect(find.byType(SignUpScreen), findsOneWidget);
@@ -332,7 +397,7 @@ void main() {
   );
 
   testWidgets(
-    'shared sign up surface switches role and uses text link for mode',
+    'shared sign up surface switches customer modes inline',
     (
       tester,
     ) async {
@@ -372,8 +437,10 @@ void main() {
 
       expect(find.byType(SignUpScreen), findsOneWidget);
       expect(find.text('Create seller account'), findsOneWidget);
+      expect(find.text('Buyer'), findsOneWidget);
+      expect(find.text('Seller'), findsOneWidget);
 
-      await tester.tap(find.text('Buyer'));
+      await tester.tap(find.byKey(const Key('customer-auth-mode-buyer')));
       await tester.pumpAndSettle();
       expect(find.byType(SignUpScreen), findsOneWidget);
       expect(find.text('Create account'), findsAtLeastNWidgets(1));
@@ -497,6 +564,180 @@ void main() {
     expect(container.read(appPreferencesProvider).guestBrowsingEnabled, isTrue);
   });
 
+  testWidgets(
+    'sign in fails closed when profile authority is unavailable',
+    (tester) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SignInScreen()),
+        ),
+        authRepositoryOverride: const _ProfileAuthorityBlockedAuthRepository(),
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'buyer@qitak.test',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+      await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Account created, but profile setup is blocked by a backend policy issue.',
+        ),
+        findsOneWidget,
+      );
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SignInScreen)),
+      );
+      expect(container.read(authSessionProvider).isAuthenticated, isFalse);
+    },
+  );
+
+  testWidgets('buyer sign in lands on buyer home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/sign-in',
+          builder: (context, state) => const Scaffold(body: SignInScreen()),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => const Scaffold(body: Text('buyer-home')),
+        ),
+      ],
+      initialLocation: '/auth/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'buyer@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('buyer-home'), findsOneWidget);
+  });
+
+  testWidgets('seller sign in lands on onboarding status when unapproved', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/seller/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.seller),
+          ),
+        ),
+        GoRoute(
+          path: '/seller/onboarding/status',
+          builder: (context, state) =>
+              const Scaffold(body: Text('seller-status')),
+        ),
+      ],
+      initialLocation: '/auth/seller/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('customer-auth-mode-seller')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'seller@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('seller-status'), findsOneWidget);
+  });
+
+  testWidgets('seller sign in lands on seller home when approved', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/seller/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.seller),
+          ),
+        ),
+        GoRoute(
+          path: '/seller/home',
+          builder: (context, state) =>
+              const Scaffold(body: Text('seller-home')),
+        ),
+      ],
+      initialLocation: '/auth/seller/sign-in',
+    );
+
+    final scope = await buildTestScope(
+      routerShell(router),
+      sellerApplicationRepositoryOverride:
+          const _ApprovedSellerApplicationRepository(),
+    );
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('customer-auth-mode-seller')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'seller@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('seller-home'), findsOneWidget);
+  });
+
+  testWidgets('admin sign in lands on admin home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/auth/admin/sign-in',
+          builder: (context, state) => const Scaffold(
+            body: SignInScreen(variant: SignInVariant.admin),
+          ),
+        ),
+        GoRoute(
+          path: '/admin/home',
+          builder: (context, state) => const Scaffold(body: Text('admin-home')),
+        ),
+      ],
+      initialLocation: '/auth/admin/sign-in',
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'admin@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'password123');
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign in').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('admin-home'), findsOneWidget);
+  });
+
   testWidgets('seller sign up lands on seller onboarding status', (
     tester,
   ) async {
@@ -521,6 +762,8 @@ void main() {
     await tester.pumpWidget(scope);
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const Key('customer-auth-mode-seller')));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextFormField).at(0), 'Seller Ready');
     await tester.enterText(
       find.byType(TextFormField).at(1),
@@ -566,6 +809,8 @@ void main() {
       await tester.pumpWidget(scope);
       await tester.pumpAndSettle();
 
+      await tester.tap(find.byKey(const Key('customer-auth-mode-seller')));
+      await tester.pumpAndSettle();
       await tester.enterText(
         find.byType(TextFormField).at(0),
         'Seller Fallback',
@@ -702,7 +947,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Continue as guest'), findsNothing);
-    expect(find.text('Admin access'), findsNothing);
+    expect(find.text('Admin sign in'), findsNothing);
     expect(find.text('Back to user auth'), findsOneWidget);
   });
 
@@ -758,6 +1003,41 @@ void main() {
     );
   });
 
+  testWidgets('buyer sign up lands on buyer home', (tester) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(body: SignUpScreen()),
+        ),
+        GoRoute(
+          path: '/home',
+          builder: (context, state) => const Scaffold(body: Text('buyer-home')),
+        ),
+      ],
+    );
+
+    final scope = await buildTestScope(routerShell(router));
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Buyer Ready');
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'buyer.ready@qitak.test',
+    );
+    await tester.enterText(find.byType(TextFormField).at(2), '+213555111444');
+    await tester.enterText(find.byType(TextFormField).at(3), 'password123');
+    await tester.enterText(find.byType(TextFormField).at(4), 'password123');
+    await tester.ensureVisible(find.byType(CheckboxListTile));
+    await tester.tap(find.byType(CheckboxListTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Create account').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('buyer-home'), findsOneWidget);
+  });
+
   testWidgets(
     'seller profile hub exposes account utilities and settings entry',
     (
@@ -789,6 +1069,10 @@ void main() {
       await container.read(authSessionProvider.notifier).restore();
       await tester.pumpAndSettle();
 
+      expect(find.text('Account'), findsOneWidget);
+      expect(find.text('Preferences'), findsOneWidget);
+      await tester.scrollUntilVisible(find.text('Help and legal'), 200);
+      expect(find.text('Help and legal'), findsOneWidget);
       expect(find.byKey(const Key('profile-settings-button')), findsOneWidget);
       expect(find.byKey(const Key('profile-language-button')), findsOneWidget);
       expect(
@@ -904,7 +1188,7 @@ void main() {
   });
 
   testWidgets(
-    'guest account hub exposes buyer, seller, admin, and utility actions',
+    'guest account hub exposes customer auth plus separate admin entry',
     (
       tester,
     ) async {
@@ -916,12 +1200,6 @@ void main() {
               body: GuestAccountScreen(),
             ),
           ),
-          GoRoute(
-            path: '/auth/admin/sign-in',
-            builder: (context, state) => const Scaffold(
-              body: Text('admin-entry'),
-            ),
-          ),
         ],
       );
 
@@ -931,7 +1209,7 @@ void main() {
 
       expect(find.text('Sign in'), findsOneWidget);
       expect(find.text('Create account'), findsOneWidget);
-      expect(find.text('Admin access'), findsOneWidget);
+      expect(find.text('Admin sign in'), findsOneWidget);
       expect(
         find.byKey(const Key('guest-account-language-button')),
         findsOneWidget,
@@ -942,37 +1220,36 @@ void main() {
       );
       expect(
         find.byKey(const Key('guest-account-support-button')),
-        findsOneWidget,
+        findsNothing,
       );
       expect(
         find.byKey(const Key('guest-account-legal-button')),
         findsOneWidget,
       );
       expect(find.byIcon(Icons.chevron_right_rounded), findsNothing);
-
-      router.go('/');
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Admin access'));
-      await tester.pumpAndSettle();
-      expect(find.text('admin-entry'), findsOneWidget);
     },
   );
 
   testWidgets(
-    'guest support notifications route to guest account instead of raw sign in',
+    'guest account admin entry opens dedicated admin sign in route',
     (tester) async {
+      tester.view.physicalSize = const Size(1200, 2400);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
       final router = GoRouter(
         routes: [
           GoRoute(
             path: '/',
             builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
+              body: GuestAccountScreen(),
             ),
           ),
           GoRoute(
-            path: '/guest/account',
+            path: '/auth/admin/sign-in',
             builder: (context, state) => const Scaffold(
-              body: GuestAccountScreen(),
+              body: SignInScreen(variant: SignInVariant.admin),
             ),
           ),
         ],
@@ -982,102 +1259,13 @@ void main() {
       await tester.pumpWidget(scope);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Notifications'));
+      await tester.tap(
+        find.byKey(const Key('guest-account-admin-sign-in-button')),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.byType(GuestAccountScreen), findsOneWidget);
-      expect(find.byType(SignInScreen), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'authenticated support handoff routes to account settings in profile tree',
-    (tester) async {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/settings',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-settings'),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/legal',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-legal'),
-            ),
-          ),
-        ],
-      );
-
-      final scope = await buildTestScope(
-        routerShell(router),
-        seed: const <String, Object>{
-          'qitak.local.session.email': 'buyer@qitak.test',
-        },
-      );
-      await tester.pumpWidget(scope);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(SupportHelpScreen)),
-      );
-      await container.read(authSessionProvider.notifier).restore();
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Account settings'));
-      await tester.pumpAndSettle();
-      expect(find.text('profile-settings'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'authenticated support handoff routes to legal in profile tree',
-    (tester) async {
-      final router = GoRouter(
-        routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const Scaffold(
-              body: SupportHelpScreen(),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/settings',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-settings'),
-            ),
-          ),
-          GoRoute(
-            path: '/profile/legal',
-            builder: (context, state) => const Scaffold(
-              body: Text('profile-legal'),
-            ),
-          ),
-        ],
-      );
-
-      final scope = await buildTestScope(
-        routerShell(router),
-        seed: const <String, Object>{
-          'qitak.local.session.email': 'buyer@qitak.test',
-        },
-      );
-      await tester.pumpWidget(scope);
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(SupportHelpScreen)),
-      );
-      await container.read(authSessionProvider.notifier).restore();
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(find.byType(FilledButton).last);
-      await tester.tap(find.byType(FilledButton).last);
-      await tester.pumpAndSettle();
-      expect(find.text('profile-legal'), findsOneWidget);
+      expect(find.byType(SignInScreen), findsOneWidget);
+      expect(find.text('Back to user auth'), findsOneWidget);
     },
   );
 
@@ -1211,6 +1399,58 @@ class _ThrowingSellerApplicationRepository
   }
 }
 
+class _ApprovedSellerApplicationRepository
+    implements SellerApplicationRepository {
+  const _ApprovedSellerApplicationRepository();
+
+  @override
+  Future<SellerApplication?> fetchById(String applicationId) async =>
+      _approvedApplication;
+
+  @override
+  Future<SellerApplication?> fetchCurrentForUser(String userId) async =>
+      _approvedApplication;
+
+  @override
+  Future<List<SellerApplication>> listPendingApplications() async =>
+      const <SellerApplication>[];
+
+  @override
+  Future<SellerApplication> submitApplication({
+    required String userId,
+    required SellerApplicationDraft draft,
+  }) async {
+    return _approvedApplication;
+  }
+
+  @override
+  Future<SellerApplication> updateStatus({
+    required String applicationId,
+    required SellerVerificationStatus status,
+    String? reasonCode,
+    String? note,
+  }) async {
+    return _approvedApplication;
+  }
+
+  @override
+  Future<List<AppPolicyOption>> fetchPolicyOptions(String policyType) async =>
+      const <AppPolicyOption>[];
+
+  static const SellerApplication _approvedApplication = SellerApplication(
+    id: 'seller-app-seller-001',
+    userId: 'seller-001',
+    sellerType: 'business',
+    businessName: 'Samir Auto Parts',
+    phone: '+213555000222',
+    email: 'seller@qitak.test',
+    wilayaId: '16',
+    communeId: '1601',
+    bio: 'Approved seller account.',
+    verificationStatus: SellerVerificationStatus.approved,
+  );
+}
+
 class _PendingConfirmationAuthRepository implements AuthRepository {
   const _PendingConfirmationAuthRepository();
 
@@ -1241,6 +1481,59 @@ class _PendingConfirmationAuthRepository implements AuthRepository {
           'Account created. Please check your email and click the '
           'confirmation link before signing in.',
     );
+  }
+
+  @override
+  Future<void> requestPasswordReset(String email) async {}
+
+  @override
+  Future<void> updatePassword(String newPassword) async {}
+
+  @override
+  Future<void> deactivateAccount() async {}
+
+  @override
+  Future<AccountProfile> updateProfile({
+    required String fullName,
+    required String phone,
+  }) async {
+    throw const AppException('not-used');
+  }
+
+  @override
+  Future<AccountProfile> updateLanguage(String language) async {
+    throw const AppException('not-used');
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
+
+class _ProfileAuthorityBlockedAuthRepository implements AuthRepository {
+  const _ProfileAuthorityBlockedAuthRepository();
+
+  @override
+  Future<AuthSessionSnapshot> restoreSession() async =>
+      const AuthSessionSnapshot(isAuthenticated: false);
+
+  @override
+  Future<AccountProfile> signIn({
+    required String email,
+    required String password,
+  }) async {
+    throw AppException.fromCode(AppErrorCode.profileSetupBlocked);
+  }
+
+  @override
+  Future<AccountProfile> signUp({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String password,
+    required SignUpVariant variant,
+    String language = 'ar',
+  }) async {
+    throw const AppException('not-used');
   }
 
   @override

@@ -180,7 +180,7 @@ class LocalStoredListing {
       sellerUserId: sellerUserId,
       title: title,
       priceAmount: price,
-      sellerLabelCode: _verifiedSellerCode(),
+      sellerLabelCode: '',
       rating: 0,
       threadId: '${id}_thread',
       transactionId: '${id}_transaction',
@@ -200,9 +200,5 @@ class LocalStoredListing {
       mediaUrls: mediaUrls,
       status: status,
     );
-  }
-
-  String _verifiedSellerCode() {
-    return 'seller_label_verified';
   }
 }

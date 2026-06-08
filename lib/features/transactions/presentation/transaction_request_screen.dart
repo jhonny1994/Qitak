@@ -101,17 +101,34 @@ class _TransactionRequestScreenState
                     runSpacing: 10,
                     children: [
                       QitakChip(
+                        key: const Key('transaction-intent-buy'),
                         label: context.l10n.discoveryDealTypeBuy,
                         selected: _dealType == 'buy',
                         onTap: () => setState(() => _dealType = 'buy'),
                       ),
                       if (canExchange)
                         QitakChip(
+                          key: const Key('transaction-intent-exchange'),
                           label: context.l10n.discoveryDealTypeBuyOrExchange,
                           selected: _dealType == 'exchange',
                           onTap: () => setState(() => _dealType = 'exchange'),
                         ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  QitakSurface(
+                    key: const Key('transaction-obligations'),
+                    role: QitakSurfaceRole.section,
+                    padding: const EdgeInsets.all(14),
+                    child: Text(
+                      _dealType == 'exchange'
+                          ? context.l10n.transactionSellerContextLabel
+                          : context.l10n.transactionStartBody,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        height: 1.35,
+                      ),
+                    ),
                   ),
                   if (_dealType == 'exchange') ...[
                     const SizedBox(height: 16),

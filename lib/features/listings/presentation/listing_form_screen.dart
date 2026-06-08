@@ -189,6 +189,20 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                     ),
                     const SizedBox(height: 18),
                     QitakPanel(
+                      key: const Key('listing-form-progress'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Text(
+                        '1/4',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    QitakPanel(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -692,24 +706,27 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: FilledButton(
-                                  key: const Key('listing-submit-button'),
-                                  onPressed: _submitting
-                                      ? null
-                                      : () => _submit(
-                                          ListingWorkflowAction.submit,
-                                        ),
-                                  child:
-                                      _submitting &&
-                                          _lastAction ==
-                                              ListingWorkflowAction.submit
-                                      ? const SizedBox.square(
-                                          dimension: 18,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
+                                child: KeyedSubtree(
+                                  key: const Key('listing-form-primary-action'),
+                                  child: FilledButton(
+                                    key: const Key('listing-submit-button'),
+                                    onPressed: _submitting
+                                        ? null
+                                        : () => _submit(
+                                            ListingWorkflowAction.submit,
                                           ),
-                                        )
-                                      : Text(submitLabel),
+                                    child:
+                                        _submitting &&
+                                            _lastAction ==
+                                                ListingWorkflowAction.submit
+                                        ? const SizedBox.square(
+                                            dimension: 18,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Text(submitLabel),
+                                  ),
                                 ),
                               ),
                             ],

@@ -163,14 +163,37 @@ void main() {
     await tester.pumpWidget(scope);
     await settleDiscovery(tester);
 
-    final searchTop = tester.getTopLeft(
-      find.byKey(const Key('home-search-button')),
-    ).dy;
-    final filterTop = tester.getTopLeft(
-      find.byKey(const Key('home-filter-button')),
-    ).dy;
+    final searchTop = tester
+        .getTopLeft(
+          find.byKey(const Key('home-search-button')),
+        )
+        .dy;
+    final filterTop = tester
+        .getTopLeft(
+          find.byKey(const Key('home-filter-button')),
+        )
+        .dy;
 
     expect(searchTop, lessThan(filterTop));
+  });
+
+  testWidgets('home leads with compact search and marketplace content', (
+    tester,
+  ) async {
+    final scope = await buildSliceTestScope(
+      buildShell(const HomeScreen()),
+      overrides: defaultOverrides(),
+    );
+
+    await tester.pumpWidget(scope);
+    await settleDiscovery(tester);
+
+    expect(find.byKey(const Key('home-compact-search')), findsOneWidget);
+    expect(find.byKey(const Key('home-marketplace-feed')), findsOneWidget);
+    expect(
+      tester.getSize(find.byKey(const Key('home-compact-search'))).height,
+      lessThanOrEqualTo(104),
+    );
   });
 
   testWidgets('renders loading skeletons before discovery data resolves', (

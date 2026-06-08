@@ -51,29 +51,74 @@ class ConversationListScreen extends ConsumerWidget {
                     ),
                   )
                 else
-                  QitakPanel(
-                    child: Column(
-                      children: [
-                        for (var index = 0; index < items.length; index++) ...[
-                          InkWell(
+                  Column(
+                    children: [
+                      for (var index = 0; index < items.length; index++) ...[
+                        QitakSurface(
+                          key: const Key('conversation-row'),
+                          role: QitakSurfaceRole.object,
+                          child: InkWell(
                             onTap: () => context.push(
                               '/messages/thread/${items[index].id}',
                             ),
                             borderRadius: BorderRadius.circular(18),
-                            child: QitakQueueRow(
-                              title: items[index].listingTitle.isEmpty
-                                  ? context.l10n.messagesConversationTitle
-                                  : items[index].listingTitle,
-                              meta: items[index].lastMessageBody,
-                              status: context.l10n.messagesOpenStatus,
-                              trailing: const Icon(Icons.chevron_right_rounded),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        items[index].listingTitle.isEmpty
+                                            ? context
+                                                  .l10n
+                                                  .messagesConversationTitle
+                                            : items[index].listingTitle,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        items[index].lastMessageBody,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurfaceVariant,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        items[index].otherPartyLabel,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Icon(Icons.chevron_right_rounded),
+                              ],
                             ),
                           ),
-                          if (index < items.length - 1)
-                            const Divider(height: 24),
-                        ],
+                        ),
+                        if (index < items.length - 1)
+                          const SizedBox(height: 12),
                       ],
-                    ),
+                    ],
                   ),
               ]),
             ),

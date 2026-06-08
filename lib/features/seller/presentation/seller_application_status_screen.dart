@@ -39,14 +39,16 @@ class SellerApplicationStatusScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 18),
-          QitakSignalStrip(
-            label: context.l10n.sellerStatusTitle,
-            value:
-                item?.verificationStatus.label(context.l10n) ??
-                context.l10n.sellerStatusNotStarted,
-            status: item == null
-                ? context.l10n.sellerStatusProfileDraftBody
-                : item.verificationStatus.subtitle(context.l10n),
+          QitakPanel(
+            child: QitakSignalStrip(
+              label: context.l10n.sellerStatusTitle,
+              value:
+                  item?.verificationStatus.label(context.l10n) ??
+                  context.l10n.sellerStatusNotStarted,
+              status: item == null
+                  ? context.l10n.sellerStatusProfileDraftBody
+                  : item.verificationStatus.subtitle(context.l10n),
+            ),
           ),
           const SizedBox(height: 16),
           QitakPanel(
@@ -142,26 +144,28 @@ class SellerApplicationStatusScreen extends ConsumerWidget {
             ),
           ],
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.tonal(
-                  key: const Key('seller-status-primary-action'),
-                  onPressed: () => context.go(_primaryActionPath(item)),
-                  child: Text(
-                    _primaryActionLabel(context, item),
+          QitakPanel(
+            child: Row(
+              children: [
+                Expanded(
+                  child: FilledButton.tonal(
+                    key: const Key('seller-status-primary-action'),
+                    onPressed: () => context.go(_primaryActionPath(item)),
+                    child: Text(
+                      _primaryActionLabel(context, item),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  key: const Key('seller-status-profile-action'),
-                  onPressed: () => context.go('$profileRoot/settings'),
-                  child: Text(context.l10n.accountSettingsTitle),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    key: const Key('seller-status-profile-action'),
+                    onPressed: () => context.go('$profileRoot/settings'),
+                    child: Text(context.l10n.accountSettingsTitle),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

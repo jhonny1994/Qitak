@@ -353,6 +353,10 @@ void main() {
       find.text(
         'Meet the buyer in person, collect cash, then confirm the cash order.',
       ),
+      findsWidgets,
+    );
+    expect(
+      find.byKey(const Key('transaction-detail-support')),
       findsOneWidget,
     );
   });
@@ -400,6 +404,10 @@ void main() {
 
       expect(
         find.text('Review the uploaded proof and confirm or reject it.'),
+        findsWidgets,
+      );
+      expect(
+        find.byKey(const Key('transaction-detail-support')),
         findsOneWidget,
       );
     },

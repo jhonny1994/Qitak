@@ -193,6 +193,54 @@ void main() {
   });
 
   testWidgets(
+    'seller inventory keeps one visible next action and overflow extras',
+    (tester) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SellerListingsScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          sellerListingsRepositoryProvider.overrideWithValue(
+            _FakeSellerListingsRepository([
+              const SellerManagedListing(
+                id: 'listing-owned',
+                title: 'Headlight assembly',
+                status: 'active',
+                price: 18500,
+                categoryId: 'lighting',
+                condition: 'Like new',
+                primaryImageUrl: null,
+              ),
+            ]),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SellerListingsScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('seller-listing-next-action')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('seller-listing-more-actions')),
+        findsOneWidget,
+      );
+      expect(find.widgetWithText(FilledButton, 'Pause'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Edit'), findsNothing);
+      expect(find.text('Close'), findsNothing);
+    },
+  );
+
+  testWidgets(
     'seller inventory renders human-readable location and condition copy',
     (
       tester,
@@ -287,15 +335,9 @@ void main() {
 
     await tester.tap(find.textContaining('Drafts'));
     await tester.pumpAndSettle();
-    await tester.dragUntilVisible(
-      find.widgetWithText(OutlinedButton, 'Delete'),
-      find.byType(ListView),
-      const Offset(0, -200),
-    );
-    tester
-        .widget<OutlinedButton>(find.widgetWithText(OutlinedButton, 'Delete'))
-        .onPressed!
-        .call();
+    await tester.tap(find.byKey(const Key('seller-listing-more-actions')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 
     expect(find.text('Delete listing'), findsOneWidget);
@@ -305,15 +347,9 @@ void main() {
 
     expect(repository.actions, isEmpty);
 
-    await tester.dragUntilVisible(
-      find.widgetWithText(OutlinedButton, 'Delete'),
-      find.byType(ListView),
-      const Offset(0, -200),
-    );
-    tester
-        .widget<OutlinedButton>(find.widgetWithText(OutlinedButton, 'Delete'))
-        .onPressed!
-        .call();
+    await tester.tap(find.byKey(const Key('seller-listing-more-actions')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
     await tester.pumpAndSettle();

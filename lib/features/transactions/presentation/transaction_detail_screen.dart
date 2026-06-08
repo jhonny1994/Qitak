@@ -92,6 +92,7 @@ class _TransactionDetailScreenState
       padding: qitakPagePadding,
       children: [
         QitakPanel(
+          key: const Key('transaction-detail-identity'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -102,49 +103,81 @@ class _TransactionDetailScreenState
                 leading: const QitakRouteBackButton(fallbackPath: '/deals'),
               ),
               const SizedBox(height: 16),
-              QitakSignalStrip(
-                label: context.l10n.transactionRecordLabel,
-                value: context.l10n.transactionReferenceLabel(record.id),
-                status: transactionStatusLabel(context, record.state),
-              ),
-              const SizedBox(height: 16),
-              QitakListingSurface(
-                title:
-                    listing?.localizedTitle(context.l10n) ??
-                    '${context.l10n.transactionListingContextLabel} ${context.l10n.transactionReferenceLabel(record.listingId)}',
-                price: record.state == TransactionState.completed
-                    ? context.l10n.transactionDecisionComplete
-                    : context.l10n.transactionDecisionActive,
-                subtitle: listing == null
-                    ? context.l10n.transactionDetailListingContext
-                    : '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}',
-                badges: [
-                  QitakChip(
-                    label:
-                        listing?.localizedCategory(context.l10n) ??
-                        transactionStatusLabel(context, record.state),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  QitakListingThumbnail(
+                    imageUrl: listing?.preferredImageUrl,
+                    width: 84,
+                    height: 84,
                   ),
-                  QitakChip(
-                    label: record.dealType == 'exchange'
-                        ? context.l10n.discoveryDealTypeBuyOrExchange
-                        : context.l10n.discoveryDealTypeBuy,
-                  ),
-                  if (record.paymentMethod != null)
-                    QitakChip(
-                      label: _paymentMethodLabel(
-                        context,
-                        record.paymentMethod!,
-                      ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          listing?.localizedTitle(context.l10n) ??
+                              context.l10n.transactionDetailListingContext,
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          listing == null
+                              ? context.l10n.transactionDetailListingContext
+                              : '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            QitakChip(
+                              label: transactionStatusLabel(
+                                context,
+                                record.state,
+                              ),
+                            ),
+                            QitakChip(
+                              label: record.dealType == 'exchange'
+                                  ? context.l10n.discoveryDealTypeBuyOrExchange
+                                  : context.l10n.discoveryDealTypeBuy,
+                            ),
+                            QitakChip(
+                              label: record.buyerUserId == profile.id
+                                  ? context.l10n.transactionRoleBuyer
+                                  : context.l10n.transactionRoleSeller,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  QitakChip(
-                    label: record.buyerUserId == profile.id
-                        ? context.l10n.transactionRoleBuyer
-                        : context.l10n.transactionRoleSeller,
                   ),
                 ],
               ),
               const SizedBox(height: 18),
+              QitakSurface(
+                key: const Key('transaction-detail-status'),
+                role: QitakSurfaceRole.section,
+                padding: const EdgeInsets.all(14),
+                child: QitakSignalStrip(
+                  label: profile.id == record.buyerUserId
+                      ? context.l10n.transactionRoleBuyer
+                      : context.l10n.transactionRoleSeller,
+                  value: _nextStepMessage(context, record, profile.id),
+                  status: transactionStatusLabel(context, record.state),
+                ),
+              ),
+              const SizedBox(height: 18),
               QitakPanel(
+                key: const Key('transaction-detail-payment-guidance'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -270,6 +303,7 @@ class _TransactionDetailScreenState
               ),
               const SizedBox(height: 18),
               QitakPanel(
+                key: const Key('transaction-detail-support'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -279,80 +313,102 @@ class _TransactionDetailScreenState
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    QitakSignalStrip(
-                      label: profile.id == record.buyerUserId
-                          ? context.l10n.transactionRoleBuyer
-                          : context.l10n.transactionRoleSeller,
-                      value: _nextStepMessage(context, record, profile.id),
-                      status: transactionStatusLabel(context, record.state),
+                    const SizedBox(height: 8),
+                    Text(
+                      _nextStepMessage(context, record, profile.id),
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 18),
-              Text(
-                context.l10n.transactionTimelineTitle,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+              QitakPanel(
+                key: const Key('transaction-detail-timeline'),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.transactionTimelineTitle,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ..._buildTimeline(context, record),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              ..._buildTimeline(context, record),
               const SizedBox(height: 18),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  if (_canCancelTransaction(record, profile.id))
-                    OutlinedButton(
-                      onPressed: () => _confirmCancelTransaction(
-                        userId: profile.id,
-                        transactionId: record.id,
+              QitakPanel(
+                key: const Key('transaction-detail-action-region'),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    if (record.state == TransactionState.expired &&
+                        record.buyerUserId == profile.id)
+                      FilledButton(
+                        onPressed: () => context.push(
+                          '/transactions/listing/${record.listingId}/request',
+                        ),
+                        child: Text(context.l10n.retryAction),
                       ),
-                      child: Text(context.l10n.transactionCancel),
+                    FilledButton.tonal(
+                      onPressed: () async {
+                        final threadId = await ref
+                            .read(messagingRepositoryProvider)
+                            .ensureThread(
+                              listingId: record.listingId,
+                              buyerUserId: record.buyerUserId,
+                              sellerUserId: record.sellerUserId,
+                            );
+                        if (!context.mounted) {
+                          return;
+                        }
+                        context.go('/messages/thread/$threadId');
+                      },
+                      child: Text(context.l10n.transactionMessageAction),
                     ),
-                  if (record.state == TransactionState.expired &&
-                      record.buyerUserId == profile.id)
-                    FilledButton(
-                      onPressed: () => context.push(
-                        '/transactions/listing/${record.listingId}/request',
+                    if (record.state == TransactionState.sellerConfirmed ||
+                        record.state ==
+                            TransactionState.paymentProofSubmitted ||
+                        record.state == TransactionState.paymentConfirmed ||
+                        record.state == TransactionState.completed)
+                      OutlinedButton(
+                        onPressed: () =>
+                            context.push('/deals/${record.id}/dispute'),
+                        child: Text(context.l10n.transactionOpenDisputeAction),
                       ),
-                      child: Text(context.l10n.retryAction),
-                    ),
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      final threadId = await ref
-                          .read(messagingRepositoryProvider)
-                          .ensureThread(
-                            listingId: record.listingId,
-                            buyerUserId: record.buyerUserId,
-                            sellerUserId: record.sellerUserId,
-                          );
-                      if (!context.mounted) {
-                        return;
-                      }
-                      context.go('/messages/thread/$threadId');
-                    },
-                    child: Text(context.l10n.transactionMessageAction),
-                  ),
-                  if (record.state == TransactionState.sellerConfirmed ||
-                      record.state == TransactionState.paymentProofSubmitted ||
-                      record.state == TransactionState.paymentConfirmed ||
-                      record.state == TransactionState.completed)
-                    OutlinedButton(
-                      onPressed: () =>
-                          context.push('/deals/${record.id}/dispute'),
-                      child: Text(context.l10n.transactionOpenDisputeAction),
-                    ),
-                  if (record.state == TransactionState.completed)
-                    FilledButton(
-                      onPressed: () =>
-                          context.push('/ratings/transaction/${record.id}'),
-                      child: Text(context.l10n.transactionRateAction),
-                    ),
-                ],
+                    if (record.state == TransactionState.completed)
+                      FilledButton(
+                        onPressed: () =>
+                            context.push('/ratings/transaction/${record.id}'),
+                        child: Text(context.l10n.transactionRateAction),
+                      ),
+                    if (_canCancelTransaction(record, profile.id))
+                      OutlinedButton(
+                        onPressed: () => _confirmCancelTransaction(
+                          userId: profile.id,
+                          transactionId: record.id,
+                        ),
+                        child: Text(context.l10n.transactionCancel),
+                      ),
+                  ],
+                ),
               ),
+              if (_canCancelTransaction(record, profile.id)) ...[
+                const SizedBox(height: 12),
+                QitakSurface(
+                  role: QitakSurfaceRole.section,
+                  padding: const EdgeInsets.all(14),
+                  child: Text(
+                    context.l10n.cancelTransactionBody,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

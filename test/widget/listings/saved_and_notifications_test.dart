@@ -103,7 +103,7 @@ void main() {
 
     expect(find.text('Listing conversations'), findsOneWidget);
     expect(find.text('Is it still available?'), findsOneWidget);
-    expect(find.text('Open'), findsOneWidget);
+    expect(find.byKey(const Key('conversation-row')), findsOneWidget);
   });
 
   testWidgets(

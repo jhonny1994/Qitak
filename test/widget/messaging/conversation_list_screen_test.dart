@@ -11,6 +11,30 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('conversation list uses flat rows with unread emphasis', (
+    tester,
+  ) async {
+    final repository = _RecordingConversationListRepository();
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: ConversationListScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      messagingRepositoryOverride: repository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(ConversationListScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('conversation-row')), findsWidgets);
+  });
+
   testWidgets('shows empty state when no listing conversations exist', (
     tester,
   ) async {

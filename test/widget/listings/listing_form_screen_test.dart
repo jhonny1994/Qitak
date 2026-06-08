@@ -133,6 +133,36 @@ void main() {
         (widget.key! as ValueKey<String>).value.startsWith(prefix),
   );
 
+  testWidgets('listing form exposes staged sections and one primary submit', (
+    tester,
+  ) async {
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(body: ListingFormScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+        currentSellerApplicationProvider.overrideWith(
+          (ref) async => approvedApplication,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('listing-form-progress')), findsOneWidget);
+    expect(
+      find.byKey(const Key('listing-form-primary-action')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('requires structured selectors before submit', (tester) async {
     final repository = _RecordingListingRepository();
     final scope = await buildSliceTestScope(
@@ -263,6 +293,8 @@ void main() {
     await tester.tap(find.text('Adrar').last);
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(fieldKey('listing-commune-field'));
+    await tester.pumpAndSettle();
     await tester.tap(fieldKey('listing-commune-field'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Adrar').last);
@@ -272,20 +304,21 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(fieldKey('listing-make-field'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Audi').last);
+    await tester.tap(find.text('Audi').first);
     await tester.pumpAndSettle();
 
     await tester.ensureVisible(fieldKey('listing-model-field'));
+    await tester.pumpAndSettle();
     await tester.tap(fieldKey('listing-model-field'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('TT Coupe').last);
+    await tester.tap(find.text('TT Coupe').first);
     await tester.pumpAndSettle();
 
     await tester.ensureVisible(fieldKey('listing-year-field'));
     await tester.pumpAndSettle();
     await tester.tap(fieldKey('listing-year-field'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('2018').last);
+    await tester.tap(find.text('2018').first);
     await tester.pumpAndSettle();
 
     await tester.enterText(

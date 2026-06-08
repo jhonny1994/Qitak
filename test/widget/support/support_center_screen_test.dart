@@ -14,6 +14,7 @@ import 'package:qitak_app/features/support/data/support_repository.dart';
 import 'package:qitak_app/features/support/presentation/support_center_screen.dart';
 import 'package:qitak_app/features/support/presentation/support_ticket_create_sheet.dart';
 import 'package:qitak_app/generated/l10n.dart';
+import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 import '../../test_bootstrap.dart';
 
@@ -148,6 +149,7 @@ void main() {
     expect(find.text('New support ticket'), findsOneWidget);
     expect(find.byKey(const Key('support-reason-field')), findsOneWidget);
     expect(find.byKey(const Key('support-description-field')), findsOneWidget);
+    expect(find.byType(QitakPanel), findsNothing);
   });
 
   testWidgets('closed support tickets show a closed status label', (

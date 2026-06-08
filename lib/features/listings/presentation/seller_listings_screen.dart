@@ -105,28 +105,127 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
                     for (final item in filtered)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 16),
-                        child: QitakListingSurface(
-                          title: item.title,
-                          price: context.l10n.priceWithDzd(item.price),
-                          subtitle: [
-                            item.fitmentSummary,
-                            _locationSummary(context, item, taxonomyData),
-                            _listingMeta(context, item),
-                          ].where((part) => part.isNotEmpty).join(' | '),
-                          imageUrl: item.primaryImageUrl,
-                          ratingLabel: _statusLabel(context, item.status),
-                          badges: [
-                            QitakChip(
-                              label: _conditionLabel(context, item.condition),
-                            ),
-                            if ((item.rejectionReason ?? '').isNotEmpty)
-                              QitakChip(
-                                label: _humanizeInternalLabel(
-                                  item.rejectionReason!,
-                                ),
+                        child: QitakPanel(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  QitakListingThumbnail(
+                                    imageUrl: item.primaryImageUrl,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          [
+                                                item.fitmentSummary,
+                                                _locationSummary(
+                                                  context,
+                                                  item,
+                                                  taxonomyData,
+                                                ),
+                                                _listingMeta(context, item),
+                                              ]
+                                              .where((part) => part.isNotEmpty)
+                                              .join(' | '),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: [
+                                            QitakChip(
+                                              label: _statusLabel(
+                                                context,
+                                                item.status,
+                                              ),
+                                            ),
+                                            QitakChip(
+                                              label: _conditionLabel(
+                                                context,
+                                                item.condition,
+                                              ),
+                                            ),
+                                            if ((item.rejectionReason ?? '')
+                                                .isNotEmpty)
+                                              QitakChip(
+                                                label: _humanizeInternalLabel(
+                                                  item.rejectionReason!,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    context.l10n.priceWithDzd(item.price),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                  ),
+                                ],
                               ),
-                          ],
-                          actions: _buildActions(context, item),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: KeyedSubtree(
+                                      key: const Key(
+                                        'seller-listing-next-action',
+                                      ),
+                                      child: _buildPrimaryAction(context, item),
+                                    ),
+                                  ),
+                                  if (_hasOverflowActions(item)) ...[
+                                    const SizedBox(width: 12),
+                                    PopupMenuButton<
+                                      _SellerListingOverflowAction
+                                    >(
+                                      key: const Key(
+                                        'seller-listing-more-actions',
+                                      ),
+                                      onSelected: (value) =>
+                                          _handleOverflowAction(
+                                            context,
+                                            item,
+                                            value,
+                                          ),
+                                      itemBuilder: (context) =>
+                                          _buildOverflowItems(context, item),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                 ]),
@@ -146,78 +245,113 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
     );
   }
 
-  List<Widget> _buildActions(BuildContext context, SellerManagedListing item) {
+  Widget _buildPrimaryAction(BuildContext context, SellerManagedListing item) {
+    switch (item.status) {
+      case 'active':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'pause'),
+          child: Text(context.l10n.sellerListingPauseAction),
+        );
+      case 'draft':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resubmit'),
+          child: Text(context.l10n.sellerListingSubmitAction),
+        );
+      case 'pending_review':
+        return FilledButton.tonal(
+          onPressed: () => context.push('/seller/listings/${item.id}'),
+          child: Text(context.l10n.sellerListingsPreviewAction),
+        );
+      case 'paused':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resume'),
+          child: Text(context.l10n.sellerListingResumeAction),
+        );
+      case 'rejected':
+        return FilledButton(
+          onPressed: () => _applyAction(item.id, 'resubmit'),
+          child: Text(context.l10n.sellerListingResubmitAction),
+        );
+      default:
+        return FilledButton.tonal(
+          onPressed: () => context.push('/seller/listings/${item.id}'),
+          child: Text(context.l10n.sellerListingsPreviewAction),
+        );
+    }
+  }
+
+  bool _hasOverflowActions(SellerManagedListing item) {
+    switch (item.status) {
+      case 'pending_review':
+      case 'closed':
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  List<PopupMenuEntry<_SellerListingOverflowAction>> _buildOverflowItems(
+    BuildContext context,
+    SellerManagedListing item,
+  ) {
     switch (item.status) {
       case 'active':
         return [
-          OutlinedButton(
-            onPressed: () => _applyAction(item.id, 'pause'),
-            child: Text(context.l10n.sellerListingPauseAction),
-          ),
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          FilledButton.tonal(
-            onPressed: () => _applyAction(item.id, 'close'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.close,
             child: Text(context.l10n.sellerListingCloseAction),
           ),
         ];
       case 'draft':
         return [
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          OutlinedButton(
-            onPressed: () => _confirmDeleteDraft(item.id),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.deleteDraft,
             child: Text(context.l10n.sellerListingDeleteAction),
-          ),
-          FilledButton(
-            onPressed: () => _applyAction(item.id, 'resubmit'),
-            child: Text(context.l10n.sellerListingSubmitAction),
-          ),
-        ];
-      case 'pending_review':
-        return [
-          FilledButton.tonal(
-            onPressed: () => context.push('/seller/listings/${item.id}'),
-            child: Text(context.l10n.sellerListingsPreviewAction),
           ),
         ];
       case 'paused':
         return [
-          OutlinedButton(
-            onPressed: () => _applyAction(item.id, 'resume'),
-            child: Text(context.l10n.sellerListingResumeAction),
-          ),
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
           ),
-          FilledButton.tonal(
-            onPressed: () => _applyAction(item.id, 'close'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.close,
             child: Text(context.l10n.sellerListingCloseAction),
           ),
         ];
       case 'rejected':
         return [
-          OutlinedButton(
-            onPressed: () => context.push('/seller/listings/${item.id}/edit'),
+          PopupMenuItem(
+            value: _SellerListingOverflowAction.edit,
             child: Text(context.l10n.sellerListingEditAction),
-          ),
-          FilledButton(
-            onPressed: () => _applyAction(item.id, 'resubmit'),
-            child: Text(context.l10n.sellerListingResubmitAction),
           ),
         ];
       default:
-        return [
-          FilledButton.tonal(
-            onPressed: () => context.push('/seller/listings/${item.id}'),
-            child: Text(context.l10n.sellerListingsPreviewAction),
-          ),
-        ];
+        return const [];
+    }
+  }
+
+  Future<void> _handleOverflowAction(
+    BuildContext context,
+    SellerManagedListing item,
+    _SellerListingOverflowAction action,
+  ) async {
+    switch (action) {
+      case _SellerListingOverflowAction.edit:
+        await context.push('/seller/listings/${item.id}/edit');
+      case _SellerListingOverflowAction.close:
+        await _applyAction(item.id, 'close');
+      case _SellerListingOverflowAction.deleteDraft:
+        await _confirmDeleteDraft(item.id);
     }
   }
 
@@ -451,3 +585,5 @@ String _emptyBody(BuildContext context, String status) {
 extension _IterableFirstOrNullX<T> on Iterable<T> {
   T? get firstOrNull => isEmpty ? null : first;
 }
+
+enum _SellerListingOverflowAction { edit, close, deleteDraft }

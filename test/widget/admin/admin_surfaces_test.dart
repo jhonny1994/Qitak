@@ -18,6 +18,46 @@ import 'package:qitak_app/generated/l10n.dart';
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('admin detail separates evidence and decision regions', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/admin/verifications/:id',
+          builder: (context, state) => VerificationDetailScreen(
+            verificationId: state.pathParameters['id']!,
+          ),
+        ),
+      ],
+      initialLocation: '/admin/verifications/app-1',
+    );
+
+    final scope = await buildTestScope(
+      MaterialApp.router(
+        locale: const Locale('en'),
+        theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: ThemeMode.dark,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+        routerConfig: router,
+      ),
+      sellerApplicationRepositoryOverride: _PolicyAwareSellerRepository(),
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('admin-detail-evidence')), findsOneWidget);
+    expect(find.byKey(const Key('admin-detail-decision')), findsOneWidget);
+  });
+
   testWidgets('seller verification queue renders empty state', (tester) async {
     final scope = await buildTestScope(
       const TestMaterialShell(

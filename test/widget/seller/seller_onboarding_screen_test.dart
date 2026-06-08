@@ -12,6 +12,44 @@ import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('seller onboarding exposes persistent five-step progress', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SellerOnboardingScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryFilterTaxonomyProvider.overrideWith((ref) async {
+          return const DiscoveryFilterTaxonomy(
+            categories: <DiscoveryCategoryOption>[],
+            wilayas: <WilayaOption>[],
+            makes: <CarMakeOption>[],
+          );
+        }),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerOnboardingScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('seller-onboarding-progress')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('seller-onboarding-progress')),
+        matching: find.text('1/5'),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('shows the full seller verification path up front', (
     tester,
   ) async {

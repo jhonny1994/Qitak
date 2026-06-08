@@ -170,6 +170,50 @@ class NotificationCenterScreen extends ConsumerWidget {
                                             fontWeight: FontWeight.w600,
                                           ),
                                     ),
+                                    const SizedBox(height: 10),
+                                    Align(
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
+                                      child: TextButton(
+                                        key: const Key(
+                                          'notification-visible-read-action',
+                                        ),
+                                        onPressed: () async {
+                                          await ref
+                                              .read(
+                                                notificationRepositoryProvider,
+                                              )
+                                              .markNotificationState(
+                                                notificationId: item.id,
+                                                isRead: item.isUnread,
+                                              );
+                                          ref
+                                              .read(
+                                                foregroundNotificationsProvider
+                                                    .notifier,
+                                              )
+                                              .setReadState(
+                                                notificationId: item.id,
+                                                isRead: item.isUnread,
+                                              );
+                                          ref.invalidate(notificationsProvider);
+                                          await ref
+                                              .read(
+                                                unreadCountsProvider.notifier,
+                                              )
+                                              .refresh();
+                                        },
+                                        child: Text(
+                                          item.isUnread
+                                              ? context
+                                                    .l10n
+                                                    .notificationsMarkRead
+                                              : context
+                                                    .l10n
+                                                    .notificationsMarkUnread,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

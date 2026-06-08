@@ -8,6 +8,26 @@ import 'package:qitak_app/features/admin/presentation/admin_team_screen.dart';
 import 'package:qitak_app/generated/l10n.dart';
 
 void main() {
+  testWidgets('admin team separates invite, identity, and dangerous actions', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _TestShell(
+        overrides: [
+          adminTeamRepositoryProvider.overrideWithValue(
+            _FailingAdminTeamRepository(),
+          ),
+        ],
+        child: const Scaffold(body: AdminTeamScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('admin-team-invite')), findsOneWidget);
+    expect(find.byKey(const Key('admin-team-members')), findsOneWidget);
+    expect(find.byKey(const Key('admin-team-danger-actions')), findsWidgets);
+  });
+
   testWidgets('shows an error when inviting an admin fails', (tester) async {
     final repository = _FailingAdminTeamRepository();
     await tester.pumpWidget(

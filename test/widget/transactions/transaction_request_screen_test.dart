@@ -30,6 +30,42 @@ class _ThrowingTransactionRepository extends LocalTransactionRepository {
 }
 
 void main() {
+  testWidgets('request screen distinguishes buy and exchange intent', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: TransactionRequestScreen(
+            listingId: 'listing-1',
+          ),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionRequestScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('transaction-intent-buy')), findsOneWidget);
+    expect(
+      find.byKey(const Key('transaction-intent-exchange')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('transaction-obligations')), findsOneWidget);
+  });
+
   testWidgets('creates purchase request', (
     tester,
   ) async {

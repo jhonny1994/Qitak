@@ -179,6 +179,7 @@ class ListingDetailScreen extends ConsumerWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   QitakListingGallery(
+                    key: const Key('listing-detail-media'),
                     heroTag: qitakListingHeroTag(item.id),
                     height: 196,
                     primaryImageUrl: item.preferredImageUrl,
@@ -186,6 +187,7 @@ class ListingDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 18),
                   QitakPanel(
+                    key: const Key('listing-detail-price'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -290,29 +292,7 @@ class ListingDetailScreen extends ConsumerWidget {
                   if (!sellerOwnedPreview) ...[
                     const SizedBox(height: 18),
                     QitakPanel(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.listingDescriptionTitle,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                          const SizedBox(height: 14),
-                          Text(
-                            item.description,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  height: 1.45,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    QitakPanel(
+                      key: const Key('listing-detail-seller'),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -332,6 +312,29 @@ class ListingDetailScreen extends ConsumerWidget {
                           QitakDetailRow(
                             label: context.l10n.listingLocationLabel,
                             value: detail.displayLocation,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    QitakPanel(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.listingDescriptionTitle,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(height: 14),
+                          Text(
+                            item.description,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  height: 1.45,
+                                ),
                           ),
                         ],
                       ),

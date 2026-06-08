@@ -59,50 +59,46 @@ class _ReportListingSheetState extends ConsumerState<ReportListingSheet> {
           top: 16,
           bottom: MediaQuery.viewInsetsOf(context).bottom + 24,
         ),
-        child: QitakPanel(
-          child: ListView(
-            controller: scrollController,
-            children: [
-              QitakSectionHeader(
-                eyebrow: context.l10n.reportListingAction,
-                title: context.l10n.reportListingAction,
-                subtitle: context.l10n.reportListingAlreadyReported,
+        child: ListView(
+          controller: scrollController,
+          children: [
+            QitakSectionHeader(
+              eyebrow: context.l10n.reportListingAction,
+              title: context.l10n.reportListingAction,
+              subtitle: context.l10n.reportListingAlreadyReported,
+            ),
+            const SizedBox(height: 16),
+            RadioGroup<String>(
+              groupValue: _selectedReason,
+              onChanged: _submitting ? _ignoreReasonChange : _selectReason,
+              child: Column(
+                children: [
+                  for (final option in reasonOptions)
+                    _ReasonTile(
+                      title: _policyLabel(context, option.labelKey),
+                      value: option.code,
+                    ),
+                ],
               ),
-              const SizedBox(height: 16),
-              RadioGroup<String>(
-                groupValue: _selectedReason,
-                onChanged: _submitting ? _ignoreReasonChange : _selectReason,
-                child: Column(
-                  children: [
-                    for (final option in reasonOptions)
-                      _ReasonTile(
-                        title: _policyLabel(context, option.labelKey),
-                        value: option.code,
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-              FilledButton(
-                onPressed: _submitting || _selectedReason == null
-                    ? null
-                    : _submit,
-                child: _submitting
-                    ? const SizedBox.square(
-                        dimension: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(context.l10n.reportListingAction),
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: _submitting
-                    ? null
-                    : () => Navigator.of(context).pop(),
-                child: Text(context.l10n.cancel),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 18),
+            FilledButton(
+              onPressed: _submitting || _selectedReason == null
+                  ? null
+                  : _submit,
+              child: _submitting
+                  ? const SizedBox.square(
+                      dimension: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(context.l10n.reportListingAction),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: _submitting ? null : () => Navigator.of(context).pop(),
+              child: Text(context.l10n.cancel),
+            ),
+          ],
         ),
       ),
     );

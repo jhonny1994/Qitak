@@ -50,6 +50,31 @@ void main() {
     expect(find.text('1 result found'), findsOneWidget);
   });
 
+  testWidgets('single search result does not stretch into dead space', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SearchScreen(initialQuery: 'Brake')),
+      ),
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await settleDiscovery(tester);
+
+    final result = find.byKey(const Key('marketplace-result-list'));
+    expect(result, findsOneWidget);
+    expect(tester.getTopLeft(result).dy, lessThan(220));
+  });
+
   testWidgets('applied structured filters affect results', (tester) async {
     final scope = await buildTestScope(
       const TestMaterialShell(

@@ -69,76 +69,74 @@ class _SupportTicketCreateSheetState
           top: 16,
           bottom: MediaQuery.viewInsetsOf(context).bottom + 24,
         ),
-        child: QitakPanel(
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              controller: scrollController,
-              children: [
-                QitakSectionHeader(
-                  eyebrow: context.l10n.supportCenterEyebrow,
-                  title: context.l10n.supportTicketCreateTitle,
-                  subtitle: context.l10n.supportTicketCreateSubtitle,
-                ),
-                const SizedBox(height: 16),
-                QitakFormGroup(
-                  label: context.l10n.supportTicketReasonLabel,
-                  child: DropdownButtonFormField<String>(
-                    key: const Key('support-reason-field'),
-                    initialValue: selectedReason,
-                    items: [
-                      for (final option in reasonOptions)
-                        DropdownMenuItem<String>(
-                          value: option.code,
-                          child: Text(
-                            supportReasonLabel(context, option.labelKey),
-                          ),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            controller: scrollController,
+            children: [
+              QitakSectionHeader(
+                eyebrow: context.l10n.supportCenterEyebrow,
+                title: context.l10n.supportTicketCreateTitle,
+                subtitle: context.l10n.supportTicketCreateSubtitle,
+              ),
+              const SizedBox(height: 16),
+              QitakFormGroup(
+                label: context.l10n.supportTicketReasonLabel,
+                child: DropdownButtonFormField<String>(
+                  key: const Key('support-reason-field'),
+                  initialValue: selectedReason,
+                  items: [
+                    for (final option in reasonOptions)
+                      DropdownMenuItem<String>(
+                        value: option.code,
+                        child: Text(
+                          supportReasonLabel(context, option.labelKey),
                         ),
-                    ],
-                    onChanged: _submitting
-                        ? null
-                        : (value) => setState(() => _selectedReason = value),
-                    validator: (value) => value == null || value.isEmpty
-                        ? context.l10n.supportTicketReasonError
-                        : null,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                QitakFormGroup(
-                  label: context.l10n.supportTicketDescriptionLabel,
-                  helper: context.l10n.supportTicketDescriptionHelper,
-                  child: TextFormField(
-                    key: const Key('support-description-field'),
-                    controller: _descriptionController,
-                    maxLines: 5,
-                    validator: (value) =>
-                        value == null || value.trim().length < 20
-                        ? context.l10n.supportTicketDescriptionError
-                        : null,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                FilledButton(
-                  key: const Key('support-submit-ticket-button'),
-                  onPressed: _submitting || reasonOptions.isEmpty
+                      ),
+                  ],
+                  onChanged: _submitting
                       ? null
-                      : _submit,
-                  child: _submitting
-                      ? const SizedBox.square(
-                          dimension: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(context.l10n.supportTicketSubmitAction),
+                      : (value) => setState(() => _selectedReason = value),
+                  validator: (value) => value == null || value.isEmpty
+                      ? context.l10n.supportTicketReasonError
+                      : null,
                 ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: _submitting
-                      ? null
-                      : () => Navigator.of(context).pop(),
-                  child: Text(context.l10n.cancel),
+              ),
+              const SizedBox(height: 16),
+              QitakFormGroup(
+                label: context.l10n.supportTicketDescriptionLabel,
+                helper: context.l10n.supportTicketDescriptionHelper,
+                child: TextFormField(
+                  key: const Key('support-description-field'),
+                  controller: _descriptionController,
+                  maxLines: 5,
+                  validator: (value) =>
+                      value == null || value.trim().length < 20
+                      ? context.l10n.supportTicketDescriptionError
+                      : null,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 18),
+              FilledButton(
+                key: const Key('support-submit-ticket-button'),
+                onPressed: _submitting || reasonOptions.isEmpty
+                    ? null
+                    : _submit,
+                child: _submitting
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(context.l10n.supportTicketSubmitAction),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: _submitting
+                    ? null
+                    : () => Navigator.of(context).pop(),
+                child: Text(context.l10n.cancel),
+              ),
+            ],
           ),
         ),
       ),

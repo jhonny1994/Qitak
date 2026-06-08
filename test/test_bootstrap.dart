@@ -96,17 +96,24 @@ Future<ProviderScope> buildTestScope(
 }
 
 class TestMaterialShell extends StatelessWidget {
-  const TestMaterialShell({required this.child, super.key});
+  const TestMaterialShell({
+    required this.child,
+    super.key,
+    this.themeMode = ThemeMode.dark,
+    this.locale = const Locale('en'),
+  });
 
   final Widget child;
+  final ThemeMode themeMode;
+  final Locale locale;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('en'),
-      theme: AppTheme.light(),
-      darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.dark,
+      locale: locale,
+      theme: AppTheme.light(locale: locale),
+      darkTheme: AppTheme.dark(locale: locale),
+      themeMode: themeMode,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
-import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -52,7 +51,6 @@ class QitakNavigationShell extends ConsumerWidget {
       notificationBadgeCount: unreadCounts.notifications,
     );
     final selectedIndex = _selectedIndex(navigationShell.currentIndex, items);
-    final tokens = context.qitakTokens;
     final colorScheme = Theme.of(context).colorScheme;
 
     return PopScope(
@@ -68,18 +66,16 @@ class QitakNavigationShell extends ConsumerWidget {
           ),
         ),
         bottomNavigationBar: NavigationBar(
+          key: const Key('qitak-primary-navigation'),
           selectedIndex: selectedIndex,
           onDestinationSelected: (index) => context.go(items[index].path),
-          backgroundColor: tokens.panel,
-          surfaceTintColor: Colors.transparent,
-          indicatorColor: colorScheme.primary.withValues(alpha: 0.15),
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          elevation: 0,
           height: 72,
           destinations: items.map((item) => item.destination).toList(),
         ),
         floatingActionButton: role.hasSellerCapabilities && sellerApproved
             ? FloatingActionButton(
+                key: const Key('qitak-seller-create-listing'),
                 onPressed: () => context.go('/seller/listings/new'),
                 tooltip: context.l10n.createListingCta,
                 backgroundColor: colorScheme.primary,

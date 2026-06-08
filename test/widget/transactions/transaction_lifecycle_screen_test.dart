@@ -12,7 +12,50 @@ import '../../fixtures/seeded_discovery_repository.dart';
 import '../../test_bootstrap.dart';
 
 void main() {
-  testWidgets('formats transaction reference and state labels for display', (
+  testWidgets('transaction row leads with listing identity and next action', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: TransactionLifecycleScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionLifecycleScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    final repository = container.read(transactionRepositoryProvider);
+    final record = await repository.createRequest(
+      listingId: 'listing-1',
+      buyerUserId: 'buyer-001',
+      sellerUserId: 'seller-001',
+    );
+    await repository.transition(
+      transactionId: record.id,
+      actorUserId: 'seller-001',
+      nextState: TransactionState.sellerConfirmed,
+    );
+    await container
+        .read(transactionProvider.notifier)
+        .refreshForUser('buyer-001');
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('transaction-listing-identity')), findsWidgets);
+    expect(find.byKey(const Key('transaction-next-action')), findsWidgets);
+    expect(find.text('#001'), findsNothing);
+  });
+
+  testWidgets('formats transaction state labels for display', (
     tester,
   ) async {
     final scope = await buildTestScope(
@@ -60,8 +103,10 @@ void main() {
         .refreshForUser('buyer-001');
     await tester.pumpAndSettle();
 
-    expect(find.text('#001'), findsOneWidget);
-    expect(find.text('Completed'), findsOneWidget);
+    expect(find.byKey(const Key('transaction-listing-identity')), findsWidgets);
+    expect(find.byKey(const Key('transaction-next-action')), findsWidgets);
+    expect(find.text('Headlight assembly'), findsOneWidget);
+    expect(find.text('#001'), findsNothing);
     expect(find.text('completed'), findsNothing);
     expect(find.text('Accept'), findsNothing);
     expect(find.text('Complete'), findsNothing);

@@ -10,6 +10,31 @@ import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('seller dashboard separates summary from primary work', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: SellerDashboardScreen(),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerDashboardScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('seller-summary')), findsOneWidget);
+    expect(find.byKey(const Key('seller-primary-work')), findsOneWidget);
+  });
+
   testWidgets('seller dashboard renders denser rooted workspace rows', (
     tester,
   ) async {

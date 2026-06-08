@@ -44,6 +44,7 @@ class ProfileScreen extends ConsumerWidget {
           sliver: SliverList(
             delegate: SliverChildListDelegate([
               QitakPanel(
+                key: const Key('profile-identity-surface'),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,109 +120,125 @@ class ProfileScreen extends ConsumerWidget {
                   error: (_, _) => const SizedBox.shrink(),
                   loading: () => const SizedBox.shrink(),
                 ),
-              _ProfileActionGroup(
-                title: context.l10n.accountSettingsEyebrow,
-                children: [
-                  InkWell(
-                    key: const Key('profile-settings-button'),
-                    onTap: () => context.go('$profileRoot/settings'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.accountSettingsTitle,
-                      meta: context.l10n.accountSettingsSubtitle,
-                      status: context.l10n.accountRoleLabel(profile.role),
-                      variant: QitakQueueRowVariant.value,
+              QitakSurface(
+                key: const Key('profile-preferences-section'),
+                role: QitakSurfaceRole.section,
+                padding: EdgeInsets.zero,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _ProfileActionGroup(
+                      title: context.l10n.accountSettingsEyebrow,
+                      children: [
+                        InkWell(
+                          key: const Key('profile-settings-button'),
+                          onTap: () => context.go('$profileRoot/settings'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.accountSettingsTitle,
+                            meta: context.l10n.accountSettingsSubtitle,
+                            status: context.l10n.accountRoleLabel(profile.role),
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    _ProfileActionGroup(
+                      title: 'Preferences',
+                      children: [
+                        InkWell(
+                          key: const Key('profile-language-button'),
+                          onTap: () => context.go('$profileRoot/language'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.languageSelectionTitle,
+                            meta: context.l10n.languageSelectionSubtitle,
+                            status: context.languageDisplayName(
+                              profile.language,
+                            ),
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                        InkWell(
+                          key: const Key('profile-appearance-button'),
+                          onTap: () => context.go('$profileRoot/appearance'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.appearanceSettingsTitle,
+                            meta: context.l10n.appearanceSettingsSubtitle,
+                            status: _themeModeStatus(
+                              context,
+                              preferences.themeMode,
+                            ),
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                        InkWell(
+                          key: const Key('profile-notifications-button'),
+                          onTap: () => context.go('$profileRoot/notifications'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.notificationPreferencesTitle,
+                            meta: context.l10n.notificationPreferencesSubtitle,
+                            status: context.l10n.notificationsEyebrow,
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _ProfileActionGroup(
+                      title: 'Help and legal',
+                      children: [
+                        InkWell(
+                          key: const Key('profile-support-button'),
+                          onTap: () => context.go('$profileRoot/support'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.supportCenterTitle,
+                            meta: context.l10n.supportCenterSubtitle,
+                            status: context.l10n.supportCenterEyebrow,
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                        InkWell(
+                          key: const Key('profile-legal-button'),
+                          onTap: () => context.go('$profileRoot/legal'),
+                          borderRadius: BorderRadius.circular(18),
+                          child: QitakQueueRow(
+                            title: context.l10n.legalInformationTitle,
+                            meta: context.l10n.legalInformationSubtitle,
+                            status: context.l10n.legalInformationStatus,
+                            variant: QitakQueueRowVariant.value,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12),
-              _ProfileActionGroup(
-                title: 'Preferences',
-                children: [
-                  InkWell(
-                    key: const Key('profile-language-button'),
-                    onTap: () => context.go('$profileRoot/language'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.languageSelectionTitle,
-                      meta: context.l10n.languageSelectionSubtitle,
-                      status: context.languageDisplayName(profile.language),
-                      variant: QitakQueueRowVariant.value,
-                    ),
-                  ),
-                  InkWell(
-                    key: const Key('profile-appearance-button'),
-                    onTap: () => context.go('$profileRoot/appearance'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.appearanceSettingsTitle,
-                      meta: context.l10n.appearanceSettingsSubtitle,
-                      status: _themeModeStatus(
-                        context,
-                        preferences.themeMode,
-                      ),
-                      variant: QitakQueueRowVariant.value,
-                    ),
-                  ),
-                  InkWell(
-                    key: const Key('profile-notifications-button'),
-                    onTap: () => context.go('$profileRoot/notifications'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.notificationPreferencesTitle,
-                      meta: context.l10n.notificationPreferencesSubtitle,
-                      status: context.l10n.notificationsEyebrow,
-                      variant: QitakQueueRowVariant.value,
-                    ),
-                  ),
-                ],
+              QitakSurface(
+                key: const Key('profile-danger-section'),
+                role: QitakSurfaceRole.section,
+                child: FilledButton.tonal(
+                  key: const Key('profile-sign-out'),
+                  onPressed: () async {
+                    await ref.read(authSessionProvider.notifier).signOut();
+                    await ref
+                        .read(appPreferencesProvider.notifier)
+                        .setGuestBrowsingEnabled(enabled: true);
+                    if (context.mounted) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (context.mounted) context.go('/home');
+                      });
+                    }
+                  },
+                  child: Text(context.l10n.signOutAction),
+                ),
               ),
-              const SizedBox(height: 12),
-              _ProfileActionGroup(
-                title: 'Help and legal',
-                children: [
-                  InkWell(
-                    key: const Key('profile-support-button'),
-                    onTap: () => context.go('$profileRoot/support'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.supportCenterTitle,
-                      meta: context.l10n.supportCenterSubtitle,
-                      status: context.l10n.supportCenterEyebrow,
-                      variant: QitakQueueRowVariant.value,
-                    ),
-                  ),
-                  InkWell(
-                    key: const Key('profile-legal-button'),
-                    onTap: () => context.go('$profileRoot/legal'),
-                    borderRadius: BorderRadius.circular(18),
-                    child: QitakQueueRow(
-                      title: context.l10n.legalInformationTitle,
-                      meta: context.l10n.legalInformationSubtitle,
-                      status: context.l10n.legalInformationStatus,
-                      variant: QitakQueueRowVariant.value,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
               const SizedBox(height: 24),
-              FilledButton.tonal(
-                key: const Key('profile-sign-out'),
-                onPressed: () async {
-                  await ref.read(authSessionProvider.notifier).signOut();
-                  await ref
-                      .read(appPreferencesProvider.notifier)
-                      .setGuestBrowsingEnabled(enabled: true);
-                  if (context.mounted) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (context.mounted) context.go('/home');
-                    });
-                  }
-                },
-                child: Text(context.l10n.signOutAction),
-              ),
             ]),
           ),
         ),

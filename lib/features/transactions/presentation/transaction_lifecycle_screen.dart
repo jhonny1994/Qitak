@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
@@ -68,35 +69,12 @@ class _TransactionLifecycleScreenState
             for (final tx in state.items)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(24),
-                  onTap: () => context.push('/deals/${tx.id}'),
-                  child: QitakPanel(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        QitakSignalStrip(
-                          label: context.l10n.transactionRecordLabel,
-                          value: context.l10n.transactionReferenceLabel(tx.id),
-                          status: context.l10n.displayTransactionState(
-                            tx.state,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          _nextStepSummary(context, tx, userId),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        ...switch (_buildActions(context, tx, userId)) {
-                          [] => const <Widget>[],
-                          final actions => <Widget>[
-                            const SizedBox(height: 12),
-                            Wrap(spacing: 8, runSpacing: 8, children: actions),
-                          ],
-                        },
-                      ],
-                    ),
-                  ),
+                child: _TransactionLifecycleRow(
+                  transaction: tx,
+                  userId: userId,
+                  onOpen: () => context.push('/deals/${tx.id}'),
+                  nextStepSummary: _nextStepSummary(context, tx, userId),
+                  actions: _buildActions(context, tx, userId),
                 ),
               ),
           ],
@@ -309,5 +287,107 @@ class _TransactionLifecycleScreenState
       case TransactionState.disputeResolved:
         return context.l10n.transactionNextStepInactive;
     }
+  }
+}
+
+class _TransactionLifecycleRow extends ConsumerWidget {
+  const _TransactionLifecycleRow({
+    required this.transaction,
+    required this.userId,
+    required this.onOpen,
+    required this.nextStepSummary,
+    required this.actions,
+  });
+
+  final TransactionRecord transaction;
+  final String userId;
+  final VoidCallback onOpen;
+  final String nextStepSummary;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listing = ref.watch(discoveryListingProvider(transaction.listingId));
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(24),
+      onTap: onOpen,
+      child: QitakPanel(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            listing.when(
+              data: (item) => Row(
+                key: const Key('transaction-listing-identity'),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  QitakListingThumbnail(
+                    imageUrl: item?.preferredImageUrl,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item?.localizedTitle(context.l10n) ??
+                              context.l10n.transactionsTitle,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          [
+                            context.l10n.displayTransactionState(
+                              transaction.state,
+                            ),
+                            _participantLabel(context, transaction, userId),
+                          ].join(' • '),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              error: (error, stackTrace) => const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
+            ),
+            const SizedBox(height: 12),
+            QitakSurface(
+              key: const Key('transaction-next-action'),
+              role: QitakSurfaceRole.section,
+              padding: const EdgeInsets.all(14),
+              child: Text(
+                nextStepSummary,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            ...switch (actions) {
+              [] => const <Widget>[],
+              final buttons => <Widget>[
+                const SizedBox(height: 12),
+                Wrap(spacing: 8, runSpacing: 8, children: buttons),
+              ],
+            },
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _participantLabel(
+    BuildContext context,
+    TransactionRecord transaction,
+    String userId,
+  ) {
+    return userId == transaction.buyerUserId
+        ? context.l10n.transactionSellerContextLabel
+        : context.l10n.transactionListingContextLabel;
   }
 }

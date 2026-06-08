@@ -169,7 +169,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 }
 
                 return Column(
+                  key: const Key('marketplace-result-list'),
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (applied.isNotEmpty) ...[
                       Wrap(
@@ -317,7 +319,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 String _localizedResultSummary(BuildContext context, int count) {
   final languageCode = Localizations.localeOf(context).languageCode;
   return switch (languageCode) {
-    'ar' => count == 1 ? 'تم العثور على نتيجة واحدة' : 'تم العثور على $count نتائج',
+    'ar' =>
+      count == 1 ? 'تم العثور على نتيجة واحدة' : 'تم العثور على $count نتائج',
     'fr' => count == 1 ? '1 resultat trouve' : '$count resultats trouves',
     _ => count == 1 ? '1 result found' : '$count results found',
   };

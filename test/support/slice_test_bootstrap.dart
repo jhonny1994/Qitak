@@ -71,9 +71,14 @@ Future<ProviderScope> buildSliceTestScope(
 }
 
 class SliceTestMaterialShell extends StatelessWidget {
-  const SliceTestMaterialShell({required this.child, super.key});
+  const SliceTestMaterialShell({
+    required this.child,
+    super.key,
+    this.themeMode = ThemeMode.dark,
+  });
 
   final Widget child;
+  final ThemeMode themeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +86,7 @@ class SliceTestMaterialShell extends StatelessWidget {
       locale: const Locale('en'),
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,

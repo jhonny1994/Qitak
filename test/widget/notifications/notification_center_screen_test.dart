@@ -12,6 +12,41 @@ import '../../test_bootstrap.dart';
 
 void main() {
   testWidgets(
+    'notification row has visible read action alternative',
+    (tester) async {
+      final repository = _RecordingNotificationRepository();
+      final scope = await buildTestScope(
+        MaterialApp(
+          locale: const Locale('en'),
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: ThemeMode.dark,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+          home: const Scaffold(body: NotificationCenterScreen()),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'buyer@qitak.test',
+        },
+        notificationRepositoryOverride: repository,
+      );
+
+      await tester.pumpWidget(scope);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('notification-visible-read-action')),
+        findsWidgets,
+      );
+    },
+  );
+
+  testWidgets(
     'renders repository-backed notifications and marks all as read',
     (tester) async {
       final repository = _RecordingNotificationRepository();

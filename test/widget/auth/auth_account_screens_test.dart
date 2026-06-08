@@ -63,6 +63,52 @@ void main() {
     );
   });
 
+  testWidgets('profile uses grouped rows without nested default panels', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        themeMode: ThemeMode.light,
+        child: Scaffold(body: ProfileScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(ProfileScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('profile-identity-surface')), findsOneWidget);
+    expect(
+      find.byKey(const Key('profile-preferences-section')),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('profile-danger-section')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('profile-danger-section')), findsOneWidget);
+  });
+
+  testWidgets('sign in exposes one primary action', (tester) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SignInScreen()),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+
+    expect(find.byType(FilledButton), findsOneWidget);
+  });
+
   testWidgets('account settings updates local session profile', (tester) async {
     tester.view.physicalSize = const Size(1200, 2400);
     tester.view.devicePixelRatio = 1;

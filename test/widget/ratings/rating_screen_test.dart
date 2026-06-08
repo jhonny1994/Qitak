@@ -236,8 +236,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Deal context'), findsOneWidget);
-    expect(find.text('#001'), findsOneWidget);
-    expect(find.text('Completed'), findsWidgets);
+    expect(find.text('#001'), findsNothing);
+    expect(find.text('Headlight assembly'), findsOneWidget);
     expect(find.text('Linked listing'), findsOneWidget);
   });
 

@@ -25,6 +25,7 @@ class SellerDashboardScreen extends ConsumerWidget {
         padding: qitakPagePadding,
         children: [
           QitakPanel(
+            key: const Key('seller-summary'),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,6 +96,7 @@ class SellerDashboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           QitakPanel(
+            key: const Key('seller-primary-work'),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

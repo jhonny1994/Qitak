@@ -144,19 +144,24 @@ class TransactionHistoryScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          QitakDetailRow(
-                            label: context.l10n.transactionRecordLabel,
-                            value: context.l10n.transactionReferenceLabel(
-                              item.transaction.id,
+                          QitakSurface(
+                            role: QitakSurfaceRole.section,
+                            padding: const EdgeInsets.all(14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                QitakDetailRow(
+                                  label: context.l10n.listingSellerSectionTitle,
+                                  value: item.partnerName,
+                                ),
+                                QitakDetailRow(
+                                  label: 'Updated',
+                                  value: _formatDate(
+                                    item.transaction.updatedAt,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          QitakDetailRow(
-                            label: context.l10n.listingSellerSectionTitle,
-                            value: item.partnerName,
-                          ),
-                          QitakDetailRow(
-                            label: 'Updated',
-                            value: _formatDate(item.transaction.updatedAt),
                           ),
                           if (transactionDisputeGuidance(
                                 context,

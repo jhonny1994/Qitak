@@ -125,7 +125,23 @@ class _SellerOnboardingScreenState
                             '${context.l10n.sellerOnboardingBody} • ${_step + 1}/5',
                       ),
                       const SizedBox(height: 16),
-                      _SellerVerificationPath(currentStep: _step),
+                      QitakSurface(
+                        key: const Key('seller-onboarding-progress'),
+                        role: QitakSurfaceRole.section,
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${_step + 1}/5',
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                            const SizedBox(height: 12),
+                            _SellerVerificationPath(currentStep: _step),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

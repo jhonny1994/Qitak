@@ -14,6 +14,43 @@ import '../../support/slice_test_bootstrap.dart';
 const _shareChannel = MethodChannel('dev.fluttercommunity.plus/share');
 
 void main() {
+  testWidgets('listing detail follows purchase decision order', (tester) async {
+    final scope = await buildSliceTestScope(
+      const SliceTestMaterialShell(
+        child: Scaffold(
+          body: ListingDetailScreen(listingId: 'listing-1'),
+        ),
+      ),
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('listing-detail-media')), findsOneWidget);
+    expect(find.byKey(const Key('listing-detail-price')), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('listing-detail-seller')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    final sellerTop = tester
+        .getTopLeft(
+          find.byKey(const Key('listing-detail-seller')),
+        )
+        .dy;
+    final descriptionTop = tester.getTopLeft(find.text('Description')).dy;
+
+    expect(sellerTop, lessThan(descriptionTop));
+  });
+
   testWidgets('renders production-style listing detail from discovery data', (
     tester,
   ) async {

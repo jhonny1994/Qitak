@@ -16,6 +16,20 @@ import 'package:qitak_app/features/seller/presentation/seller_application_status
 import '../../test_bootstrap.dart';
 
 void main() {
+  testWidgets('test shell renders the requested light theme', (tester) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        themeMode: ThemeMode.light,
+        child: Scaffold(body: Text('Theme probe')),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+
+    final context = tester.element(find.text('Theme probe'));
+    expect(Theme.of(context).brightness, Brightness.light);
+  });
+
   testWidgets('sign in prioritizes account action over role selection', (
     tester,
   ) async {

@@ -118,6 +118,7 @@ class _VerificationDetailScreenState
                 ),
                 const SizedBox(height: 16),
                 QitakPanel(
+                  key: const Key('admin-detail-evidence'),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -225,6 +226,7 @@ class _VerificationDetailScreenState
                 ),
                 const SizedBox(height: 16),
                 QitakPanel(
+                  key: const Key('admin-detail-decision'),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

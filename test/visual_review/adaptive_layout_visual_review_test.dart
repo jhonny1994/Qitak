@@ -1,3 +1,6 @@
+@Tags(<String>['visual-review'])
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/features/discovery/data/discovery_repository.dart';

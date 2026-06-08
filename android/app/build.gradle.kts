@@ -10,7 +10,6 @@ plugins {
 
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val androidKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
 val androidKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
 val androidKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")

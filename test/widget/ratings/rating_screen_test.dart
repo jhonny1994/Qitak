@@ -241,6 +241,46 @@ void main() {
     expect(find.text('Linked listing'), findsOneWidget);
   });
 
+  testWidgets(
+    'loads completed deal context from direct transaction lookup when list state is cold',
+    (tester) async {
+      final record = _fixtureTransactionRecord(
+        id: 'tx-direct',
+        buyerUserId: 'buyer-001',
+        sellerUserId: 'seller-001',
+        state: TransactionState.completed,
+      );
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: RatingScreen(transactionId: 'tx-direct')),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'buyer@qitak.test',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+        ],
+        transactionRepositoryOverride: _StaticTransactionRepository(
+          record: record,
+        ),
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(RatingScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      await _scrollToSubmitButton(tester);
+      expect(find.byKey(const Key('rating-submit-button')), findsOneWidget);
+      expect(find.text('Deal context'), findsOneWidget);
+      expect(find.text('Headlight assembly'), findsOneWidget);
+    },
+  );
+
   testWidgets('blocks rating until the transaction is completed', (
     tester,
   ) async {

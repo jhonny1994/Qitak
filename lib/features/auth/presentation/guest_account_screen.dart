@@ -105,6 +105,17 @@ class GuestAccountScreen extends ConsumerWidget {
                     variant: QitakQueueRowVariant.value,
                   ),
                 ),
+                InkWell(
+                  key: const Key('guest-account-admin-sign-in-button'),
+                  onTap: () => context.go('/auth/admin/sign-in'),
+                  borderRadius: BorderRadius.circular(18),
+                  child: QitakQueueRow(
+                    title: context.l10n.adminSignIn,
+                    meta: context.l10n.adminSignInSubtitle,
+                    status: context.l10n.authGateEyebrow,
+                    variant: QitakQueueRowVariant.value,
+                  ),
+                ),
               ],
             ),
           ),

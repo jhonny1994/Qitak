@@ -69,13 +69,12 @@ jobs:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
       ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
-      APP_DEEP_LINK_BASE_URL: ${{ secrets.APP_DEEP_LINK_BASE_URL }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
       SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -156,8 +155,7 @@ jobs:
           --extra-gen-snapshot-options=--save-obfuscation-map=build/obfuscation.map.json
           --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-          --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
+          --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ env.SUPABASE_PUBLISHABLE_KEY }}
           --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
           --build-name=${{ steps.pubspec.outputs.version }}
           --build-number=${{ github.run_number }}
@@ -170,8 +168,7 @@ jobs:
           --extra-gen-snapshot-options=--save-obfuscation-map=build/obfuscation.map.json
           --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
-          --dart-define=APP_DEEP_LINK_BASE_URL=${{ secrets.APP_DEEP_LINK_BASE_URL }}
+          --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ env.SUPABASE_PUBLISHABLE_KEY }}
           --dart-define=SENTRY_RELEASE=com.carbodex.qitak@${{ steps.pubspec.outputs.version }}+${{ github.run_number }}
           --build-name=${{ steps.pubspec.outputs.version }}
           --build-number=${{ github.run_number }}

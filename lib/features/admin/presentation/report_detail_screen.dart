@@ -6,6 +6,7 @@ import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/admin/data/admin_reports_repository.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
+import 'package:qitak_app/features/admin/presentation/report_reason_label.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 final reportDecisionPolicyOptionsProvider =
@@ -42,152 +43,212 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final report = ref.watch(adminReportProvider(widget.reportId));
-    final decisionOptions = ref.watch(reportDecisionPolicyOptionsProvider);
-    final reasonOptions = ref.watch(reportReasonPolicyOptionsProvider);
-
-    final availableDecisionOptions =
-        decisionOptions.asData?.value ?? const <AppPolicyOption>[];
-    final availableReasonOptions =
-        reasonOptions.asData?.value ?? const <AppPolicyOption>[];
-
-    final selectedDecision =
-        availableDecisionOptions.any(
-          (item) => item.code == _decision,
-        )
-        ? _decision
-        : (availableDecisionOptions.isNotEmpty
-              ? availableDecisionOptions.first.code
-              : _decision);
-    final selectedReasonCode =
-        (_reasonCode != null &&
-            availableReasonOptions.any((item) => item.code == _reasonCode))
-        ? _reasonCode
-        : null;
 
     return report.when(
-      data: (item) => AdminSurfaceScaffold(
-        eyebrow: context.l10n.adminReportsQueueTitle,
-        title: context.l10n.adminReportDetailTitle,
-        subtitle: context.l10n.adminReportDetailSubtitle,
-        leading: const QitakRouteBackButton(fallbackPath: '/admin/reports'),
-        children: item == null
-            ? [
-                QitakStateMessage(
-                  title: context.l10n.adminReportDetailEmptyTitle,
-                  message: context.l10n.adminReportDetailEmptyBody,
-                ),
-              ]
-            : [
-                QitakSignalStrip(
-                  label: context.l10n.transactionRecordLabel,
-                  value: item.id,
-                  status: item.status,
-                ),
-                const SizedBox(height: 16),
-                QitakPanel(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${context.l10n.adminReportReporterLabel}: '
-                        '${item.reporterName.isEmpty ? item.reporterUserId : item.reporterName}',
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${context.l10n.adminReportEntityLabel}: '
-                        '${item.entityType} • ${item.entityPreview}',
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${context.l10n.disputeReasonLabel}: ${item.reason}',
-                      ),
-                      const SizedBox(height: 10),
-                      Text(item.description.isEmpty ? '-' : item.description),
-                    ],
+      data: (item) {
+        if (item == null) {
+          return AdminSurfaceScaffold(
+            eyebrow: context.l10n.adminReportsQueueTitle,
+            title: context.l10n.adminReportDetailTitle,
+            subtitle: context.l10n.adminReportDetailSubtitle,
+            leading: const QitakRouteBackButton(fallbackPath: '/admin/reports'),
+            children: [
+              QitakStateMessage(
+                title: context.l10n.adminReportDetailEmptyTitle,
+                message: context.l10n.adminReportDetailEmptyBody,
+              ),
+            ],
+          );
+        }
+
+        final decisionOptions = ref.watch(
+          item.entityType == 'support'
+              ? supportReportResolutionDecisionPolicyProvider
+              : reportDecisionPolicyOptionsProvider,
+        );
+        final reasonOptions = ref.watch(
+          item.entityType == 'support'
+              ? supportReportResolutionReasonPolicyProvider
+              : reportReasonPolicyOptionsProvider,
+        );
+        final supportReasonOptions =
+            ref.watch(supportReasonPolicyProvider).asData?.value ??
+            const <AppPolicyOption>[];
+        final availableDecisionOptions =
+            decisionOptions.asData?.value ?? const <AppPolicyOption>[];
+        final availableReasonOptions =
+            reasonOptions.asData?.value ?? const <AppPolicyOption>[];
+        final showResolutionLoading =
+            decisionOptions.isLoading || reasonOptions.isLoading;
+        final showResolutionUnavailable =
+            decisionOptions.hasError ||
+            reasonOptions.hasError ||
+            (!showResolutionLoading &&
+                (availableDecisionOptions.isEmpty ||
+                    availableReasonOptions.isEmpty));
+
+        final selectedDecision =
+            availableDecisionOptions.any((option) => option.code == _decision)
+            ? _decision
+            : (availableDecisionOptions.isNotEmpty
+                  ? availableDecisionOptions.first.code
+                  : _decision);
+        final selectedReasonCode =
+            (_reasonCode != null &&
+                availableReasonOptions.any(
+                  (option) => option.code == _reasonCode,
+                ))
+            ? _reasonCode
+            : null;
+
+        return AdminSurfaceScaffold(
+          eyebrow: context.l10n.adminReportsQueueTitle,
+          title: context.l10n.adminReportDetailTitle,
+          subtitle: context.l10n.adminReportDetailSubtitle,
+          leading: const QitakRouteBackButton(fallbackPath: '/admin/reports'),
+          children: [
+            QitakSignalStrip(
+              label: context.l10n.transactionRecordLabel,
+              value: item.id,
+              status: item.status,
+            ),
+            const SizedBox(height: 16),
+            QitakPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${context.l10n.adminReportReporterLabel}: '
+                    '${item.reporterName.isEmpty ? item.reporterUserId : item.reporterName}',
                   ),
-                ),
-                const SizedBox(height: 16),
-                QitakPanel(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.adminConversationRelatedContextTitle,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${context.l10n.adminReportReporterHistoryLabel}: '
-                        '${item.reporterHistoryCount}',
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${context.l10n.adminReportEntityHistoryLabel}: '
-                        '${item.entityHistoryCount}',
-                      ),
-                    ],
+                  const SizedBox(height: 10),
+                  Text(
+                    '${context.l10n.adminReportEntityLabel}: '
+                    '${item.entityType} • ${item.entityPreview}',
                   ),
-                ),
-                const SizedBox(height: 16),
-                QitakPanel(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      QitakDropdownField<String>(
-                        value: selectedDecision,
-                        items: [
-                          for (final option in availableDecisionOptions)
-                            DropdownMenuItem(
-                              value: option.code,
-                              child: Text(
-                                _policyLabel(context, option.labelKey),
-                              ),
-                            ),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _decision = value ?? 'dismiss'),
-                      ),
-                      const SizedBox(height: 12),
-                      QitakDropdownField<String>(
-                        value: selectedReasonCode,
-                        items: [
-                          for (final option in availableReasonOptions)
-                            DropdownMenuItem(
-                              value: option.code,
-                              child: Text(
-                                _policyLabel(context, option.labelKey),
-                              ),
-                            ),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _reasonCode = value),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _noteController,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          labelText:
-                              context.l10n.adminModerationDecisionNoteLabel,
-                          hintText:
-                              context.l10n.adminModerationDecisionNoteHint,
+                  const SizedBox(height: 10),
+                  Text(
+                    '${context.l10n.disputeReasonLabel}: '
+                    '${adminReportReasonLabel(context, item, supportReasonOptions: supportReasonOptions)}',
+                  ),
+                  const SizedBox(height: 10),
+                  Text(item.description.isEmpty ? '-' : item.description),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            QitakPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.adminConversationRelatedContextTitle,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${context.l10n.adminReportReporterHistoryLabel}: '
+                    '${item.reporterHistoryCount}',
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${context.l10n.adminReportEntityHistoryLabel}: '
+                    '${item.entityHistoryCount}',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            QitakPanel(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (showResolutionLoading) ...[
+                    Row(
+                      children: [
+                        const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         ),
+                        const SizedBox(width: 12),
+                        Expanded(child: Text(context.l10n.loading)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                  ] else if (showResolutionUnavailable) ...[
+                    QitakStateMessage(
+                      title: context
+                          .l10n
+                          .adminReportResolutionOptionsUnavailableTitle,
+                      message: context
+                          .l10n
+                          .adminReportResolutionOptionsUnavailableBody,
+                      icon: Icons.warning_amber_rounded,
+                    ),
+                    const SizedBox(height: 12),
+                  ] else ...[
+                    QitakDropdownField<String>(
+                      key: const Key('report-detail-decision-field'),
+                      value: selectedDecision,
+                      items: [
+                        for (final option in availableDecisionOptions)
+                          DropdownMenuItem(
+                            value: option.code,
+                            child: Text(
+                              _policyLabel(context, option.labelKey),
+                            ),
+                          ),
+                      ],
+                      onChanged: (value) =>
+                          setState(() => _decision = value ?? selectedDecision),
+                    ),
+                    const SizedBox(height: 12),
+                    QitakDropdownField<String>(
+                      key: const Key('report-detail-reason-field'),
+                      value: selectedReasonCode,
+                      items: [
+                        for (final option in availableReasonOptions)
+                          DropdownMenuItem(
+                            value: option.code,
+                            child: Text(
+                              _policyLabel(context, option.labelKey),
+                            ),
+                          ),
+                      ],
+                      onChanged: (value) => setState(() => _reasonCode = value),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _noteController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText:
+                            context.l10n.adminModerationDecisionNoteLabel,
+                        hintText: context.l10n.adminModerationDecisionNoteHint,
                       ),
-                      const SizedBox(height: 12),
-                      FilledButton(
-                        onPressed: _reasonCode == null ? null : _resolve,
-                        child: Text(
-                          context.l10n.adminReportApplyDecisionAction,
-                        ),
-                      ),
-                    ],
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  FilledButton(
+                    key: const Key('report-detail-apply-button'),
+                    onPressed:
+                        showResolutionLoading ||
+                            showResolutionUnavailable ||
+                            selectedReasonCode == null
+                        ? null
+                        : () => _resolve(selectedDecision),
+                    child: Text(
+                      context.l10n.adminReportApplyDecisionAction,
+                    ),
                   ),
-                ),
-              ],
-      ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
       error: (error, stackTrace) => Padding(
         padding: qitakPagePadding,
         child: QitakStateMessage(
@@ -208,7 +269,7 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
     );
   }
 
-  Future<void> _resolve() async {
+  Future<void> _resolve(String decision) async {
     final reasonCode = _reasonCode;
     if (reasonCode == null) {
       return;
@@ -217,7 +278,7 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
         .read(adminReportsRepositoryProvider)
         .resolveReport(
           reportId: widget.reportId,
-          decision: _decision,
+          decision: decision,
           reasonCode: reasonCode,
           note: _noteController.text.trim(),
         );
@@ -235,6 +296,10 @@ class _ReportDetailScreenState extends ConsumerState<ReportDetailScreen> {
 
 String _policyLabel(BuildContext context, String labelKey) {
   switch (labelKey) {
+    case 'adminSupportDecisionResolve':
+      return context.l10n.adminSupportDecisionResolve;
+    case 'adminSupportDecisionClose':
+      return context.l10n.adminSupportDecisionClose;
     case 'adminReportDecisionDismiss':
       return context.l10n.adminReportDecisionDismiss;
     case 'adminReportDecisionWarnSeller':
@@ -243,6 +308,14 @@ String _policyLabel(BuildContext context, String labelKey) {
       return context.l10n.adminReportDecisionRemoveListing;
     case 'adminReportDecisionSuspendSeller':
       return context.l10n.adminReportDecisionSuspendSeller;
+    case 'adminSupportReasonVerifiedAndResolved':
+      return context.l10n.adminSupportReasonVerifiedAndResolved;
+    case 'adminSupportReasonUserGuided':
+      return context.l10n.adminSupportReasonUserGuided;
+    case 'adminSupportReasonDuplicateTicket':
+      return context.l10n.adminSupportReasonDuplicateTicket;
+    case 'adminSupportReasonOutOfScope':
+      return context.l10n.adminSupportReasonOutOfScope;
     case 'adminReportReasonSpam':
       return context.l10n.adminReportReasonSpam;
     case 'adminReportReasonPolicyViolation':

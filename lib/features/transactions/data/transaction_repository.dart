@@ -66,6 +66,28 @@ final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
   );
 });
 
+class PaymentProofWriteCoordinator {
+  const PaymentProofWriteCoordinator();
+
+  Future<T> execute<T>({
+    required Future<void> Function() uploadProof,
+    required Future<T> Function() persistProof,
+    required Future<void> Function() rollbackUpload,
+  }) async {
+    await uploadProof();
+    try {
+      return await persistProof();
+    } on Object {
+      try {
+        await rollbackUpload();
+      } on Object catch (_) {
+        // Preserve the original persistence failure; rollback is best effort.
+      }
+      rethrow;
+    }
+  }
+}
+
 class LocalTransactionRepository implements TransactionRepository {
   static final Map<String, TransactionRecord> _records =
       <String, TransactionRecord>{};
@@ -251,7 +273,7 @@ class LocalTransactionRepository implements TransactionRepository {
   }) async {
     final tx = _records[transactionId];
     if (tx == null) {
-      return true;
+      return false;
     }
     if (tx.state != TransactionState.completed) {
       return false;
@@ -432,21 +454,32 @@ class SupabaseTransactionRepository implements TransactionRepository {
     final storagePath =
         '$actorUserId/$transactionId/${_sanitizeFileName(proof.fileName)}';
     try {
-      await _client.storage
-          .from(_proofBucket)
-          .uploadBinary(
-            storagePath,
-            proof.bytes,
-            fileOptions: FileOptions(contentType: proof.mimeType),
+      return await const PaymentProofWriteCoordinator().execute(
+        uploadProof: () {
+          return _client.storage
+              .from(_proofBucket)
+              .uploadBinary(
+                storagePath,
+                proof.bytes,
+                fileOptions: FileOptions(contentType: proof.mimeType),
+              );
+        },
+        persistProof: () async {
+          final updated = await _client.rpc<Map<String, dynamic>>(
+            'submit_deal_payment_proof',
+            params: <String, dynamic>{
+              'p_deal_id': transactionId,
+              'p_storage_path': storagePath,
+            },
           );
-      final updated = await _client.rpc<Map<String, dynamic>>(
-        'submit_deal_payment_proof',
-        params: <String, dynamic>{
-          'p_deal_id': transactionId,
-          'p_storage_path': storagePath,
+          return _fromMap(updated);
+        },
+        rollbackUpload: () async {
+          await _client.storage.from(_proofBucket).remove(<String>[
+            storagePath,
+          ]);
         },
       );
-      return _fromMap(updated);
     } on StorageException catch (_) {
       throw AppException.fromCode(AppErrorCode.networkUnavailable);
     } on PostgrestException catch (error) {
@@ -485,7 +518,7 @@ class SupabaseTransactionRepository implements TransactionRepository {
         .eq('id', transactionId)
         .maybeSingle();
     if (row == null) {
-      return true;
+      return false;
     }
     final state = TransactionStateX.fromValue(row['status'] as String);
     if (state != TransactionState.completed) {

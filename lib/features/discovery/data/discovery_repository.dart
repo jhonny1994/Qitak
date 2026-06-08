@@ -211,7 +211,7 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
       sellerUserId: row['seller_user_id'] as String? ?? '',
       title: (row['title'] as String?) ?? '',
       priceAmount: (row['price'] as num?)?.toInt() ?? 0,
-      sellerLabelCode: _verifiedSellerCode(),
+      sellerLabelCode: '',
       rating: 0,
       threadId: '',
       transactionId: '',
@@ -290,10 +290,6 @@ class SupabaseDiscoveryRepository implements DiscoveryRepository {
 
   String _conditionValueForQuery(String condition) {
     return condition;
-  }
-
-  String _verifiedSellerCode() {
-    return 'seller_label_verified';
   }
 }
 

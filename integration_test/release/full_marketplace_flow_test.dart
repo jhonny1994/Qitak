@@ -259,6 +259,13 @@ void main() {
       container.read(goRouterProvider).go('/ratings/transaction/${record.id}');
       await tester.pumpAndSettle();
 
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('rating-submit-button')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.byKey(const Key('rating-submit-button')));
+      await tester.pumpAndSettle();
       expect(find.byKey(const Key('rating-submit-button')), findsOneWidget);
     },
   );

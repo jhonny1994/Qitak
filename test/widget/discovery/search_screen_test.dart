@@ -46,7 +46,33 @@ void main() {
       find.byKey(const Key('search-results-filter-button')),
       findsOneWidget,
     );
-    expect(find.textContaining('1 matches'), findsOneWidget);
+    expect(find.textContaining('1 matches'), findsNothing);
+    expect(find.text('1 result found'), findsOneWidget);
+  });
+
+  testWidgets('single search result does not stretch into dead space', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SearchScreen(initialQuery: 'Brake')),
+      ),
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await settleDiscovery(tester);
+
+    final result = find.byKey(const Key('marketplace-result-list'));
+    expect(result, findsOneWidget);
+    expect(tester.getTopLeft(result).dy, lessThan(220));
   });
 
   testWidgets('applied structured filters affect results', (tester) async {
@@ -201,6 +227,43 @@ void main() {
     expect(find.text('Clear history'), findsOneWidget);
   });
 
+  testWidgets(
+    'empty query with applied filters renders filtered results instead of recent history',
+    (tester) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(body: SearchScreen()),
+        ),
+        seed: const <String, Object>{
+          'search_history': '["Headlight","Brake"]',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+          discoveryFilterTaxonomyProvider.overrideWith(
+            (ref) => Future.value(testDiscoveryFilterTaxonomy),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(scope);
+      await settleDiscovery(tester);
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(SearchScreen)),
+      );
+      container.read(searchFilterProvider.notifier).appliedFilters =
+          const SearchFilterState(categoryId: 'braking');
+      await settleDiscovery(tester);
+
+      expect(find.text('Brake pad set'), findsOneWidget);
+      expect(find.text('Headlight assembly'), findsNothing);
+      expect(find.text('Recent searches'), findsNothing);
+      expect(find.text('1 result found'), findsOneWidget);
+    },
+  );
+
   testWidgets('typing debounces then persists recent search', (tester) async {
     final scope = await buildTestScope(
       const TestMaterialShell(
@@ -224,16 +287,43 @@ void main() {
       'Brake',
     );
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.textContaining('1 matches'), findsNothing);
+    expect(find.text('1 result found'), findsNothing);
 
     await tester.pump(const Duration(milliseconds: 150));
     await settleDiscovery(tester);
-    expect(find.textContaining('1 matches'), findsOneWidget);
+    expect(find.text('1 result found'), findsOneWidget);
 
     final container = ProviderScope.containerOf(
       tester.element(find.byType(SearchScreen)),
     );
     final history = container.read(searchHistoryProvider).asData?.value ?? [];
     expect(history.first, 'Brake');
+  });
+
+  testWidgets('admin search results hide save actions', (tester) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: SearchScreen(initialQuery: 'Headlight')),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'admin@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+        discoveryFilterTaxonomyProvider.overrideWith(
+          (ref) => Future.value(testDiscoveryFilterTaxonomy),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(scope);
+    await ProviderScope.containerOf(
+      tester.element(find.byType(SearchScreen)),
+    ).read(authSessionProvider.notifier).restore();
+    await settleDiscovery(tester);
+
+    expect(find.byKey(const Key('search-result-save-listing-1')), findsNothing);
   });
 }

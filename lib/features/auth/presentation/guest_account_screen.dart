@@ -63,11 +63,6 @@ class GuestAccountScreen extends ConsumerWidget {
                   onPressed: () => context.go('/auth/sign-up$authSuffix'),
                   child: Text(context.l10n.createAccount),
                 ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () => context.go('/auth/admin/sign-in'),
-                  child: Text(context.l10n.adminAccess),
-                ),
               ],
             ),
           ),
@@ -100,17 +95,6 @@ class GuestAccountScreen extends ConsumerWidget {
                   ),
                 ),
                 InkWell(
-                  key: const Key('guest-account-support-button'),
-                  onTap: () => context.go('/auth/support'),
-                  borderRadius: BorderRadius.circular(18),
-                  child: QitakQueueRow(
-                    title: context.l10n.supportHelpTitle,
-                    meta: context.l10n.supportHelpSubtitle,
-                    status: context.l10n.supportHelpStatusGuide,
-                    variant: QitakQueueRowVariant.value,
-                  ),
-                ),
-                InkWell(
                   key: const Key('guest-account-legal-button'),
                   onTap: () => context.go('/auth/legal'),
                   borderRadius: BorderRadius.circular(18),
@@ -118,6 +102,17 @@ class GuestAccountScreen extends ConsumerWidget {
                     title: context.l10n.legalInformationTitle,
                     meta: context.l10n.legalInformationSubtitle,
                     status: context.l10n.legalInformationStatus,
+                    variant: QitakQueueRowVariant.value,
+                  ),
+                ),
+                InkWell(
+                  key: const Key('guest-account-admin-sign-in-button'),
+                  onTap: () => context.go('/auth/admin/sign-in'),
+                  borderRadius: BorderRadius.circular(18),
+                  child: QitakQueueRow(
+                    title: context.l10n.adminSignIn,
+                    meta: context.l10n.adminSignInSubtitle,
+                    status: context.l10n.authGateEyebrow,
                     variant: QitakQueueRowVariant.value,
                   ),
                 ),

@@ -94,9 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "تغيير كلمة المرور",
     ),
     "accountUtilitiesGuestSubtitle": MessageLookupByLibrary.simpleMessage(
-      "قبل تسجيل الدخول، ما زال بإمكانك ضبط اللغة والمظهر ومسار المساعدة.",
+      "اضبط اللغة والمظهر وراجع سياسات السوق قبل تسجيل الدخول.",
     ),
-    "adminAccess": MessageLookupByLibrary.simpleMessage("دخول الإدارة"),
     "adminAccessDenied": MessageLookupByLibrary.simpleMessage(
       "هذا الحساب لا يملك صلاحية دخول الإدارة.",
     ),
@@ -325,7 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تفاصيل البلاغ غير متاحة",
     ),
     "adminReportDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "افحص البلاغ والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.",
+      "افحص البلاغ أو تذكرة الدعم والجهة المرتبطة وسجل الإجراءات قبل اتخاذ القرار.",
     ),
     "adminReportDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل مراجعة البلاغ",
@@ -350,11 +349,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminReportReporterLabel": MessageLookupByLibrary.simpleMessage(
       "مقدم البلاغ",
     ),
+    "adminReportResolutionOptionsUnavailableBody":
+        MessageLookupByLibrary.simpleMessage(
+          "تعذر تحميل سياسات القرار. حدّث العقود ثم أعد المحاولة قبل حسم هذا البلاغ.",
+        ),
+    "adminReportResolutionOptionsUnavailableTitle":
+        MessageLookupByLibrary.simpleMessage("خيارات الحسم غير متاحة"),
     "adminReportsQueueEmptyBody": MessageLookupByLibrary.simpleMessage(
       "لا توجد بلاغات مفتوحة حالياً.",
     ),
     "adminReportsQueueSubtitle": MessageLookupByLibrary.simpleMessage(
-      "تابع بلاغات الإعلانات والبائعين والرسائل من شاشة واحدة.",
+      "تابع بلاغات الإعلانات والبائعين والرسائل وتذاكر الدعم من شاشة واحدة.",
     ),
     "adminReportsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "طابور البلاغات",
@@ -369,6 +374,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل دخول مخصّص لمستخدمي الإدارة فقط.",
     ),
+    "adminSupportDecisionClose": MessageLookupByLibrary.simpleMessage("إغلاق"),
+    "adminSupportDecisionResolve": MessageLookupByLibrary.simpleMessage("حل"),
+    "adminSupportReasonDuplicateTicket": MessageLookupByLibrary.simpleMessage(
+      "تذكرة مكررة",
+    ),
+    "adminSupportReasonOutOfScope": MessageLookupByLibrary.simpleMessage(
+      "خارج النطاق",
+    ),
+    "adminSupportReasonUserGuided": MessageLookupByLibrary.simpleMessage(
+      "تم إرشاد المستخدم",
+    ),
+    "adminSupportReasonVerifiedAndResolved":
+        MessageLookupByLibrary.simpleMessage("تم التحقق والحل"),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage(
       "خفض الصلاحية",
     ),
@@ -461,7 +479,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "طابور توثيق البائعين",
     ),
     "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
-      "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_ANON_KEY قبل تشغيل التطبيق.",
+      "إعدادات Supabase غير متوفرة أثناء التشغيل. وفّر SUPABASE_URL وSUPABASE_PUBLISHABLE_KEY قبل تشغيل التطبيق.",
     ),
     "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
       "الإعداد مطلوب",
@@ -498,7 +516,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "appearanceSettingsTitle": MessageLookupByLibrary.simpleMessage("المظهر"),
     "authChoiceEyebrow": MessageLookupByLibrary.simpleMessage("البداية"),
     "authChoiceTitle": MessageLookupByLibrary.simpleMessage(
-      "سجّل الدخول أو تصفح أولاً",
+      "تصفح أولاً وسجّل الدخول عند الحاجة",
     ),
     "authErrorCheckEmailConfirmation": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني والضغط على رابط التأكيد قبل تسجيل الدخول.",
@@ -751,9 +769,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullNameValidationError": MessageLookupByLibrary.simpleMessage(
       "أدخل اسمك الكامل.",
     ),
-    "googleComingSoon": MessageLookupByLibrary.simpleMessage(
-      "تسجيل Google غير متاح حالياً",
-    ),
     "hidePassword": MessageLookupByLibrary.simpleMessage("إخفاء كلمة المرور"),
     "invalidCredentialsGeneric": MessageLookupByLibrary.simpleMessage(
       "بيانات الدخول غير صحيحة أو الحساب غير متاح.",
@@ -901,8 +916,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "مشاركة الإعلان",
     ),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("الحالة"),
+    "listingSubmitFailureBody": MessageLookupByLibrary.simpleMessage(
+      "تعذر حفظ الإعلان الآن. حاول مرة أخرى.",
+    ),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "إرسال للمراجعة",
+    ),
+    "listingSubmitValidationError": MessageLookupByLibrary.simpleMessage(
+      "راجع تفاصيل الإعلان ثم حاول مرة أخرى.",
     ),
     "listingSubmittedForReviewSuccess": MessageLookupByLibrary.simpleMessage(
       "تم إرسال الإعلان للمراجعة.",
@@ -1076,7 +1097,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "استكشف الإعلانات، قارن الخيارات، وافهم السوق قبل إنشاء الحساب.",
     ),
     "onboardingBodyThree": MessageLookupByLibrary.simpleMessage(
-      "احفظ الإعلانات وراسل البائعين واطلب القطع عندما تصبح جاهزاً.",
+      "أنشئ حساباً لحفظ الإعلانات والتواصل مع البائعين والدخول في طلب شراء فعلي.",
     ),
     "onboardingBodyTwo": MessageLookupByLibrary.simpleMessage(
       "استخدم الفئة والولاية والبلدية والعلامة والموديل والسنة للوصول إلى القطعة المناسبة بسرعة أكبر.",
@@ -1104,9 +1125,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "onboardingPanelFilters": MessageLookupByLibrary.simpleMessage(
       "فلاتر دقيقة",
     ),
-    "onboardingPanelGuest": MessageLookupByLibrary.simpleMessage(
-      "الحساب لاحقاً",
-    ),
+    "onboardingPanelGuest": MessageLookupByLibrary.simpleMessage("تصفح أولاً"),
     "onboardingPanelSearch": MessageLookupByLibrary.simpleMessage("ابحث أولاً"),
     "onboardingPanelSignInWhenReady": MessageLookupByLibrary.simpleMessage(
       "سجل الدخول عند الحاجة",
@@ -1278,8 +1297,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("إرسال"),
     "sellerListingSubmittedLabel": m4,
     "sellerListingUpdatedLabel": m5,
+    "sellerListingsActiveEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات نشطة حالياً.",
+    ),
+    "sellerListingsActiveStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.",
+    ),
+    "sellerListingsClosedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات مغلقة حالياً.",
+    ),
+    "sellerListingsClosedStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات المغلقة لم تعد ظاهرة للمشترين.",
+    ),
+    "sellerListingsDraftEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك مسودات حالياً.",
+    ),
+    "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
+      "تبقى المسودات خاصة حتى ترسلها للمراجعة.",
+    ),
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "لا توجد لديك إعلانات كبائع بعد.",
+      "لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل إعلانات البائع حالياً.",
@@ -1287,8 +1324,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingsEyebrow": MessageLookupByLibrary.simpleMessage(
       "مخزون البائع",
     ),
+    "sellerListingsPausedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات موقوفة حالياً.",
+    ),
+    "sellerListingsPausedStateBody": MessageLookupByLibrary.simpleMessage(
+      "الإعلانات الموقوفة مخفية عن المشترين حتى تعيد تفعيلها.",
+    ),
     "sellerListingsPreviewAction": MessageLookupByLibrary.simpleMessage(
       "معاينة",
+    ),
+    "sellerListingsRejectedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات مرفوضة حالياً.",
+    ),
+    "sellerListingsRejectedStateBody": MessageLookupByLibrary.simpleMessage(
+      "تحتاج الإعلانات المرفوضة إلى تعديل قبل إعادة إرسالها.",
     ),
     "sellerListingsStatusActive": MessageLookupByLibrary.simpleMessage("نشطة"),
     "sellerListingsStatusClosed": MessageLookupByLibrary.simpleMessage("مغلقة"),
@@ -1305,9 +1354,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "قيد المراجعة",
     ),
     "sellerListingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "راجع القطع النشطة المرتبطة بحساب البائع الخاص بك.",
+      "أدر الإعلانات المرتبطة بحساب البائع، بما في ذلك المسودات والمخزون المنشور وحالة المراجعة.",
     ),
     "sellerListingsTitle": MessageLookupByLibrary.simpleMessage("إعلاناتي"),
+    "sellerListingsUnderReviewEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "لا توجد لديك إعلانات قيد المراجعة حالياً.",
+    ),
+    "sellerListingsUnderReviewStateBody": MessageLookupByLibrary.simpleMessage(
+      "تبقى الإعلانات قيد المراجعة مخفية حتى تتم الموافقة عليها.",
+    ),
     "sellerOnboardingAccountIdentityNote": MessageLookupByLibrary.simpleMessage(
       "يتم استخدام اسم الحساب ورقم الهاتف تلقائياً في توثيق البائع.",
     ),
@@ -1428,6 +1483,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerStatusReviewFeedbackTitle": MessageLookupByLibrary.simpleMessage(
       "آخر ملاحظات المراجعة",
     ),
+    "sellerStatusReviewStatusAction": MessageLookupByLibrary.simpleMessage(
+      "مراجعة الحالة",
+    ),
     "sellerStatusSubmitted": MessageLookupByLibrary.simpleMessage(
       "قيد المراجعة",
     ),
@@ -1491,38 +1549,91 @@ class MessageLookup extends MessageLookupByLibrary {
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
       "جارٍ تحميل بيانات الحساب والسوق.",
     ),
-    "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
-      "استخدم إعدادات الحساب لبيانات الهوية، واسترجاع كلمة المرور للوصول الآمن.",
+    "supportCenterCreateAction": MessageLookupByLibrary.simpleMessage(
+      "إنشاء تذكرة",
     ),
-    "supportHelpAccountTitle": MessageLookupByLibrary.simpleMessage(
-      "مساعدة الحساب",
+    "supportCenterEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "أنشئ تذكرة عندما تحتاج إلى مساعدة في الوصول إلى الحساب أو التحقق من الدفع أو سلوك البائع أو المشاكل التقنية.",
     ),
+    "supportCenterEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "لا توجد تذاكر دعم بعد",
+    ),
+    "supportCenterEyebrow": MessageLookupByLibrary.simpleMessage("الدعم"),
+    "supportCenterRoutingAccountBody": MessageLookupByLibrary.simpleMessage(
+      "استخدم إعدادات الحساب لتحديث الهوية وتغيير كلمة المرور والتحكم على مستوى الحساب قبل فتح تذكرة.",
+    ),
+    "supportCenterRoutingAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "تغييرات الحساب والوصول",
+    ),
+    "supportCenterRoutingDisputeBody": MessageLookupByLibrary.simpleMessage(
+      "استخدم مسار النزاع عندما ترتبط المشكلة بصفقة محددة أو مراجعة إثبات الدفع أو نتيجة التسليم.",
+    ),
+    "supportCenterRoutingDisputeTitle": MessageLookupByLibrary.simpleMessage(
+      "مشاكل الصفقة المحددة",
+    ),
+    "supportCenterRoutingScopeBody": MessageLookupByLibrary.simpleMessage(
+      "افتح تذكرة دعم لمشاكل الوصول إلى الحساب أو مشاكل المنصة أو المشاكل التي لا تنتمي إلى صفقة أو بلاغ إعلان محدد.",
+    ),
+    "supportCenterRoutingScopeTitle": MessageLookupByLibrary.simpleMessage(
+      "ما الذي يتعامل معه الدعم هنا",
+    ),
+    "supportCenterRoutingTitle": MessageLookupByLibrary.simpleMessage(
+      "استخدم المسار الصحيح",
+    ),
+    "supportCenterSubtitle": MessageLookupByLibrary.simpleMessage(
+      "تابع تذاكر الدعم الموثقة لمشاكل الحساب والدفع والمشاكل التقنية.",
+    ),
+    "supportCenterTicketListTitle": MessageLookupByLibrary.simpleMessage(
+      "تذاكرك",
+    ),
+    "supportCenterTitle": MessageLookupByLibrary.simpleMessage("الدعم"),
     "supportHelpEyebrow": MessageLookupByLibrary.simpleMessage("المساعدة"),
-    "supportHelpNeedActionBody": MessageLookupByLibrary.simpleMessage(
-      "يحافظ Qitak على الخطوات التالية داخل الشاشات الصحيحة بدلاً من إخفائها خلف محادثة دعم عامة.",
+    "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
+      "الوصول إلى الحساب",
     ),
-    "supportHelpNeedActionTitle": MessageLookupByLibrary.simpleMessage(
-      "هل تحتاج إلى متابعة شيء؟",
+    "supportReasonOther": MessageLookupByLibrary.simpleMessage("أخرى"),
+    "supportReasonPaymentIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة دفع",
     ),
-    "supportHelpNotificationBody": MessageLookupByLibrary.simpleMessage(
-      "تابع الرسائل وقرارات البائع وتغييرات الإعلانات من مركز الإشعارات.",
+    "supportReasonSellerIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة مع البائع",
     ),
-    "supportHelpNotificationTitle": MessageLookupByLibrary.simpleMessage(
-      "الإشعارات والتحديثات",
+    "supportReasonTechnicalIssue": MessageLookupByLibrary.simpleMessage(
+      "مشكلة تقنية",
     ),
-    "supportHelpSafetyBody": MessageLookupByLibrary.simpleMessage(
-      "استخدم شاشات المعاملة والتقييم والنزاع حتى تبقى مشاكل السوق مرتبطة بالصفقة الصحيحة.",
+    "supportTicketCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "اختر السبب الأقرب واشرح المشكلة بوضوح حتى يتمكن الفريق من التصرف.",
     ),
-    "supportHelpSafetyTitle": MessageLookupByLibrary.simpleMessage(
-      "الثقة والأمان",
+    "supportTicketCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "تذكرة دعم جديدة",
     ),
-    "supportHelpStatusAlerts": MessageLookupByLibrary.simpleMessage("تنبيهات"),
-    "supportHelpStatusGuide": MessageLookupByLibrary.simpleMessage("دليل"),
-    "supportHelpStatusTrust": MessageLookupByLibrary.simpleMessage("ثقة"),
-    "supportHelpSubtitle": MessageLookupByLibrary.simpleMessage(
-      "اعثر على إرشادات الحساب والثقة والإشعارات من مكان واحد.",
+    "supportTicketCreated": MessageLookupByLibrary.simpleMessage(
+      "تم إرسال تذكرة الدعم.",
     ),
-    "supportHelpTitle": MessageLookupByLibrary.simpleMessage("المساعدة والدعم"),
+    "supportTicketDescriptionError": MessageLookupByLibrary.simpleMessage(
+      "أدخل 20 حرفا على الأقل حتى يملك الدعم سياقا كافيا.",
+    ),
+    "supportTicketDescriptionHelper": MessageLookupByLibrary.simpleMessage(
+      "اذكر الصفقة أو الإعلان أو الشاشة المعنية وآخر إجراء أكملته.",
+    ),
+    "supportTicketDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "ماذا حدث؟",
+    ),
+    "supportTicketReasonError": MessageLookupByLibrary.simpleMessage(
+      "اختر سبب الدعم.",
+    ),
+    "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("السبب"),
+    "supportTicketStatusClosed": MessageLookupByLibrary.simpleMessage("مغلقة"),
+    "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("مفتوحة"),
+    "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
+      "تم الحل",
+    ),
+    "supportTicketStatusUnderReview": MessageLookupByLibrary.simpleMessage(
+      "قيد المراجعة",
+    ),
+    "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
+      "إرسال التذكرة",
+    ),
     "termsValidationError": MessageLookupByLibrary.simpleMessage(
       "يجب قبول الشروط لإنشاء الحساب.",
     ),
@@ -1581,6 +1692,53 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionMessageAction": MessageLookupByLibrary.simpleMessage(
       "فتح الرسائل",
+    ),
+    "transactionNextStepBuyerAwaitReview": MessageLookupByLibrary.simpleMessage(
+      "انتظر حتى يراجع البائع الإثبات المرفوع.",
+    ),
+    "transactionNextStepBuyerCash": MessageLookupByLibrary.simpleMessage(
+      "قابل البائع شخصيا وافحص القطعة ثم ادفع cash عند التسليم.",
+    ),
+    "transactionNextStepBuyerConfirmReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "بعد التسليم أكد الاستلام لإكمال هذه الصفقة.",
+        ),
+    "transactionNextStepBuyerSelectMethod":
+        MessageLookupByLibrary.simpleMessage(
+          "اختر CCP أو BaridiMob أو cash لمتابعة هذه الصفقة غير المتصلة.",
+        ),
+    "transactionNextStepBuyerUploadProof": MessageLookupByLibrary.simpleMessage(
+      "أرسل الدفع خارج التطبيق ثم ارفع هنا إثبات CCP أو BaridiMob.",
+    ),
+    "transactionNextStepCompleted": MessageLookupByLibrary.simpleMessage(
+      "هذه الصفقة مكتملة.",
+    ),
+    "transactionNextStepInactive": MessageLookupByLibrary.simpleMessage(
+      "هذه الصفقة لم تعد نشطة.",
+    ),
+    "transactionNextStepPendingBuyer": MessageLookupByLibrary.simpleMessage(
+      "انتظر حتى يراجع البائع هذا الطلب.",
+    ),
+    "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
+      "راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.",
+    ),
+    "transactionNextStepSellerAwaitReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "أكمل التسليم ثم انتظر تأكيد الاستلام من المشتري.",
+        ),
+    "transactionNextStepSellerCash": MessageLookupByLibrary.simpleMessage(
+      "قابل المشتري شخصيا واستلم cash ثم أكد طلب cash.",
+    ),
+    "transactionNextStepSellerReviewProof":
+        MessageLookupByLibrary.simpleMessage(
+          "راجع الإثبات المرفوع ثم أكده أو ارفضه.",
+        ),
+    "transactionNextStepSellerWaitForProof":
+        MessageLookupByLibrary.simpleMessage(
+          "انتظر حتى يرسل المشتري إثبات CCP أو BaridiMob.",
+        ),
+    "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
+      "الخطوة التالية",
     ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "فتح نزاع",

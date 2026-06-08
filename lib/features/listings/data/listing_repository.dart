@@ -7,6 +7,7 @@ import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/network/supabase_error_classifier.dart';
+import 'package:qitak_app/features/admin/data/local_admin_report_store.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
@@ -62,10 +63,36 @@ class LocalListingRepository implements ListingRepository {
   bool get isLocal => true;
 
   @override
-  Future<bool> hasUserReportedListing(String listingId) async => false;
+  Future<bool> hasUserReportedListing(String listingId) async {
+    final profile = _profile;
+    if (profile == null) {
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
+    }
+    return LocalAdminReportStore.hasOpenListingReport(
+      reporterUserId: profile.id,
+      listingId: listingId,
+    );
+  }
 
   @override
-  Future<void> reportListing(String listingId, String reason) async {}
+  Future<void> reportListing(String listingId, String reason) async {
+    final profile = _profile;
+    if (profile == null) {
+      throw AppException.fromCode(AppErrorCode.sessionNotFound);
+    }
+    final listingTitle = LocalListingStore(_prefs)
+        .readAll()
+        .where((item) => item.id == listingId)
+        .map((item) => item.title)
+        .firstOrNull;
+    LocalAdminReportStore.createListingReport(
+      reporterUserId: profile.id,
+      reporterName: profile.fullName,
+      listingId: listingId,
+      listingTitle: listingTitle ?? listingId,
+      reason: reason,
+    );
+  }
 
   @override
   Future<ListingSubmissionResult> submitListing({

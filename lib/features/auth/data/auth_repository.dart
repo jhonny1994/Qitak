@@ -93,14 +93,28 @@ class SupabaseAuthRepository implements AuthRepository {
       return const AuthSessionSnapshot(isAuthenticated: false);
     }
 
-    final profile = await _fetchProfile(
-      user.id,
-      user.email ?? '',
-      fallbackName: (user.userMetadata?['full_name'] as String?) ?? '',
-      fallbackPhone: (user.userMetadata?['phone'] as String?) ?? '',
-      fallbackRole: _fallbackRoleFromMetadata(user.userMetadata),
-      allowFallbackOnError: true,
-    );
+    AccountProfile profile;
+    try {
+      profile = await _fetchProfile(
+        user.id,
+        user.email ?? '',
+        fallbackName: (user.userMetadata?['full_name'] as String?) ?? '',
+        fallbackPhone: (user.userMetadata?['phone'] as String?) ?? '',
+      );
+    } on PostgrestException catch (error) {
+      _logAuthDebug(
+        'restore_session_profile_read_failed',
+        error: error,
+        context: <String, Object?>{
+          'userId': user.id,
+          'email': user.email,
+          'code': error.code,
+          'message': error.message,
+        },
+      );
+      await signOut();
+      return const AuthSessionSnapshot(isAuthenticated: false);
+    }
     return AuthSessionSnapshot(isAuthenticated: true, profile: profile);
   }
 
@@ -148,14 +162,34 @@ class SupabaseAuthRepository implements AuthRepository {
     if (refreshToken != null && refreshToken.isNotEmpty) {
       await _secureStorageService.writeRefreshToken(refreshToken);
     }
-    final profile = await _fetchProfile(
-      user.id,
-      user.email ?? email,
-      fallbackName: (user.userMetadata?['full_name'] as String?) ?? '',
-      fallbackPhone: (user.userMetadata?['phone'] as String?) ?? '',
-      fallbackRole: _fallbackRoleFromMetadata(user.userMetadata),
-      allowFallbackOnError: true,
-    );
+    AccountProfile profile;
+    try {
+      profile = await _fetchProfile(
+        user.id,
+        user.email ?? email,
+        fallbackName: (user.userMetadata?['full_name'] as String?) ?? '',
+        fallbackPhone: (user.userMetadata?['phone'] as String?) ?? '',
+      );
+    } on PostgrestException catch (error, stackTrace) {
+      _logAuthDebug(
+        'sign_in_profile_read_failed',
+        error: error,
+        stackTrace: stackTrace,
+        context: <String, Object?>{
+          'userId': user.id,
+          'email': user.email ?? email,
+          'code': error.code,
+          'message': error.message,
+        },
+      );
+      await signOut();
+      final mapped = classifyPostgrestException(error);
+      throw AppException.fromCode(
+        mapped == AppErrorCode.permissionDenied
+            ? AppErrorCode.permissionDenied
+            : AppErrorCode.profileSetupBlocked,
+      );
+    }
     await _registerCurrentDeviceToken();
     return profile;
   }
@@ -340,7 +374,7 @@ class SupabaseAuthRepository implements AuthRepository {
     String fallbackName = '',
     String fallbackPhone = '',
     String fallbackLanguage = 'ar',
-    AccountRole fallbackRole = AccountRole.buyer,
+    AccountRole? fallbackRole,
     bool allowFallbackOnError = false,
   }) async {
     final data = await _readProfileData(
@@ -356,7 +390,7 @@ class SupabaseAuthRepository implements AuthRepository {
           fallbackName: fallbackName,
           fallbackPhone: fallbackPhone,
           fallbackLanguage: fallbackLanguage,
-          fallbackRole: fallbackRole,
+          fallbackRole: fallbackRole ?? AccountRole.buyer,
         );
 
     final resolvedFullName = ((map['full_name'] as String?) ?? '').trim();
@@ -367,7 +401,8 @@ class SupabaseAuthRepository implements AuthRepository {
       email: (map['email'] as String?) ?? email,
       phone: resolvedPhone.isNotEmpty ? resolvedPhone : fallbackPhone,
       role: _roleFromString(
-        (map['role'] as String?) ?? _roleToStorageValue(fallbackRole),
+        (map['role'] as String?) ??
+            _roleToStorageValue(fallbackRole ?? AccountRole.buyer),
       ),
       language: (map['language'] as String?) ?? fallbackLanguage,
       isActive: (map['is_active'] as bool?) ?? true,
@@ -398,11 +433,15 @@ class SupabaseAuthRepository implements AuthRepository {
       }
     }
 
-    if (lastError != null && !allowFallbackOnError) {
+    if (!allowFallbackOnError) {
       if (lastError case final PostgrestException error) {
         throw error;
       }
+      throw const PostgrestException(
+        message: 'Profile record missing for authenticated user.',
+      );
     }
+
     return null;
   }
 

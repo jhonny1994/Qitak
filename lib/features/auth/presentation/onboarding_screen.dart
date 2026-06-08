@@ -16,7 +16,8 @@ class OnboardingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = _OnboardingContent.fromStep(context, step);
+    final normalizedStep = step.clamp(1, 3);
+    final model = _OnboardingContent.fromStep(context, normalizedStep);
 
     Future<void> finish() async {
       await ref.read(appPreferencesProvider.notifier).markOnboardingSeen();
@@ -39,7 +40,8 @@ class OnboardingScreen extends ConsumerWidget {
                   title: model.title,
                   subtitle: model.body,
                   trailing: QitakChip(
-                    label: '$step/3',
+                    key: const Key('onboarding-progress-chip'),
+                    label: '$normalizedStep/3',
                     selected: true,
                   ),
                 ),
@@ -70,7 +72,7 @@ class OnboardingScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(3, (index) {
-                    final isActive = index + 1 == step;
+                    final isActive = index + 1 == normalizedStep;
                     return Container(
                       width: isActive ? 22 : 10,
                       height: 10,
@@ -99,14 +101,14 @@ class OnboardingScreen extends ConsumerWidget {
                     Expanded(
                       child: FilledButton(
                         onPressed: () async {
-                          if (step >= 3) {
+                          if (normalizedStep >= 3) {
                             await finish();
                             return;
                           }
-                          context.go('/intro/${step + 1}');
+                          context.go('/intro/${normalizedStep + 1}');
                         },
                         child: Text(
-                          step >= 3
+                          normalizedStep >= 3
                               ? context.l10n.onboardingGetStarted
                               : context.l10n.onboardingNext,
                         ),

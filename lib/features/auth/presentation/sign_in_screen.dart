@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +10,7 @@ import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
-import 'package:qitak_app/features/auth/presentation/auth_surface_switcher.dart';
+import 'package:qitak_app/features/auth/presentation/customer_auth_mode_switch.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/auth/providers/redirect_intent_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -25,12 +23,14 @@ class SignInScreen extends ConsumerStatefulWidget {
     this.redirectArguments,
     this.redirectType = IntentTargetType.route,
     this.variant = SignInVariant.buyer,
+    this.initialCustomerMode,
   });
 
   final String? redirectPath;
   final String? redirectArguments;
   final IntentTargetType redirectType;
   final SignInVariant variant;
+  final SignInVariant? initialCustomerMode;
 
   @override
   ConsumerState<SignInScreen> createState() => _SignInScreenState();
@@ -42,6 +42,24 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _passwordController = TextEditingController();
   bool _submitting = false;
   bool _obscureText = true;
+  late SignInVariant _variant;
+
+  bool get _isCustomerSurface => _variant != SignInVariant.admin;
+
+  @override
+  void initState() {
+    super.initState();
+    _variant = widget.initialCustomerMode ?? widget.variant;
+  }
+
+  @override
+  void didUpdateWidget(covariant SignInScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.variant != widget.variant ||
+        oldWidget.initialCustomerMode != widget.initialCustomerMode) {
+      _variant = widget.initialCustomerMode ?? widget.variant;
+    }
+  }
 
   @override
   void dispose() {
@@ -52,19 +70,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(authSessionProvider);
-
-    if (session.isAuthenticated) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && session.profile != null) {
-          final profile = session.profile!;
-          if (_isAllowedRole(profile.role)) {
-            unawaited(_goToLanding(profile));
-          }
-        }
-      });
-    }
-
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       excludeFromSemantics: true,
@@ -76,21 +81,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (widget.variant != SignInVariant.admin) ...[
-                AuthSurfaceSwitcher(
-                  onBuyerRole: () =>
-                      context.go(_buildAuthRoute('/auth/sign-in')),
-                  onSellerRole: () =>
-                      context.go(_buildAuthRoute('/auth/seller/sign-in')),
-                  isSellerRole: widget.variant == SignInVariant.seller,
-                ),
-                const SizedBox(height: 14),
-              ],
               QitakPanel(
                 child: QitakSectionHeader(
                   eyebrow: context.l10n.authGateEyebrow,
                   title: context.l10n.welcomeBack,
-                  subtitle: _subtitle(context),
+                  subtitle: _subtitle(context, _variant),
                 ),
               ),
               const SizedBox(height: 14),
@@ -98,6 +93,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    if (_isCustomerSurface) ...[
+                      CustomerAuthModeSwitch(
+                        isSellerSelected: _variant == SignInVariant.seller,
+                        onSelected: _switchCustomerVariant,
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                     QitakFormGroup(
                       label: context.l10n.emailLabel,
                       child: TextFormField(
@@ -165,47 +167,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                             )
                           : Text(context.l10n.signIn),
                     ),
-                    const SizedBox(height: 10),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.outlineVariant,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline_rounded,
-                              size: 18,
-                              color: Theme.of(context).colorScheme.outline,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                context.l10n.googleComingSoon,
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
-              if (widget.variant != SignInVariant.admin)
+              if (_variant != SignInVariant.admin)
                 ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 48),
                   child: TextButton(
@@ -215,19 +181,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ),
                     onPressed: () => context.go(
                       _buildAuthRoute(
-                        widget.variant == SignInVariant.seller
+                        _variant == SignInVariant.seller
                             ? '/auth/seller/sign-up'
                             : '/auth/sign-up',
                       ),
                     ),
                     child: Text(
-                      widget.variant == SignInVariant.seller
+                      _variant == SignInVariant.seller
                           ? context.l10n.sellerCreateAccountPrompt
                           : context.l10n.createAccountPrompt,
                     ),
                   ),
                 ),
-              if (widget.variant == SignInVariant.admin)
+              if (_variant == SignInVariant.admin)
                 ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 48),
                   child: TextButton(
@@ -271,10 +237,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             password: _passwordController.text,
           );
       _passwordController.clear();
-      if (!_isAllowedRole(profile.role)) {
+      if (!_isAllowedRole(profile.role, _variant)) {
         await ref.read(authSessionProvider.notifier).signOut();
         if (!mounted) return;
-        _showSnack(_accessDeniedMessage(context));
+        _showSnack(_accessDeniedMessage(context, _variant));
         return;
       }
 
@@ -301,17 +267,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
+  void _switchCustomerVariant(bool isSeller) {
+    final nextVariant = isSeller ? SignInVariant.seller : SignInVariant.buyer;
+    if (_variant == nextVariant) {
+      return;
+    }
+    setState(() => _variant = nextVariant);
+  }
+
   void _showSnack(String message) {
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
       ..showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Future<void> _goToLanding(AccountProfile profile) async {
-    final route = await _resolveLandingRoute(profile);
-    if (mounted) {
-      context.go(route);
-    }
   }
 
   Future<bool> _isSellerApproved(AccountProfile profile) async {
@@ -344,13 +311,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     );
   }
 
-  Future<String> _resolveLandingRoute(AccountProfile profile) async {
-    return const AuthEntryService().resolveLandingRoute(
-      profile,
-      isSellerApproved: await _isSellerApproved(profile),
-    );
-  }
-
   String _buildAuthRoute(String basePath) {
     final intent = PostAuthRedirectIntent.fromQueryParameters(
       redirectPath: widget.redirectPath,
@@ -363,8 +323,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     return '$basePath?${Uri(queryParameters: intent.toQueryParameters()).query}';
   }
 
-  bool _isAllowedRole(AccountRole role) {
-    switch (widget.variant) {
+  bool _isAllowedRole(AccountRole role, SignInVariant variant) {
+    switch (variant) {
       case SignInVariant.buyer:
         return role == AccountRole.buyer;
       case SignInVariant.seller:
@@ -374,8 +334,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  String _accessDeniedMessage(BuildContext context) {
-    switch (widget.variant) {
+  String _accessDeniedMessage(BuildContext context, SignInVariant variant) {
+    switch (variant) {
       case SignInVariant.buyer:
         return context.l10n.buyerAccessDenied;
       case SignInVariant.seller:
@@ -385,8 +345,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  String _subtitle(BuildContext context) {
-    switch (widget.variant) {
+  String _subtitle(BuildContext context, SignInVariant variant) {
+    switch (variant) {
       case SignInVariant.buyer:
         return context.l10n.signInSubtitle;
       case SignInVariant.seller:

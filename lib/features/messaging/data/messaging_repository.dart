@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/constants/app_constants.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
@@ -59,15 +57,12 @@ abstract class MessagingRepository {
     return const <RealtimeChannel>[];
   }
 
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
     required void Function(Object error) onError,
-  }) {
-    final _ = (threadId, onMessage, onSubscribed, onError);
-    throw UnsupportedError('Realtime messaging is unavailable.');
-  }
+  });
 
   Future<void> removeChannel(RealtimeChannel channel) async {
     final _ = channel;
@@ -204,14 +199,14 @@ class LocalMessagingRepository implements MessagingRepository {
   }
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,
     required void Function(Object error) onError,
   }) {
     final _ = (threadId, onMessage, onSubscribed, onError);
-    throw UnsupportedError('Realtime messaging is unavailable for local mode.');
+    return null;
   }
 
   @override
@@ -536,7 +531,7 @@ class SupabaseMessagingRepository implements MessagingRepository {
   }
 
   @override
-  RealtimeChannel subscribeToThreadMessages({
+  RealtimeChannel? subscribeToThreadMessages({
     required String threadId,
     required void Function(ConversationMessage message) onMessage,
     required void Function() onSubscribed,

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
@@ -13,6 +16,8 @@ import 'package:qitak_app/features/listings/data/seller_listings_repository.dart
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
+import 'package:qitak_app/features/seller/domain/seller_application.dart';
+import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 List<WilayaOption> _sortedWilayas(
@@ -86,16 +91,16 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
         ? null
         : ref.watch(sellerManagedListingProvider(widget.listingId!));
 
-    if (sellerApplication.hasValue &&
-        sellerApplication.value?.isApproved != true) {
+    final application = sellerApplication.asData?.value;
+    if (sellerApplication.hasValue && application?.isApproved != true) {
       return Padding(
         padding: qitakPagePadding,
         child: QitakStateMessage(
-          title: context.l10n.sellerStatusTitle,
-          message: context.l10n.sellerStatusWorkspaceWaitingBody,
+          title: _sellerWorkspaceGateTitle(context, application),
+          message: _sellerWorkspaceGateBody(context, application),
           action: FilledButton.tonal(
-            onPressed: () => context.go('/seller/onboarding/status'),
-            child: Text(context.l10n.sellerStatusContinueApplication),
+            onPressed: () => context.go(_sellerWorkspaceGatePath(application)),
+            child: Text(_sellerWorkspaceGateActionLabel(context, application)),
           ),
         ),
       );
@@ -184,9 +189,29 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                     ),
                     const SizedBox(height: 18),
                     QitakPanel(
+                      key: const Key('listing-form-progress'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Text(
+                        '1/4',
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    QitakPanel(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          const _ListingFormStageHeader(
+                            title: 'Basics',
+                            subtitle:
+                                'Identify the part, location, and compatible vehicle.',
+                          ),
+                          const SizedBox(height: 16),
                           QitakFormGroup(
                             label: context.l10n.listingTitleLabel,
                             child: TextFormField(
@@ -376,6 +401,12 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                                   ? context.l10n.listingYearRequired
                                   : null,
                             ),
+                          ),
+                          const SizedBox(height: 16),
+                          const _ListingFormStageHeader(
+                            title: 'Pricing',
+                            subtitle:
+                                'Set the price, available quantity, and item condition.',
                           ),
                           const SizedBox(height: 16),
                           Row(
@@ -629,6 +660,12 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
+                          const _ListingFormStageHeader(
+                            title: 'Delivery',
+                            subtitle:
+                                'Add exchange options and choose how to publish this listing.',
+                          ),
+                          const SizedBox(height: 16),
                           SwitchListTile(
                             key: const Key('listing-exchange-switch'),
                             contentPadding: EdgeInsets.zero,
@@ -669,24 +706,27 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
                               ),
                               const SizedBox(width: 12),
                               Expanded(
-                                child: FilledButton(
-                                  key: const Key('listing-submit-button'),
-                                  onPressed: _submitting
-                                      ? null
-                                      : () => _submit(
-                                          ListingWorkflowAction.submit,
-                                        ),
-                                  child:
-                                      _submitting &&
-                                          _lastAction ==
-                                              ListingWorkflowAction.submit
-                                      ? const SizedBox.square(
-                                          dimension: 18,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
+                                child: KeyedSubtree(
+                                  key: const Key('listing-form-primary-action'),
+                                  child: FilledButton(
+                                    key: const Key('listing-submit-button'),
+                                    onPressed: _submitting
+                                        ? null
+                                        : () => _submit(
+                                            ListingWorkflowAction.submit,
                                           ),
-                                        )
-                                      : Text(submitLabel),
+                                    child:
+                                        _submitting &&
+                                            _lastAction ==
+                                                ListingWorkflowAction.submit
+                                        ? const SizedBox.square(
+                                            dimension: 18,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Text(submitLabel),
+                                  ),
                                 ),
                               ),
                             ],
@@ -798,6 +838,28 @@ class _ListingFormScreenState extends ConsumerState<ListingFormScreen> {
           ),
         ),
       );
+    } on AppException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(_listingSubmitErrorMessage(context, error)),
+          ),
+        );
+    } on Object catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.listingSubmitFailureBody),
+          ),
+        );
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -907,6 +969,88 @@ class _ListingMediaPreviewFallback extends StatelessWidget {
   }
 }
 
+String _sellerWorkspaceGateTitle(
+  BuildContext context,
+  SellerApplication? application,
+) {
+  final status = application?.verificationStatus;
+  if (status == null) {
+    return context.l10n.sellerStatusNotStarted;
+  }
+  return status.label(context.l10n);
+}
+
+String _sellerWorkspaceGateBody(
+  BuildContext context,
+  SellerApplication? application,
+) {
+  final status = application?.verificationStatus;
+  if (status == null) {
+    return context.l10n.sellerStatusProfileDraftBody;
+  }
+  return status.subtitle(context.l10n);
+}
+
+String _sellerWorkspaceGatePath(SellerApplication? application) {
+  switch (application?.verificationStatus) {
+    case SellerVerificationStatus.submitted:
+    case SellerVerificationStatus.suspended:
+      return '/seller/onboarding/status';
+    case SellerVerificationStatus.notStarted:
+    case SellerVerificationStatus.draft:
+    case SellerVerificationStatus.needsMoreInfo:
+    case SellerVerificationStatus.rejected:
+    case SellerVerificationStatus.approved:
+    case null:
+      return '/seller/onboarding';
+  }
+}
+
+String _sellerWorkspaceGateActionLabel(
+  BuildContext context,
+  SellerApplication? application,
+) {
+  switch (application?.verificationStatus) {
+    case SellerVerificationStatus.submitted:
+    case SellerVerificationStatus.suspended:
+      return context.l10n.sellerStatusReviewStatusAction;
+    case SellerVerificationStatus.needsMoreInfo:
+    case SellerVerificationStatus.rejected:
+      return context.l10n.sellerStatusRestartApplication;
+    case SellerVerificationStatus.notStarted:
+    case SellerVerificationStatus.draft:
+    case SellerVerificationStatus.approved:
+    case null:
+      return context.l10n.sellerStatusContinueApplication;
+  }
+}
+
+String _listingSubmitErrorMessage(BuildContext context, AppException error) {
+  switch (error.code) {
+    case null:
+      return context.l10n.listingSubmitFailureBody;
+    case AppErrorCode.networkUnavailable:
+      return context.appExceptionMessage(error);
+    case AppErrorCode.validationFailed:
+    case AppErrorCode.conflict:
+      return context.l10n.listingSubmitValidationError;
+    case AppErrorCode.sessionNotFound:
+      return context.l10n.authErrorSessionNotFound;
+    case AppErrorCode.invalidCredentials:
+    case AppErrorCode.emailNotConfirmed:
+    case AppErrorCode.accountAlreadyExists:
+    case AppErrorCode.passwordPolicyViolation:
+    case AppErrorCode.invalidEmail:
+    case AppErrorCode.profileSetupBlocked:
+    case AppErrorCode.permissionDenied:
+    case AppErrorCode.rateLimited:
+    case AppErrorCode.contractUnavailable:
+    case AppErrorCode.notFound:
+    case AppErrorCode.unknown:
+      return context.l10n.listingSubmitFailureBody;
+  }
+}
+
 class _ConditionSelector extends ConsumerWidget {
   const _ConditionSelector({
     required this.selected,
@@ -932,6 +1076,40 @@ class _ConditionSelector extends ConsumerWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _ListingFormStageHeader extends StatelessWidget {
+  const _ListingFormStageHeader({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            height: 1.35,
+          ),
+        ),
+      ],
     );
   }
 }

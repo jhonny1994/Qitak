@@ -9,13 +9,27 @@ class UnknownRouteScreen extends StatelessWidget {
 
   final String requestedPath;
 
+  String _displayPath() {
+    final parsed = Uri.tryParse(requestedPath);
+    final sanitizedPath = parsed?.path.isNotEmpty == true
+        ? parsed!.path
+        : requestedPath.split('?').first.split('#').first;
+    if (sanitizedPath.isEmpty || !sanitizedPath.startsWith('/')) {
+      return '/';
+    }
+    if (sanitizedPath.length <= 120) {
+      return sanitizedPath;
+    }
+    return '${sanitizedPath.substring(0, 117)}...';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: qitakPagePadding,
       child: QitakStateMessage(
         title: context.l10n.unknownRouteTitle,
-        message: '${context.l10n.unknownRouteBody}\n$requestedPath',
+        message: '${context.l10n.unknownRouteBody}\n${_displayPath()}',
         action: FilledButton(
           onPressed: () => context.go('/home'),
           child: Text(context.l10n.unknownRouteGoHome),

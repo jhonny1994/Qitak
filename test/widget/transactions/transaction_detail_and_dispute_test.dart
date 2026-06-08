@@ -11,6 +11,7 @@ import 'package:qitak_app/features/transactions/data/transaction_repository.dart
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_history_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_request_screen.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/generated/l10n.dart';
@@ -308,6 +309,110 @@ void main() {
     );
   });
 
+  testWidgets('transaction detail shows cash handoff guidance for seller', (
+    tester,
+  ) async {
+    final repository = _FakeTransactionRepository(
+      TransactionRecord(
+        id: 'tx-cash',
+        listingId: 'listing-1',
+        buyerUserId: 'buyer-001',
+        sellerUserId: 'seller-001',
+        state: TransactionState.sellerConfirmed,
+        paymentMethod: TransactionPaymentMethod.cash,
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+    );
+
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: TransactionDetailScreen(transactionId: 'tx-cash'),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+      transactionRepositoryOverride: repository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionDetailScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Meet the buyer in person, collect cash, then confirm the cash order.',
+      ),
+      findsWidgets,
+    );
+    expect(
+      find.byKey(const Key('transaction-detail-support')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'transaction detail shows proof review guidance for seller after upload',
+    (tester) async {
+      final repository = _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-proof',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.paymentProofSubmitted,
+          paymentMethod: TransactionPaymentMethod.ccp,
+          paymentProofPath: 'proof.png',
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        ),
+      );
+
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(
+            body: TransactionDetailScreen(transactionId: 'tx-proof'),
+          ),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+        ],
+        transactionRepositoryOverride: repository,
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(TransactionDetailScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Review the uploaded proof and confirm or reject it.'),
+        findsWidgets,
+      );
+      expect(
+        find.byKey(const Key('transaction-detail-support')),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets('dispute screen renders success state after submit', (
     tester,
   ) async {
@@ -381,6 +486,182 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets(
+    'transaction detail uses dispute-open copy instead of rejection copy',
+    (
+      tester,
+    ) async {
+      final scope = await buildTestScope(
+        const TestMaterialShell(
+          child: Scaffold(
+            body: TransactionDetailScreen(transactionId: 'tx-dispute-open'),
+          ),
+        ),
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'buyer@qitak.test',
+        },
+        overrides: [
+          discoveryRepositoryProvider.overrideWithValue(
+            seededDiscoveryRepository,
+          ),
+        ],
+        transactionRepositoryOverride: _FakeTransactionRepository(
+          TransactionRecord(
+            id: 'tx-dispute-open',
+            listingId: 'listing-1',
+            buyerUserId: 'buyer-001',
+            sellerUserId: 'seller-001',
+            state: TransactionState.disputeOpened,
+            createdAt: DateTime(2026),
+            updatedAt: DateTime(2026),
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(scope);
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(TransactionDetailScreen)),
+      );
+      await container.read(authSessionProvider.notifier).restore();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dispute open'), findsWidgets);
+      expect(
+        find.text('A dispute is open and the operations team is reviewing it.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('This transaction was rejected by the seller.'),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets('transaction history surfaces resolved disputes with final copy', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: TransactionDetailScreen(transactionId: 'tx-dispute-resolved'),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+      transactionRepositoryOverride: _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-dispute-resolved',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.disputeResolved,
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionDetailScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dispute resolved'), findsWidgets);
+    expect(
+      find.text(
+        'The dispute was resolved. Review the final outcome before taking the next step.',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text('This transaction was rejected by the seller.'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('transaction history shows dispute guidance copy', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: TransactionHistoryScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      transactionRepositoryOverride: _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-history-dispute',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.disputeOpened,
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionHistoryScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('A dispute is open and the operations team is reviewing it.'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('This transaction was rejected by the seller.'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('transaction history labels event time as updated', (
+    tester,
+  ) async {
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: TransactionHistoryScreen()),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      transactionRepositoryOverride: _FakeTransactionRepository(
+        TransactionRecord(
+          id: 'tx-history-updated',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-001',
+          state: TransactionState.pendingSellerResponse,
+          createdAt: DateTime(2026),
+          updatedAt: DateTime(2026, 1, 3),
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionHistoryScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Deal date'), findsNothing);
+    expect(find.text('Updated'), findsOneWidget);
+    expect(find.text('2026-01-03'), findsOneWidget);
   });
 
   testWidgets('expired transaction detail exposes try again action', (

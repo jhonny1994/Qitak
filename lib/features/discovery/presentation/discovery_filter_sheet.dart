@@ -6,8 +6,8 @@ import 'package:qitak_app/features/discovery/domain/search_filter_state.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_filter_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
-Future<void> showDiscoveryFilterSheet(BuildContext context) {
-  return showModalBottomSheet<void>(
+Future<bool?> showDiscoveryFilterSheet(BuildContext context) {
+  return showModalBottomSheet<bool>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
@@ -301,7 +301,7 @@ class _DiscoveryFilterSheetState extends ConsumerState<_DiscoveryFilterSheet> {
                               ref
                                   .read(searchFilterProvider.notifier)
                                   .resetFilters();
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(false);
                             },
                             child: Text(
                               context.l10n.discoveryResetFiltersButton,
@@ -332,7 +332,7 @@ class _DiscoveryFilterSheetState extends ConsumerState<_DiscoveryFilterSheet> {
                                 dealType: _draft.dealType,
                                 sort: _draft.sort,
                               );
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(true);
                             },
                             child: Text(
                               context.l10n.discoveryApplyFiltersButton,

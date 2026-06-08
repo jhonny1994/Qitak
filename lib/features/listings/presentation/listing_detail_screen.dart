@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qitak_app/core/config/app_runtime_config.dart';
 import 'package:qitak_app/core/connectivity/connectivity_service.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
@@ -60,6 +59,7 @@ class ListingDetailScreen extends ConsumerWidget {
           final isOwner = session.profile?.id == item.sellerUserId;
           final canActAsBuyer =
               session.profile?.role.hasBuyerCapabilities ?? false;
+          final canShowSave = canActAsBuyer || !session.isAuthenticated;
           final canReportListing =
               session.isAuthenticated && canActAsBuyer && !isOwner;
           final hasReported =
@@ -124,48 +124,52 @@ class ListingDetailScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      IconButton.filledTonal(
-                        onPressed: session.isAuthenticated
-                            ? () {
-                                final isOnline =
-                                    ref.read(isOnlineProvider).asData?.value ??
-                                    true;
-                                if (!isOnline) {
-                                  ScaffoldMessenger.of(context)
-                                    ..clearSnackBars()
-                                    ..showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          context.l10n.offlineBannerLabel,
+                      if (canShowSave)
+                        IconButton.filledTonal(
+                          onPressed: session.isAuthenticated
+                              ? () {
+                                  final isOnline =
+                                      ref
+                                          .read(isOnlineProvider)
+                                          .asData
+                                          ?.value ??
+                                      true;
+                                  if (!isOnline) {
+                                    ScaffoldMessenger.of(context)
+                                      ..clearSnackBars()
+                                      ..showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            context.l10n.offlineBannerLabel,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  return;
+                                      );
+                                    return;
+                                  }
+                                  unawaited(
+                                    ref
+                                        .read(savedListingIdsProvider.notifier)
+                                        .toggle(item.id),
+                                  );
                                 }
-                                unawaited(
-                                  ref
-                                      .read(savedListingIdsProvider.notifier)
-                                      .toggle(item.id),
-                                );
-                              }
-                            : () => showProtectedActionGate(
-                                context,
-                                ref,
-                                intent: PostAuthRedirectIntent.action(
-                                  'save-listing',
-                                  arguments: <String, String>{
-                                    'route': '/listing/${item.id}',
-                                    'listingId': item.id,
-                                  },
+                              : () => showProtectedActionGate(
+                                  context,
+                                  ref,
+                                  intent: PostAuthRedirectIntent.action(
+                                    'save-listing',
+                                    arguments: <String, String>{
+                                      'route': '/listing/${item.id}',
+                                      'listingId': item.id,
+                                    },
+                                  ),
                                 ),
-                              ),
-                        icon: Icon(
-                          isSaved
-                              ? Icons.bookmark_rounded
-                              : Icons.bookmark_border_rounded,
+                          icon: Icon(
+                            isSaved
+                                ? Icons.bookmark_rounded
+                                : Icons.bookmark_border_rounded,
+                          ),
+                          tooltip: context.l10n.discoverySave,
                         ),
-                        tooltip: context.l10n.discoverySave,
-                      ),
                       const SizedBox(width: 8),
                     ],
             ),
@@ -174,6 +178,7 @@ class ListingDetailScreen extends ConsumerWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   QitakListingGallery(
+                    key: const Key('listing-detail-media'),
                     heroTag: qitakListingHeroTag(item.id),
                     height: 196,
                     primaryImageUrl: item.preferredImageUrl,
@@ -181,6 +186,7 @@ class ListingDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 18),
                   QitakPanel(
+                    key: const Key('listing-detail-price'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -285,6 +291,32 @@ class ListingDetailScreen extends ConsumerWidget {
                   if (!sellerOwnedPreview) ...[
                     const SizedBox(height: 18),
                     QitakPanel(
+                      key: const Key('listing-detail-seller'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.listingSellerSectionTitle,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          if (detail.sellerName.isNotEmpty)
+                            QitakDetailRow(
+                              label: context.l10n.listingSellerSectionTitle,
+                              value: detail.sellerName,
+                            ),
+                          QitakDetailRow(
+                            label: context.l10n.listingLocationLabel,
+                            value: detail.displayLocation,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    QitakPanel(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -306,33 +338,15 @@ class ListingDetailScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 18),
-                    QitakPanel(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            context.l10n.listingSellerSectionTitle,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                          const SizedBox(height: 16),
-                          QitakDetailRow(
-                            label: context.l10n.listingSellerSectionTitle,
-                            value: detail.sellerName,
-                          ),
-                          QitakDetailRow(
-                            label: context.l10n.listingLocationLabel,
-                            value: detail.displayLocation,
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                   const SizedBox(height: 18),
                   QitakPanel(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.18),
+                    borderColor: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.35),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -345,6 +359,19 @@ class ListingDetailScreen extends ConsumerWidget {
                                 fontWeight: FontWeight.w700,
                               ),
                         ),
+                        if (!sellerOwnedPreview && !isOwner) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            context.l10n.transactionStartBody,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                  height: 1.35,
+                                ),
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         Wrap(
                           spacing: 8,
@@ -518,16 +545,9 @@ class ListingDetailScreen extends ConsumerWidget {
     BuildContext context,
     MarketplaceListing item,
   ) async {
-    final baseUrl = AppRuntimeConfig.deepLinkBaseUrl.trim();
-    final link = baseUrl.isEmpty
-        ? '/listings/${item.id}'
-        : '$baseUrl/listings/${item.id}';
     await SharePlus.instance.share(
       ShareParams(
-        text: context.l10n.shareListingText(
-          item.localizedTitle(context.l10n),
-          link,
-        ),
+        text: item.localizedTitle(context.l10n),
         subject: item.localizedTitle(context.l10n),
       ),
     );
@@ -594,9 +614,7 @@ class _ListingDetailViewData {
       displayLocation: displayLocation,
       vehicleLabel: vehicleLabel,
       quantity: item.quantity,
-      sellerName: item.sellerName.isEmpty
-          ? item.localizedSellerLabel(context.l10n)
-          : item.sellerName,
+      sellerName: item.sellerName.isEmpty ? '' : item.sellerName,
     );
   }
 

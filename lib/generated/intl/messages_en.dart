@@ -94,9 +94,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Change password",
     ),
     "accountUtilitiesGuestSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Before signing in, you can still set language, appearance, and support guidance.",
+      "Set language, appearance, and review marketplace policies before signing in.",
     ),
-    "adminAccess": MessageLookupByLibrary.simpleMessage("Admin access"),
     "adminAccessDenied": MessageLookupByLibrary.simpleMessage(
       "This account does not have admin access.",
     ),
@@ -329,7 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Report detail unavailable",
     ),
     "adminReportDetailSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Inspect the report, related entity, and the action trail before deciding.",
+      "Inspect the report or support ticket, related entity, and action trail before deciding.",
     ),
     "adminReportDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Report review detail",
@@ -352,11 +351,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminReportReporterLabel": MessageLookupByLibrary.simpleMessage(
       "Reporter",
     ),
+    "adminReportResolutionOptionsUnavailableBody":
+        MessageLookupByLibrary.simpleMessage(
+          "Decision policies could not be loaded. Refresh contracts and try again before resolving this report.",
+        ),
+    "adminReportResolutionOptionsUnavailableTitle":
+        MessageLookupByLibrary.simpleMessage("Resolution options unavailable"),
     "adminReportsQueueEmptyBody": MessageLookupByLibrary.simpleMessage(
       "No user reports are open right now.",
     ),
     "adminReportsQueueSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Track reported listings, sellers, and message abuse from one review surface.",
+      "Track listing, seller, message, and support tickets from one review surface.",
     ),
     "adminReportsQueueTitle": MessageLookupByLibrary.simpleMessage(
       "Reports queue",
@@ -371,6 +376,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "adminSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "Restricted sign-in for admin users only.",
     ),
+    "adminSupportDecisionClose": MessageLookupByLibrary.simpleMessage("Close"),
+    "adminSupportDecisionResolve": MessageLookupByLibrary.simpleMessage(
+      "Resolve",
+    ),
+    "adminSupportReasonDuplicateTicket": MessageLookupByLibrary.simpleMessage(
+      "Duplicate ticket",
+    ),
+    "adminSupportReasonOutOfScope": MessageLookupByLibrary.simpleMessage(
+      "Out of scope",
+    ),
+    "adminSupportReasonUserGuided": MessageLookupByLibrary.simpleMessage(
+      "User guided",
+    ),
+    "adminSupportReasonVerifiedAndResolved":
+        MessageLookupByLibrary.simpleMessage("Verified and resolved"),
     "adminTeamDemoteAction": MessageLookupByLibrary.simpleMessage("Demote"),
     "adminTeamInviteAction": MessageLookupByLibrary.simpleMessage(
       "Invite admin",
@@ -465,7 +485,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Seller verification queue",
     ),
     "appConfigurationRequiredBody": MessageLookupByLibrary.simpleMessage(
-      "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_ANON_KEY before launching the app.",
+      "Supabase runtime configuration is missing. Provide SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY before launching the app.",
     ),
     "appConfigurationRequiredTitle": MessageLookupByLibrary.simpleMessage(
       "Configuration required",
@@ -506,7 +526,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "authChoiceEyebrow": MessageLookupByLibrary.simpleMessage("Start"),
     "authChoiceTitle": MessageLookupByLibrary.simpleMessage(
-      "Sign in or browse first",
+      "Browse first, sign in when needed",
     ),
     "authErrorCheckEmailConfirmation": MessageLookupByLibrary.simpleMessage(
       "Account created. Please check your email and click the confirmation link before signing in.",
@@ -755,9 +775,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "fullNameValidationError": MessageLookupByLibrary.simpleMessage(
       "Enter your full name.",
     ),
-    "googleComingSoon": MessageLookupByLibrary.simpleMessage(
-      "Google sign-in is currently unavailable",
-    ),
     "hidePassword": MessageLookupByLibrary.simpleMessage("Hide password"),
     "invalidCredentialsGeneric": MessageLookupByLibrary.simpleMessage(
       "Invalid credentials or account unavailable.",
@@ -905,8 +922,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "listingSellerSectionTitle": MessageLookupByLibrary.simpleMessage("Seller"),
     "listingShareAction": MessageLookupByLibrary.simpleMessage("Share listing"),
     "listingStatusLabel": MessageLookupByLibrary.simpleMessage("Status"),
+    "listingSubmitFailureBody": MessageLookupByLibrary.simpleMessage(
+      "We couldn\'t save your listing right now. Try again.",
+    ),
     "listingSubmitForReviewAction": MessageLookupByLibrary.simpleMessage(
       "Submit for review",
+    ),
+    "listingSubmitValidationError": MessageLookupByLibrary.simpleMessage(
+      "Review the listing details and try again.",
     ),
     "listingSubmittedForReviewSuccess": MessageLookupByLibrary.simpleMessage(
       "Listing submitted for review.",
@@ -1086,7 +1109,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Explore listings, compare options, and understand the marketplace before creating an account.",
     ),
     "onboardingBodyThree": MessageLookupByLibrary.simpleMessage(
-      "Save listings, message sellers, and request parts when you are ready to continue.",
+      "Create an account to save listings, contact sellers, and move into a real purchase request.",
     ),
     "onboardingBodyTwo": MessageLookupByLibrary.simpleMessage(
       "Use category, wilaya, commune, make, model, and year to reach the right part faster.",
@@ -1121,7 +1144,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Precise filters",
     ),
     "onboardingPanelGuest": MessageLookupByLibrary.simpleMessage(
-      "Account comes later",
+      "Browse first",
     ),
     "onboardingPanelSearch": MessageLookupByLibrary.simpleMessage(
       "Search-first flow",
@@ -1294,8 +1317,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingSubmitAction": MessageLookupByLibrary.simpleMessage("Submit"),
     "sellerListingSubmittedLabel": m4,
     "sellerListingUpdatedLabel": m5,
+    "sellerListingsActiveEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any active listings right now.",
+    ),
+    "sellerListingsActiveStateBody": MessageLookupByLibrary.simpleMessage(
+      "Active listings are visible to buyers and ready for messages or purchase requests.",
+    ),
+    "sellerListingsClosedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any closed listings right now.",
+    ),
+    "sellerListingsClosedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Closed listings are no longer visible to buyers.",
+    ),
+    "sellerListingsDraftEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any draft listings right now.",
+    ),
+    "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
+      "Draft listings stay private until you submit them for review.",
+    ),
     "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "You do not have any seller listings yet.",
+      "You do not have any listings in your seller workspace yet.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "Seller listings could not be loaded right now.",
@@ -1303,8 +1344,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerListingsEyebrow": MessageLookupByLibrary.simpleMessage(
       "Seller inventory",
     ),
+    "sellerListingsPausedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any paused listings right now.",
+    ),
+    "sellerListingsPausedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Paused listings are hidden from buyers until you resume them.",
+    ),
     "sellerListingsPreviewAction": MessageLookupByLibrary.simpleMessage(
       "Preview",
+    ),
+    "sellerListingsRejectedEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any rejected listings right now.",
+    ),
+    "sellerListingsRejectedStateBody": MessageLookupByLibrary.simpleMessage(
+      "Rejected listings need updates before you resubmit them.",
     ),
     "sellerListingsStatusActive": MessageLookupByLibrary.simpleMessage(
       "Active",
@@ -1325,9 +1378,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Under review",
     ),
     "sellerListingsSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Review the live parts currently tied to your seller account.",
+      "Manage the listings tied to your seller account, including drafts, live inventory, and review status.",
     ),
     "sellerListingsTitle": MessageLookupByLibrary.simpleMessage("My listings"),
+    "sellerListingsUnderReviewEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "You do not have any listings under review right now.",
+    ),
+    "sellerListingsUnderReviewStateBody": MessageLookupByLibrary.simpleMessage(
+      "Listings under review stay hidden until moderation approves them.",
+    ),
     "sellerOnboardingAccountIdentityNote": MessageLookupByLibrary.simpleMessage(
       "Your account name and phone are used automatically for seller verification.",
     ),
@@ -1451,6 +1510,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerStatusReviewFeedbackTitle": MessageLookupByLibrary.simpleMessage(
       "Latest review feedback",
     ),
+    "sellerStatusReviewStatusAction": MessageLookupByLibrary.simpleMessage(
+      "Review status",
+    ),
     "sellerStatusSubmitted": MessageLookupByLibrary.simpleMessage("Submitted"),
     "sellerStatusSubtitle": MessageLookupByLibrary.simpleMessage(
       "Track your review progress, submitted documents, and next steps from one seller-only screen.",
@@ -1508,39 +1570,90 @@ class MessageLookup extends MessageLookupByLibrary {
     "splashSubtitle": MessageLookupByLibrary.simpleMessage(
       "Loading your account and marketplace data.",
     ),
-    "supportHelpAccountBody": MessageLookupByLibrary.simpleMessage(
-      "Use account settings for identity details and sign-in recovery for password access.",
+    "supportCenterCreateAction": MessageLookupByLibrary.simpleMessage(
+      "Create ticket",
     ),
-    "supportHelpAccountTitle": MessageLookupByLibrary.simpleMessage(
-      "Account help",
+    "supportCenterEmptyBody": MessageLookupByLibrary.simpleMessage(
+      "Create a ticket when you need help with account access, payment verification, seller conduct, or technical problems.",
     ),
+    "supportCenterEmptyTitle": MessageLookupByLibrary.simpleMessage(
+      "No support tickets yet",
+    ),
+    "supportCenterEyebrow": MessageLookupByLibrary.simpleMessage("Support"),
+    "supportCenterRoutingAccountBody": MessageLookupByLibrary.simpleMessage(
+      "Use account settings for identity updates, password changes, and account-level controls before opening a ticket.",
+    ),
+    "supportCenterRoutingAccountTitle": MessageLookupByLibrary.simpleMessage(
+      "Account changes and access",
+    ),
+    "supportCenterRoutingDisputeBody": MessageLookupByLibrary.simpleMessage(
+      "Use the dispute flow when the issue belongs to a specific deal, payment proof review, or handoff outcome.",
+    ),
+    "supportCenterRoutingDisputeTitle": MessageLookupByLibrary.simpleMessage(
+      "Deal-specific problems",
+    ),
+    "supportCenterRoutingScopeBody": MessageLookupByLibrary.simpleMessage(
+      "Open a support ticket for account access, platform issues, or issues that do not fit a single deal or listing report.",
+    ),
+    "supportCenterRoutingScopeTitle": MessageLookupByLibrary.simpleMessage(
+      "What support handles here",
+    ),
+    "supportCenterRoutingTitle": MessageLookupByLibrary.simpleMessage(
+      "Use the right path",
+    ),
+    "supportCenterSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Track authenticated support tickets for account, payment, and technical issues.",
+    ),
+    "supportCenterTicketListTitle": MessageLookupByLibrary.simpleMessage(
+      "Your tickets",
+    ),
+    "supportCenterTitle": MessageLookupByLibrary.simpleMessage("Support"),
     "supportHelpEyebrow": MessageLookupByLibrary.simpleMessage("Help"),
-    "supportHelpNeedActionBody": MessageLookupByLibrary.simpleMessage(
-      "Qitak keeps next actions inside the right product surfaces instead of hiding them behind support chat.",
+    "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
+      "Account access",
     ),
-    "supportHelpNeedActionTitle": MessageLookupByLibrary.simpleMessage(
-      "Need to continue something?",
+    "supportReasonOther": MessageLookupByLibrary.simpleMessage("Other"),
+    "supportReasonPaymentIssue": MessageLookupByLibrary.simpleMessage(
+      "Payment issue",
     ),
-    "supportHelpNotificationBody": MessageLookupByLibrary.simpleMessage(
-      "Follow messages, seller decisions, and listing changes from the notification center.",
+    "supportReasonSellerIssue": MessageLookupByLibrary.simpleMessage(
+      "Seller issue",
     ),
-    "supportHelpNotificationTitle": MessageLookupByLibrary.simpleMessage(
-      "Notifications and updates",
+    "supportReasonTechnicalIssue": MessageLookupByLibrary.simpleMessage(
+      "Technical issue",
     ),
-    "supportHelpSafetyBody": MessageLookupByLibrary.simpleMessage(
-      "Use transaction, rating, and dispute screens to keep marketplace issues linked to the correct deal.",
+    "supportTicketCreateSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Choose the closest reason and describe the issue clearly so the team can act.",
     ),
-    "supportHelpSafetyTitle": MessageLookupByLibrary.simpleMessage(
-      "Trust and safety",
+    "supportTicketCreateTitle": MessageLookupByLibrary.simpleMessage(
+      "New support ticket",
     ),
-    "supportHelpStatusAlerts": MessageLookupByLibrary.simpleMessage("Alerts"),
-    "supportHelpStatusGuide": MessageLookupByLibrary.simpleMessage("Guide"),
-    "supportHelpStatusTrust": MessageLookupByLibrary.simpleMessage("Trust"),
-    "supportHelpSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Find guidance for account, trust, and notification flows.",
+    "supportTicketCreated": MessageLookupByLibrary.simpleMessage(
+      "Support ticket submitted.",
     ),
-    "supportHelpTitle": MessageLookupByLibrary.simpleMessage(
-      "Help and support",
+    "supportTicketDescriptionError": MessageLookupByLibrary.simpleMessage(
+      "Enter at least 20 characters so support has enough context.",
+    ),
+    "supportTicketDescriptionHelper": MessageLookupByLibrary.simpleMessage(
+      "Include the deal, listing, or screen involved and the last action you completed.",
+    ),
+    "supportTicketDescriptionLabel": MessageLookupByLibrary.simpleMessage(
+      "What happened?",
+    ),
+    "supportTicketReasonError": MessageLookupByLibrary.simpleMessage(
+      "Select a support reason.",
+    ),
+    "supportTicketReasonLabel": MessageLookupByLibrary.simpleMessage("Reason"),
+    "supportTicketStatusClosed": MessageLookupByLibrary.simpleMessage("Closed"),
+    "supportTicketStatusOpen": MessageLookupByLibrary.simpleMessage("Open"),
+    "supportTicketStatusResolved": MessageLookupByLibrary.simpleMessage(
+      "Resolved",
+    ),
+    "supportTicketStatusUnderReview": MessageLookupByLibrary.simpleMessage(
+      "Under review",
+    ),
+    "supportTicketSubmitAction": MessageLookupByLibrary.simpleMessage(
+      "Submit ticket",
     ),
     "termsValidationError": MessageLookupByLibrary.simpleMessage(
       "You must accept the terms to create an account.",
@@ -1600,6 +1713,53 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transactionMessageAction": MessageLookupByLibrary.simpleMessage(
       "Open messages",
+    ),
+    "transactionNextStepBuyerAwaitReview": MessageLookupByLibrary.simpleMessage(
+      "Wait for the seller to review the uploaded proof.",
+    ),
+    "transactionNextStepBuyerCash": MessageLookupByLibrary.simpleMessage(
+      "Meet the seller in person, inspect the item, and pay cash at handoff.",
+    ),
+    "transactionNextStepBuyerConfirmReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "After handoff, confirm receipt to complete this deal.",
+        ),
+    "transactionNextStepBuyerSelectMethod":
+        MessageLookupByLibrary.simpleMessage(
+          "Choose CCP, BaridiMob, or cash to continue this offline deal.",
+        ),
+    "transactionNextStepBuyerUploadProof": MessageLookupByLibrary.simpleMessage(
+      "Send the payment outside the app, then upload CCP or BaridiMob proof here.",
+    ),
+    "transactionNextStepCompleted": MessageLookupByLibrary.simpleMessage(
+      "This deal is complete.",
+    ),
+    "transactionNextStepInactive": MessageLookupByLibrary.simpleMessage(
+      "This deal is no longer active.",
+    ),
+    "transactionNextStepPendingBuyer": MessageLookupByLibrary.simpleMessage(
+      "Wait for the seller to review this request.",
+    ),
+    "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
+      "Review this request and accept, expire, or leave it pending.",
+    ),
+    "transactionNextStepSellerAwaitReceipt":
+        MessageLookupByLibrary.simpleMessage(
+          "Finish the handoff and wait for the buyer to confirm receipt.",
+        ),
+    "transactionNextStepSellerCash": MessageLookupByLibrary.simpleMessage(
+      "Meet the buyer in person, collect cash, then confirm the cash order.",
+    ),
+    "transactionNextStepSellerReviewProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Review the uploaded proof and confirm or reject it.",
+        ),
+    "transactionNextStepSellerWaitForProof":
+        MessageLookupByLibrary.simpleMessage(
+          "Wait for the buyer to submit CCP or BaridiMob proof.",
+        ),
+    "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
+      "Next step",
     ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Open dispute",

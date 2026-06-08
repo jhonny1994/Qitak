@@ -33,13 +33,22 @@ class QitakApp extends ConsumerWidget {
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
         themeMode: preferences.themeMode,
+        supportedLocales: S.delegate.supportedLocales,
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         home: Scaffold(
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24),
-              child: QitakStateMessage(
-                title: S.current.appConfigurationRequiredTitle,
-                message: S.current.appConfigurationRequiredBody,
+              child: Builder(
+                builder: (context) => QitakStateMessage(
+                  title: context.l10n.appConfigurationRequiredTitle,
+                  message: context.l10n.appConfigurationRequiredBody,
+                ),
               ),
             ),
           ),

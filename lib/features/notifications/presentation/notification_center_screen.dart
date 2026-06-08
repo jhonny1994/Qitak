@@ -103,67 +103,122 @@ class NotificationCenterScreen extends ConsumerWidget {
                       return false;
                     },
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(18),
                       onTap: () => context.go(item.deepLink),
-                      child: QitakPanel(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              item.isUnread
-                                  ? Icons.notifications_active_outlined
-                                  : Icons.notifications_none_rounded,
-                              color: _notificationColor(context, item.type),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _resolveNotificationCopy(
-                                      context,
-                                      item,
-                                    ).title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    _resolveNotificationCopy(
-                                      context,
-                                      item,
-                                    ).body,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      QitakChip(
-                                        label: _resolveNotificationCopy(
-                                          context,
-                                          item,
-                                        ).categoryLabel,
-                                        selected: item.isUnread,
-                                      ),
-                                      QitakChip(
-                                        label: _resolveNotificationCopy(
-                                          context,
-                                          item,
-                                        ).timestampLabel,
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: item.isUnread
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.primaryContainer.withValues(
+                                  alpha: 0.18,
+                                )
+                              : Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                item.isUnread
+                                    ? Icons.notifications_active_outlined
+                                    : Icons.notifications_none_rounded,
+                                color: _notificationColor(context, item.type),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _resolveNotificationCopy(
+                                        context,
+                                        item,
+                                      ).title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      _resolveNotificationCopy(
+                                        context,
+                                        item,
+                                      ).body,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '${_resolveNotificationCopy(context, item).categoryLabel} - ${_resolveNotificationCopy(context, item).timestampLabel}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium
+                                          ?.copyWith(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Align(
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
+                                      child: TextButton(
+                                        key: const Key(
+                                          'notification-visible-read-action',
+                                        ),
+                                        onPressed: () async {
+                                          await ref
+                                              .read(
+                                                notificationRepositoryProvider,
+                                              )
+                                              .markNotificationState(
+                                                notificationId: item.id,
+                                                isRead: item.isUnread,
+                                              );
+                                          ref
+                                              .read(
+                                                foregroundNotificationsProvider
+                                                    .notifier,
+                                              )
+                                              .setReadState(
+                                                notificationId: item.id,
+                                                isRead: item.isUnread,
+                                              );
+                                          ref.invalidate(notificationsProvider);
+                                          await ref
+                                              .read(
+                                                unreadCountsProvider.notifier,
+                                              )
+                                              .refresh();
+                                        },
+                                        child: Text(
+                                          item.isUnread
+                                              ? context
+                                                    .l10n
+                                                    .notificationsMarkRead
+                                              : context
+                                                    .l10n
+                                                    .notificationsMarkUnread,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

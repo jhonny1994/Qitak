@@ -44,7 +44,11 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
     final matches = transactionState.items.where(
       (item) => item.id == widget.transactionId,
     );
-    final record = matches.isEmpty ? null : matches.first;
+    final hydratedRecord = matches.isEmpty ? null : matches.first;
+    final fallbackRecordAsync = hydratedRecord == null
+        ? ref.watch(transactionDetailProvider(widget.transactionId))
+        : null;
+    final record = hydratedRecord ?? fallbackRecordAsync?.value;
     final listingAsync = record == null
         ? null
         : ref.watch(discoveryListingProvider(record.listingId));

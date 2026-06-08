@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:qitak_app/core/config/app_runtime_config.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 
 void main() {
@@ -16,6 +17,30 @@ void main() {
         publishableKey: 'key',
       );
       expect(config.isConfigured, isTrue);
+    });
+  });
+
+  group('AppRuntimeConfig.normalizeRuntimeUrl', () {
+    test('returns empty url unchanged', () {
+      expect(AppRuntimeConfig.normalizeRuntimeUrl(''), '');
+    });
+
+    test('returns malformed url unchanged', () {
+      expect(
+        AppRuntimeConfig.normalizeRuntimeUrl('not a valid uri'),
+        'not a valid uri',
+      );
+    });
+
+    test('127.0.0.1 is rewritten to emulator loopback on Android', () {
+      expect(
+        AppRuntimeConfig.normalizeRuntimeUrl(
+          'http://127.0.0.1:54321',
+          platform: TargetPlatform.android,
+          isWeb: false,
+        ),
+        'http://10.0.2.2:54321',
+      );
     });
   });
 

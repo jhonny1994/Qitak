@@ -172,7 +172,7 @@ void main() {
     await tester.tap(find.byTooltip('Share listing'));
     await tester.pumpAndSettle();
 
-    expect(sharedText, contains('/listing/listing-1'));
+    expect(sharedText, 'Headlight assembly');
   });
 
   testWidgets('admin listing detail hides save actions', (tester) async {

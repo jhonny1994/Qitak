@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qitak_app/core/config/app_runtime_config.dart';
 import 'package:qitak_app/core/connectivity/connectivity_service.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
@@ -546,16 +545,9 @@ class ListingDetailScreen extends ConsumerWidget {
     BuildContext context,
     MarketplaceListing item,
   ) async {
-    final baseUrl = AppRuntimeConfig.deepLinkBaseUrl.trim();
-    final link = baseUrl.isEmpty
-        ? '/listing/${item.id}'
-        : '$baseUrl/listing/${item.id}';
     await SharePlus.instance.share(
       ShareParams(
-        text: context.l10n.shareListingText(
-          item.localizedTitle(context.l10n),
-          link,
-        ),
+        text: item.localizedTitle(context.l10n),
         subject: item.localizedTitle(context.l10n),
       ),
     );

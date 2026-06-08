@@ -132,6 +132,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               redirectType: _intentTypeFromQuery(
                 state.uri.queryParameters['intentType'],
               ),
+              initialCustomerMode: _customerSignInVariantFromQuery(
+                state.uri.queryParameters['mode'],
+              ),
             ),
           ),
         ),
@@ -149,44 +152,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               redirectType: _intentTypeFromQuery(
                 state.uri.queryParameters['intentType'],
               ),
+              initialCustomerMode: _customerSignUpVariantFromQuery(
+                state.uri.queryParameters['mode'],
+              ),
             ),
           ),
         ),
       ),
       GoRoute(
         path: '/auth/seller/sign-in',
-        pageBuilder: (context, state) => _buildTransitionPage(
+        redirect: (context, state) => _customerAuthAliasPath(
+          targetPath: '/auth/sign-in',
           state: state,
-          child: _buildStandaloneUtilityShell(
-            title: context.l10n.sellerSignIn,
-            fallbackPath: '/guest/account',
-            child: SignInScreen(
-              variant: SignInVariant.seller,
-              redirectPath: state.uri.queryParameters['redirect'],
-              redirectArguments: state.uri.queryParameters['intentArgs'],
-              redirectType: _intentTypeFromQuery(
-                state.uri.queryParameters['intentType'],
-              ),
-            ),
-          ),
         ),
       ),
       GoRoute(
         path: '/auth/seller/sign-up',
-        pageBuilder: (context, state) => _buildTransitionPage(
+        redirect: (context, state) => _customerAuthAliasPath(
+          targetPath: '/auth/sign-up',
           state: state,
-          child: _buildStandaloneUtilityShell(
-            title: context.l10n.sellerCreateAccount,
-            fallbackPath: '/auth/seller/sign-in',
-            child: SignUpScreen(
-              variant: SignUpVariant.seller,
-              redirectPath: state.uri.queryParameters['redirect'],
-              redirectArguments: state.uri.queryParameters['intentArgs'],
-              redirectType: _intentTypeFromQuery(
-                state.uri.queryParameters['intentType'],
-              ),
-            ),
-          ),
         ),
       ),
       GoRoute(
@@ -939,6 +923,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
 IntentTargetType _intentTypeFromQuery(String? value) {
   return value == 'action' ? IntentTargetType.action : IntentTargetType.route;
+}
+
+SignInVariant? _customerSignInVariantFromQuery(String? value) {
+  return value == 'seller' ? SignInVariant.seller : null;
+}
+
+SignUpVariant? _customerSignUpVariantFromQuery(String? value) {
+  return value == 'seller' ? SignUpVariant.seller : null;
+}
+
+String _customerAuthAliasPath({
+  required String targetPath,
+  required GoRouterState state,
+}) {
+  final query = Map<String, String>.from(state.uri.queryParameters);
+  query['mode'] = 'seller';
+  return '$targetPath?${Uri(queryParameters: query).query}';
 }
 
 String _homePathForSession(AuthSessionState session) {

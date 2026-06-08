@@ -63,6 +63,27 @@ void main() {
     );
 
     testWidgets(
+      'seller auth alias opens shared customer sign in in seller mode',
+      (tester) async {
+        final app = await buildQitakApp(
+          seed: const <String, Object>{'qitak.ui.onboarding_seen': true},
+        );
+
+        await tester.pumpWidget(app);
+        await tester.pumpAndSettle();
+
+        _routerFor(tester).go('/auth/seller/sign-in');
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SignInScreen), findsOneWidget);
+        expect(
+          _routerFor(tester).routerDelegate.currentConfiguration.uri.toString(),
+          '/auth/sign-in?mode=seller',
+        );
+      },
+    );
+
+    testWidgets(
       'signed-in admin does not remain on generic sign in surface',
       (tester) async {
         final app = await buildQitakApp(

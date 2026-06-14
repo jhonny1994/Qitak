@@ -1,0 +1,12 @@
+grant select on public.profiles to anon, authenticated;
+grant select on public.sellers to authenticated;
+grant select on public.deals to authenticated;
+grant select on public.deal_events to authenticated;
+grant select on public.conversations to authenticated;
+grant insert on public.conversations to authenticated;
+grant select on public.listing_media to anon, authenticated;
+grant select, insert on public.listings to anon, authenticated;
+grant update on public.listings to authenticated;
+grant select, insert on public.messages to authenticated;
+grant select, insert on public.reports to authenticated;
+grant select, insert on public.saved_listings to authenticated;

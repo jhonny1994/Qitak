@@ -24,11 +24,21 @@ class _FakeTransactionRepository implements TransactionRepository {
 
   TransactionRecord record;
   final List<
-    ({String transactionId, String actorUserId, TransactionState nextState})
+    ({
+      String transactionId,
+      String actorUserId,
+      TransactionState nextState,
+      String? note,
+    })
   >
   transitions =
       <
-        ({String transactionId, String actorUserId, TransactionState nextState})
+        ({
+          String transactionId,
+          String actorUserId,
+          TransactionState nextState,
+          String? note,
+        })
       >[];
 
   @override
@@ -61,6 +71,7 @@ class _FakeTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     return record = record.copyWith(
       state: TransactionState.sellerConfirmed,
@@ -68,6 +79,7 @@ class _FakeTransactionRepository implements TransactionRepository {
       clearPaymentProofPath: true,
       clearPaymentProofSubmittedAt: true,
       clearPaymentConfirmedAt: true,
+      paymentProofRejectionReason: reason,
     );
   }
 
@@ -102,17 +114,20 @@ class _FakeTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     transitions.add(
       (
         transactionId: transactionId,
         actorUserId: actorUserId,
         nextState: nextState,
+        note: note,
       ),
     );
     return record = record.copyWith(
       state: nextState,
       updatedAt: DateTime(2026, 1, 2),
+      cancellationReason: nextState == TransactionState.cancelled ? note : null,
       confirmedAt: nextState == TransactionState.sellerConfirmed
           ? DateTime(2026, 1, 2)
           : record.confirmedAt,
@@ -305,6 +320,7 @@ void main() {
         transactionId: 'tx-cancel',
         actorUserId: 'buyer-001',
         nextState: TransactionState.cancelled,
+        note: null,
       ),
     );
   });
@@ -361,6 +377,71 @@ void main() {
     );
   });
 
+  testWidgets('seller can decline a pending order from transaction detail', (
+    tester,
+  ) async {
+    final repository = _FakeTransactionRepository(
+      TransactionRecord(
+        id: 'tx-decline',
+        listingId: 'listing-1',
+        buyerUserId: 'buyer-001',
+        sellerUserId: 'seller-001',
+        state: TransactionState.pendingSellerResponse,
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+    );
+
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: TransactionDetailScreen(transactionId: 'tx-decline'),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+      transactionRepositoryOverride: repository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionDetailScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    await tester.dragUntilVisible(
+      find.widgetWithText(OutlinedButton, 'Decline order'),
+      find.byType(ListView),
+      const Offset(0, -200),
+    );
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Decline order'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextFormField),
+      'This item is no longer available.',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Decline order'));
+    await tester.pumpAndSettle();
+
+    expect(
+      repository.transitions.single,
+      (
+        transactionId: 'tx-decline',
+        actorUserId: 'seller-001',
+        nextState: TransactionState.cancelled,
+        note: 'This item is no longer available.',
+      ),
+    );
+  });
+
   testWidgets(
     'transaction detail shows proof review guidance for seller after upload',
     (tester) async {
@@ -412,6 +493,57 @@ void main() {
       );
     },
   );
+
+  testWidgets('buyer sees seller proof feedback on transaction detail', (
+    tester,
+  ) async {
+    final repository = _FakeTransactionRepository(
+      TransactionRecord(
+        id: 'tx-proof-feedback',
+        listingId: 'listing-1',
+        buyerUserId: 'buyer-001',
+        sellerUserId: 'seller-001',
+        state: TransactionState.sellerConfirmed,
+        paymentMethod: TransactionPaymentMethod.ccp,
+        paymentProofRejectionReason:
+            'The transfer reference is cropped. Upload a full screenshot.',
+        createdAt: DateTime(2026),
+        updatedAt: DateTime(2026),
+      ),
+    );
+
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(
+          body: TransactionDetailScreen(transactionId: 'tx-proof-feedback'),
+        ),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      overrides: [
+        discoveryRepositoryProvider.overrideWithValue(
+          seededDiscoveryRepository,
+        ),
+      ],
+      transactionRepositoryOverride: repository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(TransactionDetailScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Seller feedback'), findsOneWidget);
+    expect(
+      find.text(
+        'The transfer reference is cropped. Upload a full screenshot.',
+      ),
+      findsOneWidget,
+    );
+  });
 
   testWidgets('dispute screen renders success state after submit', (
     tester,

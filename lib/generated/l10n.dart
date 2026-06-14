@@ -1054,16 +1054,6 @@ class S {
     );
   }
 
-  /// `تسجيل دخول البائع`
-  String get sellerSignIn {
-    return Intl.message(
-      'تسجيل دخول البائع',
-      name: 'sellerSignIn',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `تسجيل دخول مخصص لحسابات البائع فقط.`
   String get sellerSignInSubtitle {
     return Intl.message(
@@ -1159,16 +1149,6 @@ class S {
     return Intl.message(
       'هذا الحساب لا يملك صلاحية دخول الإدارة.',
       name: 'adminAccessDenied',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `المساعدة`
-  String get supportHelpEyebrow {
-    return Intl.message(
-      'المساعدة',
-      name: 'supportHelpEyebrow',
       desc: '',
       args: [],
     );
@@ -1939,16 +1919,6 @@ class S {
     );
   }
 
-  /// `لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.`
-  String get sellerListingsEmptyBody {
-    return Intl.message(
-      'لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.',
-      name: 'sellerListingsEmptyBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `الإعلانات النشطة ظاهرة للمشترين وجاهزة للرسائل أو طلبات الشراء.`
   String get sellerListingsActiveStateBody {
     return Intl.message(
@@ -2714,26 +2684,6 @@ class S {
     );
   }
 
-  /// `دورة المعاملة`
-  String get sellerLifecycleTitle {
-    return Intl.message(
-      'دورة المعاملة',
-      name: 'sellerLifecycleTitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `أدر الطلبات والقبول والإكمال بحالة واضحة.`
-  String get sellerLifecycleBody {
-    return Intl.message(
-      'أدر الطلبات والقبول والإكمال بحالة واضحة.',
-      name: 'sellerLifecycleBody',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `إجراء`
   String get sellerActionStatus {
     return Intl.message(
@@ -3269,16 +3219,6 @@ class S {
     );
   }
 
-  /// `مفتوح`
-  String get messagesOpenStatus {
-    return Intl.message(
-      'مفتوح',
-      name: 'messagesOpenStatus',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `قيّم هذه المعاملة`
   String get ratingTitle {
     return Intl.message(
@@ -3789,16 +3729,6 @@ class S {
     return Intl.message(
       'مراسلة البائع',
       name: 'discoveryMessageSeller',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `نتائج`
-  String get searchResultsSuffix {
-    return Intl.message(
-      'نتائج',
-      name: 'searchResultsSuffix',
       desc: '',
       args: [],
     );
@@ -4624,6 +4554,16 @@ class S {
     return Intl.message('قبول', name: 'transactionAccept', desc: '', args: []);
   }
 
+  /// `رفض الطلب`
+  String get transactionDeclineAction {
+    return Intl.message(
+      'رفض الطلب',
+      name: 'transactionDeclineAction',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `إكمال`
   String get transactionComplete {
     return Intl.message(
@@ -4654,6 +4594,26 @@ class S {
     );
   }
 
+  /// `رفض إثبات الدفع`
+  String get transactionRejectProofTitle {
+    return Intl.message(
+      'رفض إثبات الدفع',
+      name: 'transactionRejectProofTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اشرح للمشتري بوضوح ما المشكلة في الإثبات المرفوع حتى يتمكن من تصحيحه.`
+  String get transactionRejectProofBody {
+    return Intl.message(
+      'اشرح للمشتري بوضوح ما المشكلة في الإثبات المرفوع حتى يتمكن من تصحيحه.',
+      name: 'transactionRejectProofBody',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `تأكيد الاستلام`
   String get transactionConfirmReceiptAction {
     return Intl.message(
@@ -4674,19 +4634,59 @@ class S {
     );
   }
 
-  /// `تعليم كمنتهية`
-  String get transactionExpire {
+  /// `إلغاء`
+  String get transactionCancel {
+    return Intl.message('إلغاء', name: 'transactionCancel', desc: '', args: []);
+  }
+
+  /// `رفض الطلب`
+  String get transactionDeclineTitle {
     return Intl.message(
-      'تعليم كمنتهية',
-      name: 'transactionExpire',
+      'رفض الطلب',
+      name: 'transactionDeclineTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `إلغاء`
-  String get transactionCancel {
-    return Intl.message('إلغاء', name: 'transactionCancel', desc: '', args: []);
+  /// `أضف سبباً قصيراً حتى يفهم المشتري لماذا لا يمكن قبول هذا الطلب.`
+  String get transactionDeclineBody {
+    return Intl.message(
+      'أضف سبباً قصيراً حتى يفهم المشتري لماذا لا يمكن قبول هذا الطلب.',
+      name: 'transactionDeclineBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `السبب`
+  String get transactionReasonLabel {
+    return Intl.message(
+      'السبب',
+      name: 'transactionReasonLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `اكتب سبباً قصيراً وواضحاً`
+  String get transactionReasonHint {
+    return Intl.message(
+      'اكتب سبباً قصيراً وواضحاً',
+      name: 'transactionReasonHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `السبب القصير مطلوب.`
+  String get transactionReasonRequired {
+    return Intl.message(
+      'السبب القصير مطلوب.',
+      name: 'transactionReasonRequired',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `إلغاء المعاملة`
@@ -4779,26 +4779,6 @@ class S {
     return Intl.message(
       'تابع طريقة الدفع والإثبات وخطوات إكمال هذه الصفقة.',
       name: 'transactionDetailSubtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `مكتملة`
-  String get transactionDecisionComplete {
-    return Intl.message(
-      'مكتملة',
-      name: 'transactionDecisionComplete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `نشطة`
-  String get transactionDecisionActive {
-    return Intl.message(
-      'نشطة',
-      name: 'transactionDecisionActive',
       desc: '',
       args: [],
     );
@@ -4944,6 +4924,16 @@ class S {
     );
   }
 
+  /// `ملاحظة البائع`
+  String get transactionProofRejectionReasonTitle {
+    return Intl.message(
+      'ملاحظة البائع',
+      name: 'transactionProofRejectionReasonTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `رفع الإثبات`
   String get transactionUploadProofAction {
     return Intl.message(
@@ -4994,10 +4984,10 @@ class S {
     );
   }
 
-  /// `راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.`
+  /// `راجع هذا الطلب ثم اقبله أو ارفضه أو اتركه معلقاً.`
   String get transactionNextStepPendingSeller {
     return Intl.message(
-      'راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.',
+      'راجع هذا الطلب ثم اقبله أو ارفضه أو اتركه معلقاً.',
       name: 'transactionNextStepPendingSeller',
       desc: '',
       args: [],
@@ -5109,6 +5099,266 @@ class S {
     return Intl.message(
       'هذه الصفقة لم تعد نشطة.',
       name: 'transactionNextStepInactive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تم إلغاء هذه الصفقة: {reason}`
+  String transactionCancelledWithReason(Object reason) {
+    return Intl.message(
+      'تم إلغاء هذه الصفقة: $reason',
+      name: 'transactionCancelledWithReason',
+      desc: '',
+      args: [reason],
+    );
+  }
+
+  /// `طلبات البائع`
+  String get sellerOrdersTitle {
+    return Intl.message(
+      'طلبات البائع',
+      name: 'sellerOrdersTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `أدر الطلبات الجديدة ومراجعة إثباتات الدفع وعمليات التسليم النشطة من شاشة واحدة.`
+  String get sellerOrdersSubtitle {
+    return Intl.message(
+      'أدر الطلبات الجديدة ومراجعة إثباتات الدفع وعمليات التسليم النشطة من شاشة واحدة.',
+      name: 'sellerOrdersSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا توجد طلبات للبائع بعد.`
+  String get sellerOrdersEmpty {
+    return Intl.message(
+      'لا توجد طلبات للبائع بعد.',
+      name: 'sellerOrdersEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `جديدة`
+  String get sellerOrdersNewLabel {
+    return Intl.message(
+      'جديدة',
+      name: 'sellerOrdersNewLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `رد بسرعة حتى لا يتراجع المشتري.`
+  String get sellerOrdersNewSectionHint {
+    return Intl.message(
+      'رد بسرعة حتى لا يتراجع المشتري.',
+      name: 'sellerOrdersNewSectionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مراجعة الإثبات`
+  String get sellerOrdersProofReviewLabel {
+    return Intl.message(
+      'مراجعة الإثبات',
+      name: 'sellerOrdersProofReviewLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الطلبات متوقفة حتى تراجع الإثبات.`
+  String get sellerOrdersProofReviewSectionHint {
+    return Intl.message(
+      'هذه الطلبات متوقفة حتى تراجع الإثبات.',
+      name: 'sellerOrdersProofReviewSectionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `نشطة`
+  String get sellerOrdersActiveLabel {
+    return Intl.message(
+      'نشطة',
+      name: 'sellerOrdersActiveLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `هذه الطلبات تتحرك وتحتاج متابعة خفيفة.`
+  String get sellerOrdersActiveSectionHint {
+    return Intl.message(
+      'هذه الطلبات تتحرك وتحتاج متابعة خفيفة.',
+      name: 'sellerOrdersActiveSectionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مغلقة`
+  String get sellerOrdersClosedLabel {
+    return Intl.message(
+      'مغلقة',
+      name: 'sellerOrdersClosedLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الطلبات المكتملة أو الملغاة مؤخراً.`
+  String get sellerOrdersClosedSectionHint {
+    return Intl.message(
+      'الطلبات المكتملة أو الملغاة مؤخراً.',
+      name: 'sellerOrdersClosedSectionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `يوجد مشتري ينتظر موافقتك على هذا الطلب.`
+  String get sellerOrdersNewSummary {
+    return Intl.message(
+      'يوجد مشتري ينتظر موافقتك على هذا الطلب.',
+      name: 'sellerOrdersNewSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `عرض السجل`
+  String get sellerOrdersViewHistoryAction {
+    return Intl.message(
+      'عرض السجل',
+      name: 'sellerOrdersViewHistoryAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تحتاج رداً`
+  String get sellerOrdersUrgencyNeedsResponse {
+    return Intl.message(
+      'تحتاج رداً',
+      name: 'sellerOrdersUrgencyNeedsResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `بانتظار الإثبات`
+  String get sellerOrdersUrgencyProofWaiting {
+    return Intl.message(
+      'بانتظار الإثبات',
+      name: 'sellerOrdersUrgencyProofWaiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `تسليم نقدي`
+  String get sellerOrdersUrgencyCashHandoff {
+    return Intl.message(
+      'تسليم نقدي',
+      name: 'sellerOrdersUrgencyCashHandoff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `بانتظار المشتري`
+  String get sellerOrdersUrgencyWaitingBuyer {
+    return Intl.message(
+      'بانتظار المشتري',
+      name: 'sellerOrdersUrgencyWaitingBuyer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `بانتظار الاستلام`
+  String get sellerOrdersUrgencyWaitingReceipt {
+    return Intl.message(
+      'بانتظار الاستلام',
+      name: 'sellerOrdersUrgencyWaitingReceipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `مغلق`
+  String get sellerOrdersUrgencyClosed {
+    return Intl.message(
+      'مغلق',
+      name: 'sellerOrdersUrgencyClosed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `لا يوجد وقت`
+  String get sellerOrdersTimestampUnknown {
+    return Intl.message(
+      'لا يوجد وقت',
+      name: 'sellerOrdersTimestampUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `الآن`
+  String get sellerOrdersTimestampJustNow {
+    return Intl.message(
+      'الآن',
+      name: 'sellerOrdersTimestampJustNow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `منذ {count} د`
+  String sellerOrdersTimestampMinutes(Object count) {
+    return Intl.message(
+      'منذ $count د',
+      name: 'sellerOrdersTimestampMinutes',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `منذ {count} س`
+  String sellerOrdersTimestampHours(Object count) {
+    return Intl.message(
+      'منذ $count س',
+      name: 'sellerOrdersTimestampHours',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `منذ {count} ي`
+  String sellerOrdersTimestampDays(Object count) {
+    return Intl.message(
+      'منذ $count ي',
+      name: 'sellerOrdersTimestampDays',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `فتح التفاصيل`
+  String get transactionOpenDetailsAction {
+    return Intl.message(
+      'فتح التفاصيل',
+      name: 'transactionOpenDetailsAction',
       desc: '',
       args: [],
     );
@@ -5259,16 +5509,6 @@ class S {
     return Intl.message(
       'تم إلغاء هذه المعاملة قبل الإكمال.',
       name: 'transactionTimelineCancelledBody',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `تم رفض هذه المعاملة من البائع.`
-  String get transactionTimelineRejectedBody {
-    return Intl.message(
-      'تم رفض هذه المعاملة من البائع.',
-      name: 'transactionTimelineRejectedBody',
       desc: '',
       args: [],
     );
@@ -5526,16 +5766,6 @@ class S {
       name: 'searchRecentLabel',
       desc: '',
       args: [],
-    );
-  }
-
-  /// `{title} — {link}`
-  String shareListingText(Object title, Object link) {
-    return Intl.message(
-      '$title — $link',
-      name: 'shareListingText',
-      desc: '',
-      args: [title, link],
     );
   }
 
@@ -7192,6 +7422,11 @@ class S {
   /// `المحفوظات`
   String get navSaved {
     return Intl.message('المحفوظات', name: 'navSaved', desc: '', args: []);
+  }
+
+  /// `الطلبات`
+  String get navOrders {
+    return Intl.message('الطلبات', name: 'navOrders', desc: '', args: []);
   }
 
   /// `الرسائل`

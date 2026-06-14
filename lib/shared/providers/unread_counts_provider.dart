@@ -11,8 +11,15 @@ class UnreadCountsNotifier extends AsyncNotifier<UnreadCounts> {
   Future<UnreadCounts> build() => _load();
 
   Future<void> refresh() async {
+    if (!ref.mounted) {
+      return;
+    }
     state = const AsyncLoading();
-    state = await AsyncValue.guard(_load);
+    final nextState = await AsyncValue.guard(_load);
+    if (!ref.mounted) {
+      return;
+    }
+    state = nextState;
   }
 
   Future<UnreadCounts> _load() async {

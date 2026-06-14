@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/contract_codes.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
-import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
+import 'package:qitak_app/features/seller/presentation/seller_verification_status_l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerApplicationStatusScreen extends ConsumerWidget {
@@ -306,13 +307,13 @@ String _documentDisplayName(String storagePath) {
 String _documentLabelFromKey(BuildContext context, String key) {
   switch (key) {
     case 'sellerDocumentIdFrontLabel':
-    case 'government_id_front':
+    case PolicyCode.governmentIdFront:
       return context.l10n.sellerDocumentIdFrontLabel;
     case 'sellerDocumentIdBackLabel':
-    case 'government_id_back':
+    case PolicyCode.governmentIdBack:
       return context.l10n.sellerDocumentIdBackLabel;
     case 'sellerDocumentBusinessRegistrationLabel':
-    case 'business_registration':
+    case PolicyCode.businessRegistration:
       return context.l10n.sellerDocumentBusinessRegistrationLabel;
     default:
       return key;

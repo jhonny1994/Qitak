@@ -321,7 +321,8 @@ select lives_ok(
       );
 
       perform public.reject_deal_payment_proof(
-        (select deal_id from test_transaction_ids)
+        (select deal_id from test_transaction_ids),
+        'The payment proof is cropped. Upload the full transfer confirmation.'
       );
     end
     $inner$
@@ -345,6 +346,7 @@ select ok(
       and payment_proof_path is null
       and payment_proof_submitted_at is null
       and payment_confirmed_at is null
+      and payment_proof_rejection_reason = 'The payment proof is cropped. Upload the full transfer confirmation.'
   ),
   'payment proof rejection restores seller_confirmed and clears proof fields'
 );

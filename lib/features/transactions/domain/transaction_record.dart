@@ -140,6 +140,8 @@ class TransactionRecord {
     this.exchangeOffer,
     this.paymentMethod,
     this.paymentProofPath,
+    this.paymentProofRejectionReason,
+    this.cancellationReason,
     this.expiresAt,
     this.confirmedAt,
     this.paymentProofSubmittedAt,
@@ -159,6 +161,8 @@ class TransactionRecord {
   final String? exchangeOffer;
   final TransactionPaymentMethod? paymentMethod;
   final String? paymentProofPath;
+  final String? paymentProofRejectionReason;
+  final String? cancellationReason;
   final DateTime? expiresAt;
   final DateTime? confirmedAt;
   final DateTime? paymentProofSubmittedAt;
@@ -188,6 +192,10 @@ class TransactionRecord {
     bool clearPaymentMethod = false,
     String? paymentProofPath,
     bool clearPaymentProofPath = false,
+    String? paymentProofRejectionReason,
+    bool clearPaymentProofRejectionReason = false,
+    String? cancellationReason,
+    bool clearCancellationReason = false,
     DateTime? expiresAt,
     DateTime? confirmedAt,
     DateTime? paymentProofSubmittedAt,
@@ -213,6 +221,12 @@ class TransactionRecord {
       paymentProofPath: clearPaymentProofPath
           ? null
           : paymentProofPath ?? this.paymentProofPath,
+      paymentProofRejectionReason: clearPaymentProofRejectionReason
+          ? null
+          : paymentProofRejectionReason ?? this.paymentProofRejectionReason,
+      cancellationReason: clearCancellationReason
+          ? null
+          : cancellationReason ?? this.cancellationReason,
       expiresAt: expiresAt ?? this.expiresAt,
       confirmedAt: confirmedAt ?? this.confirmedAt,
       paymentProofSubmittedAt: clearPaymentProofSubmittedAt

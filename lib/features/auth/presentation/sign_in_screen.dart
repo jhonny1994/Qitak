@@ -6,11 +6,11 @@ import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
-import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
 import 'package:qitak_app/features/auth/presentation/customer_auth_mode_switch.dart';
+import 'package:qitak_app/features/auth/providers/auth_route_resolution_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/auth/providers/redirect_intent_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
@@ -281,20 +281,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<bool> _isSellerApproved(AccountProfile profile) async {
-    if (profile.role != AccountRole.seller) {
-      return false;
-    }
-    try {
-      final application = await ref
-          .read(sellerApplicationRepositoryProvider)
-          .fetchCurrentForUser(profile.id);
-      return application?.isApproved ?? false;
-    } on Object {
-      return false;
-    }
-  }
-
   Future<String> _resolvePostAuthRoute(AccountProfile profile) async {
     final intent =
         ref.read(redirectIntentProvider.notifier).consume() ??
@@ -303,11 +289,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           redirectType: widget.redirectType,
           encodedArguments: widget.redirectArguments,
         );
-    final isSellerApproved = await _isSellerApproved(profile);
-    return const AuthEntryService().resolvePostAuthDestination(
+    return resolvePostAuthRouteForProfile(
+      ref.read(sellerApplicationRepositoryProvider),
       profile: profile,
       intent: intent,
-      isSellerApproved: isSellerApproved,
     );
   }
 

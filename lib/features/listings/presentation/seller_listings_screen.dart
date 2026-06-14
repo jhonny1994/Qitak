@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
+import 'package:qitak_app/core/network/contract_codes.dart';
 import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/domain/discovery_filter_taxonomy.dart';
@@ -247,27 +248,27 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
 
   Widget _buildPrimaryAction(BuildContext context, SellerManagedListing item) {
     switch (item.status) {
-      case 'active':
+      case DomainStatusCode.active:
         return FilledButton(
           onPressed: () => _applyAction(item.id, 'pause'),
           child: Text(context.l10n.sellerListingPauseAction),
         );
-      case 'draft':
+      case DomainStatusCode.draft:
         return FilledButton(
           onPressed: () => _applyAction(item.id, 'resubmit'),
           child: Text(context.l10n.sellerListingSubmitAction),
         );
-      case 'pending_review':
+      case DomainStatusCode.pendingReview:
         return FilledButton.tonal(
           onPressed: () => context.push('/seller/listings/${item.id}'),
           child: Text(context.l10n.sellerListingsPreviewAction),
         );
-      case 'paused':
+      case DomainStatusCode.paused:
         return FilledButton(
           onPressed: () => _applyAction(item.id, 'resume'),
           child: Text(context.l10n.sellerListingResumeAction),
         );
-      case 'rejected':
+      case DomainStatusCode.rejected:
         return FilledButton(
           onPressed: () => _applyAction(item.id, 'resubmit'),
           child: Text(context.l10n.sellerListingResubmitAction),
@@ -282,8 +283,8 @@ class _SellerListingsScreenState extends ConsumerState<SellerListingsScreen> {
 
   bool _hasOverflowActions(SellerManagedListing item) {
     switch (item.status) {
-      case 'pending_review':
-      case 'closed':
+      case DomainStatusCode.pendingReview:
+      case DomainStatusCode.closed:
         return false;
       default:
         return true;
@@ -491,12 +492,18 @@ List<({String value, String label})> _statusOptions(
   final contracts =
       statusContracts ??
       const <({String code, String? labelKey})>[
-        (code: 'active', labelKey: 'sellerListingsStatusActive'),
-        (code: 'draft', labelKey: 'sellerListingsStatusDrafts'),
-        (code: 'pending_review', labelKey: 'sellerListingsStatusUnderReview'),
-        (code: 'paused', labelKey: 'sellerListingsStatusPaused'),
-        (code: 'rejected', labelKey: 'sellerListingsStatusRejected'),
-        (code: 'closed', labelKey: 'sellerListingsStatusClosed'),
+        (code: DomainStatusCode.active, labelKey: 'sellerListingsStatusActive'),
+        (code: DomainStatusCode.draft, labelKey: 'sellerListingsStatusDrafts'),
+        (
+          code: DomainStatusCode.pendingReview,
+          labelKey: 'sellerListingsStatusUnderReview',
+        ),
+        (code: DomainStatusCode.paused, labelKey: 'sellerListingsStatusPaused'),
+        (
+          code: DomainStatusCode.rejected,
+          labelKey: 'sellerListingsStatusRejected',
+        ),
+        (code: DomainStatusCode.closed, labelKey: 'sellerListingsStatusClosed'),
       ];
   return [
     for (final contract in contracts)
@@ -529,17 +536,17 @@ String _statusLabel(BuildContext context, String status, [String? labelKey]) {
       break;
   }
   switch (status) {
-    case 'active':
+    case DomainStatusCode.active:
       return context.l10n.sellerListingsStatusActive;
-    case 'draft':
+    case DomainStatusCode.draft:
       return context.l10n.sellerListingsStatusDrafts;
-    case 'pending_review':
+    case DomainStatusCode.pendingReview:
       return context.l10n.sellerListingsStatusUnderReview;
-    case 'paused':
+    case DomainStatusCode.paused:
       return context.l10n.sellerListingsStatusPaused;
-    case 'rejected':
+    case DomainStatusCode.rejected:
       return context.l10n.sellerListingsStatusRejected;
-    case 'closed':
+    case DomainStatusCode.closed:
       return context.l10n.sellerListingsStatusClosed;
     default:
       return status;
@@ -548,17 +555,17 @@ String _statusLabel(BuildContext context, String status, [String? labelKey]) {
 
 String _statusBody(BuildContext context, String status) {
   switch (status) {
-    case 'draft':
+    case DomainStatusCode.draft:
       return context.l10n.sellerListingsDraftStateBody;
-    case 'pending_review':
+    case DomainStatusCode.pendingReview:
       return context.l10n.sellerListingsUnderReviewStateBody;
-    case 'paused':
+    case DomainStatusCode.paused:
       return context.l10n.sellerListingsPausedStateBody;
-    case 'rejected':
+    case DomainStatusCode.rejected:
       return context.l10n.sellerListingsRejectedStateBody;
-    case 'closed':
+    case DomainStatusCode.closed:
       return context.l10n.sellerListingsClosedStateBody;
-    case 'active':
+    case DomainStatusCode.active:
     default:
       return context.l10n.sellerListingsActiveStateBody;
   }
@@ -566,17 +573,17 @@ String _statusBody(BuildContext context, String status) {
 
 String _emptyBody(BuildContext context, String status) {
   switch (status) {
-    case 'draft':
+    case DomainStatusCode.draft:
       return context.l10n.sellerListingsDraftEmptyBody;
-    case 'pending_review':
+    case DomainStatusCode.pendingReview:
       return context.l10n.sellerListingsUnderReviewEmptyBody;
-    case 'paused':
+    case DomainStatusCode.paused:
       return context.l10n.sellerListingsPausedEmptyBody;
-    case 'rejected':
+    case DomainStatusCode.rejected:
       return context.l10n.sellerListingsRejectedEmptyBody;
-    case 'closed':
+    case DomainStatusCode.closed:
       return context.l10n.sellerListingsClosedEmptyBody;
-    case 'active':
+    case DomainStatusCode.active:
     default:
       return context.l10n.sellerListingsActiveEmptyBody;
   }

@@ -28,6 +28,7 @@ abstract class TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   });
 
   Future<TransactionRecord> selectPaymentMethod({
@@ -45,6 +46,7 @@ abstract class TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   });
 
   Future<bool> canSubmitRating({
@@ -154,6 +156,7 @@ class LocalTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     final current = _records[transactionId];
     if (current == null) {
@@ -171,6 +174,13 @@ class LocalTransactionRepository implements TransactionRepository {
     final updated = current.copyWith(
       state: nextState,
       updatedAt: now,
+      cancellationReason: nextState == TransactionState.cancelled
+          ? _normalizedNote(note)
+          : current.cancellationReason,
+      clearPaymentProofRejectionReason:
+          nextState == TransactionState.paymentConfirmed ||
+          nextState == TransactionState.completed ||
+          nextState == TransactionState.cancelled,
       confirmedAt: nextState == TransactionState.sellerConfirmed
           ? now
           : current.confirmedAt,
@@ -208,6 +218,7 @@ class LocalTransactionRepository implements TransactionRepository {
       clearPaymentProofPath: true,
       clearPaymentProofSubmittedAt: true,
       clearPaymentConfirmedAt: true,
+      clearPaymentProofRejectionReason: true,
     );
     _records[transactionId] = updated;
     return updated;
@@ -236,6 +247,7 @@ class LocalTransactionRepository implements TransactionRepository {
       paymentProofSubmittedAt: now,
       updatedAt: now,
       clearPaymentConfirmedAt: true,
+      clearPaymentProofRejectionReason: true,
     );
     _records[transactionId] = updated;
     return updated;
@@ -245,6 +257,7 @@ class LocalTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     final current = _records[transactionId];
     if (current == null) {
@@ -260,6 +273,7 @@ class LocalTransactionRepository implements TransactionRepository {
       clearPaymentProofPath: true,
       clearPaymentProofSubmittedAt: true,
       clearPaymentConfirmedAt: true,
+      paymentProofRejectionReason: _normalizedNote(reason),
     );
     _records[transactionId] = updated;
     return updated;
@@ -332,6 +346,11 @@ class LocalTransactionRepository implements TransactionRepository {
         return false;
     }
   }
+
+  String? _normalizedNote(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
 }
 
 class SupabaseTransactionRepository implements TransactionRepository {
@@ -397,6 +416,7 @@ class SupabaseTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     final _ = actorUserId;
     final knownStates = await _dealStates();
@@ -409,6 +429,7 @@ class SupabaseTransactionRepository implements TransactionRepository {
         params: <String, dynamic>{
           'p_deal_id': transactionId,
           'p_next_status': nextState.value,
+          'p_note': _normalizedNote(note),
         },
       );
       return _fromMap(updated);
@@ -491,6 +512,7 @@ class SupabaseTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     final _ = actorUserId;
     try {
@@ -498,6 +520,7 @@ class SupabaseTransactionRepository implements TransactionRepository {
         'reject_deal_payment_proof',
         params: <String, dynamic>{
           'p_deal_id': transactionId,
+          'p_reason': _normalizedNote(reason),
         },
       );
       return _fromMap(updated);
@@ -546,6 +569,9 @@ class SupabaseTransactionRepository implements TransactionRepository {
         row['payment_method'] as String?,
       ),
       paymentProofPath: row['payment_proof_path'] as String?,
+      paymentProofRejectionReason:
+          row['payment_proof_rejection_reason'] as String?,
+      cancellationReason: row['cancellation_reason'] as String?,
       expiresAt: DateTime.tryParse(
         row['expires_at'] as String? ?? '',
       )?.toLocal(),
@@ -590,5 +616,10 @@ class SupabaseTransactionRepository implements TransactionRepository {
   String _sanitizeFileName(String raw) {
     final cleaned = raw.replaceAll(RegExp('[^A-Za-z0-9._-]'), '_');
     return cleaned.isEmpty ? 'payment_proof.jpg' : cleaned;
+  }
+
+  String? _normalizedNote(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
   }
 }

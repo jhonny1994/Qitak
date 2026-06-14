@@ -7,7 +7,7 @@ import 'package:qitak_app/features/admin/data/listing_moderation_repository.dart
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
-import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
+import 'package:qitak_app/features/seller/presentation/seller_verification_status_l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class ListingReviewDetailScreen extends ConsumerStatefulWidget {

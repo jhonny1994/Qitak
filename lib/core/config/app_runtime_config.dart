@@ -5,8 +5,7 @@ final class AppRuntimeConfig {
   const AppRuntimeConfig._();
 
   static const String supabaseUrlEnvVar = 'SUPABASE_URL';
-  static const String supabasePublishableKeyEnvVar =
-      'SUPABASE_PUBLISHABLE_KEY';
+  static const String supabasePublishableKeyEnvVar = 'SUPABASE_PUBLISHABLE_KEY';
 
   /// Android emulators access host-loopback services through 10.0.2.2.
   static const String androidEmulatorLoopbackHost = '10.0.2.2';

@@ -65,6 +65,7 @@ class _StaticTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     throw UnimplementedError();
   }
@@ -92,6 +93,7 @@ class _StaticTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     throw UnimplementedError();
   }

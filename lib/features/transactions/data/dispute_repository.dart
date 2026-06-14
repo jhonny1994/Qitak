@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/network/app_contract_repository.dart';
 import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/contract_codes.dart';
 import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/network/supabase_error_classifier.dart';
@@ -318,9 +319,7 @@ class SupabaseDisputeRepository implements DisputeRepository {
     final statusSet = await _contracts.fetchDomainCodes(
       DomainKey.disputeStatus,
     );
-    final queue = statusSet
-        .where((code) => code == 'open' || code == 'under_review')
-        .toList(growable: false);
+    final queue = reviewQueueStatusesFrom(statusSet);
     if (queue.isEmpty) {
       throw AppException.fromCode(AppErrorCode.contractUnavailable);
     }
@@ -350,7 +349,7 @@ class LocalDisputeRepository implements DisputeRepository {
   @override
   Future<List<TransactionDispute>> listOpenDisputes() async {
     return _disputes
-        .where((item) => item.status == 'open' || item.status == 'under_review')
+        .where((item) => DomainStatusCode.reviewQueue.contains(item.status))
         .toList(growable: false)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }

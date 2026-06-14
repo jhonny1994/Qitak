@@ -99,6 +99,7 @@ class _VisualTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     return record = record.copyWith(
       state: TransactionState.sellerConfirmed,
@@ -106,6 +107,7 @@ class _VisualTransactionRepository implements TransactionRepository {
       clearPaymentProofPath: true,
       clearPaymentProofSubmittedAt: true,
       clearPaymentConfirmedAt: true,
+      paymentProofRejectionReason: reason,
     );
   }
 
@@ -140,10 +142,12 @@ class _VisualTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     return record = record.copyWith(
       state: nextState,
       updatedAt: DateTime(2026, 1, 2),
+      cancellationReason: nextState == TransactionState.cancelled ? note : null,
       confirmedAt: nextState == TransactionState.sellerConfirmed
           ? DateTime(2026, 1, 2)
           : record.confirmedAt,

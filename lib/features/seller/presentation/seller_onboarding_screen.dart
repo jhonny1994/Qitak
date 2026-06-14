@@ -6,6 +6,8 @@ import 'package:qitak_app/core/errors/app_exception.dart';
 import 'package:qitak_app/core/l10n/app_error_localization.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/network/app_error_code.dart';
+import 'package:qitak_app/core/network/contract_codes.dart';
+import 'package:qitak_app/core/network/contract_providers.dart';
 import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
@@ -54,9 +56,9 @@ class _SellerOnboardingScreenState
   bool _hydratedExisting = false;
 
   static const Map<String, String> _documentLabelFallbacks = <String, String>{
-    'government_id_front': 'sellerDocumentIdFrontLabel',
-    'government_id_back': 'sellerDocumentIdBackLabel',
-    'business_registration': 'sellerDocumentBusinessRegistrationLabel',
+    PolicyCode.governmentIdFront: 'sellerDocumentIdFrontLabel',
+    PolicyCode.governmentIdBack: 'sellerDocumentIdBackLabel',
+    PolicyCode.businessRegistration: 'sellerDocumentBusinessRegistrationLabel',
   };
 
   @override
@@ -587,10 +589,10 @@ class _SellerOnboardingScreenState
     List<({String code, String labelKey})> documentOptions,
   ) {
     final activeCodes = documentOptions.map((item) => item.code).toSet();
-    final required = <String>['government_id_front'];
+    final required = <String>[PolicyCode.governmentIdFront];
     if (_sellerType == 'business' &&
-        activeCodes.contains('business_registration')) {
-      required.add('business_registration');
+        activeCodes.contains(PolicyCode.businessRegistration)) {
+      required.add(PolicyCode.businessRegistration);
     }
     return required;
   }
@@ -630,14 +632,50 @@ class _SellerOnboardingScreenState
 
 final sellerDocumentPoliciesProvider =
     FutureProvider<List<({String code, String labelKey})>>((ref) async {
-      final options = await ref
-          .read(sellerApplicationRepositoryProvider)
-          .fetchPolicyOptions(PolicyKey.sellerDocumentType);
-      return options
-          .where((option) => option.active)
-          .map((option) => (code: option.code, labelKey: option.labelKey))
-          .toList(growable: false);
+      try {
+        final options = await ref.watch(
+          sellerDocumentTypePolicyProvider.future,
+        );
+        final activeOptions = options
+            .where((option) => option.active)
+            .map((option) => (code: option.code, labelKey: option.labelKey))
+            .toList(growable: false);
+        return activeOptions.isEmpty
+            ? _defaultSellerDocumentPolicies
+            : activeOptions;
+      } on Object {
+        try {
+          final fallbackOptions = await ref
+              .read(sellerApplicationRepositoryProvider)
+              .fetchPolicyOptions(PolicyKey.sellerDocumentType);
+          final activeFallbackOptions = fallbackOptions
+              .where((option) => option.active)
+              .map((option) => (code: option.code, labelKey: option.labelKey))
+              .toList(growable: false);
+          return activeFallbackOptions.isEmpty
+              ? _defaultSellerDocumentPolicies
+              : activeFallbackOptions;
+        } on Object {
+          return _defaultSellerDocumentPolicies;
+        }
+      }
     });
+
+const List<({String code, String labelKey})> _defaultSellerDocumentPolicies =
+    <({String code, String labelKey})>[
+      (
+        code: PolicyCode.governmentIdFront,
+        labelKey: 'sellerDocumentIdFrontLabel',
+      ),
+      (
+        code: PolicyCode.governmentIdBack,
+        labelKey: 'sellerDocumentIdBackLabel',
+      ),
+      (
+        code: PolicyCode.businessRegistration,
+        labelKey: 'sellerDocumentBusinessRegistrationLabel',
+      ),
+    ];
 
 String _documentLabelFromKey(BuildContext context, String key) {
   switch (key) {

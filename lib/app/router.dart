@@ -16,7 +16,6 @@ import 'package:qitak_app/features/admin/presentation/reports_queue_screen.dart'
 import 'package:qitak_app/features/admin/presentation/seller_verification_queue_screen.dart';
 import 'package:qitak_app/features/admin/presentation/verification_detail_screen.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
-import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/domain/auth_variant.dart';
 import 'package:qitak_app/features/auth/domain/post_auth_redirect_intent.dart';
 import 'package:qitak_app/features/auth/presentation/account_settings_screen.dart';
@@ -35,6 +34,7 @@ import 'package:qitak_app/features/auth/presentation/sign_in_screen.dart';
 import 'package:qitak_app/features/auth/presentation/sign_up_screen.dart';
 import 'package:qitak_app/features/auth/presentation/splash_screen.dart';
 import 'package:qitak_app/features/auth/presentation/unknown_route_screen.dart';
+import 'package:qitak_app/features/auth/providers/auth_route_resolution_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/presentation/home_screen.dart';
 import 'package:qitak_app/features/discovery/presentation/search_screen.dart';
@@ -52,6 +52,7 @@ import 'package:qitak_app/features/seller/presentation/seller_application_status
 import 'package:qitak_app/features/seller/presentation/seller_onboarding_screen.dart';
 import 'package:qitak_app/features/support/presentation/support_center_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/dispute_create_screen.dart';
+import 'package:qitak_app/features/transactions/presentation/seller_orders_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_detail_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_history_screen.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_lifecycle_screen.dart';
@@ -291,75 +292,38 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           // Marketplace routes
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: '/home',
-                pageBuilder: (context, state) => _buildTransitionPage(
-                  state: state,
-                  child: const HomeScreen(),
-                ),
-                routes: [
-                  GoRoute(
-                    path: 'listing/:id',
-                    pageBuilder: (context, state) => _buildTransitionPage(
-                      state: state,
-                      child: ListingDetailScreen(
-                        listingId: state.pathParameters['id'] ?? '',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              GoRoute(
+              _buildHomeRoute(),
+              _buildProtectedRoute(
                 path: '/seller/home',
-                pageBuilder: (context, state) => _buildTransitionPage(
-                  state: state,
-                  child: ProtectedRouteGuard(
-                    requiredRoles: const [AccountRole.seller],
-                    intent: PostAuthRedirectIntent.route('/seller/home'),
-                    requireApprovedSeller: true,
-                    child: const SellerDashboardScreen(),
-                  ),
-                ),
+                intentPath: '/seller/home',
+                requiredRoles: const [AccountRole.seller],
+                requireApprovedSeller: true,
+                childBuilder: () => const SellerDashboardScreen(),
               ),
-              GoRoute(
+              _buildProtectedRoute(
                 path: '/seller/dashboard',
-                pageBuilder: (context, state) => _buildTransitionPage(
-                  state: state,
-                  child: ProtectedRouteGuard(
-                    requiredRoles: const [AccountRole.seller],
-                    intent: PostAuthRedirectIntent.route('/seller/dashboard'),
-                    requireApprovedSeller: true,
-                    child: const SellerDashboardScreen(),
-                  ),
-                ),
+                intentPath: '/seller/dashboard',
+                requiredRoles: const [AccountRole.seller],
+                requireApprovedSeller: true,
+                childBuilder: () => const SellerDashboardScreen(),
               ),
-              GoRoute(
+              _buildProtectedRoute(
                 path: '/admin/home',
-                pageBuilder: (context, state) => _buildTransitionPage(
-                  state: state,
-                  child: ProtectedRouteGuard(
-                    requiredRoles: const [
-                      AccountRole.admin,
-                      AccountRole.superAdmin,
-                    ],
-                    intent: PostAuthRedirectIntent.route('/admin/home'),
-                    child: const AdminDashboardScreen(),
-                  ),
-                ),
+                intentPath: '/admin/home',
+                requiredRoles: const [
+                  AccountRole.admin,
+                  AccountRole.superAdmin,
+                ],
+                childBuilder: () => const AdminDashboardScreen(),
               ),
-              GoRoute(
+              _buildProtectedRoute(
                 path: '/admin/dashboard',
-                pageBuilder: (context, state) => _buildTransitionPage(
-                  state: state,
-                  child: ProtectedRouteGuard(
-                    requiredRoles: const [
-                      AccountRole.admin,
-                      AccountRole.superAdmin,
-                    ],
-                    intent: PostAuthRedirectIntent.route('/admin/dashboard'),
-                    child: const AdminDashboardScreen(),
-                  ),
-                ),
+                intentPath: '/admin/dashboard',
+                requiredRoles: const [
+                  AccountRole.admin,
+                  AccountRole.superAdmin,
+                ],
+                childBuilder: () => const AdminDashboardScreen(),
               ),
             ],
           ),
@@ -512,6 +476,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     ],
                     intent: PostAuthRedirectIntent.route('/saved'),
                     child: const SavedListingsScreen(),
+                  ),
+                ),
+              ),
+              GoRoute(
+                path: '/seller/orders',
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  state: state,
+                  child: ProtectedRouteGuard(
+                    requiredRoles: const [AccountRole.seller],
+                    intent: PostAuthRedirectIntent.route('/seller/orders'),
+                    requireApprovedSeller: true,
+                    child: const SellerOrdersScreen(),
                   ),
                 ),
               ),
@@ -942,6 +918,48 @@ String _customerAuthAliasPath({
   return '$targetPath?${Uri(queryParameters: query).query}';
 }
 
+GoRoute _buildHomeRoute() {
+  return GoRoute(
+    path: '/home',
+    pageBuilder: (context, state) => _buildTransitionPage(
+      state: state,
+      child: const HomeScreen(),
+    ),
+    routes: [
+      GoRoute(
+        path: 'listing/:id',
+        pageBuilder: (context, state) => _buildTransitionPage(
+          state: state,
+          child: ListingDetailScreen(
+            listingId: state.pathParameters['id'] ?? '',
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+GoRoute _buildProtectedRoute({
+  required String path,
+  required List<AccountRole> requiredRoles,
+  required Widget Function() childBuilder,
+  required String intentPath,
+  bool requireApprovedSeller = false,
+}) {
+  return GoRoute(
+    path: path,
+    pageBuilder: (context, state) => _buildTransitionPage(
+      state: state,
+      child: ProtectedRouteGuard(
+        requiredRoles: requiredRoles,
+        intent: PostAuthRedirectIntent.route(intentPath),
+        requireApprovedSeller: requireApprovedSeller,
+        child: childBuilder(),
+      ),
+    ),
+  );
+}
+
 String _homePathForSession(AuthSessionState session) {
   return session.profile?.role.route ?? '/home';
 }
@@ -962,10 +980,6 @@ String _authUtilityFallbackPath(
       case AccountRole.anonymous:
         return '/profile';
     }
-  }
-
-  if (preferences.guestBrowsingEnabled) {
-    return '/guest/account';
   }
 
   return '/guest/account';
@@ -1022,23 +1036,9 @@ Future<String> _resolveAuthenticatedLandingPath(
   Ref ref,
   AccountProfile profile,
 ) async {
-  var isSellerApproved = false;
-  if (profile.role == AccountRole.seller) {
-    try {
-      isSellerApproved =
-          (await ref
-                  .read(sellerApplicationRepositoryProvider)
-                  .fetchCurrentForUser(profile.id))
-              ?.isApproved ==
-          true;
-    } on Object {
-      isSellerApproved = false;
-    }
-  }
-
-  return const AuthEntryService().resolveLandingRoute(
+  return resolveLandingRouteForProfile(
+    ref.read(sellerApplicationRepositoryProvider),
     profile,
-    isSellerApproved: isSellerApproved,
   );
 }
 

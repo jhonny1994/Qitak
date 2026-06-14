@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qitak_app/core/errors/app_exception.dart';
+import 'package:qitak_app/core/network/contract_codes.dart';
 import 'package:qitak_app/core/network/supabase_client_provider.dart';
 import 'package:qitak_app/core/network/supabase_error_classifier.dart';
 import 'package:qitak_app/features/admin/domain/listing_moderation_case.dart';
@@ -59,8 +60,11 @@ class LocalListingModerationRepository implements ListingModerationRepository {
   @override
   Future<int> countPendingReviewListings() async {
     return LocalListingStore(
-      _prefs,
-    ).readAll().where((item) => item.status == 'pending_review').length;
+          _prefs,
+        )
+        .readAll()
+        .where((item) => item.status == DomainStatusCode.pendingReview)
+        .length;
   }
 
   @override
@@ -99,7 +103,7 @@ class LocalListingModerationRepository implements ListingModerationRepository {
   Future<List<ListingModerationQueueItem>> listPendingReviewListings() async {
     return LocalListingStore(_prefs)
         .readAll()
-        .where((item) => item.status == 'pending_review')
+        .where((item) => item.status == DomainStatusCode.pendingReview)
         .map(
           (item) => ListingModerationQueueItem(
             listingId: item.id,
@@ -132,7 +136,7 @@ class SupabaseListingModerationRepository
     final rows = await _client
         .from('listings')
         .select('id')
-        .eq('status', 'pending_review');
+        .eq('status', DomainStatusCode.pendingReview);
     return rows.length;
   }
 
@@ -177,7 +181,10 @@ class SupabaseListingModerationRepository
         .select('id')
         .eq('reported_entity_type', 'seller')
         .eq('reported_entity_id', seller?['id'] as String? ?? '')
-        .inFilter('status', ['open', 'under_review']);
+        .inFilter(
+          'status',
+          DomainStatusCode.reviewQueue.toList(growable: false),
+        );
     final lookupsFuture = _fetchLookups();
 
     final lookups = await lookupsFuture;
@@ -209,7 +216,7 @@ class SupabaseListingModerationRepository
         .select(
           'id, title, seller_display_name, submitted_at, category_id',
         )
-        .eq('status', 'pending_review')
+        .eq('status', DomainStatusCode.pendingReview)
         .order('submitted_at', ascending: true);
     final data = rows.whereType<Map<String, dynamic>>();
     final lookups = await _fetchLookups();

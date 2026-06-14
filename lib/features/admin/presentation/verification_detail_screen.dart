@@ -8,7 +8,7 @@ import 'package:qitak_app/core/network/domain_key.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
-import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
+import 'package:qitak_app/features/seller/presentation/seller_verification_status_l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 // ignore: specify_nonobvious_property_types, reason: Riverpod family aliases are version-specific in this repo.
@@ -21,20 +21,52 @@ final verificationApplicationProvider =
 
 final verificationDocumentPolicyOptionsProvider =
     FutureProvider<List<({String code, String labelKey})>>((ref) async {
-      final options = await ref
+      try {
+        final options = await ref.watch(
+          sellerDocumentTypePolicyProvider.future,
+        );
+        final mapped = options
+            .map((option) => (code: option.code, labelKey: option.labelKey))
+            .toList(growable: false);
+        if (mapped.isNotEmpty) {
+          return mapped;
+        }
+      } on Object {
+        // Fall back to repository-backed fixtures and local repos when
+        // centralized contract providers are unavailable in tests/offline.
+      }
+
+      final fallbackOptions = await ref
           .read(sellerApplicationRepositoryProvider)
           .fetchPolicyOptions(PolicyKey.sellerDocumentType);
-      return options
+      return fallbackOptions
+          .where((option) => option.active)
           .map((option) => (code: option.code, labelKey: option.labelKey))
           .toList(growable: false);
     });
 
 final verificationReasonPolicyOptionsProvider =
     FutureProvider<List<({String code, String labelKey})>>((ref) async {
-      final options = await ref
+      try {
+        final options = await ref.watch(
+          sellerVerificationReasonPolicyProvider.future,
+        );
+        final mapped = options
+            .map((option) => (code: option.code, labelKey: option.labelKey))
+            .toList(growable: false);
+        if (mapped.isNotEmpty) {
+          return mapped;
+        }
+      } on Object {
+        // Fall back to repository-backed fixtures and local repos when
+        // centralized contract providers are unavailable in tests/offline.
+      }
+
+      final fallbackOptions = await ref
           .read(sellerApplicationRepositoryProvider)
           .fetchPolicyOptions(PolicyKey.sellerVerificationReasonCode);
-      return options
+      return fallbackOptions
+          .where((option) => option.active)
           .map((option) => (code: option.code, labelKey: option.labelKey))
           .toList(growable: false);
     });

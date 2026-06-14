@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/presentation/admin_dashboard_screen.dart';
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
 import 'package:qitak_app/features/auth/presentation/seller_dashboard_screen.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
+import 'package:qitak_app/generated/l10n.dart';
 
 import '../../test_bootstrap.dart';
 
@@ -59,6 +63,7 @@ void main() {
     expect(find.text('Seller Dashboard'), findsOneWidget);
     expect(find.text('Create listing'), findsOneWidget);
     expect(find.text('My listings'), findsOneWidget);
+    expect(find.text('Workflow'), findsNothing);
     expect(find.text('Seller application status'), findsNothing);
   });
 
@@ -103,6 +108,58 @@ void main() {
       expect(find.text('Submitted'), findsNothing);
     },
   );
+
+  testWidgets('seller dashboard pending row opens seller orders', (
+    tester,
+  ) async {
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(
+            body: SellerDashboardScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/seller/orders',
+          builder: (context, state) =>
+              const Scaffold(body: Text('seller-orders-screen')),
+        ),
+      ],
+    );
+
+    final scope = await buildTestScope(
+      MaterialApp.router(
+        routerConfig: router,
+        theme: AppTheme.light(locale: const Locale('en')),
+        darkTheme: AppTheme.dark(locale: const Locale('en')),
+        themeMode: ThemeMode.dark,
+        locale: const Locale('en'),
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'seller@qitak.test',
+      },
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(SellerDashboardScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('seller-dashboard-pending-deals')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('seller-orders-screen'), findsOneWidget);
+  });
 
   testWidgets('admin dashboard renders denser operational workspace rows', (
     tester,

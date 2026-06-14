@@ -11,6 +11,7 @@ import 'package:qitak_app/features/admin/data/local_admin_report_store.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/listings/data/local_listing_store.dart';
 import 'package:qitak_app/features/listings/domain/listing_draft.dart';
+import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -196,28 +197,27 @@ class SupabaseListingRepository implements ListingRepository {
     final draftId =
         draft.listingId ??
         'local-${DateTime.now().microsecondsSinceEpoch}-${Random().nextInt(9999)}';
-    for (var index = 0; index < draft.media.length; index++) {
-      final media = draft.media[index];
-      final storagePath =
-          '${user.id}/$draftId/${index}_${_sanitizeFileName(media.fileName)}';
-      await _client.storage
-          .from(_listingMediaBucket)
-          .uploadBinary(
-            storagePath,
-            media.bytes,
-            fileOptions: FileOptions(
-              contentType: media.mimeType,
-            ),
-          );
-      mediaRows.add(<String, dynamic>{
-        'storage_path': storagePath,
-        'public_url': _client.storage
+    final uploadedPaths = <String>[];
+    final uploadedMediaRows = await const ListingMediaUploadCoordinator().upload(
+      media: draft.media,
+      buildStoragePath: (index, media) =>
+          '${user.id}/$draftId/${index}_${_sanitizeFileName(media.fileName)}',
+      uploadBinary: (storagePath, media) async {
+        await _client.storage
             .from(_listingMediaBucket)
-            .getPublicUrl(storagePath),
-        'mime_type': media.mimeType,
-        'sort_order': index,
-      });
-    }
+            .uploadBinary(
+              storagePath,
+              media.bytes,
+              fileOptions: FileOptions(contentType: media.mimeType),
+            );
+      },
+      buildPublicUrl: (storagePath) =>
+          _client.storage.from(_listingMediaBucket).getPublicUrl(storagePath),
+      onUploaded: (storagePath) async {
+        uploadedPaths.add(storagePath);
+      },
+    );
+    mediaRows.addAll(uploadedMediaRows);
 
     final payload = <String, dynamic>{
       if ((draft.listingId ?? '').isNotEmpty) 'listing_id': draft.listingId,
@@ -269,7 +269,11 @@ class SupabaseListingRepository implements ListingRepository {
         status: status,
       );
     } on PostgrestException catch (error) {
+      await _cleanupUploadedMedia(uploadedPaths);
       throw AppException.fromCode(classifyPostgrestException(error));
+    } on Object {
+      await _cleanupUploadedMedia(uploadedPaths);
+      rethrow;
     }
   }
 
@@ -278,6 +282,13 @@ class SupabaseListingRepository implements ListingRepository {
   String _sanitizeFileName(String raw) {
     final cleaned = raw.replaceAll(RegExp('[^A-Za-z0-9._-]'), '_');
     return cleaned.isEmpty ? 'listing_media.jpg' : cleaned;
+  }
+
+  Future<void> _cleanupUploadedMedia(List<String> uploadedPaths) async {
+    if (uploadedPaths.isEmpty) {
+      return;
+    }
+    await _client.storage.from(_listingMediaBucket).remove(uploadedPaths);
   }
 
   Future<Set<String>> _listingStatuses() async {
@@ -292,5 +303,66 @@ class SupabaseListingRepository implements ListingRepository {
     }
     _cachedListingStatuses = set;
     return set;
+  }
+}
+
+class ListingMediaUploadCoordinator {
+  const ListingMediaUploadCoordinator({
+    this.maxConcurrentUploads = 3,
+  }) : assert(
+         maxConcurrentUploads > 0,
+         'maxConcurrentUploads must be positive',
+       );
+
+  final int maxConcurrentUploads;
+
+  Future<List<Map<String, dynamic>>> upload({
+    required List<ListingMediaSelection> media,
+    required String Function(int index, ListingMediaSelection media)
+    buildStoragePath,
+    required Future<void> Function(
+      String storagePath,
+      ListingMediaSelection media,
+    )
+    uploadBinary,
+    required String Function(String storagePath) buildPublicUrl,
+    Future<void> Function(String storagePath)? onUploaded,
+  }) async {
+    if (media.isEmpty) {
+      return const <Map<String, dynamic>>[];
+    }
+
+    final results = List<Map<String, dynamic>?>.filled(media.length, null);
+    var nextIndex = 0;
+
+    Future<void> worker() async {
+      while (true) {
+        final currentIndex = nextIndex;
+        if (currentIndex >= media.length) {
+          return;
+        }
+        nextIndex += 1;
+
+        final item = media[currentIndex];
+        final storagePath = buildStoragePath(currentIndex, item);
+        await uploadBinary(storagePath, item);
+        if (onUploaded != null) {
+          await onUploaded(storagePath);
+        }
+        results[currentIndex] = <String, dynamic>{
+          'storage_path': storagePath,
+          'public_url': buildPublicUrl(storagePath),
+          'mime_type': item.mimeType,
+          'sort_order': currentIndex,
+        };
+      }
+    }
+
+    await Future.wait([
+      for (var i = 0; i < min(maxConcurrentUploads, media.length); i++)
+        worker(),
+    ]);
+
+    return results.whereType<Map<String, dynamic>>().toList(growable: false);
   }
 }

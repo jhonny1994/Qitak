@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/notifications/notification_service.dart';
-import 'package:qitak_app/features/auth/domain/account_profile.dart';
 import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/presentation/app_preferences_controller.dart';
 import 'package:qitak_app/features/auth/presentation/auth_resolution_error_view.dart';
 import 'package:qitak_app/features/auth/providers/auth_resolution_provider.dart';
+import 'package:qitak_app/features/auth/providers/auth_route_resolution_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
@@ -103,19 +104,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   ) async {
     if (session.isAuthenticated && session.profile != null) {
       final profile = session.profile!;
-      var approved = false;
-      if (profile.role == AccountRole.seller) {
-        try {
-          approved =
-              (await ref
-                      .read(sellerApplicationRepositoryProvider)
-                      .fetchCurrentForUser(profile.id))
-                  ?.isApproved ==
-              true;
-        } on Object {
-          approved = false;
-        }
-      }
+      final approved = await resolveSellerApprovalStatus(
+        ref.read(sellerApplicationRepositoryProvider),
+        profile,
+      );
       // If the app was launched by tapping a notification from the terminated
       // state, honour that intent — provided the authenticated user has access.
       final pendingNotificationRoute = ref.read(

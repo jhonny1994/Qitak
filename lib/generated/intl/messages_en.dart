@@ -32,7 +32,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(date) => "Updated ${date}";
 
-  static String m6(title, link) => "${title} — ${link}";
+  static String m6(count) => "${count}d ago";
+
+  static String m7(count) => "${count}h ago";
+
+  static String m8(count) => "${count}m ago";
+
+  static String m9(reason) => "This deal was cancelled: ${reason}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -992,7 +998,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesOnlineOnly": MessageLookupByLibrary.simpleMessage(
       "Messages are online-only right now.",
     ),
-    "messagesOpenStatus": MessageLookupByLibrary.simpleMessage("Open"),
     "messagesSend": MessageLookupByLibrary.simpleMessage("Send"),
     "messagesSendError": MessageLookupByLibrary.simpleMessage(
       "Message couldn\'t be sent. Please try again.",
@@ -1006,6 +1011,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navHome": MessageLookupByLibrary.simpleMessage("Home"),
     "navListings": MessageLookupByLibrary.simpleMessage("Listings"),
     "navMessages": MessageLookupByLibrary.simpleMessage("Messages"),
+    "navOrders": MessageLookupByLibrary.simpleMessage("Orders"),
     "navQueues": MessageLookupByLibrary.simpleMessage("Queues"),
     "navReports": MessageLookupByLibrary.simpleMessage("Reports"),
     "navSaved": MessageLookupByLibrary.simpleMessage("Saved"),
@@ -1269,7 +1275,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "searchRecentLabel": MessageLookupByLibrary.simpleMessage(
       "Recent searches",
     ),
-    "searchResultsSuffix": MessageLookupByLibrary.simpleMessage("matches"),
     "sellerAccessDenied": MessageLookupByLibrary.simpleMessage(
       "This account is not a seller account.",
     ),
@@ -1296,12 +1301,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerDocumentIdFrontLabel": MessageLookupByLibrary.simpleMessage(
       "Government ID (front)",
-    ),
-    "sellerLifecycleBody": MessageLookupByLibrary.simpleMessage(
-      "Move requests, acceptances, and completions with clear state.",
-    ),
-    "sellerLifecycleTitle": MessageLookupByLibrary.simpleMessage(
-      "Transaction lifecycle",
     ),
     "sellerListingActionUpdated": MessageLookupByLibrary.simpleMessage(
       "Listing workflow updated.",
@@ -1334,9 +1333,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
       "Draft listings stay private until you submit them for review.",
-    ),
-    "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "You do not have any listings in your seller workspace yet.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "Seller listings could not be loaded right now.",
@@ -1452,6 +1448,62 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerOnboardingViewStatus": MessageLookupByLibrary.simpleMessage(
       "View verification status",
     ),
+    "sellerOrdersActiveLabel": MessageLookupByLibrary.simpleMessage("Active"),
+    "sellerOrdersActiveSectionHint": MessageLookupByLibrary.simpleMessage(
+      "These orders are moving and need occasional follow-up.",
+    ),
+    "sellerOrdersClosedLabel": MessageLookupByLibrary.simpleMessage("Closed"),
+    "sellerOrdersClosedSectionHint": MessageLookupByLibrary.simpleMessage(
+      "Recent completed or cancelled orders.",
+    ),
+    "sellerOrdersEmpty": MessageLookupByLibrary.simpleMessage(
+      "No seller orders yet.",
+    ),
+    "sellerOrdersNewLabel": MessageLookupByLibrary.simpleMessage("New"),
+    "sellerOrdersNewSectionHint": MessageLookupByLibrary.simpleMessage(
+      "Respond fast so buyers do not drop off.",
+    ),
+    "sellerOrdersNewSummary": MessageLookupByLibrary.simpleMessage(
+      "A buyer is waiting for your approval on this order.",
+    ),
+    "sellerOrdersProofReviewLabel": MessageLookupByLibrary.simpleMessage(
+      "Proof review",
+    ),
+    "sellerOrdersProofReviewSectionHint": MessageLookupByLibrary.simpleMessage(
+      "These orders are blocked until you review proof.",
+    ),
+    "sellerOrdersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Handle new requests, payment proof review, and active handoffs from one queue.",
+    ),
+    "sellerOrdersTimestampDays": m6,
+    "sellerOrdersTimestampHours": m7,
+    "sellerOrdersTimestampJustNow": MessageLookupByLibrary.simpleMessage(
+      "Just now",
+    ),
+    "sellerOrdersTimestampMinutes": m8,
+    "sellerOrdersTimestampUnknown": MessageLookupByLibrary.simpleMessage(
+      "No timestamp",
+    ),
+    "sellerOrdersTitle": MessageLookupByLibrary.simpleMessage("Seller orders"),
+    "sellerOrdersUrgencyCashHandoff": MessageLookupByLibrary.simpleMessage(
+      "Cash handoff",
+    ),
+    "sellerOrdersUrgencyClosed": MessageLookupByLibrary.simpleMessage("Closed"),
+    "sellerOrdersUrgencyNeedsResponse": MessageLookupByLibrary.simpleMessage(
+      "Needs response",
+    ),
+    "sellerOrdersUrgencyProofWaiting": MessageLookupByLibrary.simpleMessage(
+      "Proof waiting",
+    ),
+    "sellerOrdersUrgencyWaitingBuyer": MessageLookupByLibrary.simpleMessage(
+      "Waiting for buyer",
+    ),
+    "sellerOrdersUrgencyWaitingReceipt": MessageLookupByLibrary.simpleMessage(
+      "Waiting for receipt",
+    ),
+    "sellerOrdersViewHistoryAction": MessageLookupByLibrary.simpleMessage(
+      "View history",
+    ),
     "sellerOwnedListingEyebrow": MessageLookupByLibrary.simpleMessage(
       "My listing",
     ),
@@ -1461,7 +1513,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerPendingDealsTitle": MessageLookupByLibrary.simpleMessage(
       "Pending deals",
     ),
-    "sellerSignIn": MessageLookupByLibrary.simpleMessage("Seller sign in"),
     "sellerSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "Restricted sign-in for seller accounts only.",
     ),
@@ -1554,7 +1605,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerTypeIndividual": MessageLookupByLibrary.simpleMessage("Individual"),
     "sellerTypeLabel": MessageLookupByLibrary.simpleMessage("Seller type"),
     "sendResetLink": MessageLookupByLibrary.simpleMessage("Send reset link"),
-    "shareListingText": m6,
     "showPassword": MessageLookupByLibrary.simpleMessage("Show password"),
     "signIn": MessageLookupByLibrary.simpleMessage("Sign in"),
     "signInPrompt": MessageLookupByLibrary.simpleMessage(
@@ -1608,7 +1658,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your tickets",
     ),
     "supportCenterTitle": MessageLookupByLibrary.simpleMessage("Support"),
-    "supportHelpEyebrow": MessageLookupByLibrary.simpleMessage("Help"),
     "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
       "Account access",
     ),
@@ -1663,6 +1712,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Transaction blocked",
     ),
     "transactionCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "transactionCancelledWithReason": m9,
     "transactionComplete": MessageLookupByLibrary.simpleMessage("Complete"),
     "transactionConfirmCashAction": MessageLookupByLibrary.simpleMessage(
       "Confirm cash order",
@@ -1673,9 +1723,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionConfirmReceiptAction": MessageLookupByLibrary.simpleMessage(
       "Confirm receipt",
     ),
-    "transactionDecisionActive": MessageLookupByLibrary.simpleMessage("Active"),
-    "transactionDecisionComplete": MessageLookupByLibrary.simpleMessage(
-      "Completed",
+    "transactionDeclineAction": MessageLookupByLibrary.simpleMessage(
+      "Decline order",
+    ),
+    "transactionDeclineBody": MessageLookupByLibrary.simpleMessage(
+      "Add a short reason so the buyer understands why this order cannot be accepted.",
+    ),
+    "transactionDeclineTitle": MessageLookupByLibrary.simpleMessage(
+      "Decline order",
     ),
     "transactionDetailListingContext": MessageLookupByLibrary.simpleMessage(
       "Linked listing context and deal role.",
@@ -1692,7 +1747,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "Deal details",
     ),
-    "transactionExpire": MessageLookupByLibrary.simpleMessage("Mark expired"),
     "transactionHistoryEmpty": MessageLookupByLibrary.simpleMessage(
       "No transactions yet",
     ),
@@ -1741,7 +1795,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Wait for the seller to review this request.",
     ),
     "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
-      "Review this request and accept, expire, or leave it pending.",
+      "Review this request and accept it, decline it, or leave it pending.",
     ),
     "transactionNextStepSellerAwaitReceipt":
         MessageLookupByLibrary.simpleMessage(
@@ -1760,6 +1814,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
       "Next step",
+    ),
+    "transactionOpenDetailsAction": MessageLookupByLibrary.simpleMessage(
+      "Open details",
     ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "Open dispute",
@@ -1804,14 +1861,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionPaymentTitle": MessageLookupByLibrary.simpleMessage(
       "Offline payment",
     ),
+    "transactionProofRejectionReasonTitle":
+        MessageLookupByLibrary.simpleMessage("Seller feedback"),
     "transactionRateAction": MessageLookupByLibrary.simpleMessage(
       "Rate counterparty",
+    ),
+    "transactionReasonHint": MessageLookupByLibrary.simpleMessage(
+      "Write a short clear reason",
+    ),
+    "transactionReasonLabel": MessageLookupByLibrary.simpleMessage("Reason"),
+    "transactionReasonRequired": MessageLookupByLibrary.simpleMessage(
+      "A short reason is required.",
     ),
     "transactionRecordLabel": MessageLookupByLibrary.simpleMessage(
       "Transaction record",
     ),
     "transactionRejectProofAction": MessageLookupByLibrary.simpleMessage(
       "Reject proof",
+    ),
+    "transactionRejectProofBody": MessageLookupByLibrary.simpleMessage(
+      "Tell the buyer what is wrong with the uploaded proof so they can fix it.",
+    ),
+    "transactionRejectProofTitle": MessageLookupByLibrary.simpleMessage(
+      "Reject payment proof",
     ),
     "transactionRequestCreated": MessageLookupByLibrary.simpleMessage(
       "Purchase request created.",
@@ -1875,9 +1947,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "The buyer submitted payment proof and the seller must review it.",
         ),
-    "transactionTimelineRejectedBody": MessageLookupByLibrary.simpleMessage(
-      "This transaction was rejected by the seller.",
-    ),
     "transactionTimelineRequested": MessageLookupByLibrary.simpleMessage(
       "Request sent",
     ),

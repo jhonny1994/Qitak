@@ -139,6 +139,69 @@ void main() {
   );
 
   test(
+    'seller decline stores a cancellation reason for buyer feedback',
+    () async {
+      final repo = LocalTransactionRepository();
+      final tx = await repo.createRequest(
+        listingId: 'listing-6',
+        buyerUserId: 'buyer-6',
+        sellerUserId: 'seller-6',
+      );
+
+      final cancelled = await repo.transition(
+        transactionId: tx.id,
+        actorUserId: 'seller-6',
+        nextState: TransactionState.cancelled,
+        note: 'Item is no longer in stock.',
+      );
+
+      expect(cancelled.state, TransactionState.cancelled);
+      expect(cancelled.cancellationReason, 'Item is no longer in stock.');
+    },
+  );
+
+  test('proof rejection stores seller guidance for the buyer', () async {
+    final repo = LocalTransactionRepository();
+    final tx = await repo.createRequest(
+      listingId: 'listing-7',
+      buyerUserId: 'buyer-7',
+      sellerUserId: 'seller-7',
+    );
+
+    await repo.transition(
+      transactionId: tx.id,
+      actorUserId: 'seller-7',
+      nextState: TransactionState.sellerConfirmed,
+    );
+    await repo.selectPaymentMethod(
+      transactionId: tx.id,
+      actorUserId: 'buyer-7',
+      paymentMethod: TransactionPaymentMethod.ccp,
+    );
+    await repo.submitPaymentProof(
+      transactionId: tx.id,
+      actorUserId: 'buyer-7',
+      proof: ListingMediaSelection(
+        fileName: 'proof.jpg',
+        mimeType: 'image/jpeg',
+        bytes: Uint8List.fromList(<int>[1, 2, 3]),
+      ),
+    );
+
+    final rejected = await repo.rejectPaymentProof(
+      transactionId: tx.id,
+      actorUserId: 'seller-7',
+      reason: 'The transfer reference is cropped. Upload a full screenshot.',
+    );
+
+    expect(rejected.state, TransactionState.sellerConfirmed);
+    expect(
+      rejected.paymentProofRejectionReason,
+      'The transfer reference is cropped. Upload a full screenshot.',
+    );
+  });
+
+  test(
     'ratings require a real completed transaction with matching participants',
     () async {
       final repo = LocalTransactionRepository();

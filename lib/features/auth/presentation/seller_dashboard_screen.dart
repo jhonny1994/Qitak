@@ -6,7 +6,7 @@ import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/presentation/dashboard_metrics_provider.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
-import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
+import 'package:qitak_app/features/seller/presentation/seller_verification_status_l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerDashboardScreen extends ConsumerWidget {
@@ -76,18 +76,14 @@ class SellerDashboardScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right_rounded),
                   ),
                 ),
-                QitakQueueRow(
-                  title: context.l10n.sellerPendingDealsTitle,
-                  meta: context.l10n.sellerPendingDealsBody,
-                  status: summary.openDeals.toString(),
-                ),
                 InkWell(
-                  onTap: () => context.go('/transactions'),
+                  key: const Key('seller-dashboard-pending-deals'),
+                  onTap: () => context.go('/seller/orders'),
                   borderRadius: BorderRadius.circular(18),
                   child: QitakQueueRow(
-                    title: context.l10n.sellerLifecycleTitle,
-                    meta: context.l10n.sellerLifecycleBody,
-                    status: context.l10n.sellerActionStatus,
+                    title: context.l10n.sellerPendingDealsTitle,
+                    meta: context.l10n.sellerPendingDealsBody,
+                    status: summary.openDeals.toString(),
                     trailing: const Icon(Icons.chevron_right_rounded),
                   ),
                 ),

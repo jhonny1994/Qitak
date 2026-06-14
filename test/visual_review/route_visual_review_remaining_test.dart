@@ -138,6 +138,7 @@ class _VisualTransactionRepository implements TransactionRepository {
   Future<TransactionRecord> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async => _items.first;
 
   @override
@@ -159,6 +160,7 @@ class _VisualTransactionRepository implements TransactionRepository {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async => _items.first;
 }
 

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/admin/presentation/admin_surface_scaffold.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
-import 'package:qitak_app/features/seller/domain/seller_verification_status_x.dart';
+import 'package:qitak_app/features/seller/presentation/seller_verification_status_l10n.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class SellerVerificationQueueScreen extends ConsumerWidget {

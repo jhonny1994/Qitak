@@ -47,7 +47,7 @@ sentry.properties
 supabase/.temp/
 supabase/.branches/
 
-# ── Internal tooling (AI agents, specs, dev scripts) ─────────────────────────
+# ── Internal tooling / private process docs ──────────────────────────────────
 docs/coder/
 docs/superpowers/
 .agents
@@ -59,4 +59,3 @@ specs
 artifacts/
 reports/
 test/visual_review/
-

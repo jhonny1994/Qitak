@@ -82,6 +82,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
     required String transactionId,
     required String actorUserId,
     required TransactionState nextState,
+    String? note,
   }) async {
     try {
       final updated = await ref
@@ -90,6 +91,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
             transactionId: transactionId,
             actorUserId: actorUserId,
             nextState: nextState,
+            note: note,
           );
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)
@@ -162,6 +164,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
   Future<bool> rejectPaymentProof({
     required String transactionId,
     required String actorUserId,
+    String? reason,
   }) async {
     try {
       final updated = await ref
@@ -169,6 +172,7 @@ class TransactionNotifier extends Notifier<TransactionStateView> {
           .rejectPaymentProof(
             transactionId: transactionId,
             actorUserId: actorUserId,
+            reason: reason,
           );
       final next = state.items
           .map((item) => item.id == updated.id ? updated : item)

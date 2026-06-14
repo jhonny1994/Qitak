@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/domain/account_profile.dart';
+import 'package:qitak_app/features/auth/domain/auth_entry_service.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/shared/providers/unread_counts_provider.dart';
@@ -23,6 +24,8 @@ class QitakNavigationShell extends ConsumerWidget {
     required this.navigationShell,
     super.key,
   });
+
+  static const _authEntryService = AuthEntryService();
 
   final StatefulNavigationShell navigationShell;
 
@@ -56,7 +59,19 @@ class QitakNavigationShell extends ConsumerWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) context.go('/home');
+        if (!didPop) {
+          final profile = session.profile;
+          if (profile == null) {
+            context.go('/home');
+            return;
+          }
+          context.go(
+            _authEntryService.resolveLandingRoute(
+              profile,
+              isSellerApproved: sellerApproved,
+            ),
+          );
+        }
       },
       child: Scaffold(
         body: QitakPageCanvas(
@@ -134,12 +149,12 @@ class QitakNavigationShell extends ConsumerWidget {
             ),
           ),
           _ShellDestination(
-            path: '/saved',
+            path: '/seller/orders',
             branchIndex: 2,
             destination: NavigationDestination(
-              icon: const Icon(Icons.bookmark_border_rounded),
-              selectedIcon: const Icon(Icons.bookmark_rounded),
-              label: context.l10n.navSaved,
+              icon: const Icon(Icons.receipt_long_outlined),
+              selectedIcon: const Icon(Icons.receipt_long_rounded),
+              label: context.l10n.navOrders,
             ),
           ),
           _ShellDestination(

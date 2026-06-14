@@ -1,7 +1,7 @@
 name: qitak_app
 description: "Qitak mobile marketplace app."
 publish_to: "none"
-version: 0.0.9+9
+version: 0.0.10+10
 environment:
   sdk: ^3.11.1
 
@@ -90,4 +90,3 @@ sentry:
   dart_symbol_map_path: build/obfuscation.map.json
   upload_debug_symbols: true
   upload_sources: false
-

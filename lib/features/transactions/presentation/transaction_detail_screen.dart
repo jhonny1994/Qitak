@@ -12,6 +12,7 @@ import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/listings/providers/listing_media_picker_provider.dart';
 import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_action_note_dialog.dart';
 import 'package:qitak_app/features/transactions/presentation/transaction_copy.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
@@ -200,6 +201,25 @@ class _TransactionDetailScreenState
                           ? context.l10n.transactionPaymentProofPending
                           : context.l10n.transactionPaymentProofUploaded,
                     ),
+                    if (record.paymentProofRejectionReason != null) ...[
+                      const SizedBox(height: 12),
+                      QitakSurface(
+                        padding: const EdgeInsets.all(14),
+                        role: QitakSurfaceRole.section,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              context.l10n.transactionProofRejectionReasonTitle,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(record.paymentProofRejectionReason!),
+                          ],
+                        ),
+                      ),
+                    ],
                     if (record.state == TransactionState.sellerConfirmed &&
                         profile.id == record.buyerUserId) ...[
                       const SizedBox(height: 12),
@@ -298,6 +318,32 @@ class _TransactionDetailScreenState
                         child: Text(context.l10n.transactionConfirmCashAction),
                       ),
                     ],
+                    if (record.state ==
+                            TransactionState.pendingSellerResponse &&
+                        profile.id == record.sellerUserId) ...[
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          FilledButton(
+                            onPressed: () => _transition(
+                              userId: profile.id,
+                              transactionId: record.id,
+                              nextState: TransactionState.sellerConfirmed,
+                            ),
+                            child: Text(context.l10n.transactionAccept),
+                          ),
+                          OutlinedButton(
+                            onPressed: () => _declineTransaction(
+                              userId: profile.id,
+                              transactionId: record.id,
+                            ),
+                            child: Text(context.l10n.transactionDeclineAction),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -390,6 +436,7 @@ class _TransactionDetailScreenState
                         onPressed: () => _confirmCancelTransaction(
                           userId: profile.id,
                           transactionId: record.id,
+                          record: record,
                         ),
                         child: Text(context.l10n.transactionCancel),
                       ),
@@ -455,6 +502,10 @@ class _TransactionDetailScreenState
     if (!isParticipant) {
       return false;
     }
+    if (record.state == TransactionState.pendingSellerResponse &&
+        record.sellerUserId == userId) {
+      return false;
+    }
     return record.state == TransactionState.pendingSellerResponse ||
         record.state == TransactionState.sellerConfirmed ||
         record.state == TransactionState.paymentProofSubmitted;
@@ -464,6 +515,7 @@ class _TransactionDetailScreenState
     required String userId,
     required String transactionId,
     required TransactionState nextState,
+    String? note,
   }) async {
     final ok = await ref
         .read(transactionProvider.notifier)
@@ -471,6 +523,7 @@ class _TransactionDetailScreenState
           transactionId: transactionId,
           actorUserId: userId,
           nextState: nextState,
+          note: note,
         );
     if (!mounted) {
       return;
@@ -486,7 +539,21 @@ class _TransactionDetailScreenState
   Future<void> _confirmCancelTransaction({
     required String userId,
     required String transactionId,
+    required TransactionRecord record,
   }) async {
+    String? note;
+    if (record.state == TransactionState.pendingSellerResponse &&
+        record.sellerUserId == userId) {
+      note = await promptTransactionActionNote(
+        context,
+        title: context.l10n.transactionDeclineTitle,
+        body: context.l10n.transactionDeclineBody,
+        confirmLabel: context.l10n.transactionDeclineAction,
+      );
+      if (note == null || !mounted) {
+        return;
+      }
+    }
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => QitakConfirmationModal(
@@ -505,6 +572,28 @@ class _TransactionDetailScreenState
       userId: userId,
       transactionId: transactionId,
       nextState: TransactionState.cancelled,
+      note: note,
+    );
+  }
+
+  Future<void> _declineTransaction({
+    required String userId,
+    required String transactionId,
+  }) async {
+    final note = await promptTransactionActionNote(
+      context,
+      title: context.l10n.transactionDeclineTitle,
+      body: context.l10n.transactionDeclineBody,
+      confirmLabel: context.l10n.transactionDeclineAction,
+    );
+    if (note == null || !mounted) {
+      return;
+    }
+    await _transition(
+      userId: userId,
+      transactionId: transactionId,
+      nextState: TransactionState.cancelled,
+      note: note,
     );
   }
 
@@ -562,11 +651,21 @@ class _TransactionDetailScreenState
     required String userId,
     required String transactionId,
   }) async {
+    final reason = await promptTransactionActionNote(
+      context,
+      title: context.l10n.transactionRejectProofTitle,
+      body: context.l10n.transactionRejectProofBody,
+      confirmLabel: context.l10n.transactionRejectProofAction,
+    );
+    if (reason == null) {
+      return;
+    }
     final ok = await ref
         .read(transactionProvider.notifier)
         .rejectPaymentProof(
           transactionId: transactionId,
           actorUserId: userId,
+          reason: reason,
         );
     if (!mounted) {
       return;
@@ -638,6 +737,12 @@ class _TransactionDetailScreenState
       case TransactionState.completed:
         return context.l10n.transactionNextStepCompleted;
       case TransactionState.cancelled:
+        if (record.cancellationReason != null) {
+          return context.l10n.transactionCancelledWithReason(
+            record.cancellationReason!,
+          );
+        }
+        return context.l10n.transactionNextStepInactive;
       case TransactionState.expired:
       case TransactionState.disputeOpened:
       case TransactionState.disputeResolved:

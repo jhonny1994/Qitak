@@ -32,7 +32,13 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(date) => "آخر تحديث ${date}";
 
-  static String m6(title, link) => "${title} — ${link}";
+  static String m6(count) => "منذ ${count} ي";
+
+  static String m7(count) => "منذ ${count} س";
+
+  static String m8(count) => "منذ ${count} د";
+
+  static String m9(reason) => "تم إلغاء هذه الصفقة: ${reason}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -982,7 +988,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "messagesOnlineOnly": MessageLookupByLibrary.simpleMessage(
       "الرسائل متاحة عبر الإنترنت فقط حالياً.",
     ),
-    "messagesOpenStatus": MessageLookupByLibrary.simpleMessage("مفتوح"),
     "messagesSend": MessageLookupByLibrary.simpleMessage("إرسال"),
     "messagesSendError": MessageLookupByLibrary.simpleMessage(
       "تعذّر إرسال الرسالة. يرجى المحاولة مرة أخرى.",
@@ -994,6 +999,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navHome": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "navListings": MessageLookupByLibrary.simpleMessage("الإعلانات"),
     "navMessages": MessageLookupByLibrary.simpleMessage("الرسائل"),
+    "navOrders": MessageLookupByLibrary.simpleMessage("الطلبات"),
     "navQueues": MessageLookupByLibrary.simpleMessage("الطوابير"),
     "navReports": MessageLookupByLibrary.simpleMessage("البلاغات"),
     "navSaved": MessageLookupByLibrary.simpleMessage("المحفوظات"),
@@ -1249,7 +1255,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "searchRecentLabel": MessageLookupByLibrary.simpleMessage(
       "عمليات البحث الأخيرة",
     ),
-    "searchResultsSuffix": MessageLookupByLibrary.simpleMessage("نتائج"),
     "sellerAccessDenied": MessageLookupByLibrary.simpleMessage(
       "هذا الحساب ليس حساب بائع.",
     ),
@@ -1274,12 +1279,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerDocumentIdFrontLabel": MessageLookupByLibrary.simpleMessage(
       "بطاقة الهوية (الوجه الأمامي)",
-    ),
-    "sellerLifecycleBody": MessageLookupByLibrary.simpleMessage(
-      "أدر الطلبات والقبول والإكمال بحالة واضحة.",
-    ),
-    "sellerLifecycleTitle": MessageLookupByLibrary.simpleMessage(
-      "دورة المعاملة",
     ),
     "sellerListingActionUpdated": MessageLookupByLibrary.simpleMessage(
       "تم تحديث مسار الإعلان.",
@@ -1314,9 +1313,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "sellerListingsDraftStateBody": MessageLookupByLibrary.simpleMessage(
       "تبقى المسودات خاصة حتى ترسلها للمراجعة.",
-    ),
-    "sellerListingsEmptyBody": MessageLookupByLibrary.simpleMessage(
-      "لا توجد أي إعلانات في مساحة البائع الخاصة بك بعد.",
     ),
     "sellerListingsErrorBody": MessageLookupByLibrary.simpleMessage(
       "تعذر تحميل إعلانات البائع حالياً.",
@@ -1429,6 +1425,62 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerOnboardingViewStatus": MessageLookupByLibrary.simpleMessage(
       "عرض حالة التوثيق",
     ),
+    "sellerOrdersActiveLabel": MessageLookupByLibrary.simpleMessage("نشطة"),
+    "sellerOrdersActiveSectionHint": MessageLookupByLibrary.simpleMessage(
+      "هذه الطلبات تتحرك وتحتاج متابعة خفيفة.",
+    ),
+    "sellerOrdersClosedLabel": MessageLookupByLibrary.simpleMessage("مغلقة"),
+    "sellerOrdersClosedSectionHint": MessageLookupByLibrary.simpleMessage(
+      "الطلبات المكتملة أو الملغاة مؤخراً.",
+    ),
+    "sellerOrdersEmpty": MessageLookupByLibrary.simpleMessage(
+      "لا توجد طلبات للبائع بعد.",
+    ),
+    "sellerOrdersNewLabel": MessageLookupByLibrary.simpleMessage("جديدة"),
+    "sellerOrdersNewSectionHint": MessageLookupByLibrary.simpleMessage(
+      "رد بسرعة حتى لا يتراجع المشتري.",
+    ),
+    "sellerOrdersNewSummary": MessageLookupByLibrary.simpleMessage(
+      "يوجد مشتري ينتظر موافقتك على هذا الطلب.",
+    ),
+    "sellerOrdersProofReviewLabel": MessageLookupByLibrary.simpleMessage(
+      "مراجعة الإثبات",
+    ),
+    "sellerOrdersProofReviewSectionHint": MessageLookupByLibrary.simpleMessage(
+      "هذه الطلبات متوقفة حتى تراجع الإثبات.",
+    ),
+    "sellerOrdersSubtitle": MessageLookupByLibrary.simpleMessage(
+      "أدر الطلبات الجديدة ومراجعة إثباتات الدفع وعمليات التسليم النشطة من شاشة واحدة.",
+    ),
+    "sellerOrdersTimestampDays": m6,
+    "sellerOrdersTimestampHours": m7,
+    "sellerOrdersTimestampJustNow": MessageLookupByLibrary.simpleMessage(
+      "الآن",
+    ),
+    "sellerOrdersTimestampMinutes": m8,
+    "sellerOrdersTimestampUnknown": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد وقت",
+    ),
+    "sellerOrdersTitle": MessageLookupByLibrary.simpleMessage("طلبات البائع"),
+    "sellerOrdersUrgencyCashHandoff": MessageLookupByLibrary.simpleMessage(
+      "تسليم نقدي",
+    ),
+    "sellerOrdersUrgencyClosed": MessageLookupByLibrary.simpleMessage("مغلق"),
+    "sellerOrdersUrgencyNeedsResponse": MessageLookupByLibrary.simpleMessage(
+      "تحتاج رداً",
+    ),
+    "sellerOrdersUrgencyProofWaiting": MessageLookupByLibrary.simpleMessage(
+      "بانتظار الإثبات",
+    ),
+    "sellerOrdersUrgencyWaitingBuyer": MessageLookupByLibrary.simpleMessage(
+      "بانتظار المشتري",
+    ),
+    "sellerOrdersUrgencyWaitingReceipt": MessageLookupByLibrary.simpleMessage(
+      "بانتظار الاستلام",
+    ),
+    "sellerOrdersViewHistoryAction": MessageLookupByLibrary.simpleMessage(
+      "عرض السجل",
+    ),
     "sellerOwnedListingEyebrow": MessageLookupByLibrary.simpleMessage("إعلاني"),
     "sellerPendingDealsBody": MessageLookupByLibrary.simpleMessage(
       "راجع نشاط المشترين المفتوح قبل أن يتعطل.",
@@ -1436,7 +1488,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sellerPendingDealsTitle": MessageLookupByLibrary.simpleMessage(
       "المعاملات المعلقة",
     ),
-    "sellerSignIn": MessageLookupByLibrary.simpleMessage("تسجيل دخول البائع"),
     "sellerSignInSubtitle": MessageLookupByLibrary.simpleMessage(
       "تسجيل دخول مخصص لحسابات البائع فقط.",
     ),
@@ -1533,7 +1584,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sendResetLink": MessageLookupByLibrary.simpleMessage(
       "إرسال رابط إعادة التعيين",
     ),
-    "shareListingText": m6,
     "showPassword": MessageLookupByLibrary.simpleMessage("إظهار كلمة المرور"),
     "signIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "signInPrompt": MessageLookupByLibrary.simpleMessage(
@@ -1587,7 +1637,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "تذاكرك",
     ),
     "supportCenterTitle": MessageLookupByLibrary.simpleMessage("الدعم"),
-    "supportHelpEyebrow": MessageLookupByLibrary.simpleMessage("المساعدة"),
     "supportReasonAccountAccess": MessageLookupByLibrary.simpleMessage(
       "الوصول إلى الحساب",
     ),
@@ -1642,6 +1691,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "المعاملة محجوبة",
     ),
     "transactionCancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
+    "transactionCancelledWithReason": m9,
     "transactionComplete": MessageLookupByLibrary.simpleMessage("إكمال"),
     "transactionConfirmCashAction": MessageLookupByLibrary.simpleMessage(
       "تأكيد الطلب النقدي",
@@ -1652,9 +1702,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionConfirmReceiptAction": MessageLookupByLibrary.simpleMessage(
       "تأكيد الاستلام",
     ),
-    "transactionDecisionActive": MessageLookupByLibrary.simpleMessage("نشطة"),
-    "transactionDecisionComplete": MessageLookupByLibrary.simpleMessage(
-      "مكتملة",
+    "transactionDeclineAction": MessageLookupByLibrary.simpleMessage(
+      "رفض الطلب",
+    ),
+    "transactionDeclineBody": MessageLookupByLibrary.simpleMessage(
+      "أضف سبباً قصيراً حتى يفهم المشتري لماذا لا يمكن قبول هذا الطلب.",
+    ),
+    "transactionDeclineTitle": MessageLookupByLibrary.simpleMessage(
+      "رفض الطلب",
     ),
     "transactionDetailListingContext": MessageLookupByLibrary.simpleMessage(
       "سياق الإعلان ودورك في الصفقة.",
@@ -1671,7 +1726,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDetailTitle": MessageLookupByLibrary.simpleMessage(
       "تفاصيل الصفقة",
     ),
-    "transactionExpire": MessageLookupByLibrary.simpleMessage("تعليم كمنتهية"),
     "transactionHistoryEmpty": MessageLookupByLibrary.simpleMessage(
       "لا توجد صفقات بعد",
     ),
@@ -1720,7 +1774,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "انتظر حتى يراجع البائع هذا الطلب.",
     ),
     "transactionNextStepPendingSeller": MessageLookupByLibrary.simpleMessage(
-      "راجع هذا الطلب ثم اقبله أو اجعله منتهيا أو اتركه معلقا.",
+      "راجع هذا الطلب ثم اقبله أو ارفضه أو اتركه معلقاً.",
     ),
     "transactionNextStepSellerAwaitReceipt":
         MessageLookupByLibrary.simpleMessage(
@@ -1739,6 +1793,9 @@ class MessageLookup extends MessageLookupByLibrary {
         ),
     "transactionNextStepTitle": MessageLookupByLibrary.simpleMessage(
       "الخطوة التالية",
+    ),
+    "transactionOpenDetailsAction": MessageLookupByLibrary.simpleMessage(
+      "فتح التفاصيل",
     ),
     "transactionOpenDisputeAction": MessageLookupByLibrary.simpleMessage(
       "فتح نزاع",
@@ -1783,14 +1840,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionPaymentTitle": MessageLookupByLibrary.simpleMessage(
       "الدفع خارج المنصة",
     ),
+    "transactionProofRejectionReasonTitle":
+        MessageLookupByLibrary.simpleMessage("ملاحظة البائع"),
     "transactionRateAction": MessageLookupByLibrary.simpleMessage(
       "تقييم الطرف المقابل",
+    ),
+    "transactionReasonHint": MessageLookupByLibrary.simpleMessage(
+      "اكتب سبباً قصيراً وواضحاً",
+    ),
+    "transactionReasonLabel": MessageLookupByLibrary.simpleMessage("السبب"),
+    "transactionReasonRequired": MessageLookupByLibrary.simpleMessage(
+      "السبب القصير مطلوب.",
     ),
     "transactionRecordLabel": MessageLookupByLibrary.simpleMessage(
       "سجل المعاملة",
     ),
     "transactionRejectProofAction": MessageLookupByLibrary.simpleMessage(
       "رفض الإثبات",
+    ),
+    "transactionRejectProofBody": MessageLookupByLibrary.simpleMessage(
+      "اشرح للمشتري بوضوح ما المشكلة في الإثبات المرفوع حتى يتمكن من تصحيحه.",
+    ),
+    "transactionRejectProofTitle": MessageLookupByLibrary.simpleMessage(
+      "رفض إثبات الدفع",
     ),
     "transactionRequestCreated": MessageLookupByLibrary.simpleMessage(
       "تم إنشاء طلب الشراء.",
@@ -1847,9 +1919,6 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "أرسل المشتري إثبات الدفع ويجب على البائع مراجعته.",
         ),
-    "transactionTimelineRejectedBody": MessageLookupByLibrary.simpleMessage(
-      "تم رفض هذه المعاملة من البائع.",
-    ),
     "transactionTimelineRequested": MessageLookupByLibrary.simpleMessage(
       "تم إرسال الطلب",
     ),

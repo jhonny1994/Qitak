@@ -7,6 +7,7 @@ import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
 import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/presentation/transaction_action_note_dialog.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -87,6 +88,7 @@ class _TransactionLifecycleScreenState
     required String transactionId,
     required String userId,
     required TransactionState nextState,
+    String? note,
   }) async {
     final ok = await ref
         .read(transactionProvider.notifier)
@@ -94,6 +96,7 @@ class _TransactionLifecycleScreenState
           transactionId: transactionId,
           actorUserId: userId,
           nextState: nextState,
+          note: note,
         );
     if (!mounted) return;
     final text = ok
@@ -121,12 +124,11 @@ class _TransactionLifecycleScreenState
             ),
           if (userId == tx.sellerUserId)
             OutlinedButton(
-              onPressed: () => _transition(
+              onPressed: () => _declineTransaction(
                 transactionId: tx.id,
                 userId: userId,
-                nextState: TransactionState.expired,
               ),
-              child: Text(context.l10n.transactionExpire),
+              child: Text(context.l10n.transactionDeclineAction),
             ),
           if (userId == tx.buyerUserId)
             OutlinedButton(
@@ -229,15 +231,46 @@ class _TransactionLifecycleScreenState
     }
   }
 
+  Future<void> _declineTransaction({
+    required String transactionId,
+    required String userId,
+  }) async {
+    final note = await promptTransactionActionNote(
+      context,
+      title: context.l10n.transactionDeclineTitle,
+      body: context.l10n.transactionDeclineBody,
+      confirmLabel: context.l10n.transactionDeclineAction,
+    );
+    if (note == null) {
+      return;
+    }
+    await _transition(
+      transactionId: transactionId,
+      userId: userId,
+      nextState: TransactionState.cancelled,
+      note: note,
+    );
+  }
+
   Future<void> _rejectPaymentProof({
     required String transactionId,
     required String userId,
   }) async {
+    final reason = await promptTransactionActionNote(
+      context,
+      title: context.l10n.transactionRejectProofTitle,
+      body: context.l10n.transactionRejectProofBody,
+      confirmLabel: context.l10n.transactionRejectProofAction,
+    );
+    if (reason == null) {
+      return;
+    }
     final ok = await ref
         .read(transactionProvider.notifier)
         .rejectPaymentProof(
           transactionId: transactionId,
           actorUserId: userId,
+          reason: reason,
         );
     if (!mounted) {
       return;
@@ -282,6 +315,12 @@ class _TransactionLifecycleScreenState
       case TransactionState.completed:
         return context.l10n.transactionNextStepCompleted;
       case TransactionState.cancelled:
+        if (tx.cancellationReason != null) {
+          return context.l10n.transactionCancelledWithReason(
+            tx.cancellationReason!,
+          );
+        }
+        return context.l10n.transactionNextStepInactive;
       case TransactionState.expired:
       case TransactionState.disputeOpened:
       case TransactionState.disputeResolved:

@@ -290,6 +290,70 @@ void main() {
         );
       },
     );
+
+    testWidgets(
+      'buyer account settings orders entry opens live transactions',
+      (tester) async {
+        tester.view.physicalSize = const Size(1200, 2400);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        final router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) =>
+                  const Scaffold(body: AccountSettingsScreen()),
+            ),
+            GoRoute(
+              path: '/transactions',
+              builder: (context, state) =>
+                  const Scaffold(body: Text('transactions-screen')),
+            ),
+          ],
+        );
+
+        final scope = await buildTestScope(
+          MaterialApp.router(
+            routerConfig: router,
+            theme: AppTheme.light(locale: const Locale('en')),
+            darkTheme: AppTheme.dark(locale: const Locale('en')),
+            themeMode: ThemeMode.dark,
+            locale: const Locale('en'),
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+          ),
+          seed: const <String, Object>{
+            'qitak.local.session.email': 'buyer@qitak.test',
+          },
+        );
+
+        await tester.pumpWidget(scope);
+        final container = ProviderScope.containerOf(
+          tester.element(find.byType(MaterialApp)),
+        );
+        await container.read(authSessionProvider.notifier).restore();
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const Key('account-settings-transaction-history')),
+          findsOneWidget,
+        );
+
+        await tester.tap(
+          find.byKey(const Key('account-settings-transaction-history')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('transactions-screen'), findsOneWidget);
+      },
+    );
   });
 }
 

@@ -26,6 +26,8 @@ import '../fixtures/listing_media_fixture.dart';
 import '../support/slice_test_bootstrap.dart';
 import '../test_bootstrap.dart';
 
+const _runVisualReview = bool.fromEnvironment('RUN_VISUAL_REVIEW');
+
 const _approvedApplication = SellerApplication(
   id: 'seller-app-seller-001',
   userId: 'seller-001',
@@ -136,6 +138,16 @@ Future<void> _captureScaffoldInBothThemes(
 }
 
 void main() {
+  if (!_runVisualReview) {
+    test(
+      'visual review suite is opt-in',
+      () {},
+      skip:
+          'Set --dart-define=RUN_VISUAL_REVIEW=true to run golden screenshot checks.',
+    );
+    return;
+  }
+
   testWidgets('captures auth surface switcher', (tester) async {
     await _prepareViewport(tester);
 

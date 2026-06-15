@@ -2,7 +2,7 @@ set search_path = public, extensions;
 
 begin;
 
-select plan(12);
+select plan(20);
 
 create temp table test_transaction_ids (
   buyer_id uuid not null,
@@ -122,7 +122,7 @@ begin
     v_commune_id,
     v_category_id,
     'used',
-    1,
+    2,
     'Transaction Seller Garage',
     'active',
     true
@@ -199,9 +199,22 @@ select ok(
     select 1
     from public.listings
     where id = (select listing_id from test_transaction_ids)
-      and is_available = false
+      and is_available = true
   ),
-  'deal requests make the listing unavailable'
+  'deal requests keep the listing available while stock remains'
+);
+
+select is(
+  (
+    select greatest(
+      l.quantity - public.listing_committed_units(l.id),
+      0
+    )::integer
+    from public.listings l
+    where l.id = (select listing_id from test_transaction_ids)
+  ),
+  1,
+  'deal requests consume one unit of remaining stock'
 );
 
 set local role authenticated;
@@ -351,6 +364,19 @@ select ok(
   'payment proof rejection restores seller_confirmed and clears proof fields'
 );
 
+select is(
+  (
+    select greatest(
+      l.quantity - public.listing_committed_units(l.id),
+      0
+    )::integer
+    from public.listings l
+    where l.id = (select listing_id from test_transaction_ids)
+  ),
+  1,
+  'payment proof rejection does not release the reserved unit'
+);
+
 select lives_ok(
   $sql$
     do $inner$
@@ -416,6 +442,102 @@ select throws_ok(
   23505,
   null,
   'completed deals still block duplicate seller reviews'
+);
+
+select ok(
+  exists (
+    select 1
+    from public.listings
+    where id = (select listing_id from test_transaction_ids)
+      and is_available = true
+  ),
+  'a completed deal leaves the listing available while one stock unit remains'
+);
+
+select is(
+  (
+    select greatest(
+      l.quantity - public.listing_committed_units(l.id),
+      0
+    )::integer
+    from public.listings l
+    where l.id = (select listing_id from test_transaction_ids)
+  ),
+  1,
+  'a completed deal leaves one remaining unit on a quantity-two listing'
+);
+
+select lives_ok(
+  $sql$
+    do $inner$
+    begin
+      perform set_config(
+        'request.jwt.claims',
+        json_build_object('sub', (select buyer_id from test_transaction_ids))::text,
+        true
+      );
+
+      perform public.create_deal_request(
+        (select listing_id from test_transaction_ids),
+        (select buyer_id from test_transaction_ids),
+        (select seller_id from test_transaction_ids),
+        'buy',
+        null
+      );
+    end
+    $inner$
+  $sql$,
+  'the final remaining stock unit can still be reserved by a second deal'
+);
+
+select throws_ok(
+  $sql$
+    do $inner$
+    begin
+      perform set_config(
+        'request.jwt.claims',
+        json_build_object('sub', (select buyer_id from test_transaction_ids))::text,
+        true
+      );
+
+      perform public.create_deal_request(
+        (select listing_id from test_transaction_ids),
+        (select buyer_id from test_transaction_ids),
+        (select seller_id from test_transaction_ids),
+        'buy',
+        null
+      );
+    end
+    $inner$
+  $sql$,
+  null,
+  'listing unavailable',
+  'sold-out listings reject additional deal requests'
+);
+
+set local role postgres;
+
+select ok(
+  exists (
+    select 1
+    from public.listings
+    where id = (select listing_id from test_transaction_ids)
+      and is_available = false
+  ),
+  'once both units are committed the listing becomes unavailable'
+);
+
+select is(
+  (
+    select greatest(
+      l.quantity - public.listing_committed_units(l.id),
+      0
+    )::integer
+    from public.listings l
+    where l.id = (select listing_id from test_transaction_ids)
+  ),
+  0,
+  'once both units are committed remaining stock reaches zero'
 );
 
 select * from finish();

@@ -1732,9 +1732,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDeclineTitle": MessageLookupByLibrary.simpleMessage(
       "Decline order",
     ),
-    "transactionDetailListingContext": MessageLookupByLibrary.simpleMessage(
-      "Linked listing context and deal role.",
-    ),
     "transactionDetailMissingBody": MessageLookupByLibrary.simpleMessage(
       "This deal is unavailable or has not been loaded for your account yet.",
     ),

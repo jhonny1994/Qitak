@@ -55,7 +55,7 @@ void main() {
     expect(find.text('#001'), findsNothing);
   });
 
-  testWidgets('formats transaction state labels for display', (
+  testWidgets('completed deals move out of active lifecycle into history', (
     tester,
   ) async {
     final scope = await buildTestScope(
@@ -103,13 +103,12 @@ void main() {
         .refreshForUser('buyer-001');
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('transaction-listing-identity')), findsWidgets);
-    expect(find.byKey(const Key('transaction-next-action')), findsWidgets);
-    expect(find.text('Headlight assembly'), findsOneWidget);
-    expect(find.text('#001'), findsNothing);
-    expect(find.text('completed'), findsNothing);
-    expect(find.text('Accept'), findsNothing);
-    expect(find.text('Complete'), findsNothing);
-    expect(find.text('Cancel'), findsNothing);
+    expect(find.byKey(const Key('transaction-listing-identity')), findsNothing);
+    expect(find.byKey(const Key('transaction-next-action')), findsNothing);
+    expect(find.text('Headlight assembly'), findsNothing);
+    expect(
+      find.widgetWithText(TextButton, 'Transaction History'),
+      findsOneWidget,
+    );
   });
 }

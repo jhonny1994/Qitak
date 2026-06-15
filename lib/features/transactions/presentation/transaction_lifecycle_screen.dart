@@ -36,6 +36,9 @@ class _TransactionLifecycleScreenState
   Widget build(BuildContext context) {
     final userId = ref.watch(authSessionProvider).profile?.id;
     final state = ref.watch(transactionProvider);
+    final activeItems = state.items
+        .where((item) => !item.state.isClosed)
+        .toList(growable: false);
     if (userId == null) {
       return Padding(
         padding: qitakPagePadding,
@@ -58,16 +61,17 @@ class _TransactionLifecycleScreenState
               child: QitakSectionHeader(
                 eyebrow: context.l10n.transactionsTitle,
                 title: context.l10n.transactionsTitle,
-                subtitle: context.l10n.transactionLifecycleSubtitle,
+                subtitle:
+                    '${context.l10n.transactionLifecycleSubtitle} ${context.l10n.transactionHistoryTitle} stays separate.',
               ),
             ),
             const SizedBox(height: 12),
-            if (state.items.isEmpty)
+            if (activeItems.isEmpty)
               QitakStateMessage(
                 title: context.l10n.transactionsTitle,
                 message: context.l10n.transactionsEmpty,
               ),
-            for (final tx in state.items)
+            for (final tx in activeItems)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _TransactionLifecycleRow(
@@ -78,6 +82,16 @@ class _TransactionLifecycleScreenState
                   actions: _buildActions(context, tx, userId),
                 ),
               ),
+            if (state.items.any((item) => item.state.isClosed)) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton(
+                  onPressed: () => context.push('/transactions/history'),
+                  child: Text(context.l10n.transactionHistoryTitle),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -360,10 +374,6 @@ class _TransactionLifecycleRow extends ConsumerWidget {
                 key: const Key('transaction-listing-identity'),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  QitakListingThumbnail(
-                    imageUrl: item?.preferredImageUrl,
-                  ),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,18 +386,32 @@ class _TransactionLifecycleRow extends ConsumerWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          [
-                            context.l10n.displayTransactionState(
-                              transaction.state,
-                            ),
-                            _participantLabel(context, transaction, userId),
-                          ].join(' • '),
+                          context.l10n.displayTransactionState(
+                            transaction.state,
+                          ),
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Theme.of(
                                   context,
                                 ).colorScheme.onSurfaceVariant,
                               ),
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            QitakChip(
+                              label: userId == transaction.buyerUserId
+                                  ? context.l10n.transactionRoleBuyer
+                                  : context.l10n.transactionRoleSeller,
+                            ),
+                            QitakChip(
+                              label: transaction.paymentMethod == null
+                                  ? context.l10n.transactionPaymentMethodPending
+                                  : _paymentLabel(context, transaction),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -420,13 +444,19 @@ class _TransactionLifecycleRow extends ConsumerWidget {
     );
   }
 
-  String _participantLabel(
+  String _paymentLabel(
     BuildContext context,
     TransactionRecord transaction,
-    String userId,
   ) {
-    return userId == transaction.buyerUserId
-        ? context.l10n.transactionSellerContextLabel
-        : context.l10n.transactionListingContextLabel;
+    switch (transaction.paymentMethod) {
+      case TransactionPaymentMethod.ccp:
+        return context.l10n.transactionPaymentMethodCcp;
+      case TransactionPaymentMethod.baridiMob:
+        return context.l10n.transactionPaymentMethodBaridiMob;
+      case TransactionPaymentMethod.cash:
+        return context.l10n.transactionPaymentMethodCash;
+      case null:
+        return context.l10n.transactionPaymentMethodPending;
+    }
   }
 }

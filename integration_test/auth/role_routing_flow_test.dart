@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:qitak_app/app/router.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/features/auth/presentation/admin_dashboard_screen.dart';
 import 'package:qitak_app/features/auth/presentation/guest_account_screen.dart';
@@ -12,6 +13,9 @@ import 'package:qitak_app/features/discovery/presentation/home_screen.dart';
 import 'package:qitak_app/features/seller/data/seller_application_repository.dart';
 import 'package:qitak_app/features/seller/domain/seller_application.dart';
 import 'package:qitak_app/features/seller/presentation/seller_application_status_screen.dart';
+import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
+import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 
 import '../../test/test_bootstrap.dart';
 
@@ -89,6 +93,67 @@ void main() {
     expect(find.byType(AdminDashboardScreen), findsOneWidget);
     expect(find.byKey(const Key('admin-dashboard-title')), findsOneWidget);
   });
+
+  testWidgets(
+    'approved seller sees completed deal in closed work, not active',
+    (
+      tester,
+    ) async {
+      final sellerApp = await buildQitakApp(
+        seed: const <String, Object>{
+          'qitak.local.session.email': 'seller@qitak.test',
+          'qitak.ui.onboarding_seen': true,
+        },
+      );
+      await tester.pumpWidget(sellerApp);
+      await _approveSeller(tester);
+      await tester.pumpAndSettle();
+      await _enterSellerWorkspaceIfNeeded(tester);
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(MaterialApp)),
+      );
+      final sellerProfile = container.read(authSessionProvider).profile;
+      if (sellerProfile == null) {
+        throw StateError('Expected signed-in seller profile.');
+      }
+      final repository = container.read(transactionRepositoryProvider);
+      final record = await repository.createRequest(
+        listingId: 'listing-1',
+        buyerUserId: 'buyer-001',
+        sellerUserId: sellerProfile.id,
+      );
+      await repository.transition(
+        transactionId: record.id,
+        actorUserId: sellerProfile.id,
+        nextState: TransactionState.sellerConfirmed,
+      );
+      await repository.selectPaymentMethod(
+        transactionId: record.id,
+        actorUserId: 'buyer-001',
+        paymentMethod: TransactionPaymentMethod.cash,
+      );
+      await repository.transition(
+        transactionId: record.id,
+        actorUserId: sellerProfile.id,
+        nextState: TransactionState.completed,
+      );
+      await container
+          .read(transactionProvider.notifier)
+          .refreshForUser(sellerProfile.id);
+      await tester.pumpAndSettle();
+
+      container.read(goRouterProvider).go('/seller/orders');
+      await tester.pumpAndSettle();
+
+      final ordersContext = tester.element(
+        find.byKey(const Key('qitak-primary-navigation')),
+      );
+      final l10n = ordersContext.l10n;
+      expect(find.text('Headlight assembly'), findsNothing);
+      expect(find.text(l10n.sellerOrdersViewHistoryAction), findsOneWidget);
+    },
+  );
 }
 
 Future<void> _approveSeller(WidgetTester tester) async {

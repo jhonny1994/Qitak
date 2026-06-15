@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class AppEntryShell extends StatelessWidget {
-  const AppEntryShell({required this.child, super.key});
+  const AppEntryShell({
+    required this.child,
+    super.key,
+    this.fallbackPath,
+  });
 
   final Widget child;
+  final String? fallbackPath;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +28,25 @@ class AppEntryShell extends StatelessWidget {
               alignment: Alignment.topCenter,
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: tokens.maxContentWidth),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    tokens.screenPadding,
-                    16,
-                    tokens.screenPadding,
-                    24,
+                child: PopScope(
+                  canPop: false,
+                  onPopInvokedWithResult: (didPop, _) {
+                    if (didPop) {
+                      return;
+                    }
+                    if (context.canPop()) {
+                      context.pop();
+                      return;
+                    }
+                    final fallback = fallbackPath;
+                    if (fallback != null) {
+                      context.go(fallback);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 24),
+                    child: child,
                   ),
-                  child: child,
                 ),
               ),
             ),

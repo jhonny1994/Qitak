@@ -80,6 +80,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Alternator listing'), findsOneWidget);
+    expect(find.text('Seller One'), findsOneWidget);
     expect(repository.markAllMessagesReadCalls, 0);
     expect(repository.countUnreadMessagesCalls, greaterThanOrEqualTo(1));
   });
@@ -125,6 +126,7 @@ class _RecordingConversationListRepository implements MessagingRepository {
     ConversationThreadSummary(
       id: 'thread-1',
       listingId: 'listing-1',
+      otherPartyUserId: 'seller-1',
       listingTitle: 'Alternator listing',
       lastMessageBody: 'Still available?',
       lastMessageAt: DateTime(2026, 6, 4, 10),

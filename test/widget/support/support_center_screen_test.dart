@@ -233,7 +233,7 @@ void main() {
     expect(find.text('Open'), findsNothing);
   });
 
-  testWidgets('deal guidance routes buyers to transaction history', (
+  testWidgets('deal guidance routes buyers to live transactions', (
     tester,
   ) async {
     final repository = LocalSupportRepository(buyerProfile);
@@ -245,9 +245,9 @@ void main() {
               const Scaffold(body: SupportCenterScreen()),
         ),
         GoRoute(
-          path: '/transactions/history',
+          path: '/transactions',
           builder: (context, state) => const Scaffold(
-            body: Text('transaction-history-screen'),
+            body: Text('transaction-lifecycle-screen'),
           ),
         ),
       ],
@@ -289,6 +289,6 @@ void main() {
     await tester.tap(find.text('Deal-specific problems'));
     await tester.pumpAndSettle();
 
-    expect(find.text('transaction-history-screen'), findsOneWidget);
+    expect(find.text('transaction-lifecycle-screen'), findsOneWidget);
   });
 }

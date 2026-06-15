@@ -2,6 +2,7 @@ class ConversationThreadSummary {
   const ConversationThreadSummary({
     required this.id,
     required this.listingId,
+    required this.otherPartyUserId,
     required this.listingTitle,
     required this.lastMessageBody,
     required this.lastMessageAt,
@@ -11,6 +12,7 @@ class ConversationThreadSummary {
 
   final String id;
   final String listingId;
+  final String otherPartyUserId;
   final String listingTitle;
   final String lastMessageBody;
   final DateTime lastMessageAt;

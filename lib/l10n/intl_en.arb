@@ -444,7 +444,7 @@
     }
   },
   "noResultsTitle": "No results for this rating threshold.",
-  "noResultsBody": "Lower the minimum rating to see more listings.",
+  "noResultsBody": "No listings match this search right now. Stock or availability may have changed.",
   "messagesEmptyState": "No messages yet. Start the conversation.",
   "ratingScoreLabel": "Score",
   "transactionStartTitle": "Start purchase request",

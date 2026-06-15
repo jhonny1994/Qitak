@@ -1005,7 +1005,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navSaved": MessageLookupByLibrary.simpleMessage("المحفوظات"),
     "navTeam": MessageLookupByLibrary.simpleMessage("الفريق"),
     "noResultsBody": MessageLookupByLibrary.simpleMessage(
-      "اخفض الحد الأدنى للتقييم لرؤية نتائج أكثر.",
+      "لا توجد إعلانات تطابق هذا البحث الآن. ربما تغيّر المخزون أو التوفر.",
     ),
     "noResultsTitle": MessageLookupByLibrary.simpleMessage(
       "لا توجد نتائج لهذا الحد الأدنى من التقييم.",

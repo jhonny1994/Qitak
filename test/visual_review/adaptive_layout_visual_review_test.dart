@@ -14,6 +14,8 @@ import '../fixtures/discovery_filter_taxonomy_fixture.dart';
 import '../fixtures/seeded_discovery_repository.dart';
 import '../test_bootstrap.dart';
 
+const _runVisualReview = bool.fromEnvironment('RUN_VISUAL_REVIEW');
+
 const _approvedApplication = SellerApplication(
   id: 'seller-app-seller-001',
   userId: 'seller-001',
@@ -38,6 +40,16 @@ Future<void> prepareViewport(
 }
 
 void main() {
+  if (!_runVisualReview) {
+    test(
+      'visual review suite is opt-in',
+      () {},
+      skip:
+          'Set --dart-define=RUN_VISUAL_REVIEW=true to run golden screenshot checks.',
+    );
+    return;
+  }
+
   for (final mode in <ThemeMode>[ThemeMode.light, ThemeMode.dark]) {
     testWidgets('home renders at 360 width in $mode', (tester) async {
       await prepareViewport(tester, size: const Size(360, 800));

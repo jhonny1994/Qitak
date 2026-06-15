@@ -6,6 +6,7 @@ import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/network/app_error_code.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
 import 'package:qitak_app/features/discovery/providers/discovery_provider.dart';
+import 'package:qitak_app/features/listings/providers/saved_listings_provider.dart';
 import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
@@ -191,6 +192,11 @@ class _TransactionRequestScreenState
                       if (!ok) {
                         return;
                       }
+                      ref
+                        ..invalidate(discoveryListingsProvider(0))
+                        ..invalidate(discoveryListingProvider(widget.listingId))
+                        ..invalidate(savedListingIdsProvider)
+                        ..invalidate(savedListingsProvider);
                       final created = ref
                           .read(transactionProvider)
                           .items

@@ -163,6 +163,7 @@ class LocalMessagingRepository implements MessagingRepository {
           (row) => ConversationThreadSummary(
             id: row['threadId'] ?? '',
             listingId: row['listingId'] ?? '',
+            otherPartyUserId: row['otherPartyUserId'] ?? '',
             listingTitle: kLocalConversationFallbackTitle,
             lastMessageBody: row['body'] ?? '',
             lastMessageAt:
@@ -405,6 +406,7 @@ class SupabaseMessagingRepository implements MessagingRepository {
               return ConversationThreadSummary(
                 id: threadId,
                 listingId: listingId,
+                otherPartyUserId: otherPartyId,
                 listingTitle:
                     listingTitleById[listingId] ??
                     kLocalConversationFallbackTitle,
@@ -421,7 +423,10 @@ class SupabaseMessagingRepository implements MessagingRepository {
                     )?.toLocal() ??
                     DateTime.now(),
                 lastSenderId: latestMessage?['sender_id'] as String? ?? '',
-                otherPartyLabel: profileNameById[otherPartyId] ?? '',
+                otherPartyLabel:
+                    (profileNameById[otherPartyId] ?? '').trim().isNotEmpty
+                    ? (profileNameById[otherPartyId] ?? '').trim()
+                    : otherPartyId,
               );
             })
             .toList(growable: false)

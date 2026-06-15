@@ -138,6 +138,21 @@ final conversationThreadsProvider =
       ConversationThreadsNotifier.new,
     );
 
+// ignore: specify_nonobvious_property_types, stable family identity matters
+final conversationThreadSummaryProvider =
+    Provider.family<ConversationThreadSummary?, String>((ref, threadId) {
+      final threads = ref.watch(conversationThreadsProvider).asData?.value;
+      if (threads == null) {
+        return null;
+      }
+      for (final thread in threads) {
+        if (thread.id == threadId) {
+          return thread;
+        }
+      }
+      return null;
+    });
+
 class ConversationMessagesNotifier
     extends AsyncNotifier<List<ConversationMessage>> {
   ConversationMessagesNotifier(this.threadId);

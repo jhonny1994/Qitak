@@ -495,7 +495,6 @@
   "transactionDetailMissingBody": "هذه الصفقة غير متاحة أو لم يتم تحميلها لهذا الحساب بعد.",
   "transactionDetailTitle": "تفاصيل الصفقة",
   "transactionDetailSubtitle": "تابع طريقة الدفع والإثبات وخطوات إكمال هذه الصفقة.",
-  "transactionDetailListingContext": "سياق الإعلان ودورك في الصفقة.",
   "transactionRoleBuyer": "مشتري",
   "transactionRoleSeller": "بائع",
   "transactionPaymentTitle": "الدفع خارج المنصة",

@@ -14,7 +14,6 @@ class UnreadCountsNotifier extends AsyncNotifier<UnreadCounts> {
     if (!ref.mounted) {
       return;
     }
-    state = const AsyncLoading();
     final nextState = await AsyncValue.guard(_load);
     if (!ref.mounted) {
       return;

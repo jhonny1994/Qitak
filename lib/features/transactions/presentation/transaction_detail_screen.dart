@@ -75,6 +75,11 @@ class _TransactionDetailScreenState
     };
     final paymentOptions =
         paymentMethodOptions.asData?.value ?? const <AppPolicyOption>[];
+    final listingTitle =
+        listing?.localizedTitle(context.l10n) ?? context.l10n.transactionsTitle;
+    final listingSummary = listing == null
+        ? context.l10n.transactionDetailSubtitle
+        : '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}';
     if (record == null) {
       return Padding(
         padding: qitakPagePadding,
@@ -82,7 +87,7 @@ class _TransactionDetailScreenState
           title: context.l10n.transactionDetailMissingTitle,
           message: context.l10n.transactionDetailMissingBody,
           action: FilledButton.tonal(
-            onPressed: () => context.go('/deals'),
+            onPressed: () => context.go('/transactions'),
             child: Text(context.l10n.transactionsTitle),
           ),
         ),
@@ -99,79 +104,63 @@ class _TransactionDetailScreenState
             children: [
               QitakSectionHeader(
                 eyebrow: context.l10n.transactionsTitle,
-                title: context.l10n.transactionDetailTitle,
-                subtitle: context.l10n.transactionDetailSubtitle,
-                leading: const QitakRouteBackButton(fallbackPath: '/deals'),
+                title: listingTitle,
+                subtitle: context.l10n.transactionDetailTitle,
+                leading: const QitakRouteBackButton(
+                  fallbackPath: '/transactions',
+                ),
               ),
               const SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Text(
+                listingSummary,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  QitakListingThumbnail(
-                    imageUrl: listing?.preferredImageUrl,
-                    width: 84,
-                    height: 84,
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          listing?.localizedTitle(context.l10n) ??
-                              context.l10n.transactionDetailListingContext,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          listing == null
-                              ? context.l10n.transactionDetailListingContext
-                              : '${listing.localizedFitment(context.l10n)} | ${listing.localizedLocation(context.l10n)}',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            QitakChip(
-                              label: transactionStatusLabel(
-                                context,
-                                record.state,
-                              ),
-                            ),
-                            QitakChip(
-                              label: record.dealType == 'exchange'
-                                  ? context.l10n.discoveryDealTypeBuyOrExchange
-                                  : context.l10n.discoveryDealTypeBuy,
-                            ),
-                            QitakChip(
-                              label: record.buyerUserId == profile.id
-                                  ? context.l10n.transactionRoleBuyer
-                                  : context.l10n.transactionRoleSeller,
-                            ),
-                          ],
-                        ),
-                      ],
+                  QitakChip(
+                    label: transactionStatusLabel(
+                      context,
+                      record.state,
                     ),
+                  ),
+                  QitakChip(
+                    label: record.dealType == 'exchange'
+                        ? context.l10n.discoveryDealTypeBuyOrExchange
+                        : context.l10n.discoveryDealTypeBuy,
                   ),
                 ],
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
+              QitakDetailRow(
+                label: 'Your role',
+                value: record.buyerUserId == profile.id
+                    ? context.l10n.transactionRoleBuyer
+                    : context.l10n.transactionRoleSeller,
+              ),
+              QitakDetailRow(
+                label: 'Counterparty',
+                value: record.buyerUserId == profile.id
+                    ? context.l10n.transactionRoleSeller
+                    : context.l10n.transactionRoleBuyer,
+              ),
+              QitakDetailRow(
+                label: context.l10n.transactionPaymentMethodLabel,
+                value: record.paymentMethod == null
+                    ? context.l10n.transactionPaymentMethodPending
+                    : _paymentMethodLabel(context, record.paymentMethod!),
+              ),
+              const SizedBox(height: 16),
               QitakSurface(
                 key: const Key('transaction-detail-status'),
                 role: QitakSurfaceRole.section,
                 padding: const EdgeInsets.all(14),
                 child: QitakSignalStrip(
-                  label: profile.id == record.buyerUserId
-                      ? context.l10n.transactionRoleBuyer
-                      : context.l10n.transactionRoleSeller,
+                  label: context.l10n.transactionNextStepTitle,
                   value: _nextStepMessage(context, record, profile.id),
                   status: transactionStatusLabel(context, record.state),
                 ),

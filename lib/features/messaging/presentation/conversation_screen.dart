@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:qitak_app/core/connectivity/connectivity_service.dart';
 import 'package:qitak_app/core/l10n/l10n.dart';
 import 'package:qitak_app/core/theme/app_theme.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/messaging/domain/conversation_thread_summary.dart';
 import 'package:qitak_app/features/messaging/providers/messaging_provider.dart';
+import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:qitak_app/shared/widgets/qitak_components.dart';
 
 class ConversationScreen extends ConsumerStatefulWidget {
@@ -31,9 +33,15 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(messagingProvider);
     final profile = ref.watch(authSessionProvider).profile;
+    final transactions = ref.watch(transactionProvider).items;
     final messages = ref.watch(conversationMessagesProvider(widget.threadId));
     final threadSummary = ref.watch(
       conversationThreadSummaryProvider(widget.threadId),
+    );
+    final completedDeal = _findCompletedDeal(
+      transactions: transactions,
+      profileId: profile?.id,
+      threadSummary: threadSummary,
     );
 
     if (profile == null) {
@@ -71,6 +79,18 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                         fallbackPath: '/messages',
                       ),
                     ),
+                    if (completedDeal != null) ...[
+                      const SizedBox(height: 12),
+                      QitakSurface(
+                        role: QitakSurfaceRole.section,
+                        padding: const EdgeInsets.all(14),
+                        child: QitakSignalStrip(
+                          label: context.l10n.transactionsTitle,
+                          value: context.l10n.transactionNextStepCompleted,
+                          status: context.l10n.transactionHistoryTitle,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     if (items.isEmpty)
                       QitakStateMessage(
@@ -104,33 +124,39 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                           ),
                         ),
                     const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _controller,
-                            decoration: InputDecoration(
-                              hintText: context.l10n.messagesInputHint,
+                    if (completedDeal == null)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _controller,
+                              decoration: InputDecoration(
+                                hintText: context.l10n.messagesInputHint,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        FilledButton(
-                          key: const Key('message-send-button'),
-                          onPressed: _sending
-                              ? null
-                              : () => _handleSend(profile.id),
-                          child: _sending
-                              ? const SizedBox.square(
-                                  dimension: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Text(context.l10n.messagesSend),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: 8),
+                          FilledButton(
+                            key: const Key('message-send-button'),
+                            onPressed: _sending
+                                ? null
+                                : () => _handleSend(profile.id),
+                            child: _sending
+                                ? const SizedBox.square(
+                                    dimension: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Text(context.l10n.messagesSend),
+                          ),
+                        ],
+                      )
+                    else
+                      QitakStateMessage(
+                        title: context.l10n.transactionNextStepCompleted,
+                        message: context.l10n.transactionHistoryTitle,
+                      ),
                     if (state.lastError == 'offline') ...[
                       const SizedBox(height: 14),
                       QitakSignalStrip(
@@ -229,5 +255,30 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
       ..showSnackBar(
         SnackBar(content: Text(context.l10n.offlineBannerLabel)),
       );
+  }
+
+  TransactionRecord? _findCompletedDeal({
+    required List<TransactionRecord> transactions,
+    required String? profileId,
+    required ConversationThreadSummary? threadSummary,
+  }) {
+    final userId = profileId;
+    final summary = threadSummary;
+    if (userId == null || summary == null) {
+      return null;
+    }
+    for (final tx in transactions) {
+      final isParticipant =
+          (tx.buyerUserId == userId &&
+              tx.sellerUserId == summary.otherPartyUserId) ||
+          (tx.sellerUserId == userId &&
+              tx.buyerUserId == summary.otherPartyUserId);
+      if (isParticipant &&
+          tx.listingId == summary.listingId &&
+          tx.state == TransactionState.completed) {
+        return tx;
+      }
+    }
+    return null;
   }
 }

@@ -480,6 +480,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 ),
               ),
               GoRoute(
+                path: '/transactions',
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  state: state,
+                  child: ProtectedRouteGuard(
+                    requiredRoles: const [
+                      AccountRole.buyer,
+                      AccountRole.seller,
+                    ],
+                    intent: PostAuthRedirectIntent.route('/transactions'),
+                    child: const TransactionLifecycleScreen(),
+                  ),
+                ),
+              ),
+              GoRoute(
                 path: '/seller/orders',
                 pageBuilder: (context, state) => _buildTransitionPage(
                   state: state,
@@ -622,6 +636,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => _buildTransitionPage(
           state: state,
           child: AppEntryShell(
+            fallbackPath: '/home',
             child: ListingDetailScreen(
               listingId: state.pathParameters['id'] ?? '',
             ),
@@ -694,7 +709,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             requiredRoles: const [AccountRole.seller],
             intent: PostAuthRedirectIntent.route('/seller/listings/new'),
             requireApprovedSeller: true,
-            child: const AppEntryShell(child: ListingFormScreen()),
+            child: const AppEntryShell(
+              fallbackPath: '/seller/listings',
+              child: ListingFormScreen(),
+            ),
           ),
         ),
       ),
@@ -709,6 +727,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
             requireApprovedSeller: true,
             child: AppEntryShell(
+              fallbackPath: '/seller/listings',
               child: ListingDetailScreen(
                 listingId: state.pathParameters['id'] ?? '',
                 sellerOwnedPreview: true,
@@ -728,6 +747,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
             requireApprovedSeller: true,
             child: AppEntryShell(
+              fallbackPath:
+                  '/seller/listings/${state.pathParameters['id'] ?? ''}',
               child: ListingFormScreen(
                 listingId: state.pathParameters['id'] ?? '',
               ),
@@ -744,18 +765,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           child: ProtectedRouteGuard(
             requiredRoles: const [AccountRole.buyer, AccountRole.seller],
             intent: PostAuthRedirectIntent.route('/deals'),
-            child: const AppEntryShell(child: TransactionLifecycleScreen()),
-          ),
-        ),
-      ),
-      GoRoute(
-        path: '/transactions',
-        pageBuilder: (context, state) => _buildTransitionPage(
-          state: state,
-          child: ProtectedRouteGuard(
-            requiredRoles: const [AccountRole.buyer, AccountRole.seller],
-            intent: PostAuthRedirectIntent.route('/transactions'),
-            child: const AppEntryShell(child: TransactionLifecycleScreen()),
+            child: const AppEntryShell(
+              fallbackPath: '/transactions',
+              child: TransactionLifecycleScreen(),
+            ),
           ),
         ),
       ),
@@ -766,7 +779,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           child: ProtectedRouteGuard(
             requiredRoles: const [AccountRole.buyer, AccountRole.seller],
             intent: PostAuthRedirectIntent.route('/transactions/history'),
-            child: const AppEntryShell(child: TransactionHistoryScreen()),
+            child: const AppEntryShell(
+              fallbackPath: '/transactions',
+              child: TransactionHistoryScreen(),
+            ),
           ),
         ),
       ),
@@ -780,6 +796,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/deals/${state.pathParameters['id'] ?? ''}',
             ),
             child: AppEntryShell(
+              fallbackPath: '/transactions',
               child: TransactionDetailScreen(
                 transactionId: state.pathParameters['id'] ?? '',
               ),
@@ -797,6 +814,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/deals/${state.pathParameters['id'] ?? ''}/dispute',
             ),
             child: AppEntryShell(
+              fallbackPath: '/transactions',
               child: DisputeCreateScreen(
                 transactionId: state.pathParameters['id'] ?? '',
               ),
@@ -814,6 +832,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/transactions/listing/${state.pathParameters['id'] ?? ''}/request',
             ),
             child: AppEntryShell(
+              fallbackPath: '/listing/${state.pathParameters['id'] ?? ''}',
               child: TransactionRequestScreen(
                 listingId: state.pathParameters['id'] ?? '',
               ),
@@ -833,6 +852,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/admin/verifications/${state.pathParameters['id'] ?? ''}',
             ),
             child: AppEntryShell(
+              fallbackPath: '/admin/verifications',
               child: VerificationDetailScreen(
                 verificationId: state.pathParameters['id'] ?? '',
               ),
@@ -850,6 +870,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/admin/reports/${state.pathParameters['id'] ?? ''}',
             ),
             child: AppEntryShell(
+              fallbackPath: '/admin/reports',
               child: ReportDetailScreen(
                 reportId: state.pathParameters['id'] ?? '',
               ),
@@ -867,6 +888,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/admin/conversations/${state.pathParameters['id'] ?? ''}',
             ),
             child: AppEntryShell(
+              fallbackPath: '/admin/queues',
               child: ConversationOversightScreen(
                 conversationId: state.pathParameters['id'] ?? '',
               ),
@@ -886,6 +908,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               '/ratings/transaction/${state.pathParameters['id'] ?? ''}',
             ),
             child: AppEntryShell(
+              fallbackPath: '/transactions',
               child: RatingScreen(
                 transactionId: state.pathParameters['id'] ?? '',
               ),
@@ -1157,17 +1180,28 @@ Widget _buildBranchUtilityScreen({
   required Widget child,
 }) {
   return LayoutBuilder(
-    builder: (context, constraints) => SizedBox(
-      height: constraints.maxHeight,
-      child: Column(
-        children: [
-          _RouteWayfindingBar(
-            title: title,
-            fallbackPath: fallbackPath,
-          ),
-          const SizedBox(height: 12),
-          Expanded(child: child),
-        ],
+    builder: (context, constraints) => PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(fallbackPath);
+        }
+      },
+      child: SizedBox(
+        height: constraints.maxHeight,
+        child: Column(
+          children: [
+            _RouteWayfindingBar(
+              title: title,
+              fallbackPath: fallbackPath,
+            ),
+            const SizedBox(height: 12),
+            Expanded(child: child),
+          ],
+        ),
       ),
     ),
   );

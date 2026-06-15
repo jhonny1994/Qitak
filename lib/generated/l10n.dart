@@ -4784,16 +4784,6 @@ class S {
     );
   }
 
-  /// `سياق الإعلان ودورك في الصفقة.`
-  String get transactionDetailListingContext {
-    return Intl.message(
-      'سياق الإعلان ودورك في الصفقة.',
-      name: 'transactionDetailListingContext',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `مشتري`
   String get transactionRoleBuyer {
     return Intl.message(

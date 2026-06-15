@@ -208,6 +208,7 @@ void main() {
     expect(find.textContaining('listing-1'), findsNothing);
     expect(find.text('Headlight assembly'), findsOneWidget);
     expect(find.byTooltip('Back'), findsOneWidget);
+    expect(find.text('Linked listing context and deal role.'), findsNothing);
   });
 
   testWidgets('dispute screen validates description length', (tester) async {
@@ -421,7 +422,15 @@ void main() {
       find.byType(ListView),
       const Offset(0, -200),
     );
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Decline order'));
+    await tester.ensureVisible(
+      find.widgetWithText(OutlinedButton, 'Decline order'),
+    );
+    tester
+        .widget<OutlinedButton>(
+          find.widgetWithText(OutlinedButton, 'Decline order'),
+        )
+        .onPressed!
+        .call();
     await tester.pumpAndSettle();
 
     await tester.enterText(

@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qitak_app/features/auth/providers/auth_session_provider.dart';
+import 'package:qitak_app/features/listings/domain/listing_media_selection.dart';
 import 'package:qitak_app/features/messaging/data/messaging_repository.dart';
 import 'package:qitak_app/features/messaging/domain/conversation_message.dart';
 import 'package:qitak_app/features/messaging/domain/conversation_thread_summary.dart';
 import 'package:qitak_app/features/messaging/presentation/conversation_screen.dart';
 import 'package:qitak_app/features/messaging/providers/messaging_provider.dart';
+import 'package:qitak_app/features/transactions/data/transaction_repository.dart';
+import 'package:qitak_app/features/transactions/domain/transaction_record.dart';
+import 'package:qitak_app/features/transactions/providers/transaction_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../test_bootstrap.dart';
@@ -132,6 +136,45 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('completed deal conversation becomes reference-only', (
+    tester,
+  ) async {
+    final repository = _ConversationIdentityRepository();
+    final transactionRepository = _CompletedDealTransactionRepository();
+    final scope = await buildTestScope(
+      const TestMaterialShell(
+        child: Scaffold(body: ConversationScreen(threadId: 'thread-1')),
+      ),
+      seed: const <String, Object>{
+        'qitak.local.session.email': 'buyer@qitak.test',
+      },
+      messagingRepositoryOverride: repository,
+      transactionRepositoryOverride: transactionRepository,
+    );
+
+    await tester.pumpWidget(scope);
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(ConversationScreen)),
+    );
+    await container.read(authSessionProvider.notifier).restore();
+    await container
+        .read(messagingProvider.notifier)
+        .sendMessage(
+          threadId: 'thread-1',
+          senderId: 'seller-1',
+          body: 'Delivered.',
+        );
+    await container
+        .read(transactionProvider.notifier)
+        .refreshForUser('buyer-001');
+    await tester.pumpAndSettle();
+
+    expect(find.text('This deal is complete.'), findsWidgets);
+    expect(find.byType(TextField), findsNothing);
+    expect(find.byKey(const Key('message-send-button')), findsNothing);
+    expect(find.text('Transaction History'), findsWidgets);
+  });
 }
 
 class TestMessagingOnlineNotifier extends MessagingOnlineNotifier {
@@ -173,4 +216,69 @@ class _ConversationIdentityRepository extends LocalMessagingRepository {
       otherPartyLabel: 'Seller One',
     ),
   ];
+}
+
+class _CompletedDealTransactionRepository implements TransactionRepository {
+  @override
+  Future<bool> canSubmitRating({
+    required String transactionId,
+    required String fromUserId,
+    required String toUserId,
+  }) async => true;
+
+  @override
+  Future<TransactionRecord> createRequest({
+    required String listingId,
+    required String buyerUserId,
+    required String sellerUserId,
+    String dealType = 'buy',
+    String? exchangeOffer,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<TransactionRecord?> fetchById(String transactionId) async => null;
+
+  @override
+  Future<List<TransactionRecord>> listForUser(String userId) async =>
+      <TransactionRecord>[
+        TransactionRecord(
+          id: 'tx-complete',
+          listingId: 'listing-1',
+          buyerUserId: 'buyer-001',
+          sellerUserId: 'seller-1',
+          state: TransactionState.completed,
+          createdAt: DateTime(2026, 6),
+          updatedAt: DateTime(2026, 6, 2),
+          completedAt: DateTime(2026, 6, 2),
+        ),
+      ];
+
+  @override
+  Future<TransactionRecord> rejectPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+    String? reason,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<TransactionRecord> selectPaymentMethod({
+    required String transactionId,
+    required String actorUserId,
+    required TransactionPaymentMethod paymentMethod,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<TransactionRecord> submitPaymentProof({
+    required String transactionId,
+    required String actorUserId,
+    required ListingMediaSelection proof,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<TransactionRecord> transition({
+    required String transactionId,
+    required String actorUserId,
+    required TransactionState nextState,
+    String? note,
+  }) async => throw UnimplementedError();
 }

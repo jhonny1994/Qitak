@@ -1711,9 +1711,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDeclineTitle": MessageLookupByLibrary.simpleMessage(
       "رفض الطلب",
     ),
-    "transactionDetailListingContext": MessageLookupByLibrary.simpleMessage(
-      "سياق الإعلان ودورك في الصفقة.",
-    ),
     "transactionDetailMissingBody": MessageLookupByLibrary.simpleMessage(
       "هذه الصفقة غير متاحة أو لم يتم تحميلها لهذا الحساب بعد.",
     ),

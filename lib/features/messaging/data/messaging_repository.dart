@@ -382,9 +382,9 @@ class SupabaseMessagingRepository implements MessagingRepository {
       for (final row in results[0].whereType<Map<String, dynamic>>())
         row['id'] as String: row['title'] as String? ?? '',
     };
-    final profileNameById = <String, String>{
+    final profileLabelById = <String, String>{
       for (final row in results[1].whereType<Map<String, dynamic>>())
-        row['id'] as String: row['full_name'] as String? ?? '',
+        row['id'] as String: _profileLabelFromRow(row),
     };
     final latestMessageByThread = <String, Map<String, dynamic>>{};
     for (final row in results[2].whereType<Map<String, dynamic>>()) {
@@ -403,6 +403,8 @@ class SupabaseMessagingRepository implements MessagingRepository {
               final sellerId = row['seller_id'] as String? ?? '';
               final otherPartyId = buyerId == userId ? sellerId : buyerId;
               final latestMessage = latestMessageByThread[threadId];
+              final otherPartyLabel = (profileLabelById[otherPartyId] ?? '')
+                  .trim();
               return ConversationThreadSummary(
                 id: threadId,
                 listingId: listingId,
@@ -423,10 +425,7 @@ class SupabaseMessagingRepository implements MessagingRepository {
                     )?.toLocal() ??
                     DateTime.now(),
                 lastSenderId: latestMessage?['sender_id'] as String? ?? '',
-                otherPartyLabel:
-                    (profileNameById[otherPartyId] ?? '').trim().isNotEmpty
-                    ? (profileNameById[otherPartyId] ?? '').trim()
-                    : otherPartyId,
+                otherPartyLabel: otherPartyLabel,
               );
             })
             .toList(growable: false)
@@ -439,7 +438,9 @@ class SupabaseMessagingRepository implements MessagingRepository {
   Future<int> countUnreadMessages(String userId) async {
     final rows = await _client
         .from('messages')
-        .select('sender_id, conversations!inner(buyer_id, seller_id)')
+        .select(
+          'id, sender_id, is_read, conversations!inner(buyer_id, seller_id)',
+        )
         .eq('is_read', false)
         .neq('sender_id', userId)
         .or(
@@ -453,8 +454,8 @@ class SupabaseMessagingRepository implements MessagingRepository {
   Future<void> markThreadMessagesRead({
     required String threadId,
     required String userId,
-  }) {
-    return _client
+  }) async {
+    await _client
         .from('messages')
         .update(<String, dynamic>{'is_read': true})
         .eq('conversation_id', threadId)
@@ -605,5 +606,9 @@ class SupabaseMessagingRepository implements MessagingRepository {
           )?.toLocal() ??
           DateTime.now(),
     );
+  }
+
+  String _profileLabelFromRow(Map<String, dynamic> row) {
+    return (row['full_name'] as String? ?? '').trim();
   }
 }

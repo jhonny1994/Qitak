@@ -60,7 +60,7 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
             message: context.l10n.disputeSuccessBody,
             icon: Icons.verified_outlined,
             action: FilledButton(
-              onPressed: () => context.go('/deals'),
+              onPressed: () => context.go('/transactions'),
               child: Text(context.l10n.transactionsTitle),
             ),
           ),
@@ -84,7 +84,9 @@ class _DisputeCreateScreenState extends ConsumerState<DisputeCreateScreen> {
                     eyebrow: context.l10n.transactionsTitle,
                     title: context.l10n.disputeTitle,
                     subtitle: context.l10n.disputeSubtitle,
-                    leading: const QitakRouteBackButton(fallbackPath: '/deals'),
+                    leading: const QitakRouteBackButton(
+                      fallbackPath: '/transactions',
+                    ),
                   ),
                   const SizedBox(height: 18),
                   QitakFormGroup(

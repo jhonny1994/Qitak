@@ -495,7 +495,6 @@
   "transactionDetailMissingBody": "This deal is unavailable or has not been loaded for your account yet.",
   "transactionDetailTitle": "Deal details",
   "transactionDetailSubtitle": "Track payment method, proof, and completion steps for this deal.",
-  "transactionDetailListingContext": "Linked listing context and deal role.",
   "transactionRoleBuyer": "Buyer",
   "transactionRoleSeller": "Seller",
   "transactionPaymentTitle": "Offline payment",

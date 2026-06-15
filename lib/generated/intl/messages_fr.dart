@@ -1805,9 +1805,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionDeclineTitle": MessageLookupByLibrary.simpleMessage(
       "Refuser la commande",
     ),
-    "transactionDetailListingContext": MessageLookupByLibrary.simpleMessage(
-      "Contexte de l\'annonce et votre role dans la transaction.",
-    ),
     "transactionDetailMissingBody": MessageLookupByLibrary.simpleMessage(
       "Cette transaction est indisponible ou n\'a pas encore été chargee pour votre compte.",
     ),

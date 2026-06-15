@@ -12,11 +12,9 @@ final savedListingIdsProvider =
 final savedListingsProvider = FutureProvider<List<MarketplaceListing>>((
   ref,
 ) async {
-  final ids = switch (ref.watch(savedListingIdsProvider)) {
-    AsyncData(:final value) => value.toList(growable: false),
-    AsyncError(:final error) => throw Exception(error.toString()),
-    _ => const <String>[],
-  };
+  final ids = (await ref.watch(savedListingIdsProvider.future)).toList(
+    growable: false,
+  );
   if (ids.isEmpty) {
     return const <MarketplaceListing>[];
   }

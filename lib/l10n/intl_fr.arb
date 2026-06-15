@@ -524,7 +524,6 @@
   "transactionDetailMissingBody": "Cette transaction est indisponible ou n'a pas encore été chargee pour votre compte.",
   "transactionDetailTitle": "Details de la transaction",
   "transactionDetailSubtitle": "Suivez le mode de paiement, la preuve et les étapes de finalisation de cette transaction.",
-  "transactionDetailListingContext": "Contexte de l'annonce et votre role dans la transaction.",
   "transactionRoleBuyer": "Acheteur",
   "transactionRoleSeller": "Vendeur",
   "transactionPaymentTitle": "Paiement hors plateforme",

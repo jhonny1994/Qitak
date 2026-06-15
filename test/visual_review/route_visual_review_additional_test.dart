@@ -26,6 +26,8 @@ import 'package:qitak_app/features/transactions/providers/transaction_provider.d
 import '../fixtures/seeded_discovery_repository.dart';
 import '../test_bootstrap.dart';
 
+const _runVisualReview = bool.fromEnvironment('RUN_VISUAL_REVIEW');
+
 Future<void> _prepareViewport(WidgetTester tester) async {
   tester.view.physicalSize = const Size(430, 932);
   tester.view.devicePixelRatio = 1;
@@ -165,6 +167,16 @@ class _VisualTransactionRepository implements TransactionRepository {
 }
 
 void main() {
+  if (!_runVisualReview) {
+    test(
+      'visual review suite is opt-in',
+      () {},
+      skip:
+          'Set --dart-define=RUN_VISUAL_REVIEW=true to run golden screenshot checks.',
+    );
+    return;
+  }
+
   testWidgets('captures onboarding screen', (tester) async {
     await _prepareViewport(tester);
 

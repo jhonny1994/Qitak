@@ -149,7 +149,7 @@ class QitakNavigationShell extends ConsumerWidget {
             ),
           ),
           _ShellDestination(
-            path: '/seller/orders',
+            path: '/transactions',
             branchIndex: 2,
             destination: NavigationDestination(
               icon: const Icon(Icons.receipt_long_outlined),

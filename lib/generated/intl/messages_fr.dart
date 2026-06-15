@@ -1057,7 +1057,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "navSaved": MessageLookupByLibrary.simpleMessage("Favoris"),
     "navTeam": MessageLookupByLibrary.simpleMessage("Équipe"),
     "noResultsBody": MessageLookupByLibrary.simpleMessage(
-      "Réduisez la note minimale pour voir plus d\'annonces.",
+      "Aucune annonce ne correspond à cette recherche pour le moment. Le stock ou la disponibilité a peut-être changé.",
     ),
     "noResultsTitle": MessageLookupByLibrary.simpleMessage(
       "Aucun résultat pour ce seuil de note.",

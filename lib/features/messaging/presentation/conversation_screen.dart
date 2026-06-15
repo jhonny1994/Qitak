@@ -32,6 +32,9 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
     final state = ref.watch(messagingProvider);
     final profile = ref.watch(authSessionProvider).profile;
     final messages = ref.watch(conversationMessagesProvider(widget.threadId));
+    final threadSummary = ref.watch(
+      conversationThreadSummaryProvider(widget.threadId),
+    );
 
     if (profile == null) {
       return Padding(
@@ -58,8 +61,12 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                   children: [
                     QitakSectionHeader(
                       eyebrow: context.l10n.messagesTitle,
-                      title: context.l10n.messagesConversationTitle,
-                      subtitle: context.l10n.messagesConversationSubtitle,
+                      title: threadSummary?.otherPartyLabel.isNotEmpty == true
+                          ? threadSummary!.otherPartyLabel
+                          : context.l10n.messagesConversationTitle,
+                      subtitle: threadSummary?.listingTitle.isNotEmpty == true
+                          ? threadSummary!.listingTitle
+                          : context.l10n.messagesConversationSubtitle,
                       leading: const QitakRouteBackButton(
                         fallbackPath: '/messages',
                       ),

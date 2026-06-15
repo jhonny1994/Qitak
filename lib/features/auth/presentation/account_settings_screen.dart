@@ -138,7 +138,7 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
                 leading: const Icon(Icons.history_rounded),
                 title: Text(context.l10n.transactionHistoryTitle),
                 trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () => context.go('/transactions/history'),
+                onTap: () => context.go('/transactions'),
               ),
             ),
             const SizedBox(height: 18),

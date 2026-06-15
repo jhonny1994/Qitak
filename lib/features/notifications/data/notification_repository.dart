@@ -40,7 +40,8 @@ class NotificationRepository {
         .from('notifications')
         .select('id')
         .eq('user_id', resolvedUserId)
-        .eq('is_read', false);
+        .eq('is_read', false)
+        .neq('type', 'message_received');
     return rows.length;
   }
 

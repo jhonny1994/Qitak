@@ -1403,7 +1403,7 @@ class _QitakSkeletonBoxState extends State<QitakSkeletonBox>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     );
-    unawaited(_controller.repeat());
+    _controller.repeat();
     _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
